@@ -19,6 +19,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions
 import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin
 import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.DerelictShipData
+import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.DerelictType
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.*
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
@@ -32,6 +33,8 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithSearch.Mark
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode
 import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator
+import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.EntityLocation
+import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.LocationType
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BaseSalvageSpecial
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData
@@ -40,6 +43,7 @@ import com.fs.starfarer.api.loading.VariantSource
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.DelayedActionScript
 import com.fs.starfarer.api.util.Misc
+import com.fs.starfarer.api.util.WeightedRandomPicker
 import com.fs.starfarer.loading.specs.PlanetSpec
 import exerelin.campaign.DiplomacyManager
 import exerelin.campaign.PlayerFactionStore
@@ -49,12 +53,12 @@ import exerelin.campaign.graphics.BombardmentAnimationV2
 import exerelin.campaign.intel.merc.MercContractIntel
 import exerelin.campaign.intel.missions.BuildStation.SystemUninhabitedReq
 import exerelin.plugins.ExerelinCampaignPlugin
-import exerelin.plugins.ExerelinModPlugin
 import exerelin.utilities.*
 import lombok.Getter
 import org.apache.log4j.Logger
 import org.lazywizard.lazylib.MathUtils
 import java.awt.Color
+import java.util.*
 import kotlin.math.abs
 
 
@@ -82,7 +86,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     @Getter protected var timerToPK : Float = 30f;
 
     companion object {
-        @JvmField var SALVATION_ENABLED = false;
+        @JvmField var SALVATION_ENABLED = true;
         @JvmField val STAT_MOD_ID = "nex_remSalvation_mod";
 
         @JvmField val log : Logger = Global.getLogger(ContactIntel::class.java)
@@ -122,6 +126,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             requireMarketNotHidden()
             requireMarketNotInHyperspace()
             preferMarketSizeAtLeast(5)
+            preferMarketSizeAtMost(6)
             preferMarketIsMilitary()
             pickMarket()
         }
@@ -194,28 +199,53 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         // just sets up a memory value we'll use later
         beginStageTrigger(Stage.GO_TO_BASE)
+        currTrigger.id = "beginBaseStage"
         triggerSetMemoryValue(base, "\$nex_remSalvation_seenBaseIntro", false)
         endTrigger()
 
         // Approach base: add some wreckage to the attacked base and disrupt its industries
         beginWithinHyperspaceRangeTrigger(base, 2f, false, Stage.GO_TO_BASE)
+        currTrigger.id = "approachBase"
         val loc = LocData(base!!.primaryEntity, true)
         triggerSpawnDebrisField(DEBRIS_MEDIUM, DEBRIS_DENSE, loc)
         triggerSpawnShipGraveyard(Factions.REMNANTS, 2, 2, loc)
-        triggerSpawnShipGraveyard(Factions.PERSEAN, 4, 6, loc)
+        triggerSpawnShipGraveyard(Factions.PERSEAN, 4, 5, loc)
         triggerRunScriptAfterDelay(0.01f, GenericMissionScript(this, "trashBase"))
         endTrigger()
 
         // Approach Remnant system: add a salvagable station and the first fleet
         beginWithinHyperspaceRangeTrigger(remnantSystem, 2f, false, Stage.INVESTIGATE_LEADS)
+        currTrigger.id = "approachRemnantSystem"
         triggerRunScriptAfterDelay(0.01f, GenericMissionScript(this, "setupFleet1"))
         endTrigger()
 
         // Approach target planet: add the Knight fleet
         beginWithinHyperspaceRangeTrigger(target, 2f, false, Stage.DEFEND_PLANET)
+        currTrigger.id = "approachTarget"
         triggerRunScriptAfterDelay(0.01f, GenericMissionScript(this, "setupKnightFleet"))
         endTrigger()
+    }
 
+    // adds the ship type so it doesn't crash (and because we do want ship type)
+    override fun spawnShipGraveyard(factionId: String?, minShips: Int, maxShips: Int, data: LocData) {
+        val sizes = listOf(DerelictType.SMALL, DerelictType.MEDIUM, DerelictType.SMALL, DerelictType.LARGE)
+
+        val focus = spawnEntityToken(data)
+        val numShips = minShips + genRandom.nextInt(maxShips - minShips + 1)
+        val bands = WeightedRandomPicker<Float>(genRandom)
+        for (i in 0 until numShips + 5) {
+            bands.add(120f + i * 20f, (i + 1f) * (i + 1f))
+        }
+        for (i in 0 until numShips) {
+            val type = sizes[i%sizes.size]
+            val r = bands.pickAndRemove()
+            val loc = EntityLocation()
+            loc.type = LocationType.OUTER_SYSTEM
+            val orbitDays = r / (5f + genRandom.nextFloat() * 10f)
+            loc.orbit = Global.getFactory().createCircularOrbit(focus, genRandom.nextFloat() * 360f, r, orbitDays)
+            val curr = LocData(loc, data.system, data.removeOnMissionOver)
+            spawnDerelict(factionId, type, curr)
+        }
     }
 
     protected fun addAdditionalTriggersDev() {
@@ -292,7 +322,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         if (targetPKed) return; // already done the deed
 
         val planet = target!!.planetEntity
-        BombardmentAnimationV2.addBombardVisual(planet, 4f, Color(255, 128, 96, 255))
+        BombardmentAnimationV2.addBombardVisual(planet, 6f, Color(255, 128, 96, 255))
         DecivTracker.decivilize(target, true, true)
         target!!.addCondition(Conditions.POLLUTION)
 
@@ -533,6 +563,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         //fleet.setLocation(target!!.locationInHyperspace.x, target!!.locationInHyperspace.y)
         insertFleet2(fleet)
 
+        knightFleet!!.memoryWithoutUpdate.unset(MemFlags.FLEET_IGNORES_OTHER_FLEETS)
+        knightFleet!!.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true, 0.5f)
+
         return fleet
     }
 
@@ -602,9 +635,12 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_WAR_FLEET] = true
         // make it busy so patrol assignments don't pull it elsewhere
         Misc.setFlagWithReason(fleet.memoryWithoutUpdate, MemFlags.FLEET_BUSY, "nex_remSalvation", true, -1f)
+        fleet.memoryWithoutUpdate[MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS] = true
+        fleet.memoryWithoutUpdate[MemFlags.FLEET_IGNORES_OTHER_FLEETS] = true
 
         makeImportant(fleet, "\$nex_remSalvation_knightFleet_imp", Stage.DEFEND_PLANET)
         makeImportant(fleet, "\$nex_remSalvation_knightFleet_epilogue_imp", Stage.EPILOGUE)
+        makeImportant(params.commander, "\$nex_remSalvation_knightPreBattle2", Stage.DEFEND_PLANET)
         //Misc.addDefeatTrigger(fleet, "Nex_RemSalvation_Fleet1Defeated")
         fleet.addEventListener(this)
 
@@ -1251,4 +1287,6 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             }
         }
     }
+
+
 }
