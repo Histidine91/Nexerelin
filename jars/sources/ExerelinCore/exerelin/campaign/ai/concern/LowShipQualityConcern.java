@@ -10,10 +10,10 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
-import exerelin.utilities.NexUtils;
 import exerelin.world.industry.HeavyIndustry;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LowShipQualityConcern extends BaseStrategicConcern implements HasIndustryToBuild, HasIndustryTarget {
 
@@ -90,12 +90,12 @@ public class LowShipQualityConcern extends BaseStrategicConcern implements HasIn
     }
 
     @Override
-    public Industry getTargetIndustry() {
+    public List<Industry> getTargetIndustries() {
         return null;
     }
 
     @Override
-    public String getTargetIndustryId() {
-        return NexUtils.getRandomListElement(new ArrayList<String>(HeavyIndustry.HEAVY_INDUSTRY));
+    public List<String> getTargetIndustryIds() {
+        return new ArrayList<String>(HeavyIndustry.HEAVY_INDUSTRY);
     }
 }

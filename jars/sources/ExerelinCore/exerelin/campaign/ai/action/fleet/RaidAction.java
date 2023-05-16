@@ -1,12 +1,15 @@
 package exerelin.campaign.ai.action.fleet;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.concern.HasIndustryTarget;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.utilities.NexConfig;
+
+import java.util.List;
 
 public class RaidAction extends OffensiveFleetAction {
 
@@ -18,8 +21,13 @@ public class RaidAction extends OffensiveFleetAction {
         // if we're trying to kill a specific industry, notify the raid intel
         if (concern instanceof HasIndustryTarget && delegate instanceof NexRaidIntel) {
             HasIndustryTarget hit = (HasIndustryTarget)concern;
-            ((NexRaidIntel)delegate).setPreferredIndustryTarget(
-                    hit.getTargetIndustry() != null ? hit.getTargetIndustry().getId() : hit.getTargetIndustryId());
+            List<Industry> targets = hit.getTargetIndustries();
+            List<String> targetIds = hit.getTargetIndustryIds();
+            if (targets != null && !targets.isEmpty()) {
+                ((NexRaidIntel)delegate).setPreferredIndustryTarget(targets.get(0).getId());
+            } else if (targetIds != null && !targetIds.isEmpty()) {
+                ((NexRaidIntel)delegate).setPreferredIndustryTarget(targetIds.get(0));
+            }
         }
 
         return true;

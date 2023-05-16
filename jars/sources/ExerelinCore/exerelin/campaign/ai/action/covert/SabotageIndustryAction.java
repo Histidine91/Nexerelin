@@ -13,6 +13,7 @@ import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.campaign.intel.agents.SabotageIndustry;
 
+import java.util.List;
 import java.util.Map;
 
 public class SabotageIndustryAction extends CovertAction {
@@ -27,9 +28,22 @@ public class SabotageIndustryAction extends CovertAction {
 
         // get the target industry from concern if it has one
         if (concern instanceof HasIndustryTarget) {
-            industry = ((HasIndustryTarget)concern).getTargetIndustry();
-            if (industry == null && market != null)
-                industry = market.getIndustry(((HasIndustryTarget)concern).getTargetIndustryId());
+            List<Industry> candidates = ((HasIndustryTarget)concern).getTargetIndustries();
+            if (!candidates.isEmpty()) {
+                industry = candidates.get(0);
+            }
+
+            if (industry == null && market != null) {
+                List<String> candidateIds = ((HasIndustryTarget)concern).getTargetIndustryIds();
+                if (!candidateIds.isEmpty()) {
+                    for (String indId : candidateIds) {
+                        if (market.hasIndustry(indId)) {
+                            industry = market.getIndustry(indId);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         if (industry == null) industry = pickTargetIndustryFallback(market);

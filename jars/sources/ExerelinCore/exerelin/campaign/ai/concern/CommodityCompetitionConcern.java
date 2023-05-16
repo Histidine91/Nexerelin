@@ -15,6 +15,7 @@ import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
@@ -120,13 +121,13 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
     }
 
     /**
-     * Picks a random competing industry that produces the commodity, for actions that require such.
+     * Picks random competing industries that produces the commodity, for actions that require such.
      * Note to self: This caused me so much trouble when it was passing a sabotage target to {@code BuildIndustryAction}
      * for construction, be careful to not let such things happen again.
      * @return
      */
     @Override
-    public Industry getTargetIndustry() {
+    public List<Industry> getTargetIndustries() {
 
         // First find a market that produces the thing
         MarketAPI tm = null;
@@ -140,28 +141,33 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
         if (tm == null) return null;
 
         // now look for an industry on that market that produces the thing (or the spaceport)
-        WeightedRandomPicker<Industry> industryPicker = new WeightedRandomPicker<>();
+        List<Pair<Industry, Float>> industriesSorted = new ArrayList<>();
         for (Industry ind : tm.getIndustries()) {
             if (ind.getSpec().hasTag(Industries.TAG_SPACEPORT)) {
-                industryPicker.add(ind, 6);
+                industriesSorted.add(new Pair<>(ind, 6f));
                 continue;
             }
 
             int supply = NexUtilsMarket.getIndustrySupply(ind, commodityId);
             int supplyAdjusted = supply - EconomyInfoHelper.getCommodityOutputModifier(commodityId);
             if (supplyAdjusted > 4) {
-                industryPicker.add(ind, supplyAdjusted);
+                industriesSorted.add(new Pair<>(ind, (float)supplyAdjusted));
             }
         }
-        return industryPicker.pick();
+        Collections.sort(industriesSorted, new NexUtils.PairWithFloatComparator(true));
+        List<Industry> results = new ArrayList<>();
+        for (Pair<Industry, Float> entry : industriesSorted) {
+            results.add(entry.one);
+        }
+        return results;
     }
 
     /**
-     * Do not use, call {@code getTargetIndustry()} and use that instead.
+     * Do not use, call {@code getTargetIndustries()} and use that instead.
      * @return null
      */
     @Override
-    public String getTargetIndustryId() {
+    public List<String> getTargetIndustryIds() {
         return null;
     }
 

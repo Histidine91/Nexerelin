@@ -2,6 +2,8 @@ package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.campaign.econ.Industry;
 
+import java.util.List;
+
 /**
  * Concerns should implement this interface if they want to pass a specific existing industry to a relevant action,
  * such as {@code RaidAction} or {@code SabotageIndustryAction}.
@@ -9,6 +11,6 @@ import com.fs.starfarer.api.campaign.econ.Industry;
  */
 public interface HasIndustryTarget {
 
-    Industry getTargetIndustry();
-    String getTargetIndustryId();
+    List<Industry> getTargetIndustries();
+    List<String> getTargetIndustryIds();
 }

@@ -94,6 +94,7 @@ public class DiplomacyBrain {
 	public static final float REVANCHISM_MAX = 50;
 	public static final float DOMINANCE_MULT = 25;
 	public static final float MAX_DISPOSITION_FOR_WAR = -20;
+	public static final float DECISION_RATING_FOR_WAR = 40;
 	public static final float MILITARISM_WAR_MULT = 1;
 	public static final float MAX_WEARINESS_FOR_WAR = 7500f;
 	public static final float LIKE_THRESHOLD = 15;
@@ -773,7 +774,7 @@ public class DiplomacyBrain {
 			if (!canWarWithFaction(otherFactionId, disposition)) continue;
 			
 			float decisionRating = getWarDecisionRating(otherFactionId);
-			if (decisionRating > 40 + MathUtils.getRandomNumberInRange(-5, 5))
+			if (decisionRating > DECISION_RATING_FOR_WAR + MathUtils.getRandomNumberInRange(-5, 5))
 			{
 				warPicker.add(otherFactionId, decisionRating);
 			}

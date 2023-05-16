@@ -31,7 +31,12 @@ public class DeclareWarAction extends DiplomacyAction {
         if (faction != null) {
             DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(ai.getFactionId());
             float decisionRating = brain.getWarDecisionRating(faction.getId());
-            priority.modifyFlat("targetWarDecisionRating", decisionRating, StrategicAI.getString("statWarDecisionRating", true));
+            if (decisionRating < DiplomacyBrain.DECISION_RATING_FOR_WAR) {
+                priority.modifyMult("targetWarDecisionRating", 0, StrategicAI.getString("statWarDecisionRating", true));
+            } else {
+                priority.modifyFlat("targetWarDecisionRating", decisionRating, StrategicAI.getString("statWarDecisionRating", true));
+            }
+
         }
     }
 
