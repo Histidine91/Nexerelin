@@ -388,7 +388,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		ExerelinModPlugin.addScripts();
 		
-		StatsTracker.create();
+		StatsTracker.getOrCreateTracker();
 		
 		DiplomacyManager.getManager().setStartRelationsMode(setupData.startRelationsMode);
 		DiplomacyManager.getManager().setApplyStartRelationsModeToPirates(setupData.applyStartRelationsModeToPirates);

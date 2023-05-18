@@ -258,8 +258,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     
     public static StatsTracker getStatsTracker()
     {
-        if (tracker == null) return create();
-        return tracker;
+        return getOrCreateTracker();
     }
     
     public static boolean isTrackerLoaded()
@@ -267,7 +266,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         return (tracker != null);
     }
     
-    public static StatsTracker create()
+    public static StatsTracker getOrCreateTracker()
     {
         Map<String, Object> data = Global.getSector().getPersistentData();
         tracker = (StatsTracker)data.get(TRACKER_MAP_KEY);

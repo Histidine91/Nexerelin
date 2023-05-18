@@ -149,7 +149,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             ColonyManager.updateFreePortSetting(market);
         }
         
-        StatsTracker.create();
+        StatsTracker.getOrCreateTracker();
         
         SectorManager.reinitLiveFactions();
         NexUtilsReputation.syncFactionRelationshipsToPlayer();
