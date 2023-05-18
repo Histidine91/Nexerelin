@@ -198,7 +198,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 			else if (officer != null) {
 				officer.setFaction(Factions.PLAYER);
 			}
-			player.getCargo().addCrew((int)member.getHullSpec().getMinCrew());
+			player.getCargo().addCrew((int)member.getMinCrew());
 						
 			Misc.setMercHiredNow(officer);
 		}
@@ -293,7 +293,6 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 				if (!have) continue;
 				CargoAPI cargo = stored.get(member);
 				cargo.getMothballedShips().removeFleetMember(member);
-				// TODO: removal text
 				String name = member.getShipName() + ", " + member.getVariant().getHullSpec().getHullNameWithDashClass() 
 						+ " " + member.getVariant().getHullSpec().getDesignation();
 				if (text != null) {

@@ -48,6 +48,12 @@ public class MercFleetGenPlugin {
 				haveFlagship = true;
 				//member.setFlagship(true);
 			}
+			if (def.shipNames.size() > i) {
+				String name = def.shipNames.get(i);
+				if (name != null && !name.isEmpty()) {
+					member.setShipName(name);
+				}
+			}
 		}
 		if (def.extraFP > 0) {
 			FleetParamsV3 params = new FleetParamsV3(
@@ -178,6 +184,7 @@ public class MercFleetGenPlugin {
 		if (def.gender != null) person.getName().setGender(def.gender);
 		if (def.portrait != null) person.setPortraitSprite(def.portrait);
 		if (def.rankId != null) person.setRankId(def.rankId);
+		if (def.personality != null) person.setPersonality(def.personality);
 		if (def.voice != null) person.setVoice(def.voice);
 		if (def.persistentId != null) {
 			person.setId(def.persistentId);

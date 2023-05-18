@@ -99,6 +99,7 @@ public class MercDataManager {
 			def.rankId = thisJson.optString("rankId", null);
 			def.skillsReplace = thisJson.optBoolean("skillsReplace", true);
 			def.voice = thisJson.optString("voice", null);
+			def.personality = thisJson.optString("personality", null);
 			def.persistentId = thisJson.optString("persistentId", null);
 			def.aiCoreId = thisJson.optString("aiCoreId", null);
 			def.chatterCharacterId = thisJson.optString("chatterCharacterId", null);
@@ -180,6 +181,8 @@ public class MercDataManager {
 				
 				// load ships
 				def.ships.addAll(getShipList(entryJson));
+				if (entryJson.has("shipNames"))
+					def.shipNames.addAll(NexUtils.JSONArrayToArrayList(entryJson.getJSONArray("shipNames")));
 				def.extraFP = entryJson.optInt("extraFP");
 				if (entryJson.has("doctrineSizeOverride"))
 					def.doctrineSizeOverride = entryJson.getInt("doctrineSizeOverride");
@@ -232,6 +235,7 @@ public class MercDataManager {
 		public RepLevel minRep;
 		public int minLevel;
 		public List<List<String>> ships = new ArrayList<>();
+		public List<String> shipNames = new ArrayList<>();
 		public int extraFP;
 		public Integer doctrineSizeOverride;
 		public List<OfficerDef> officers = new ArrayList<>();
@@ -264,6 +268,7 @@ public class MercDataManager {
 		public String portrait;
 		public String rankId;
 		public String voice;
+		public String personality;
 		public Map<String, Integer> skills;	// null if not set
 		public boolean skillsReplace;
 		public String aiCoreId;

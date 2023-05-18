@@ -1,0 +1,69 @@
+{
+    "displayName": "Crusader",
+    "fluxCapacitors":0,
+    "fluxVents": 46,
+    "goalVariant": false,
+    "hullId": "invictus",
+    "hullMods": [
+		"augmentedengines",
+		"automated",
+        "armoredweapons",
+        "converted_hangar",
+		"reinforcedhull",
+		"eccm"
+    ],
+    "permaMods": [
+		"augmentedengines",
+		"automated",
+		"armoredweapons",
+		"reinforcedhull"
+    ],
+    "sMods": [
+		"augmentedengines",
+        "armoredweapons",
+		"reinforcedhull"
+    ],
+    "variantId": "invictus_LastCrusader",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "hellbore",
+                "WS 002": "mark9",
+                "WS 009": "mark9",
+                "WS 010": "hellbore"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 004": "hurricane",
+                "WS 007": "hurricane"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 003": "gauss",
+                "WS 008": "gauss"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 000": "devastator",
+                "WS 005": "devastator",
+                "WS 006": "devastator",
+                "WS 026": "devastator"
+            }
+        }
+    ],
+    "wings": [
+        "spark_wing",
+        "spark_wing"
+    ]
+}

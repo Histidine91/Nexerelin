@@ -4049,12 +4049,16 @@ OR
 ""We go. Your enemies we crush.""
 
 The mercenary company soon joins your $shipOrFleet. They're definitely itching for a good fight.",,
-nex_mercMeetBlurbLuddic,Nex_MercMeetBlurb,$nex_mercCompanyFactionId == luddic_church,,"""Blessings upon you, fellow traveller. We stand ready to assist your journey.""
+nex_mercMeetBlurbLuddic,Nex_MercMeetBlurb,$nex_mercCompanyFactionId == luddic_church,,"""Blessings upon you, fellow traveler. We stand ready to assist your journey.""
 OR
 ""The way of Ludd is difficult, but righteous. Let us aid each other on this.""",,
 nex_mercHireBlurbLuddic,Nex_MercHireBlurb,$nex_mercCompanyFactionId == luddic_church,,"""Blessings be with you.""
 
 The Luddic officer says a prayer before disconnecting. Their ships soon join yours, ready for their next pilgrimage.",,
+nex_mercMeetBlurbLastCrusader,Nex_MercMeetBlurb,$nex_mercCompanyId == lastCrusader score:3,,"""Howdy, partner. We can do business if you've got the credits.""",,
+nex_mercHireBlurbLastCrusader,Nex_MercHireBlurb,$nex_mercCompanyId == lastCrusader score:3,,"""Sounds like a deal, partner. Off we go, to stars unknown!""
+
+Soon the massive ship joins your fleet, a great thing of scarred metal covered with scorch marks and kill tallies. This is the Last Crusader?",,
 nex_mercMeetBlurbDora,Nex_MercMeetBlurb,$nex_mercCompanyId == dorasSurvey,,"""Hello, captain $playerName. Shall we go exploring today?""
 OR
 ""If it's a survey expedition you need, you've come to the right place.""",,
@@ -4135,6 +4139,18 @@ nex_mercLeaving_letGoBlurbRefusePayLuddic,Nex_MercLetGoBlurb,"$nex_mercLetGoType
 $personFaction.id == luddic_church",AdjustRepActivePerson INHOSPITABLE -2,"The $personRank listens to your 'explanation' with a frown. Then $heOrShe shakes $hisOrHer head, more in sorrow than anger.
 
 ""Your refusal to pay lawfully owed debts leads you to the sin of Mammon, friend $playerName,"" $heOrShe says. ""Repent, and find Ludd's forgiveness.""",,
+nex_mercLeaving_checkCrusader,Nex_MercsLeavingGreeting,$nex_mercCompanyId == lastCrusader score:3,"ShowPersonVisual 
+FireBest Nex_MercLeavingOptions","""Howdy, partner. Our journey together comes to an end for now.""",,
+nex_mercLeaving_checkCrusaderDebt,Nex_MercsLeavingGreeting,"$player.inDebt score:5
+$nex_mercCompanyId == lastCrusader score:3","ShowPersonVisual 
+FireBest Nex_MercLeavingOptions","""Now see here, partner! This is no way to run a business. You gotta watch your cashflow so you can pay your suppliers on time!""",,
+nex_mercLeaving_letGoBlurbCrusader,Nex_MercLetGoBlurb,$nex_mercCompanyId == lastCrusader score:3,AdjustRepActivePerson COOPERATIVE 3,"""It's been fun, partner. Let me know if you've got any more adventures lined up.""",,
+nex_mercLeaving_letGoBlurbJerkCrusader,Nex_MercLetGoBlurb,"$nex_mercLetGoType == jerk score:5
+$nex_mercCompanyId == lastCrusader score:3",AdjustRepActivePerson INHOSPITABLE -5,"The $personRank gives you a look.
+
+""Where I come from, partner, that just now was grounds for a set of knuckles to the kisser. You should count ya lucky stars we're not on the same deck right now.""",,
+nex_mercLeaving_letGoBlurbRefusePayCrusader,Nex_MercLetGoBlurb,"$nex_mercLetGoType == refusePay score:5
+$nex_mercCompanyId == lastCrusader score:3",AdjustRepActivePerson INHOSPITABLE -2,"""Now that's just not right, partner. You can forget about doing any business with AIM until you learn to pay your bills!""",,
 nex_mercLeaving_checkEndbringer,Nex_MercsLeavingGreeting,$nex_mercCompanyId == endbringer,"ShowPersonVisual 
 FireBest Nex_MercLeavingOptions","""contract.expired => true
 sudo contract -end;
@@ -4155,7 +4171,7 @@ badEmployers.add($playerName);
 connection.kill();""",,
 nex_mercLeaving_letGoBlurbRefusePayEndbringer,Nex_MercLetGoBlurb,"$nex_mercCompanyId == endbringer
 $nex_mercLetGoType == refusePay score:5",AdjustRepActivePerson INHOSPITABLE -3,"""set property: $playerName -> DISHONEST true
-$playerName.debt += $nex_mercNetPaymentAbsVal
+$playerName.debt += $nex_mercNetPaymentStr
 while (debt > 0) emotionModule.guiltTrip($playerName);""",,
 #END blurbs,,,,,,
 #END Merc hiring,,,,,,
