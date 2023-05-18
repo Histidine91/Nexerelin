@@ -16,14 +16,11 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsMarket;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.util.*;
 
 /**
  * Generates special forces fleets for factions.
@@ -40,6 +37,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 	public static final String MEM_KEY_RESPAWN_DELAY = "$nex_specialForcesRespawnDelay";
 	
 	@Getter protected Map<String, Float> factionPoints = new HashMap<>();
+	//@Getter protected Map<StarSystemAPI, Float> hostileActivityContrib = new HashMap<>();
 	protected final List<SpecialForcesIntel> activeIntel = new LinkedList();
 	protected IntervalUtil interval = new IntervalUtil(1, 1);
 	
@@ -119,7 +117,6 @@ public class SpecialForcesManager implements EveryFrameScript {
 				
 				SpecialForcesIntel intel = generateFleet(factionId);
 				if (intel != null) {
-					activeIntel.add(intel);
 					incrementPoints(factionId, -POINTS_TO_SPAWN);
 				}
 			}
@@ -194,6 +191,14 @@ public class SpecialForcesManager implements EveryFrameScript {
 		Float result = factionPoints.get(factionId);
 		return result == null ? 0 : result;
 	}
+
+	public void registerIntel(SpecialForcesIntel intel) {
+		activeIntel.add(intel);
+	}
+
+	public void deregisterIntel(SpecialForcesIntel intel) {
+		activeIntel.remove(intel);
+	}
 	
 	public static SpecialForcesManager getManager() {
 		return (SpecialForcesManager)Global.getSector().getPersistentData().get(PERSISTENT_KEY);
@@ -218,7 +223,5 @@ public class SpecialForcesManager implements EveryFrameScript {
 	// runcode exerelin.campaign.intel.specialforces.SpecialForcesManager.getManager().spawnDebug("luddic_church");
 	public void spawnDebug(String factionId) {
 		SpecialForcesIntel intel = generateFleet(factionId);
-		if (intel != null)
-			activeIntel.add(intel);
 	}
 }

@@ -63,7 +63,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public static final float DAMAGE_TO_TERMINATE = 0.9f;
 	public static final boolean ALLOW_GO_ROGUE = true;
 	
-	protected boolean isPlayer;	// just checked for some stuff; most player-specific logic is handled in PlayerSpecialForcesIntel
+	@Getter protected boolean isPlayer;	// just checked for some stuff; most player-specific logic is handled in PlayerSpecialForcesIntel
 	
 	protected MarketAPI origin;
 	protected MarketAPI lastSpawnedFrom;	// updated when fleet rebuilds
@@ -134,6 +134,8 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 			Global.getSector().getIntelManager().queueIntel(this);
 		}
 		Global.getSector().addScript(this);
+
+		SpecialForcesManager.getManager().registerIntel(this);
 	}
 	
 	public RouteData getRoute() {
