@@ -3,6 +3,7 @@ package exerelin.plugins;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.VersionInfoAPI;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
@@ -90,6 +91,8 @@ public class ExerelinModPlugin extends BaseModPlugin
     public static final boolean HAVE_LUNALIB = Global.getSettings().getModManager().isModEnabled("lunalib");
     //public static final boolean HAVE_STELLAR_INDUSTRIALIST = Global.getSettings().getModManager().isModEnabled("stellar_industrialist");
     public static final boolean HAVE_VERSION_CHECKER = Global.getSettings().getModManager().isModEnabled("lw_version_checker");
+    public static final String MEM_KEY_VERSION = "$nex_lastSavedVersion";
+
     public static boolean isNexDev = false;
     
     public static Logger log = Global.getLogger(ExerelinModPlugin.class);
@@ -376,6 +379,16 @@ public class ExerelinModPlugin extends BaseModPlugin
                     system.getMaxRadiusInHyperspace() + plugin.getTileSize() * 2);
         }
     }
+
+    protected void checkSelfVersion() {
+        VersionInfoAPI last = (VersionInfoAPI)Global.getSector().getMemoryWithoutUpdate().get(MEM_KEY_VERSION);
+        VersionInfoAPI curr = Global.getSettings().getModManager().getModSpec(ExerelinConstants.MOD_ID).getVersionInfo();
+
+        if (last != null) {
+            // TODO: compare versions and apply stuff if needed? this probably ought to be in its own class
+        }
+        Global.getSector().getMemoryWithoutUpdate().set(MEM_KEY_VERSION, curr);
+    }
     
     @Override
     public void onGameLoad(boolean newGame) {
@@ -444,6 +457,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             x.onGameLoad(newGame);
         }
+
+        checkSelfVersion();
     }
     
     @Override
