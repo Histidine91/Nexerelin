@@ -43,6 +43,7 @@ import exerelin.campaign.econ.FactionConditionPlugin;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.Nex_BoostIndustryInstallableItemEffect;
 import exerelin.campaign.fleets.*;
+import exerelin.campaign.graphics.MiningCooldownDrawerV2;
 import exerelin.campaign.intel.FactionBountyManager;
 import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
@@ -216,6 +217,9 @@ public class ExerelinModPlugin extends BaseModPlugin
                 market.addCondition(FactionConditionPlugin.CONDITION_ID);
             }
         }
+
+        if (MiningCooldownDrawer.getEntity() != null)
+            MiningCooldownDrawer.remove();
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();
@@ -419,9 +423,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         PlayerInSystemTracker.create();
         MiscEventsManager.create();
-        //sector.addTransientScript(new MiningCooldownDrawer());
-        if (MiningCooldownDrawer.getEntity() == null) 
-            MiningCooldownDrawer.create();
+
+        Global.getSector().getListenerManager().addListener(new MiningCooldownDrawerV2(), true);
         
         GenericPluginManagerAPI plugins = sector.getGenericPlugins();
         if (!plugins.hasPlugin(DerelictEmpireOfficerGeneratorPlugin.class)) {

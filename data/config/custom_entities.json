@@ -21,6 +21,7 @@
 		"layers":[STATIONS], # what layer(s) to render in. See CampaignEngineLayers.java for possible values
 	},
 	
+	# deprecated, we have a different renderer now
 	"nex_mining_gui_dummy":{
 		"defaultName":"Mining GUI dummy", # used if name=null in addCustomEntity()
 		"defaultRadius":0, # used if radius<0 in addCustomEntity()
