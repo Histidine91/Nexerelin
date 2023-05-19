@@ -135,7 +135,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.invasionPointsPerPlayerLevel = (int)loadSetting("invasionPointsPerPlayerLevel", "int");
         NexConfig.invasionPointEconomyMult = (float)loadSetting("invasionPointEconomyMult", "float");
         NexConfig.invasionFleetSizeMult = (float)loadSetting("invasionFleetSizeMult", "float");
-        NexConfig.fleetRequestCostPerFP = (int)loadSetting("invasionFleetSizeMult", "int");
+        NexConfig.fleetRequestCostPerFP = (int)loadSetting("fleetRequestCostPerFP", "int");
         NexConfig.creditLossOnColonyLossMult = (float)loadSetting("creditLossOnColonyLossMult", "float");
         NexConfig.groundBattleDamageMult = (float)loadSetting("groundBattleDamageMult", "float");
 
