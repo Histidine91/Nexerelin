@@ -851,7 +851,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
-		tags.add(getString("intelTag"));
+		tags.add(StringHelper.getString("exerelin_misc", "intelTagPersonal"));
 		return tags;
 	}
 
