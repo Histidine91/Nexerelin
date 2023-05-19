@@ -195,6 +195,7 @@ public class MercDataManager {
 				
 				def.plugin = entryJson.optString("plugin", null);
 				def.pickChance = (float)entryJson.optDouble("pickChance", 1);
+				def.canPatrol = entryJson.optBoolean("canPatrol", true);
 				
 				if (entryJson.has("miscData")) {
 					JSONObject miscJson = entryJson.getJSONObject("miscData");
@@ -243,6 +244,7 @@ public class MercDataManager {
 		public Integer averageSMods;
 		public String plugin;	// make this the actual plugin instance instead?
 		public float pickChance;
+		public boolean canPatrol;
 		public Map<String, Object> miscData = new HashMap<>();
 		public List<String> requiredMods = new ArrayList<>();
 		

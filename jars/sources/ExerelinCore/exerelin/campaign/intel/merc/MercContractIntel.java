@@ -27,6 +27,7 @@ import exerelin.utilities.ModPluginEventListener;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
@@ -55,7 +56,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	protected Map<FleetMemberAPI, CargoAPI> stored = new HashMap<>();
 	
 	protected long startingShipValue;
-	protected float daysRemaining;
+	@Getter protected float daysRemaining;
 	
 	public MercContractIntel(String companyId) {
 		this.companyId = companyId;
@@ -573,6 +574,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		//tags.add(getString("intel_tag"));
 		tags.add(Tags.INTEL_FLEET_LOG);
 		tags.add(Tags.INTEL_ACCEPTED);
+		tags.add(StringHelper.getString("exerelin_misc", "intelTagPersonal"));
 		return tags;
 	}
 	

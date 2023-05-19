@@ -11,13 +11,15 @@ import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.MutableValue;
+import exerelin.campaign.intel.hostileactivity.MercPackageActivityCause;
+import exerelin.campaign.intel.hostileactivity.MercPackageIntel;
 import exerelin.campaign.intel.merc.MercContractIntel;
-import static exerelin.campaign.intel.merc.MercContractIntel.getString;
 import exerelin.campaign.intel.merc.MercDataManager;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.campaign.intel.merc.MercSectorManager;
@@ -25,11 +27,14 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.lwjgl.input.Keyboard;
+
+import static exerelin.campaign.intel.merc.MercContractIntel.getString;
 
 public class Nex_MercHire extends BaseCommandPlugin {
 	
@@ -93,6 +98,17 @@ public class Nex_MercHire extends BaseCommandPlugin {
 				break;	
 			case "checkLeave":
 				return checkLeave(dialog, market);
+			case "haveHA":
+				return HostileActivityEventIntel.get() != null;
+			case "havePatrol":
+				MercPackageIntel intel = MercPackageIntel.getInstance();
+				return intel != null && !intel.isEnding() && !intel.isEnded();
+			case "beginPatrol":
+				initPatrolPackage(dialog);
+				break;
+			case "setMemoryValues":
+				setMemoryValues(memoryMap.get(MemKeys.LOCAL));
+				break;
 		}
 		return true;
 	}
@@ -129,6 +145,9 @@ public class Nex_MercHire extends BaseCommandPlugin {
 		}
 		MonthlyReport report = SharedData.getData().getPreviousReport();
 		boolean debt = report.getDebt() > 0;
+		// only have debt if the merc company was hired for at least 45 days and was thus around long enough to have seen the debt
+		// this is how base game does it for merc officers
+		debt &= curr.getDaysRemaining() < Global.getSettings().getFloat("nex_merc_company_contract_period") - 45;
 		
 		boolean leaveDebug = false;
 		if (debt || curr.isContractOver() || leaveDebug) {
@@ -225,6 +244,11 @@ public class Nex_MercHire extends BaseCommandPlugin {
 		AddRemoveCommodity.addCreditsLossText((int)unpaid, dialog.getTextPanel());
 		player.unset(MEM_KEY_UNPAID);
 	}
+
+	public void initPatrolPackage(InteractionDialogAPI dialog) {
+		MercPackageIntel intel = new MercPackageIntel();
+		intel.init(dialog.getTextPanel());
+	}
 	
 	public void setMercOfficerMemoryKeys(PersonAPI officer, MemoryAPI local) {
 		local.set("$nex_mercName", officer.getName().getFullName(), 0);
@@ -238,6 +262,12 @@ public class Nex_MercHire extends BaseCommandPlugin {
 		local.set("$nex_MercHimOrHer", Misc.ucFirst(officer.getHimOrHer()), 0);
 		local.set("$nex_mercHisOrHer", officer.getHisOrHer(), 0);
 		local.set("$nex_MercHisOrHer", Misc.ucFirst(officer.getHisOrHer()), 0);
+	}
+
+	public void setMemoryValues(MemoryAPI local) {
+		local.set("$nex_HAmercPackage_monthlyCredits", MercPackageActivityCause.MONTHLY_FEE, 0);
+		local.set("$nex_HAmercPackage_monthlyCreditsStr", Misc.getWithDGS(MercPackageActivityCause.MONTHLY_FEE), 0);
+		local.set("$nex_HAmercPackage_progress", (int)MercPackageActivityCause.PROGRESS_PER_MONTH, 0);
 	}
 	
 	// Do the stuff to make the CO appear

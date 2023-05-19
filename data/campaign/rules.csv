@@ -3904,8 +3904,9 @@ FireAll PopulateOptions","""Welcome... oh, it's the debtor.""
 
 $HeOrShe folds $hisOrHer arms. ""No service till you pay off your debt.""",,
 nex_mercRepOptions,PopulateOptions,"$nex_isAIMRep score:10
-$player.nex_seenAIMIntro",,,"nex_mercViewHires:View mercs for hire
-nex_mercViewHelp:Inquire about AIM's terms and conditions",
+$player.nex_seenAIMIntro",Nex_MercHire setMemoryValues,,"nex_mercViewHires:View mercs for hire
+nex_mercViewHelp:Inquire about AIM's terms and conditions
+nex_mercPatrolPackage:Request an anti-piracy patrol package",
 nex_mercRepOptionsFirstTime,PopulateOptions,"$nex_isAIMRep score:10
 !$player.nex_seenAIMIntro",,,"nex_mercIntro1:""What do you do?""",
 nex_mercRepOptionsDebt,PopulateOptions,"$nex_isAIMRep score:10
@@ -3916,6 +3917,12 @@ AddTextSmall ""You owe $nex_mercDebtStr credits. You have $player.creditsStr cre
 SetTextHighlightColors h $nex_mercDebtColor
 Highlight $nex_mercDebtStr $player.creditsStr
 Nex_AddOptionConfirmation nex_mercPayDebt ""Confirm payment?"" ""Yes"" ""No""",,nex_mercPayDebt:Pay your debt,
+nex_mercRepOptionsAlreadyHavePatrol,PopulateOptions,"$nex_isAIMRep score:10
+Nex_MercHire havePatrol","SetEnabled nex_mercPatrolPackage false
+SetTooltip nex_mercPatrolPackage ""You have already contracted for the patrol package.""",,,
+nex_mercRepOptionsNoHA,PopulateOptions,"$nex_isAIMRep score:10
+!Nex_MercHire haveHA","SetEnabled nex_mercPatrolPackage false
+SetTooltip nex_mercPatrolPackage ""Only relevant once you have colonies with hostile activity.""",,,
 nex_mercIntro1,DialogOptionSelected,$option == nex_mercIntro1,$player.nex_seenAIMIntro = true,"""Well, I handle all customer service inquiries. I put clients in touch with the mercs they need, and..."" $HeOrShe trails off. ""Oh, you meant our organization.""
 
 The $personPost straightens, as if actually eager to give the standard marketing pitch. ""The Association of Interstellar Mercenaries,"" $heOrShe intones, ""is the premier industry body and brokerage for the mercenary community in the Persean Sector. Here you can find some of the best in the business, at an affordable price. Our organization provides the assurance of clear, legally enforcable contracts and the convenience of matching clients with contractors in a way meeting both parties' needs.""",nex_mercIntro2:Continue,
@@ -4174,6 +4181,28 @@ $nex_mercLetGoType == refusePay score:5",AdjustRepActivePerson INHOSPITABLE -3,"
 $playerName.debt += $nex_mercNetPaymentStr
 while (debt > 0) emotionModule.guiltTrip($playerName);""",,
 #END blurbs,,,,,,
+,,,,,,
+# patrol package,,,,,,
+nex_mercPatrolPackage,DialogOptionSelected,$option == nex_mercPatrolPackage,"Nex_AddOptionConfirmation mercPatrolPackageConfirm ""Proceed?"" ""Yes"" ""No""
+FireAll Nex_MercPatrolPackageCheckCredits","""So, you got a pest problem you need taken care of? You've come to the right place, friend. You'll appreciate the complementary counterintelligence services by our affiliates, too.
+
+""Our patrol package costs $nex_HAmercPackage_monthlyCreditsStr credits per month, with a one-month retainer fee in addition. Hostile activity will be reduced by $nex_HAmercPackage_progress per month. The contract can be terminated at any time by the employer, or by AIM in the event of a missed payment.""
+
+You have $player.creditsStr credits available.","nex_mercPatrolPackageConfirm:Confirm contract
+nex_mercPatrolPackageCancel:Go back",
+nex_mercPatrolPackageCredits,Nex_MercPatrolPackageCheckCredits,$player.credits >= $nex_HAmercPackage_monthlyCredits,"SetTextHighlightColors h good h
+Highlight $nex_HAmercPackage_monthlyCreditsStr $nex_HAmercPackage_progress $player.creditsStr",,,
+nex_mercPatrolPackageCreditsInsufficient,Nex_MercPatrolPackageCheckCredits,$player.credits < $nex_HAmercPackage_monthlyCredits,"SetTextHighlightColors h good bad
+Highlight $nex_HAmercPackage_monthlyCreditsStr $nex_HAmercPackage_progress $player.creditsStr
+SetEnabled nex_mercPatrolPackageConfirm false",,,
+nex_mercPatrolPackageConfirm,DialogOptionSelected,$option == nex_mercPatrolPackageConfirm,"Nex_MercHire beginPatrol
+AddCredits -$nex_HAmercPackage_monthlyCredits
+FireAll PopulateOptions","""Excellent. You'll find that our mercenaries guarantee satisfaction.""
+OR
+""Very good. Our highly skilled contractors will soon make short work of your raider problems.""",,
+nex_mercPatrolPackageCancel,DialogOptionSelected,$option == nex_mercPatrolPackageCancel,FireAll PopulateOptions,"""Some other time, perhaps? Anything else we can do for you?""",,
+,,,,,,
+#END patrol package,,,,,,
 #END Merc hiring,,,,,,
 ,,,,,,
 # duel stuff,,,,,,

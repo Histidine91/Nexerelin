@@ -63,7 +63,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public static final float DAMAGE_TO_TERMINATE = 0.9f;
 	public static final boolean ALLOW_GO_ROGUE = true;
 	
-	@Getter protected boolean isPlayer;	// just checked for some stuff; most player-specific logic is handled in PlayerSpecialForcesIntel
+	protected boolean isPlayer;	// just checked for some stuff; most player-specific logic is handled in PlayerSpecialForcesIntel
 	
 	protected MarketAPI origin;
 	protected MarketAPI lastSpawnedFrom;	// updated when fleet rebuilds
@@ -107,7 +107,12 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		
 		return this;
 	}
-	
+
+	// instead of using a Lombok annotation, because I cba to figure out how to get Kotlin to play with Lombok
+	public boolean isPlayer() {
+		return isPlayer;
+	}
+
 	public void init(PersonAPI commander) {
 		this.commander = commander;
 		

@@ -1632,7 +1632,23 @@
 	
 	"nex_hostileActivity":{
 		"cellDisruptName":"Cell infiltrated",
-		"cellDisruptDesc":"Your operative has infiltrated and destroyed a Luddic Path cell on one of your colonies."
+		"cellDisruptDesc":"Your operative has infiltrated and destroyed a Luddic Path cell on one of your colonies.",
+		
+		"defensiveFleetName":"Defensive fleets",
+		"defensiveFleetDesc":"Fleets of various types can keep the spaceways safe from marauding Pathers and pirates.",
+		"defenseFleetName":"Defense fleets",
+		"defenseFleetDesc":"Requested defense fleets deter hostile activity while active. Only the strongest event is used.",
+		"specialForcesName":"Special task groups",
+		"specialForcesDesc":"Special task groups present a threat to enemy raiders even when not actively patrolling. Contribution is based on the sum of the strength of all task groups in the sector, with diminishing returns.",
+		"specialForcesDescHighlight":"sum of the strength,diminishing returns",
+		"mercPackageName":"AIM Patrol Package",
+		"mercPackageDesc":"The Association of Interstellar Mercenaries offers a highly effective (and expensive) anti-piracy patrol package.",
+		"mercPackageDescCancelled":"The contract has been terminated.",
+		"mercPackageDescCancelledDebt":"The contract has been terminated by AIM due to player debt.",
+		"mercPackageBulletFee":"Monthly fee: %s credits",
+		"mercPackageBulletDebt":"Cancelled due to debt",
+		"mercPackageBtnCancel":"Cancel contract",
+		"mercPackageConfirmPromptCancel":"Confirm contract termination?",
 	},
 	
 	"exerelin_landmarks":{

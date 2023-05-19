@@ -140,6 +140,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         ScriptReplacer.replaceScript(sector, PirateBaseManager.class, new Nex_PirateBaseManager());
         //ScriptReplacer.replaceScript(sector, LuddicPathBaseManager.class, new Nex_LuddicPathBaseManager());
         replaceLuddicPathBaseManager();
+        ScriptReplacer.replaceScript(sector, HostileActivityManager.class, new NexHostileActivityManager());
         ScriptReplacer.replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
         ScriptReplacer.replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
         //ScriptReplacer.replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());

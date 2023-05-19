@@ -16,11 +16,9 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.utilities.NexUtils;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.log4j.Logger;
+
+import java.util.*;
 
 public class MercSectorManager implements ColonyInteractionListener, EconomyTickListener {
 	
@@ -116,6 +114,38 @@ public class MercSectorManager implements ColonyInteractionListener, EconomyTick
 		}
 		
 		return results;
+	}
+
+	public MercContractIntel pickPatrolCompany(Random random) {
+
+		WeightedRandomPicker<MercContractIntel> picker = new WeightedRandomPicker<>(random);
+		MercContractIntel ongoing = MercContractIntel.getOngoing();
+
+		for (MercCompanyDef def : MercDataManager.getAllDefs()) {
+			if (!def.canPatrol) continue;
+			String id = def.id;
+
+			// check whether the merc company is somewhere else
+			if (false && !DEBUG_MODE && currentLocations.containsKey(id))
+			{
+				log.info(String.format("Merc %s was already shown elsewhere, skipping", id));
+				continue;
+			}
+			if (ongoing != null && id.equals(ongoing.companyId)) continue;
+
+			// relationship check
+			if (def.minRep != null) {
+				if (!Global.getSector().getPlayerFaction().isAtWorst(def.factionId, def.minRep)) {
+					continue;
+				}
+			}
+
+			//Global.getLogger(this.getClass()).info("Testing merc company " + def.id);
+			MercContractIntel intel = new MercContractIntel(id);
+			picker.add(intel, def.pickChance);
+		}
+
+		return picker.pick();
 	}
 	
 	public boolean addRepresentativeToMarket(MarketAPI market)

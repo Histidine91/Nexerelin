@@ -24,15 +24,10 @@ import com.fs.starfarer.api.impl.campaign.fleets.PersonalFleetOxanaHyder;
 import com.fs.starfarer.api.impl.campaign.fleets.misc.MiscFleetRouteManager;
 import com.fs.starfarer.api.impl.campaign.ghosts.SensorGhostManager;
 import com.fs.starfarer.api.impl.campaign.graid.StandardGroundRaidObjectivesCreator;
-import com.fs.starfarer.api.impl.campaign.intel.AnalyzeEntityIntelCreator;
-import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager;
-import com.fs.starfarer.api.impl.campaign.intel.PersonBountyManager;
-import com.fs.starfarer.api.impl.campaign.intel.SurveyPlanetIntelCreator;
-import com.fs.starfarer.api.impl.campaign.intel.SystemBountyManager;
+import com.fs.starfarer.api.impl.campaign.intel.*;
 import com.fs.starfarer.api.impl.campaign.intel.deciv.DecivTracker;
 import com.fs.starfarer.api.impl.campaign.intel.events.CommerceBountyManager;
 import com.fs.starfarer.api.impl.campaign.intel.events.DisposableHostileActivityFleetManager;
-import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityManager;
 import com.fs.starfarer.api.impl.campaign.intel.events.ht.HTFactorTracker;
 import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.OmegaOfficerGeneratorPlugin;
@@ -47,6 +42,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.colony.NexAbandonMarketPlugin;
 import exerelin.campaign.colony.NexStabilizeMarketPlugin;
+import exerelin.campaign.intel.hostileactivity.NexHostileActivityManager;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
@@ -177,8 +173,8 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!sector.hasScript(DisposableHostileActivityFleetManager.class)) {
 			sector.addScript(new DisposableHostileActivityFleetManager());
 		}
-		if (!sector.hasScript(HostileActivityManager.class)) {
-			sector.addScript(new HostileActivityManager());
+		if (!sector.hasScript(NexHostileActivityManager.class)) {
+			sector.addScript(new NexHostileActivityManager());
 		}
 		if (!sector.hasScript(HTFactorTracker.class)) {
 			sector.addScript(new HTFactorTracker());

@@ -80,6 +80,21 @@ public class NexUtilsFaction {
         }
         return ret;
     }
+
+    public static List<MarketAPI> getPlayerMarkets(boolean includeAutonomous, boolean includeHidden)
+    {
+        List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
+        List<MarketAPI> ret = new ArrayList<>();
+        for (MarketAPI market : allMarkets)
+        {
+            if (!includeHidden && market.isHidden()) continue;
+            if (!includeAutonomous && !market.isPlayerOwned()) continue;
+            if (market.getFactionId().equals(Factions.PLAYER))
+                ret.add(market);
+        }
+        return ret;
+    }
+
     
     public static Set<LocationAPI> getLocationsWithFactionPresence(String factionId) {
         Set<LocationAPI> results = new HashSet<>();
