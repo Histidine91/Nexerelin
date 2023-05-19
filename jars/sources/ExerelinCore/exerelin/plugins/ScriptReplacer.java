@@ -11,9 +11,11 @@ import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager;
 import com.fs.starfarer.api.impl.campaign.intel.GenericMissionManager.GenericMissionCreator;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager.GenericBarEventCreator;
-import static exerelin.plugins.ExerelinModPlugin.log;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static exerelin.plugins.ExerelinModPlugin.log;
 
 public class ScriptReplacer {
     public static <T extends EveryFrameScript> boolean replaceScript(SectorAPI sector, Class toRemove, T toAdd)
@@ -23,6 +25,8 @@ public class ScriptReplacer {
         {
             if (toRemove.isInstance(script))
             {
+                // if toAdd is non-null, check if the current script is an instance of toAdd
+                // so we don't keep replacing the already-correct script with new instances
                 if (toAdd != null && toAdd.getClass().isInstance(script))
                     continue;
                 

@@ -1,10 +1,12 @@
 package exerelin.plugins;
 
 import com.fs.starfarer.api.BaseModPlugin;
+import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.InstallableIndustryItemPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -17,6 +19,10 @@ import com.fs.starfarer.api.impl.campaign.fleets.misc.MiscFleetRouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
+import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseManager;
+import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
+import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseManager;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityManager;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import com.fs.starfarer.api.impl.campaign.missions.cb.MilitaryCustomBounty;
@@ -42,6 +48,9 @@ import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
+import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
+import exerelin.campaign.intel.bases.Nex_PirateBaseManager;
+import exerelin.campaign.intel.hostileactivity.NexHostileActivityManager;
 import exerelin.campaign.intel.merc.MercSectorManager;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.missions.Nex_CBHegInspector;
@@ -65,6 +74,7 @@ import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 import static com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo.CATALYTIC_CORE_BONUS;
@@ -126,6 +136,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         // replace or remove relevant intel items
         ScriptReplacer.replaceScript(sector, FactionHostilityManager.class, null);
+        ScriptReplacer.replaceScript(sector, PirateBaseManager.class, new Nex_PirateBaseManager());
+        //ScriptReplacer.replaceScript(sector, LuddicPathBaseManager.class, new Nex_LuddicPathBaseManager());
+        replaceLuddicPathBaseManager();
         ScriptReplacer.replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
         ScriptReplacer.replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
         //ScriptReplacer.replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());
@@ -189,6 +202,8 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
+        ScriptReplacer.replaceScript(Global.getSector(), HostileActivityManager.class, new NexHostileActivityManager());
+
         SectorManager.getManager().reverseCompatibility();
         
         if (SectorManager.isFactionAlive(Factions.PLAYER) && DiplomacyManager.getManager().getDiplomacyProfile(Factions.PLAYER) == null) 
@@ -236,6 +251,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(new FactionBountyManager());
         
         new MilestoneTracker().init();
+
+        new MercSectorManager().init();
+        new FleetPoolManager().init();
         
         addBarEvents();
         
@@ -245,11 +263,34 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     // Stuff here should be moved to new game once it is expected that no existing saves lack them
     protected void addScriptsAndEventsIfNeeded() {
-        if (MercSectorManager.getInstance() == null) {
-            new MercSectorManager().init();
-        }
-        if (FleetPoolManager.getManager() == null) {
-            new FleetPoolManager().init().initPointsFromIFM();
+    }
+
+    /**
+     * Replaces the vanilla Luddic Path base manager with the Nex one, with proper handling for Pather cells.
+     * Call when adding Nex to an existing save.
+     */
+    protected void replaceLuddicPathBaseManager() {
+        for (EveryFrameScript script : Global.getSector().getScripts()) {
+            if (script instanceof LuddicPathBaseManager && !(script instanceof Nex_LuddicPathBaseManager)) {
+                log.info("Killing old Luddic Path base manager");
+
+                Global.getSector().removeScript(script);
+                List<LuddicPathCellsIntel> validCells = ((Nex_LuddicPathBaseManager)LuddicPathBaseManager.getInstance()).getCells();
+                for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(LuddicPathCellsIntel.class)) {
+                    LuddicPathCellsIntel cell = (LuddicPathCellsIntel) intel;
+                    if (!validCells.contains(cell)) cell.endImmediately();
+                }
+
+                // readd any cell conditions that were removed when we purged the cells
+                for (LuddicPathCellsIntel cell : validCells) {
+                    MarketAPI market = cell.getMarket();
+                    if (market != null && !market.hasCondition(Conditions.PATHER_CELLS)) {
+                        market.addCondition(Conditions.PATHER_CELLS, cell);
+                    }
+                }
+                Global.getSector().addScript(new Nex_LuddicPathBaseManager());
+                break;
+            }
         }
     }
     
