@@ -3,6 +3,7 @@ package exerelin.campaign.intel.groundbattle;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -16,15 +17,10 @@ import exerelin.campaign.intel.groundbattle.plugins.AbilityPlugin;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import lombok.Getter;
 import org.apache.log4j.Logger;
+
+import java.util.*;
 
 public class GroundBattleSide {
 	
@@ -39,8 +35,11 @@ public class GroundBattleSide {
 	protected PersonAPI commander;
 	protected float currNormalBaseStrength;	// set for defender only
 	protected List<AbilityPlugin> abilities = new ArrayList<>();
-	protected Map<ForceType, Integer> losses = new HashMap<>();
-	protected Map<ForceType, Integer> lossesLastTurn = new HashMap<>();
+	@Deprecated @Getter private Map<ForceType, Integer> losses = new HashMap<>();
+	@Deprecated @Getter private Map<ForceType, Integer> lossesLastTurn = new HashMap<>();
+	@Getter	protected Map<String, Integer> lossesV2 = new HashMap<>();
+	@Getter	protected Map<String, Integer> lossesLastTurnV2 = new HashMap<>();
+
 	protected Map<String, Object> data = new HashMap<>();
 	protected StatBonus damageDealtMod = new StatBonus();
 	protected StatBonus damageTakenMod = new StatBonus();
@@ -63,6 +62,12 @@ public class GroundBattleSide {
 			AbilityPlugin plugin = AbilityPlugin.loadPlugin(this, adef.id);
 			abilities.add(plugin);
 		}
+	}
+
+	protected Object readResolve() {
+		if (lossesV2 == null) lossesV2 = new HashMap<>();
+		if (lossesLastTurnV2 == null) lossesLastTurnV2 = new HashMap<>();
+		return this;
 	}
 	
 	public GroundBattleIntel getIntel() {
@@ -121,14 +126,6 @@ public class GroundBattleSide {
 		return units;
 	}
 	
-	public Map<ForceType, Integer> getLosses() {
-		return losses;
-	}
-	
-	public Map<ForceType, Integer> getLossesLastTurn() {
-		return lossesLastTurn;
-	}
-	
 	public PersonAPI getCommander() {
 		return commander;
 	}
@@ -155,7 +152,8 @@ public class GroundBattleSide {
 		else
 			data.put(key, cooldown);
 	}
-	
+
+	@Deprecated
 	public void reportLosses(GroundUnit unit, int num) {
 		ForceType type = unit.getType();
 		NexUtils.modifyMapEntry(losses, type, num);
@@ -165,7 +163,7 @@ public class GroundBattleSide {
 			NexUtils.modifyMapEntry(intel.playerData.getLossesLastTurn(), type, num);
 		}
 		
-		// orphans made by player
+		// losses inflicted by player contribute towards orphans made
 		if (intel.playerIsAttacker != null) {
 			if (intel.playerIsAttacker != unit.isAttacker) {
 				int casualties = num;
@@ -174,6 +172,28 @@ public class GroundBattleSide {
 				StatsTracker.getStatsTracker().modifyOrphansMadeByCrewCount(casualties, unit.faction.getId());
 			}
 		}
+	}
+
+	public void reportLossesByCommodity(GroundUnit unit, String commodityId, int num) {
+		NexUtils.modifyMapEntry(lossesV2, commodityId, num);
+		NexUtils.modifyMapEntry(lossesLastTurnV2, commodityId, num);
+		if (unit.isPlayer) {
+			NexUtils.modifyMapEntry(intel.playerData.getLossesV2(), commodityId, num);
+			NexUtils.modifyMapEntry(intel.playerData.getLossesLastTurnV2(), commodityId, num);
+		}
+
+		incrementOrphansMade(unit, commodityId, num);
+	}
+
+	public void incrementOrphansMade(GroundUnit unit, String commodityId, int num) {
+		if (intel.playerIsAttacker == null) return;
+		if (intel.playerIsAttacker == unit.isAttacker) return;
+		CommoditySpecAPI spec = Global.getSettings().getCommoditySpec(commodityId);
+		if (!spec.isPersonnel()) return;
+
+		int casualties = num;
+		if (intel.playerIsAttacker) casualties *= 2;	// include estimated civilian fatalities
+		StatsTracker.getStatsTracker().modifyOrphansMadeByCrewCount(casualties, unit.faction.getId());
 	}
 	
 	public void reportTurn() {

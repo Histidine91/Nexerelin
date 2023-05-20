@@ -5,6 +5,8 @@ import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAd
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelAtEntity;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,9 +16,14 @@ public class GBPlayerData {
 	
 	protected GroundBattleIntel intel;
 	// FIXME: ForceType is deprecated
-	protected Map<GroundUnit.ForceType, Integer> losses = new HashMap<>();
-	protected Map<GroundUnit.ForceType, Integer> lossesLastTurn = new HashMap<>();
-	protected Map<GroundUnit.ForceType, Integer> disbanded = new HashMap<>();
+	@Deprecated @Getter private Map<GroundUnit.ForceType, Integer> losses = new HashMap<>();
+	@Deprecated @Getter private Map<GroundUnit.ForceType, Integer> lossesLastTurn = new HashMap<>();
+	@Deprecated @Getter private Map<GroundUnit.ForceType, Integer> disbanded = new HashMap<>();
+
+	@Getter protected Map<String, Integer> lossesV2 = new HashMap<>();
+	@Getter protected Map<String, Integer> lossesLastTurnV2 = new HashMap<>();
+	@Getter protected Map<String, Integer> disbandedV2 = new HashMap<>();
+
 	protected Map<String, Integer> sentToStorage = new HashMap<>();
 	public int suppliesUsed;
 	public int fuelUsed;
@@ -40,21 +47,17 @@ public class GBPlayerData {
 				Commodities.MARINES, intel.market.getPrimaryEntity(), 
 				null, true);
 	}
+
+	protected Object readResolve() {
+		if (lossesV2 == null) lossesV2 = new HashMap<>();
+		if (lossesLastTurnV2 == null) lossesLastTurnV2 = new HashMap<>();
+		if (disbandedV2 == null) disbandedV2 = new HashMap<>();
+
+		return this;
+	}
 	
 	public List<GroundUnit> getUnits() {
 		return units;
-	}
-	
-	public Map<GroundUnit.ForceType, Integer> getLosses() {
-		return losses;
-	}
-	
-	public Map<GroundUnit.ForceType, Integer> getLossesLastTurn() {
-		return lossesLastTurn;
-	}
-	
-	public Map<GroundUnit.ForceType, Integer> getDisbanded() {
-		return disbanded;
 	}
 	
 	public Map<String, Integer> getSentToStorage() {

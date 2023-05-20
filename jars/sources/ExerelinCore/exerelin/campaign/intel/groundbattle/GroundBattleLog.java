@@ -6,14 +6,17 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.intel.groundbattle.GBDataManager.AbilityDef;
-import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.HashMap;
+
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+
+import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 
 public class GroundBattleLog {
 	
@@ -199,14 +202,7 @@ public class GroundBattleLog {
 				break;
 				
 			case TYPE_LOSS_REPORT:
-				{
-					Integer marinesLost = (Integer)params.get("marinesLost");
-					Integer heavyArmsLost = (Integer)params.get("heavyArmsLost");
-					if (marinesLost == null) marinesLost = 0;
-					if (heavyArmsLost == null) heavyArmsLost = 0;
-					str = getString("log_lossesFinal");
-					tooltip.addPara(str, LOG_PADDING, h, marinesLost + "", heavyArmsLost + "");
-				}
+				addLossReportTooltip(tooltip);
 				break;
 				
 			case TYPE_XP_GAINED:
@@ -252,6 +248,39 @@ public class GroundBattleLog {
 		panel.addUIElement(text).rightOfTop(turnNumHolder, 2);
 		
 		scroll.addCustom(panel, 3);
+	}
+
+	public void addLossReportTooltip(TooltipMakerAPI tooltip) {
+		{
+			Set<String> commoditiesLost = (Set<String>)params.get("lostCommodities");
+			List<Pair<String, Integer>> sortedLosses = new ArrayList<>();
+			for (String commodity : commoditiesLost) {
+				int lost = (Integer)params.get("lost_" + commodity);
+				sortedLosses.add(new Pair<String, Integer>(commodity, lost));
+			}
+			Collections.sort(sortedLosses, new NexUtils.PairWithIntegerComparator(true));
+
+			List<String> highlights = new ArrayList<>();
+			StringBuilder sb = new StringBuilder();
+			boolean first = true;
+			for (Pair<String, Integer> lossEntry : sortedLosses) {
+				if (!first) sb.append(" | ");
+				first = false;
+				String commodity = lossEntry.one;
+				int lost = lossEntry.two;
+				String str = GroundBattleIntel.getString("log_lossesFinalEntry");
+				str = StringHelper.substituteToken(str, "$num", lost + "");
+				str = StringHelper.substituteToken(str, "$commodity", GroundBattleIntel.getCommodityName(commodity));
+				sb.append(str);
+				highlights.add(lost + "");
+			}
+
+			String str = getString("log_lossesFinal");
+			str = StringHelper.substituteToken(str, "$string", sb.toString());
+			LabelAPI label = tooltip.addPara(str, LOG_PADDING);
+			label.setHighlightColor(Misc.getHighlightColor());
+			label.setHighlight(highlights.toArray(new String[0]));
+		}
 	}
 	
 	public Color getPanelColor() {

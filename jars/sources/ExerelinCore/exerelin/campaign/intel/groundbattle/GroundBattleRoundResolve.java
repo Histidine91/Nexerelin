@@ -11,7 +11,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
 import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexConfig;
@@ -28,9 +27,9 @@ public class GroundBattleRoundResolve {
 	public static final boolean PRINT_DEBUG = false;
 		
 	protected GroundBattleIntel intel;
-	protected Map<ForceType, Integer> atkLosses = new HashMap<>();
-	protected Map<ForceType, Integer> defLosses = new HashMap<>();
-	protected Map<ForceType, Integer> playerLosses = new HashMap<>();
+	protected Map<GroundUnitDef, Integer> atkLosses = new HashMap<>();
+	protected Map<GroundUnitDef, Integer> defLosses = new HashMap<>();
+	protected Map<GroundUnitDef, Integer> playerLosses = new HashMap<>();
 	protected Set<IndustryForBattle> hadCombat = new HashSet<>();
 
 	/**
@@ -51,9 +50,9 @@ public class GroundBattleRoundResolve {
 			unit.lossesLastTurn = 0;
 			unit.moraleDeltaLastTurn = 0;
 		}
-		intel.getSide(true).getLossesLastTurn().clear();
-		intel.getSide(false).getLossesLastTurn().clear();
-		intel.playerData.getLossesLastTurn().clear();
+		intel.getSide(true).getLossesLastTurnV2().clear();
+		intel.getSide(false).getLossesLastTurnV2().clear();
+		intel.playerData.getLossesLastTurnV2().clear();
 		
 		boolean anyAction = false;
 		
@@ -332,30 +331,28 @@ public class GroundBattleRoundResolve {
 	public void inflictUnitLosses(GroundUnit unit, int kills) {
 		if (kills == 0) return;
 		
-		Map<ForceType, Integer> toModify = unit.isAttacker ? atkLosses : defLosses;
+		Map<GroundUnitDef, Integer> toModify = unit.isAttacker ? atkLosses : defLosses;
 
 		int prevMarines = unit.getMarines();
 
-		boolean heavy = unit.type == ForceType.HEAVY;
-		int personnelKills = heavy ? kills * GroundUnit.CREW_PER_MECH : kills;
-		int equipmentKills = heavy ? kills : 0;
+		boolean hasEquip = unit.unitDef.equipment != null;
+		int personnelKills = hasEquip ? kills * GroundUnit.CREW_PER_MECH : kills;
+		int equipmentKills = hasEquip ? kills : 0;
 		int equipmentKillsTrue = inflictUnitCommodityLosses(unit, equipmentKills, true);
 		int personnelKillsTrue = inflictUnitCommodityLosses(unit, personnelKills, false);
-		int killsTrue = heavy ? equipmentKillsTrue : personnelKillsTrue;
+		int killsTrue = hasEquip ? equipmentKillsTrue : personnelKillsTrue;
 
 		unit.lossesLastTurn += kills;
 		
-		NexUtils.modifyMapEntry(toModify, unit.type, kills);
+		NexUtils.modifyMapEntry(toModify, unit.unitDef, kills);
 
 		int currMarines = unit.getMarines();
 		if (unit.isPlayer) {
-			NexUtils.modifyMapEntry(playerLosses, unit.type, kills);
-			intel.playerData.xpTracker.data.remove(prevMarines - currMarines, true);
+			NexUtils.modifyMapEntry(playerLosses, unit.unitDef, kills);
+			//intel.playerData.xpTracker.data.remove(prevMarines - currMarines, true);	// do this in inflictUnitCommodityLosses
 		}
 		
 		printDebug(String.format("    Unit %s (%s) took %s losses (%s true losses)", unit.name, unit.type.toString(), kills, killsTrue));
-		
-		intel.getSide(unit.isAttacker).reportLosses(unit, kills);
 	}
 
 	/**
@@ -393,6 +390,11 @@ public class GroundBattleRoundResolve {
 			NexUtils.modifyMapEntry(commodities, commodityId, -myDeaths);
 			printDebug(String.format("      Killing %s of commodity type %s for unit %s", myDeaths, commodityId, unit.getName()));
 			computedKills += myDeaths;
+
+			intel.getSide(unit.isAttacker).reportLossesByCommodity(unit, commodityId, myDeaths);
+			if (unit.isPlayer() && Commodities.MARINES.equals(commodityId)) {
+				intel.playerData.xpTracker.data.remove(myDeaths, true);
+			}
 		}
 
 		return computedKills;

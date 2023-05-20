@@ -845,10 +845,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public void addXPToDeployedUnits(SubmarketAPI storage) 
 	{
 		// calc the number of marines involved
-		int losses = countPersonnelFromMap(playerData.getLosses());
-		int inFleet = countPersonnelFromMap(playerData.getDisbanded());
+		Integer losses = playerData.getLossesV2().get(Commodities.MARINES);
+		if (losses == null) losses = 0;
+		Integer inFleet = playerData.getDisbandedV2().get(Commodities.MARINES);
+		if (inFleet == null) inFleet = 0;
 		Integer inStorage = playerData.getSentToStorage().get(Commodities.MARINES);
 		if (inStorage == null) inStorage = 0;
+
 		float total = inFleet + inStorage;
 		if (total == 0) {
 			log.info(String.format("No XP action to take"));
@@ -1063,8 +1066,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		if (playerIsAttacker != null) {
 			log = new GroundBattleLog(this, GroundBattleLog.TYPE_LOSS_REPORT, turnNum);
-			log.params.put("marinesLost", countPersonnelFromMap(playerData.getLosses()));
-			log.params.put("heavyArmsLost", playerData.getLosses().get(ForceType.HEAVY));
+			Map<String, Integer> losses = playerData.getLossesV2();
+			log.params.put("lostCommodities", losses.keySet());
+			for (String commodityId : losses.keySet()) {
+				log.params.put("lost_" + commodityId, losses.get(commodityId));
+			}
 			addLogEvent(log);
 			
 			log = new GroundBattleLog(this, GroundBattleLog.TYPE_COMMODITIES_USED_REPORT, turnNum);
@@ -1135,7 +1141,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			if (hasAnyDeployedUnits(true)) return true;
 		}
 		// guess not, end the battle
-		boolean shouldCancel = turnNum <= 1 && attacker.losses.isEmpty();
+		boolean shouldCancel = turnNum <= 1 && attacker.getLossesV2().isEmpty();
 		endBattle(shouldCancel ? BattleOutcome.CANCELLED : BattleOutcome.DEFENDER_VICTORY);
 		return false;
 	}
@@ -2101,24 +2107,19 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public void writeTurnBullets(TooltipMakerAPI info) {
-		List<Pair<ForceType, Integer>> lossesSortable = new ArrayList<>();
+		List<Pair<String, Integer>> lossesSortable = new ArrayList<>();
 		
-		if (!playerData.getLossesLastTurn().isEmpty()) {
+		if (!playerData.getLossesLastTurnV2().isEmpty()) {
 			String str = getString("bulletLossesLastTurn");
-			for (ForceType type : playerData.getLossesLastTurn().keySet()) {
-				int thisLoss = playerData.getLossesLastTurn().get(type);
-				lossesSortable.add(new Pair<>(type, thisLoss));
+			for (String commodityId : playerData.getLossesLastTurnV2().keySet()) {
+				int thisLoss = playerData.getLossesLastTurnV2().get(commodityId);
+				lossesSortable.add(new Pair<>(commodityId, thisLoss));
 			}
-			Collections.sort(lossesSortable, new Comparator<Pair<ForceType, Integer>>() {
-				@Override
-				public int compare(Pair<ForceType, Integer> obj1, Pair<ForceType, Integer> obj2) {
-					return obj1.one.compareTo(obj2.one);
-				}
-			});
+			Collections.sort(lossesSortable, new NexUtils.PairWithIntegerComparator(true));
 
 			List<String> strings = new ArrayList<>();
-			for (Pair<ForceType, Integer> loss : lossesSortable) {
-				strings.add(loss.two + " " + loss.one.getCommodityName().toLowerCase());
+			for (Pair<String, Integer> loss : lossesSortable) {
+				strings.add(loss.two + " " + GroundBattleIntel.getCommodityName(loss.one).toLowerCase());
 			}
 			str = String.format(str, StringHelper.writeStringCollection(strings, false, true));
 			info.addPara(str, 0);
@@ -2510,8 +2511,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	@Override
 	public String getCommMessageSound() {
 		if (listInfoParam == UPDATE_TURN && abilitiesUsedLastTurn.isEmpty()
-				&& !attacker.getLossesLastTurn().isEmpty()
-				&& !defender.getLossesLastTurn().isEmpty())
+				&& !attacker.getLossesLastTurnV2().isEmpty()
+				&& !defender.getLossesLastTurnV2().isEmpty())
 			return "nex_sfx_combat";
 		if (listInfoParam == UPDATE_NON_VICTORY_END && outcome != BattleOutcome.CANCELLED) {
 			return "nex_sfx_gb_draw";

@@ -419,7 +419,30 @@ public class NexUtils
 			return false;
 		}
 	}
-	
+
+	public static class PairWithIntegerComparator implements Comparator<Pair<?, Integer>> {
+
+		public boolean descending;
+
+		public PairWithIntegerComparator(boolean descending) {
+			this.descending = descending;
+		}
+
+		@Override
+		public int compare(Pair<?, Integer> o1, Pair<?, Integer> o2) {
+			if (descending) return Integer.compare(o2.two, o1.two);
+			return Integer.compare(o1.two, o2.two);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof PairWithFloatComparator) {
+				return ((PairWithFloatComparator)obj).descending = this.descending;
+			}
+			return false;
+		}
+	}
+
 	public static class NexStatModValueGetter implements TooltipMakerAPI.StatModValueGetter 
 	{		
 		protected Color high = Misc.getPositiveHighlightColor();

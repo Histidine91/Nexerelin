@@ -496,10 +496,13 @@ public class GroundUnit {
 	public void removeUnit(boolean returnToCargo) 
 	{
 		if (isPlayer && returnToCargo) {
-			NexUtils.modifyMapEntry(intel.playerData.getDisbanded(), type, getSize());
+			for (String commodityId : this.equipmentMap.keySet()) {
+				NexUtils.modifyMapEntry(intel.playerData.getDisbandedV2(), commodityId, this.equipmentMap.get(commodityId));
+			}
+			for (String commodityId : this.personnelMap.keySet()) {
+				NexUtils.modifyMapEntry(intel.playerData.getDisbandedV2(), commodityId, this.personnelMap.get(commodityId));
+			}
 			log.info("Disbanding " + name + ": " + getSize());
-			int inFleet = intel.countPersonnelFromMap(intel.playerData.getDisbanded());
-			log.info("Disbanded personnel count: " + inFleet);
 			returnUnitsToCargo();
 		}
 		setLocation(null);
