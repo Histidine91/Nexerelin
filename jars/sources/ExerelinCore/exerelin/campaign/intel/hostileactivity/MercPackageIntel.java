@@ -27,6 +27,7 @@ public class MercPackageIntel extends BaseIntelPlugin implements EconomyTickList
 
     protected String outcome;
     protected Long startTimestamp;
+    protected int monthsRemaining = MercPackageActivityCause.MONTHS;
 
     public void init(TextPanelAPI text) {
         Global.getSector().getIntelManager().addIntel(this, false, text);

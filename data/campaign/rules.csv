@@ -3906,7 +3906,7 @@ $HeOrShe folds $hisOrHer arms. ""No service till you pay off your debt.""",,
 nex_mercRepOptions,PopulateOptions,"$nex_isAIMRep score:10
 $player.nex_seenAIMIntro",Nex_MercHire setMemoryValues,,"nex_mercViewHires:View mercs for hire
 nex_mercViewHelp:Inquire about AIM's terms and conditions
-nex_mercPatrolPackage:Request an anti-piracy patrol package",
+#nex_mercPatrolPackage:Request an anti-piracy patrol package",
 nex_mercRepOptionsFirstTime,PopulateOptions,"$nex_isAIMRep score:10
 !$player.nex_seenAIMIntro",,,"nex_mercIntro1:""What do you do?""",
 nex_mercRepOptionsDebt,PopulateOptions,"$nex_isAIMRep score:10

@@ -12,9 +12,11 @@ class MercPackageActivityCause(intel: HostileActivityEventIntel?) : BaseHostileA
 
     companion object {
         // for comparison, a military base on a size 6 has a base upkeep of 20k and applies 2*size progress (12 at max size)
-        // a high command costs 28k and applies 3*size progress (18 at max size)
-        const val PROGRESS_PER_MONTH = 20f;
-        const val MONTHLY_FEE = 50000f;
+        // a high command costs 28k at size 6 and applies 3*size progress (18 at max size)
+        const val PROGRESS_PER_MONTH = 16f
+        const val PROGRESS_MULT_PER_MONTH = 0.15f
+        const val MONTHLY_FEE = 80000f
+        const val MONTHS = 3;
 
         @JvmStatic fun getTooltipStatic() : BaseFactorTooltip {
             return object : BaseFactorTooltip() {
