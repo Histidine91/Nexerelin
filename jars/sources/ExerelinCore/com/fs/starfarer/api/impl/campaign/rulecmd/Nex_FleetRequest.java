@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
+import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.ValueDisplayMode;
@@ -814,7 +815,30 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			{
 				createInfoTextExt(info, entity, target != null ? target.getPrimaryEntity() : null, false);
 			}
-		});
+		}, getMapArrows());
+	}
+
+	protected List<IntelInfoPlugin.ArrowData> getMapArrows() {
+		List<IntelInfoPlugin.ArrowData> arrows = new ArrayList<>();
+		if (source != null && target != null) {
+			IntelInfoPlugin.ArrowData arrow = new IntelInfoPlugin.ArrowData(source.getPrimaryEntity(), target.getPrimaryEntity());
+			arrow.alphaMult = Math.min(arrow.alphaMult * 2, 1);
+			arrows.add(arrow);
+		}
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(RaidIntel.class)) {
+			try {
+				RaidIntel raid = (RaidIntel)intel;
+				IntelInfoPlugin.ArrowData arrow = new IntelInfoPlugin.ArrowData(raid.getAssembleStage().getSources().get(0).getPrimaryEntity(),
+						raid.getSystem().getHyperspaceAnchor());
+				arrow.color = raid.getFaction().getBaseUIColor();
+				arrows.add(arrow);
+			} catch (Exception ex) {
+				// probably something doesn't exist, do nothing
+			}
+
+		}
+
+		return arrows;
 	}
 	
 	/**
@@ -858,7 +882,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			{
 				createInfoTextExt(info, entity, source != null ? source.getPrimaryEntity() : null, true);
 			}
-		});
+		}, getMapArrows());
 	}
 	
 	public void createInfoTextExt(TooltipMakerAPI info, SectorEntityToken entity, 
