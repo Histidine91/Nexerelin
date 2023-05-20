@@ -45,10 +45,7 @@ import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.Nex_BoostIndustryInstallableItemEffect;
 import exerelin.campaign.fleets.*;
 import exerelin.campaign.graphics.MiningCooldownDrawerV2;
-import exerelin.campaign.intel.FactionBountyManager;
-import exerelin.campaign.intel.MilestoneTracker;
-import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
-import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
+import exerelin.campaign.intel.*;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
 import exerelin.campaign.intel.bases.Nex_PirateBaseManager;
@@ -464,6 +461,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         alphaSiteWorkaround();
 
+        if (PersonalConfigIntel.get() == null) {
+            PersonalConfigIntel.create();
+        }
+        Global.getSector().getListenerManager().addListener(PersonalConfigIntel.get(), true);
+
+        // call listeners; should be done last
         for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
         {
             x.onGameLoad(newGame);

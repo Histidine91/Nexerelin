@@ -10,13 +10,7 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectory;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.IconRenderMode;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.DiplomacyManager;
@@ -29,17 +23,11 @@ import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitDef;
 import exerelin.utilities.*;
 import exerelin.utilities.NexFactionConfig.Morality;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.log4j.Log4j;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 @Log4j
 public class DiplomacyProfileIntel extends BaseIntelPlugin {
@@ -252,7 +240,8 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	 * @param width
 	 * @param pad
 	 */
-	protected void createAlignmentButtons(CustomPanelAPI outer, TooltipMakerAPI tooltip, float width, float pad) {
+	public static void createAlignmentButtons(FactionAPI faction, CustomPanelAPI outer, TooltipMakerAPI tooltip, float width, float pad) {
+		float opad = 10;
 		boolean alreadySetAlignments = Global.getSector().getFaction(faction.getId()).getMemoryWithoutUpdate().contains(Alliance.MEMORY_KEY_ALIGNMENTS);
 		float[] values = new float[] {-1f, -0.5f, 0f, 0.5f, 1f};
 		int numAlignments = Alignment.getAlignments().size();
@@ -270,7 +259,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		
 		Color base = faction.getBaseUIColor(), bright = faction.getBrightUIColor(), dark = faction.getDarkUIColor();
 		
-		tooltip.addSectionHeading(getString("alignmentConfigHeader"), com.fs.starfarer.api.ui.Alignment.MID, pad);
+		tooltip.addSectionHeading(getString("alignmentConfigHeader"), com.fs.starfarer.api.ui.Alignment.MID, opad);
 		
 		try {
 			CustomPanelAPI panelAllAlignments = outer.createCustomPanel(width, height, null);
@@ -548,7 +537,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		// disposition table
 		// player: add alignment buttons
 		if (faction.isPlayerFaction()) {
-			createAlignmentButtons(panel, outer, width, pad);
+			createAlignmentButtons(faction, panel, outer, width, pad);
 			createDispositionTable(showInwardDisposition, panel, outer, width, opad);
 		}
 		else {
@@ -570,20 +559,24 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		}
 		
 		if (buttonId instanceof Pair) {
-			Pair<Alignment, Float> pair = (Pair<Alignment, Float>)buttonId;
-			MutableStat align = NexConfig.getFactionConfig(faction.getId()).getAlignments().get(pair.one);
-			align.modifyFlat("playerSet", pair.two, StringHelper.getString("exerelin_alliances", "alignmentModifierPlayerSet"));
-			
-			// update alignments of other factions so they're reflected in the intel display
-			List<String> factions = SectorManager.getLiveFactionIdsCopy();
-			for (DiplomacyBrain brain : DiplomacyManager.getManager().getDiplomacyBrains().values()) {
-				for (String factionId : factions) {
-					brain.updateDispositionFromAlignment(brain.getDisposition(factionId).disposition, factionId);
-				}				
-			}
+			updateDisposition(buttonId, faction);
 			
 			ui.updateUIForItem(this);
 			return;
+		}
+	}
+
+	public static void updateDisposition(Object buttonId, FactionAPI faction) {
+		Pair<Alignment, Float> pair = (Pair<Alignment, Float>)buttonId;
+		MutableStat align = NexConfig.getFactionConfig(faction.getId()).getAlignments().get(pair.one);
+		align.modifyFlat("playerSet", pair.two, StringHelper.getString("exerelin_alliances", "alignmentModifierPlayerSet"));
+
+		// update alignments of other factions so they're reflected in the intel display
+		List<String> factions = SectorManager.getLiveFactionIdsCopy();
+		for (DiplomacyBrain brain : DiplomacyManager.getManager().getDiplomacyBrains().values()) {
+			for (String factionId : factions) {
+				brain.updateDispositionFromAlignment(brain.getDisposition(factionId).disposition, factionId);
+			}
 		}
 	}
 	

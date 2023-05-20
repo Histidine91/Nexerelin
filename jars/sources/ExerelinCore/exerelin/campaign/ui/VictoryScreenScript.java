@@ -1,15 +1,11 @@
 package exerelin.campaign.ui;
 
-import java.util.Map;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.InteractionDialogImageVisual;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
+import com.fs.starfarer.api.impl.campaign.Tuning;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
@@ -20,8 +16,10 @@ import exerelin.campaign.StatsTracker.DeadOfficerEntry;
 import exerelin.campaign.intel.VictoryIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 public class VictoryScreenScript extends DelayedDialogScreenScript
 {
@@ -94,7 +92,7 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 		}
 	}
 
-	protected static class VictoryDialog implements InteractionDialogPlugin
+	public static class VictoryDialog implements InteractionDialogPlugin
 	{
 		protected boolean officerDeaths = NexConfig.officerDeaths || !StatsTracker.getStatsTracker().getDeadOfficers().isEmpty();
 		
@@ -119,7 +117,7 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 			this.victoryType = victoryType;
 		}
 		
-		protected String getString(String id)
+		public static String getString(String id)
 		{
 			return StringHelper.getString("exerelin_victoryScreen", id);
 		}
@@ -154,7 +152,7 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 			//CampaignClockAPI clock = Global.getSector().getClock();
 			
 			printKeyValueLine(getString("statsLevel"), Global.getSector().getPlayerPerson().getStats().getLevel()+"");
-			//printKeyValueLine(getString("statsDaysElapsed"), Global.getSector().getClock().convertToDays(time)+"");
+			printKeyValueLine(getString("statsDaysElapsed"), (int)Tuning.getDaysSinceStart() + "");
 			printKeyValueLine(getString("statsShipsKilled"), tracker.getShipsKilled() + "");
 			printKeyValueLine(getString("statsShipsLost"), tracker.getShipsLost() + "");
 			printKeyValueLine(getString("statsFpKilled"), Misc.getWithDGS((int)tracker.getFpKilled()));
