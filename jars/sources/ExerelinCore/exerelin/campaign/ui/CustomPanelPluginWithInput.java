@@ -1,6 +1,6 @@
 package exerelin.campaign.ui;
 
-import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
+import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.ui.PositionAPI;
 import lombok.extern.log4j.Log4j;
@@ -8,7 +8,7 @@ import lombok.extern.log4j.Log4j;
 import java.util.*;
 
 @Log4j
-public abstract class CustomPanelPluginWithInput implements CustomUIPanelPlugin {
+public abstract class CustomPanelPluginWithInput extends BaseCustomUIPanelPlugin {
 
     protected PositionAPI pos;
     protected boolean lmbDown;
@@ -20,9 +20,6 @@ public abstract class CustomPanelPluginWithInput implements CustomUIPanelPlugin 
     public void positionChanged(PositionAPI pos) {
         this.pos = pos;
     }
-
-    @Override
-    public void advance(float amount) {}
 
     @Override
     public void processInput(List<InputEventAPI> events) {

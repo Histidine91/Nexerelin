@@ -823,6 +823,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(faction.getId());
+		if (isPlayer) tags.add(StringHelper.getString("exerelin_misc", "intelTagPersonal"));
 		tags.add(getString("intelTag"));
 		return tags;
 	}

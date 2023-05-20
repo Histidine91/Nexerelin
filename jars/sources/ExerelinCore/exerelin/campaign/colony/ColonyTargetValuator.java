@@ -11,24 +11,14 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.econ.EconomyInfoHelper;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtilsAstro;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Used to determine the relative value of planets as colonization targets, 
@@ -192,6 +182,9 @@ public class ColonyTargetValuator {
 		if (!inhabited) {
 			for (CampaignFleetAPI fleet : system.getFleets()) {
 				//log.info(system.getName() + " has fleet " + fleet.getNameWithFaction() + ": " + fleet.isStationMode() + ", " + fleet.getFleetPoints());
+				// was thinking of filtering out neutral IndEvo artillery stations
+				// but then they might be able to set up a colony on a planet with station, without first killing the station
+				//if (fleet.getFaction().isNeutralFaction()) continue;
 				if (fleet.isStationMode()) return false;
 				if (fleet.getFaction().isHostileTo(faction) && fleet.getFleetPoints() > 25)
 					return false;

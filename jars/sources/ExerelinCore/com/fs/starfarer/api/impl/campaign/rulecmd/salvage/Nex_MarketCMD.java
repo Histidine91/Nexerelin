@@ -1959,8 +1959,9 @@ public class Nex_MarketCMD extends MarketCMD {
 		else if (market.getFaction().getMemoryWithoutUpdate().contains(SatBombIntel.FACTION_MEMORY_KEY)
 				&& market.getFaction().getMemoryWithoutUpdate().getInt(SatBombIntel.FACTION_MEMORY_KEY) > 0)
 		{
-			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment",
-					"satBombWarningSatBomber", "$market", market.getName()));
+			String str = StringHelper.getString("nex_bombardment", "satBombWarningSatBomber");
+			str = StringHelper.substituteFactionTokens(str, market.getFaction());
+			text.addPara(str);
 			setSatBombLimitedHatred(true, SatBombExcuse.SMALL_SIZE);
 		} else {
 			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarning"));

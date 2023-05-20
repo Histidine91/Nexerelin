@@ -70,7 +70,7 @@ public class MiningCooldownDrawerV2 implements CampaignUIRenderingListener {
 
         float screenMult = 1/view.getViewMult();
         float diffFrom1 = screenMult - 1;
-        screenMult -= diffFrom1/2;
+        screenMult -= diffFrom1/2;  // halve the distance of the multiplier from 1x
         GL11.glScalef(screenMult, screenMult, 1);
         GL11.glTranslatef((-halfW + ICON_WIDTH/2) * screenScale, 0, 0);
 
