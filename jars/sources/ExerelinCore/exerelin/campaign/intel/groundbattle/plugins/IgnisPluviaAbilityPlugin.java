@@ -16,27 +16,19 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.intel.groundbattle.GBConstants;
-import exerelin.campaign.intel.groundbattle.GroundBattleAI;
-import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
-import exerelin.campaign.intel.groundbattle.GroundBattleRoundResolve;
-import exerelin.campaign.intel.groundbattle.GroundUnit;
-import exerelin.campaign.intel.groundbattle.IndustryForBattle;
+import exerelin.campaign.intel.groundbattle.*;
 import exerelin.campaign.intel.groundbattle.dialog.AbilityDialogPlugin;
-import static exerelin.campaign.intel.groundbattle.plugins.FireSupportAbilityPlugin.CLOSE_SUPPORT_DAMAGE_MULT;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
-import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.RadioButtonEntry;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.log4j.Log4j;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+import static exerelin.campaign.intel.groundbattle.plugins.FireSupportAbilityPlugin.CLOSE_SUPPORT_DAMAGE_MULT;
+import static exerelin.campaign.ui.CustomPanelPluginWithInput.RadioButtonEntry;
 
 @Log4j
 public class IgnisPluviaAbilityPlugin extends AbilityPlugin {

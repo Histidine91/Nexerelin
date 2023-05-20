@@ -21,8 +21,9 @@ import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.api.util.Pair
 import exerelin.campaign.MiningHelperLegacy
+import exerelin.campaign.ui.CustomPanelPluginWithInput
+import exerelin.campaign.ui.CustomPanelPluginWithInput.RadioButtonEntry
 import exerelin.campaign.ui.FramedCustomPanelPlugin
-import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.RadioButtonEntry
 import exerelin.utilities.NexUtilsGUI
 import exerelin.utilities.StringHelper
 import org.apache.log4j.Logger
@@ -573,6 +574,7 @@ open class Nex_PrintMiningInfoV2 : BaseCommandPlugin() {
         for (tabId in MiningToolTab.values()) {
             val tabIdStr = tabId.name
             val btnHolder = buttonRow.createUIElement(96f, TEXT_HEIGHT, false)
+            btnHolder.setForceProcessInput(true)
             val btn = btnHolder.addAreaCheckbox(Misc.ucFirst(tabId.getHumanName()), tabIdStr, base, dark, bright, 96f, TEXT_HEIGHT, 0f)
             btn.isChecked = tabId == miningToolTab
             val rbe = object : RadioButtonEntry(btn, tabIdStr, rbeList) {

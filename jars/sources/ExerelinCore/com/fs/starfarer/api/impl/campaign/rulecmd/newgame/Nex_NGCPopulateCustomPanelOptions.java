@@ -19,17 +19,19 @@ import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.ExerelinSetupData.StartRelationsMode;
 import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
-import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.ButtonEntry;
-import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.RadioButtonEntry;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static exerelin.campaign.ui.CustomPanelPluginWithInput.ButtonEntry;
+import static exerelin.campaign.ui.CustomPanelPluginWithInput.RadioButtonEntry;
 
 public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 	

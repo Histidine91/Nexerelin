@@ -1,7 +1,7 @@
 package exerelin.campaign.intel.groundbattle.dialog;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CustomDialogDelegate;
+import com.fs.starfarer.api.campaign.BaseCustomDialogDelegate;
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.ui.Alignment;
@@ -24,7 +24,7 @@ import java.util.Map;
  * Dialog for picking an industry in ground battles (e.g. for unit orders or ability targeting). Shows industries as map panels.
  */
 @Log4j
-public abstract class GBIndustryPickerDialogDelegate implements CustomDialogDelegate, CustomUIPanelInputListener {
+public abstract class GBIndustryPickerDialogDelegate extends BaseCustomDialogDelegate implements CustomUIPanelInputListener {
 
     protected GroundBattleIntel battle;
     protected CustomPanelAPI mainPanel;
@@ -114,21 +114,6 @@ public abstract class GBIndustryPickerDialogDelegate implements CustomDialogDele
     @Override
     public boolean hasCancelButton() {
         return true;
-    }
-
-    @Override
-    public String getConfirmText() {
-        return null;
-    }
-
-    @Override
-    public String getCancelText() {
-        return null;
-    }
-
-    @Override
-    public CustomUIPanelPlugin getCustomPanelPlugin() {
-        return null;
     }
 
     @Override

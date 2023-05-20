@@ -16,9 +16,8 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.ui.CustomPanelPluginWithInput.ButtonEntry;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
-import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.ButtonEntry;
-import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.RadioButtonEntry;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.*;
 
 import static com.fs.starfarer.api.impl.campaign.rulecmd.newgame.Nex_NGCPopulateCustomPanelOptions.initRadioButton;
+import static exerelin.campaign.ui.CustomPanelPluginWithInput.RadioButtonEntry;
 
 public class Nex_NGCFactionToggleV2 extends BaseCommandPlugin {
 		
@@ -193,7 +193,7 @@ public class Nex_NGCFactionToggleV2 extends BaseCommandPlugin {
 		
 		for (int i=0; i<3; i++) {
 			final int index = i;
-			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), 
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i),
 					"nex_enableFaction_" + factionId + " " + i, buttonEntries)
 			{
 				@Override

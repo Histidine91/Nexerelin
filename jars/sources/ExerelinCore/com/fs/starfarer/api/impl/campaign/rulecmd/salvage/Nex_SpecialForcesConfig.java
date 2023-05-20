@@ -1,17 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CoreInteractionListener;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.FleetMemberPickerListener;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.RuleBasedDialog;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -20,39 +10,24 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.characters.SkillSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Skills;
-import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
-import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
-import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
-import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
-import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
-import com.fs.starfarer.api.impl.campaign.rulecmd.ShowDefaultVisual;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.impl.campaign.rulecmd.*;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.merc.MercFleetGenPlugin;
 import exerelin.campaign.intel.specialforces.PlayerSpecialForcesIntel;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
+import exerelin.campaign.ui.CustomPanelPluginWithInput;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 @Log4j
 public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
@@ -310,7 +285,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 					player.getBaseUIColor(), player.getDarkUIColor(), player.getBrightUIColor(), 
 					100, BTN_HEIGHT, pad);
 			comButton.setChecked(isCommander);
-			plugin.addButton(new InteractionDialogCustomPanelPlugin.RadioButtonEntry(
+			plugin.addButton(new CustomPanelPluginWithInput.RadioButtonEntry(
 					comButton, "nex_selectCommander_" + officer.getId()) 
 			{
 				@Override
