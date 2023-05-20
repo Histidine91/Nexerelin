@@ -1,11 +1,21 @@
 package exerelin.campaign.intel.bases;
 
+import com.fs.starfarer.api.EveryFrameScript;
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseManager;
 import exerelin.campaign.SectorManager;
 
+import java.util.List;
+
 public class Nex_PirateBaseManager extends PirateBaseManager {
+
+	public List<EveryFrameScript> getActive() {
+		return active;
+	}
 		
 	@Override
 	protected StarSystemAPI pickSystemForPirateBase() {
@@ -13,5 +23,28 @@ public class Nex_PirateBaseManager extends PirateBaseManager {
 			return null;
 		
 		return super.pickSystemForPirateBase();
+	}
+
+	/**
+	 * Replaces the vanilla pirate base manager with the Nex one, with proper handling for Pather cells.
+	 * Call when adding Nex to an existing save.
+	 */
+	public static void replaceManager() {
+		for (EveryFrameScript script : Global.getSector().getScripts()) {
+			if (script instanceof PirateBaseManager && !(script instanceof Nex_PirateBaseManager)) {
+
+				Global.getSector().removeScript(script);
+
+				Nex_PirateBaseManager manager = new Nex_PirateBaseManager();
+				// migrate the existing bases to new script
+				for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(PirateBaseIntel.class)) {
+					PirateBaseIntel base = (PirateBaseIntel)intel;
+					manager.getActive().add(base);
+				}
+
+				Global.getSector().addScript(manager);
+				break;
+			}
+		}
 	}
 }

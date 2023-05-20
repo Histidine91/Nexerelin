@@ -20,9 +20,9 @@ import com.fs.starfarer.api.impl.campaign.fleets.misc.MiscFleetRouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
+import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseManager;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
-import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseManager;
 import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityManager;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
@@ -140,9 +140,10 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         // replace or remove relevant intel items
         ScriptReplacer.replaceScript(sector, FactionHostilityManager.class, null);
-        ScriptReplacer.replaceScript(sector, PirateBaseManager.class, new Nex_PirateBaseManager());
+        //ScriptReplacer.replaceScript(sector, PirateBaseManager.class, new Nex_PirateBaseManager());
         //ScriptReplacer.replaceScript(sector, LuddicPathBaseManager.class, new Nex_LuddicPathBaseManager());
-        replaceLuddicPathBaseManager();
+        Nex_PirateBaseManager.replaceManager();
+        Nex_LuddicPathBaseManager.replaceManager();
         ScriptReplacer.replaceScript(sector, HostileActivityManager.class, new NexHostileActivityManager());
         ScriptReplacer.replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
         ScriptReplacer.replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
@@ -273,11 +274,13 @@ public class ExerelinModPlugin extends BaseModPlugin
     protected void addScriptsAndEventsIfNeeded() {
     }
 
+
+
     /**
      * Replaces the vanilla Luddic Path base manager with the Nex one, with proper handling for Pather cells.
      * Call when adding Nex to an existing save.
      */
-    protected void replaceLuddicPathBaseManager() {
+    protected void replacePiratePathBaseManager() {
         for (EveryFrameScript script : Global.getSector().getScripts()) {
             if (script instanceof LuddicPathBaseManager && !(script instanceof Nex_LuddicPathBaseManager)) {
                 log.info("Killing old Luddic Path base manager");
@@ -296,7 +299,15 @@ public class ExerelinModPlugin extends BaseModPlugin
                         market.addCondition(Conditions.PATHER_CELLS, cell);
                     }
                 }
-                Global.getSector().addScript(new Nex_LuddicPathBaseManager());
+
+                Nex_LuddicPathBaseManager manager = new Nex_LuddicPathBaseManager();
+                // migrate the existing bases to new script
+                for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(LuddicPathBaseIntel.class)) {
+                    LuddicPathBaseIntel base = (LuddicPathBaseIntel)intel;
+                    manager.getActive().add(base);
+                }
+
+                Global.getSector().addScript(manager);
                 break;
             }
         }
