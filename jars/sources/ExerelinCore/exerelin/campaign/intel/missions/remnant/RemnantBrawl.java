@@ -92,7 +92,8 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	
 	// runcode exerelin.campaign.intel.missions.remnant.RemnantBrawl.fixDebug()
 	public static void fixDebug() {
-		
+		RemnantBrawl mission = (RemnantBrawl)Global.getSector().getMemoryWithoutUpdate().get("$nex_remBrawl_ref");
+		mission.setDefendersNonHostile();
 	}
 	
 	@Override
@@ -193,7 +194,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		endTrigger();
 		
 		// trigger: make Remnant defenders non-hostile
-		beginEnteredLocationTrigger(station.getContainingLocation(), Stage.GO_TO_TARGET_SYSTEM, Stage.BATTLE, Stage.BATTLE_DEFECTED);
+		beginEnteredLocationTrigger(station.getContainingLocation(), Stage.GO_TO_TARGET_SYSTEM, Stage.BATTLE);
 		triggerRunScriptAfterDelay(0, new Script(){
 			@Override
 			public void run() {
@@ -244,20 +245,21 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			{
 				if (!Factions.REMNANTS.equals(fleet.getFaction().getId())) 
 					continue;
-				
-				if (fleet.isStationMode()) 
-				{
-					//log.info(String.format("Checking nexus in %s, highPower %s", system.getNameWithLowercaseTypeShort(), highPower));
-					float dist = MathUtils.getDistance(fleet.getLocation(), center);
-					float weight = 50000/dist;
-					highPower = !fleet.getMemoryWithoutUpdate().getBoolean("$damagedStation");
-					
-					if (weight > 20) weight = 20;
-					if (weight < 0.1f) weight = 0.1f;
-					if (highPower && dist <= 20000) picker.add(fleet, weight);
-					else if (highPower) pickerFallback.add(fleet, weight);
-					else pickerFallback2.add(fleet, weight);
-				}
+
+				if (!fleet.isStationMode()) continue;
+				if (fleet.getMemoryWithoutUpdate().getBoolean("$ArtilleryStation")) continue;
+
+				//log.info(String.format("Checking nexus in %s, highPower %s", system.getNameWithLowercaseTypeShort(), highPower));
+				float dist = MathUtils.getDistance(fleet.getLocation(), center);
+				float weight = 50000/dist;
+				highPower = !fleet.getMemoryWithoutUpdate().getBoolean("$damagedStation");
+
+				if (weight > 20) weight = 20;
+				if (weight < 0.1f) weight = 0.1f;
+				if (highPower && dist <= 20000) picker.add(fleet, weight);
+				else if (highPower) pickerFallback.add(fleet, weight);
+				else pickerFallback2.add(fleet, weight);
+
 			}
 		}
 		CampaignFleetAPI base = picker.pick();
@@ -648,6 +650,13 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_remBrawl", true, 90);
 		}
 	}
+
+	public void makeAttackersNonHostile() {
+		for (CampaignFleetAPI fleet : attackFleets) {
+			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, "nex_remBrawl_def", true, 90);
+			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_ALLOW_PLAYER_BATTLE_JOIN_TOFF, "nex_remBrawl_def", true, 90);
+		}
+	}
 	
 	/**
 	 * Make the attacker fleets no longer pursue the player for the scripted dialog.
@@ -687,6 +696,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		for (CampaignFleetAPI fleet : station.getContainingLocation().getFleets()) {
 			if (fleet.getFaction().getId().equals(Factions.REMNANTS)) {
 				Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, "nex_remBrawl_def", true, 90);
+				Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_ALLOW_PLAYER_BATTLE_JOIN_TOFF, "nex_remBrawl_def", true, 90);
 			}
 		}
 	}
@@ -695,6 +705,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		for (CampaignFleetAPI fleet : station.getContainingLocation().getFleets()) {
 			if (fleet.getFaction().getId().equals(Factions.REMNANTS)) {
 				Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE, "nex_remBrawl_def", false, 0);
+				Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_ALLOW_PLAYER_BATTLE_JOIN_TOFF, "nex_remBrawl_def", false, 0);
 			}
 		}
 	}
@@ -834,6 +845,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			case "scoutTrue":
 				betrayed = true;
 				orderAttack();
+				makeAttackersNonHostile();
 				initBattleStage(dialog, memoryMap);
 				scoutPoint.getContainingLocation().removeEntity(scoutPoint);
 				return true;

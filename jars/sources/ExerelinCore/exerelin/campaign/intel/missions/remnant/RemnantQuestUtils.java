@@ -171,6 +171,7 @@ public class RemnantQuestUtils {
 			{
 				if (!Factions.REMNANTS.equals(maybeStation.getFaction().getId()))
 					continue;
+				if (fleet.getMemoryWithoutUpdate().getBoolean("$ArtilleryStation")) continue;
 				if (maybeStation.isStationMode())
 				{
 					float distSq = MathUtils.getDistanceSquared(system.getHyperspaceAnchor().getLocation(), fleetPos);
