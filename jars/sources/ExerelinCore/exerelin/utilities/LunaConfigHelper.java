@@ -1,6 +1,7 @@
 package exerelin.utilities;
 
 import exerelin.ExerelinConstants;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.plugins.ExerelinModPlugin;
 import lombok.extern.log4j.Log4j;
 import lunalib.lunaSettings.LunaSettings;
@@ -53,6 +54,10 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("creditLossOnColonyLossMult", "float", tabFleets, NexConfig.creditLossOnColonyLossMult, 0, 1);
         addSetting("groundBattleDamageMult", "float", tabFleets, NexConfig.groundBattleDamageMult, 0, 5);
 
+        addHeader("diplomacy", null);
+        addSetting("followersDiplomacy", "boolean", NexConfig.followersDiplomacy);
+        addSetting("diplomacyInterval", "float", DiplomacyManager.getBaseInterval(), 5, 60);
+
         addHeader("insurance", null);
         addSetting("legacyInsurance", "boolean", NexConfig.legacyInsurance);
         addSetting("playerInsuranceMult", "float", NexConfig.playerInsuranceMult, 0, 10);
@@ -82,6 +87,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
 
         addHeader("otherFleets", tabFleets);
         addSetting("colonyExpeditionInterval", "int", tabFleets, NexConfig.colonyExpeditionInterval, 15, 10000);
+        addSetting("colonyExpeditionsOnlyAfterPlayerColony", "boolean", tabFleets, NexConfig.colonyExpeditionsOnlyAfterPlayerColony);
         addSetting("specialForcesPointMult", "float", tabFleets, NexConfig.specialForcesPointMult, 0, 10);
         addSetting("specialForcesSizeMult", "float", tabFleets, NexConfig.specialForcesSizeMult, 0.2, 5);
 
@@ -113,7 +119,18 @@ public class LunaConfigHelper implements LunaSettingsListener {
         }
     }
 
-    public static void loadConfigFromLuna() {
+    /**
+     * Loads only the settings that are save-specific
+     */
+    public static void tryLoadLunaConfigOnGameLoad() {
+        try {
+            loadConfigFromLunaOnGameLoad();
+        } catch (NullPointerException npe) {
+            // config not created yet I guess, do nothing
+        }
+    }
+
+    protected static void loadConfigFromLuna() {
         NexConfig.ceasefireNotificationPopup = (boolean)loadSetting("ceasefireNotificationPopup", "boolean");
         NexConfig.directoryDialogKey = (int)loadSetting("directoryDialogKey", "key");
         NexConfig.diplomacyEventFilterLevel = (int)loadSetting("diplomacyEventFilterLevel", "int");
@@ -139,6 +156,9 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.creditLossOnColonyLossMult = (float)loadSetting("creditLossOnColonyLossMult", "float");
         NexConfig.groundBattleDamageMult = (float)loadSetting("groundBattleDamageMult", "float");
 
+        NexConfig.followersDiplomacy = (boolean)loadSetting("followersDiplomacy", "boolean");
+        DiplomacyManager.setBaseInterval((float)loadSetting("diplomacyInterval", "float"));
+
         NexConfig.legacyInsurance = (boolean)loadSetting("legacyInsurance", "boolean");
         NexConfig.playerInsuranceMult = (float)loadSetting("playerInsuranceMult", "float");
 
@@ -161,6 +181,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.vengeanceFleetSizeMult = (float)loadSetting("vengeanceFleetSizeMult", "float");
 
         NexConfig.colonyExpeditionInterval = (int)loadSetting("colonyExpeditionInterval", "int");
+        NexConfig.colonyExpeditionsOnlyAfterPlayerColony = (boolean)loadSetting("colonyExpeditionsOnlyAfterPlayerColony", "boolean");
         NexConfig.specialForcesPointMult = (float)loadSetting("specialForcesPointMult", "float");
         NexConfig.specialForcesSizeMult = (float)loadSetting("specialForcesSizeMult", "float");
 
@@ -174,6 +195,10 @@ public class LunaConfigHelper implements LunaSettingsListener {
         //NexConfig.prismNumBossShips = (int)loadSetting("prismNumBossShips", "int");
 
         ExerelinModPlugin.isNexDev = (boolean)loadSetting("nexDevMode", "boolean");
+    }
+
+    protected static void loadConfigFromLunaOnGameLoad() {
+        //DiplomacyManager.setBaseInterval((float)loadSetting("diplomacyInterval", "float"));
     }
 
     public static Object loadSetting(String var, String type) {

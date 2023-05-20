@@ -1184,6 +1184,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			boolean completed = !SectorManager.getManager().isCorvusMode() || Global.getSector().getMemoryWithoutUpdate().getBoolean("$gaATG_missionCompleted");
 			if (!completed) return;
 		}
+
+		if (NexConfig.colonyExpeditionsOnlyAfterPlayerColony) {
+			boolean have = Misc.isPlayerFactionSetUp();
+			if (!have) return;
+		}
 		
 		colonyExpeditionProgress += days;
 		float interval = NexConfig.colonyExpeditionInterval;

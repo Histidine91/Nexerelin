@@ -126,6 +126,7 @@ public class NexConfig
     public static float hardModeColonyGrowthMult = 0.75f;
     public static float hardModeColonyIncomeMult = 0.9f;
     public static float colonyExpeditionInterval = 270;
+    public static boolean colonyExpeditionsOnlyAfterPlayerColony = false;
     
     public static float specialForcesPointMult = 1;
     public static float specialForcesSizeMult = 1;
@@ -254,6 +255,7 @@ public class NexConfig
             hardModeColonyGrowthMult = (float)settings.optDouble("hardModeColonyGrowthMult", hardModeColonyGrowthMult);
             hardModeColonyIncomeMult = (float)settings.optDouble("hardModeColonyIncomeMult", hardModeColonyIncomeMult);
             colonyExpeditionInterval = (float)settings.optDouble("colonyExpeditionInterval", colonyExpeditionInterval);
+            colonyExpeditionsOnlyAfterPlayerColony = settings.optBoolean("colonyExpeditionsOnlyAfterPlayerColony", colonyExpeditionsOnlyAfterPlayerColony);
             
             specialForcesPointMult = (float)settings.optDouble("specialForcesPointMult", specialForcesPointMult);
             specialForcesSizeMult = (float)settings.optDouble("specialForcesPointMult", specialForcesSizeMult);

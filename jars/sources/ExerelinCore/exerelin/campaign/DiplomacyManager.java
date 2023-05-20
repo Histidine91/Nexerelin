@@ -243,6 +243,29 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static float getBaseInterval() {
         return baseInterval;
     }
+    public static void setBaseInterval(float interval) {
+        baseInterval = interval;
+
+        // resetting the intervalutil is too messy and inconsistent with the diplomacy brain besides
+        // so just leave it be until it next elapses
+        if (true) return;
+
+        if (getManager() != null) {
+            float savedInterval = getManager().interval;
+            float wantedNewInterval = getManager().getDiplomacyInterval();
+            if (Math.abs(savedInterval - wantedNewInterval) < 0.1f) {
+                log.info("Interval unchanged, taking no action");
+                return;
+            }
+            log.info("Resetting interval");
+            getManager().resetInterval();
+        }
+    }
+
+    protected void resetInterval() {
+        interval = getDiplomacyInterval();
+        intervalUtil.setInterval(interval * 0.75f, interval * 1.25f);
+    }
     
     protected static void printPlayerHostileStateMessage(FactionAPI faction, boolean isHostile, boolean forAlliance)
     {
@@ -1002,8 +1025,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             return;
         
         createDiplomacyEvent();
-        interval = getDiplomacyInterval();
-        intervalUtil.setInterval(interval * 0.75f, interval * 1.25f);
+        resetInterval();
     }
     
     @Override
