@@ -5,7 +5,6 @@ import com.fs.starfarer.api.InteractionDialogImageVisual;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
-import com.fs.starfarer.api.impl.campaign.Tuning;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
@@ -15,6 +14,7 @@ import exerelin.campaign.StatsTracker;
 import exerelin.campaign.StatsTracker.DeadOfficerEntry;
 import exerelin.campaign.intel.VictoryIntel;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 
 import java.awt.*;
@@ -152,7 +152,7 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 			//CampaignClockAPI clock = Global.getSector().getClock();
 			
 			printKeyValueLine(getString("statsLevel"), Global.getSector().getPlayerPerson().getStats().getLevel()+"");
-			printKeyValueLine(getString("statsDaysElapsed"), (int)Tuning.getDaysSinceStart() + "");
+			printKeyValueLine(getString("statsDaysElapsed"), (int) NexUtils.getTrueDaysSinceStart() + "");
 			printKeyValueLine(getString("statsShipsKilled"), tracker.getShipsKilled() + "");
 			printKeyValueLine(getString("statsShipsLost"), tracker.getShipsLost() + "");
 			printKeyValueLine(getString("statsFpKilled"), Misc.getWithDGS((int)tracker.getFpKilled()));

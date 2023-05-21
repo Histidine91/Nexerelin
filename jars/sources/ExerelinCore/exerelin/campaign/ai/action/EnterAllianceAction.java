@@ -1,10 +1,10 @@
 package exerelin.campaign.ai.action;
 
-import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseManager;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,7 +38,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
             if (!AllianceManager.getManager().canAlly(ai.getFactionId(), faction.getId())) return false;
         }
 
-        if (PirateBaseManager.getInstance().getUnadjustedDaysSinceStart() < NexConfig.allianceGracePeriod) return false;
+        if (NexUtils.getTrueDaysSinceStart() < NexConfig.allianceGracePeriod) return false;
         return concern.getDef().hasTag("canAlly") || concern.getDef().hasTag("canCoalition");
     }
 

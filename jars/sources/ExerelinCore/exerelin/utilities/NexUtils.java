@@ -9,6 +9,7 @@ import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseManager;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -319,6 +320,15 @@ public class NexUtils
 			Global.getSector().removeListener(listener);
 		}
 		loc.removeScriptsOfClass(oldClass);
+	}
+
+	public static float getTrueDaysSinceStart() {
+		if (Global.getSector().getMemoryWithoutUpdate().contains("$nex_startTimestamp")) {
+			long timestamp = Global.getSector().getMemoryWithoutUpdate().getLong("$nex_startTimestamp");
+			return Global.getSector().getClock().getElapsedDaysSince(timestamp);
+		}
+
+		return PirateBaseManager.getInstance().getUnadjustedDaysSinceStart() - 60;	// for existing saves, assumes didn't do tutorial or use dev fast start
 	}
 	
 	public static StatBonus cloneStatBonus(StatBonus orig) {

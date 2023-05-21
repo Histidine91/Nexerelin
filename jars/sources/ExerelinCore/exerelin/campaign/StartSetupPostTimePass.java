@@ -235,6 +235,13 @@ public class StartSetupPostTimePass {
 		if (ExerelinSetupData.getInstance().spacerObligation) {
 			new Nex_SpacerObligation();
 		}
+
+		// timestamp
+		CampaignClockAPI clock = Global.getSector().getClock();
+		Global.getSector().getMemoryWithoutUpdate().set("$nex_startTimestamp", clock.getTimestamp());
+		if (clock.getDay() == 1 && clock.getMonth() == 1) {
+			Global.getSector().getMemoryWithoutUpdate().set("$nex_startOn1Jan", true);
+		}
 	}
 
 	// runcode exerelin.campaign.StartSetupPostTimePass.createImportantPeopleInRandomSector()
