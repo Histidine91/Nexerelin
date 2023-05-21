@@ -660,8 +660,11 @@ public class NexMarketBuilder
 			{
 				market.addIndustry(Industries.WAYSTATION);
 			}
-			
-			if (factionId.equals(Factions.DIKTAT))
+
+			if (factionId.equals(Factions.LUDDIC_CHURCH)) {
+				market.addTag(Tags.LUDDIC_SHRINE);
+			}
+			else if (factionId.equals(Factions.DIKTAT))
 				market.addIndustry("lionsguard");
 			else if (factionId.equals("dassault_mikoyan"))
 				market.addIndustry("6emebureau");
@@ -675,7 +678,6 @@ public class NexMarketBuilder
 				market.addIndustry("brdy_defhq");
 			else if (factionId.equals("scalartech"))
 				market.addSubmarket("tahlan_stdfmarket");
-			
 			
 			market.getMemoryWithoutUpdate().set("$nex_procgen_hq", true);
 		}

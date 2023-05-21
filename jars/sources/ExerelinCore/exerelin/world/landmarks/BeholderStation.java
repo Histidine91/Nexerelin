@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -52,7 +53,7 @@ public class BeholderStation extends BaseLandmarkDef {
 		beholder_station.setCircularOrbitPointingDown(entity, NexUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod);		
 		beholder_station.setCustomDescriptionId("station_beholder");
 		beholder_station.setInteractionImage("illustrations", "luddic_shrine");
-		beholder_station.addTag("luddicShrine");
+		beholder_station.addTag(Tags.LUDDIC_SHRINE);
 		
 		log.info("Spawning Beholder Station around " + entity.getName() + ", " + entity.getContainingLocation().getName());
 	}
