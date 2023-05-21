@@ -15,7 +15,7 @@ class MercPackageActivityCause(intel: HostileActivityEventIntel?) : BaseHostileA
         // a high command costs 28k at size 6 and applies 3*size progress (18 at max size)
         const val PROGRESS_PER_MONTH = 16f
         const val PROGRESS_MULT_PER_MONTH = 0.15f
-        const val MONTHLY_FEE = 80000f
+        const val MONTHLY_FEE = 100000f
         const val MONTHS = 3;
 
         @JvmStatic fun getTooltipStatic() : BaseFactorTooltip {
@@ -36,7 +36,7 @@ class MercPackageActivityCause(intel: HostileActivityEventIntel?) : BaseHostileA
     override fun getProgress(): Int {
         var intel = MercPackageIntel.getInstance();
         if (intel == null || intel.isEnding || intel.isEnded) return 0
-        var mag = -PROGRESS_PER_MONTH
+        var mag = -PROGRESS_MULT_PER_MONTH * HostileActivityEventIntel.get().progress
         return mag.roundToInt()
     }
 

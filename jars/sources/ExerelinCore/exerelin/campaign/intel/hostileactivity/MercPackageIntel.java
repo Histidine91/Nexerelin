@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -22,18 +23,20 @@ public class MercPackageIntel extends BaseIntelPlugin implements EconomyTickList
     public static final String MEM_KEY = "$nex_HAmercPackageIntel";
 
     public static final Object BUTTON_END_CONTRACT = new Object();
-    public static final String OUTCOME_ENDED = "ended";
+    public static final String OUTCOME_TERMINATED = "terminated";
+    public static final String OUTCOME_COMPLETED = "completed";
     public static final String OUTCOME_DEBT = "ended_debt";
 
     protected String outcome;
     protected Long startTimestamp;
-    protected int monthsRemaining = MercPackageActivityCause.MONTHS;
+    protected float daysRemaining = MercPackageActivityCause.MONTHS * 30;
 
     public void init(TextPanelAPI text) {
         Global.getSector().getIntelManager().addIntel(this, false, text);
         Global.getSector().getListenerManager().addListener(this);
         startTimestamp = Global.getSector().getClock().getTimestamp();
         Global.getSector().getMemoryWithoutUpdate().set(MEM_KEY, this);
+        Global.getSector().addScript(this);
     }
 
     public static MercPackageIntel getInstance() {
@@ -42,7 +45,14 @@ public class MercPackageIntel extends BaseIntelPlugin implements EconomyTickList
 
     public void end(String outcome) {
         this.outcome = outcome;
+        //Global.getSector().addScript(this);
         endAfterDelay();
+    }
+
+    @Override
+    protected void advanceImpl(float amount) {
+        daysRemaining -= Misc.getDays(amount);
+        if (daysRemaining <= 0) end(OUTCOME_COMPLETED);
     }
 
     @Override
@@ -61,9 +71,15 @@ public class MercPackageIntel extends BaseIntelPlugin implements EconomyTickList
         }
 
         if (isEnded() || isEnded()) return;
-        // bullet for fee
+
         info.addPara(NexHostileActivityManager.getString("mercPackageBulletFee"), initPad, tc, Misc.getHighlightColor(),
                 Misc.getWithDGS(MercPackageActivityCause.MONTHLY_FEE));
+        info.addPara(NexHostileActivityManager.getString("mercPackageBulletProgress"), 0, tc, Misc.getPositiveHighlightColor(),
+                -Math.round(MercPackageActivityCause.PROGRESS_MULT_PER_MONTH * HostileActivityEventIntel.get().getProgress()) + "");
+        int days = (int)daysRemaining;
+        if (days < 0) days = 0;
+        info.addPara(NexHostileActivityManager.getString("mercPackageBulletDays"), 0, tc, Misc.getHighlightColor(),
+                days + "");
     }
 
     @Override
@@ -72,9 +88,16 @@ public class MercPackageIntel extends BaseIntelPlugin implements EconomyTickList
         info.addPara(NexHostileActivityManager.getString("mercPackageDesc"), opad);
 
         if (isEnding() || isEnded()) {
-            info.addPara(NexHostileActivityManager.getString("mercPackageDescCancelled") + (OUTCOME_DEBT.equals(outcome) ? "Debt" : ""), opad);
+            String key = "mercPackageDesc";
+            if (OUTCOME_DEBT.equals(outcome)) key += "CancelledDebt";
+            else if (OUTCOME_COMPLETED.equals(outcome)) key += "Completed";
+            else key += "Cancelled";
+
+            info.addPara(NexHostileActivityManager.getString(key), opad);
         } else {
+            bullet(info);
             addBulletPoints(info, ListInfoMode.IN_DESC, false, Misc.getTextColor(), opad);
+            unindent(info);
             info.addButton(NexHostileActivityManager.getString("mercPackageBtnCancel"), BUTTON_END_CONTRACT, width, 24, opad);
         }
     }
@@ -82,7 +105,7 @@ public class MercPackageIntel extends BaseIntelPlugin implements EconomyTickList
     @Override
     public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
         if (buttonId == BUTTON_END_CONTRACT) {
-            end(OUTCOME_ENDED);
+            end(OUTCOME_TERMINATED);
             ui.updateUIForItem(this);
         }
     }
@@ -117,7 +140,7 @@ public class MercPackageIntel extends BaseIntelPlugin implements EconomyTickList
     @Override
     public Set<String> getIntelTags(SectorMapAPI map) {
         Set<String> tags = super.getIntelTags(map);
-        tags.add(Tags.INTEL_FLEET_LOG);
+        tags.add(Tags.INTEL_COLONIES);
         tags.add(Tags.INTEL_MILITARY);
         tags.add(StringHelper.getString("exerelin_misc", "intelTagPersonal"));
         return tags;
@@ -130,11 +153,9 @@ public class MercPackageIntel extends BaseIntelPlugin implements EconomyTickList
 
     @Override
     public void reportEconomyTick(int iterIndex) {
-    }
-
-    @Override
-    public void reportEconomyMonthEnd() {
         if (isEnding() || isEnded()) return;
+
+        float numIter = Global.getSettings().getFloat("economyIterPerMonth");
 
         // monthly report
         MonthlyReport report = SharedData.getData().getCurrentReport();
@@ -146,21 +167,28 @@ public class MercPackageIntel extends BaseIntelPlugin implements EconomyTickList
         mercNode.custom = "nex_node_id_HAmercPackage";
         mercNode.icon = this.getIcon();
         mercNode.tooltipCreator = MercPackageActivityCause.getTooltipStatic();
-        mercNode.upkeep = MercPackageActivityCause.MONTHLY_FEE;
+        mercNode.upkeep += MercPackageActivityCause.MONTHLY_FEE/numIter;
+    }
+
+    @Override
+    public void reportEconomyMonthEnd() {
+        if (isEnding() || isEnded()) return;
 
         // cancel if in debt
-        report = SharedData.getData().getPreviousReport();
+        MonthlyReport report = SharedData.getData().getPreviousReport();
         boolean debt = report.getDebt() > 0;
         // only have debt if the merc company was hired for at least 45 days and was thus around long enough to have seen the debt
         // this is how base game does it for merc officers
         debt &= Global.getSector().getClock().getElapsedDaysSince(this.startTimestamp) > 45;
         if (debt) {
             end(OUTCOME_DEBT);
+            return;
         }
     }
 
     @Override
     public IntelSortTier getSortTier() {
+        if (true) return super.getSortTier();
         if (isEnding()) {
             return IntelSortTier.TIER_COMPLETED;
         }

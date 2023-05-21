@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static exerelin.campaign.intel.merc.MercContractIntel.getString;
+import static exerelin.campaign.intel.merc.MercContractIntel.log;
 
 public class Nex_MercHire extends BaseCommandPlugin {
 	
@@ -265,9 +266,18 @@ public class Nex_MercHire extends BaseCommandPlugin {
 	}
 
 	public void setMemoryValues(MemoryAPI local) {
+		local.set("$nex_HAmercPackage_days", MercPackageActivityCause.MONTHS * 30, 0);
+		local.set("$nex_HAmercPackage_months", MercPackageActivityCause.MONTHS, 0);
 		local.set("$nex_HAmercPackage_monthlyCredits", MercPackageActivityCause.MONTHLY_FEE, 0);
 		local.set("$nex_HAmercPackage_monthlyCreditsStr", Misc.getWithDGS(MercPackageActivityCause.MONTHLY_FEE), 0);
-		local.set("$nex_HAmercPackage_progress", (int)MercPackageActivityCause.PROGRESS_PER_MONTH, 0);
+		//local.set("$nex_HAmercPackage_progress", (int)MercPackageActivityCause.PROGRESS_PER_MONTH, 0);
+		local.set("$nex_HAmercPackage_progressPercent", (int)(MercPackageActivityCause.PROGRESS_MULT_PER_MONTH * 100) + "%", 0);
+
+		MemoryAPI global = Global.getSector().getMemoryWithoutUpdate();
+		if (global.contains("$nex_HAmercPackage_onCooldown")) {
+			float expire = global.getExpire("$nex_HAmercPackage_onCooldown");
+			local.set("$nex_HAmercPackage_cooldownDays", (int)Math.ceil(expire), 0);
+		}
 	}
 	
 	// Do the stuff to make the CO appear

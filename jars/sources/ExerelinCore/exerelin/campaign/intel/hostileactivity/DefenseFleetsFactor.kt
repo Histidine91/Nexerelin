@@ -98,6 +98,7 @@ class DefenseFleetsFactor(intel: HostileActivityEventIntel?) : BaseHostileActivi
         fleet.setFaction(Factions.PLAYER, false)
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_PATROL_FLEET] = true
         fleet.memoryWithoutUpdate["\$nex_HAmercFleet"] = true
+        fleet.memoryWithoutUpdate["\$nex_HAmerc_companyId"] = intel.def.id
         fleet.memoryWithoutUpdate.set(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT, 1.25f);
         //Global.getLogger(this.javaClass).info("Spawned AIM fleet ${fleet.nameWithFaction} in/near ${system.nameWithLowercaseTypeShort}")
 
@@ -129,6 +130,6 @@ class DefenseFleetsFactor(intel: HostileActivityEventIntel?) : BaseHostileActivi
     }
 
     override fun getMaxNumFleets(system: StarSystemAPI?): Int {
-        return 1000
+        return 1
     }
 }
