@@ -1,0 +1,4 @@
+name,id,tier,rarity,tech/manufacturer,tags,uiTags,base value,unlocked,hidden,hiddenEverywhere,cost_frigate,cost_dest,cost_cruiser,cost_capital,script,desc,short,sModDesc,sprite
+Self-Forging Hull,nex_fast_repair,,,Unknown,,,,,TRUE,,0,0,0,0,exerelin.combat.hullmods.FastRepair,"The hulls of Omega ships are able to rapidly self-modify, split and combine to fulfill any needed purpose. Matter itself is but an art form to be shaped and reshaped, made an unmade as Omega desires.
+
+Increases out-of-combat repair rate by %s%%, and %s%% of hull and armor damage is repaired after battle at no cost.",Greatly increases repair speed out of combat and repairs some damage after combat immediately at no cost.,,graphics/hullmods/temporal_shell.png
