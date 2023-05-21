@@ -397,6 +397,35 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         Global.getSector().getMemoryWithoutUpdate().set(MEM_KEY_VERSION, curr);
     }
+
+    protected void addTransientScriptsAndListeners(boolean newGame) {
+        SectorAPI sector = Global.getSector();
+        sector.addTransientScript(new FieldOptionsScreenScript());
+        sector.addTransientScript(new SSP_AsteroidTracker());
+        sector.addTransientListener(new EncounterLootHandler());
+        PlayerInSystemTracker.create();
+        MiscEventsManager.create();
+        TransponderCheckBlockScript.create();
+
+        if (!Misc.isPlayerFactionSetUp())
+            sector.addTransientScript(new PlayerFactionSetupNag());
+
+        if (NexConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
+            sector.getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
+        }
+
+        if (!newGame) {
+            EconomyInfoHelper.createInstance(true);
+            MilitaryInfoHelper.createInstance(true);
+        }
+
+        GenericPluginManagerAPI plugins = sector.getGenericPlugins();
+        if (!plugins.hasPlugin(DerelictEmpireOfficerGeneratorPlugin.class)) {
+            plugins.addPlugin(new DerelictEmpireOfficerGeneratorPlugin(), true);
+        }
+
+        Global.getSector().getListenerManager().addListener(new MiningCooldownDrawerV2(), true);
+    }
     
     @Override
     public void onGameLoad(boolean newGame) {
@@ -417,8 +446,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         SectorAPI sector = Global.getSector();
         sector.registerPlugin(new ExerelinCampaignPlugin());
-        sector.addTransientScript(new FieldOptionsScreenScript());
-        sector.addTransientScript(new SSP_AsteroidTracker());
+        addTransientScriptsAndListeners(newGame);
         //sector.removeScriptsOfClass(FactionHostilityManager.class);
         
         PrismMarket.clearSubmarketCache();
@@ -428,30 +456,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         if (!HAVE_VERSION_CHECKER && Global.getSettings().getBoolean("nex_enableVersionChecker"))
             VCModPluginCustom.onGameLoad(newGame);
-        
-        if (!Misc.isPlayerFactionSetUp())
-            sector.addTransientScript(new PlayerFactionSetupNag());
-        
-        sector.addTransientListener(new EncounterLootHandler());
-
-        if (!newGame) {
-            EconomyInfoHelper.createInstance(true);
-            MilitaryInfoHelper.createInstance(true);
-        }
-        
-        if (NexConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
-            sector.getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
-        }
-        
-        PlayerInSystemTracker.create();
-        MiscEventsManager.create();
-
-        Global.getSector().getListenerManager().addListener(new MiningCooldownDrawerV2(), true);
-        
-        GenericPluginManagerAPI plugins = sector.getGenericPlugins();
-        if (!plugins.hasPlugin(DerelictEmpireOfficerGeneratorPlugin.class)) {
-            plugins.addPlugin(new DerelictEmpireOfficerGeneratorPlugin(), true);
-        }
 
         if (NexConfig.enableStrategicAI){
             StrategicAI.addAIsIfNeeded();
