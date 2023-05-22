@@ -7,11 +7,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
@@ -19,20 +15,12 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import exerelin.utilities.*;
 import lombok.extern.log4j.Log4j;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 @Log4j
 public class VictoryScoreboardIntel extends BaseIntelPlugin {
@@ -397,7 +385,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		//tags.add(StringHelper.getString("victory", true));
-		tags.add(Tags.INTEL_FLEET_LOG);
+		tags.add(StringHelper.getString("exerelin_misc", "intelTagPersonal"));
 		tags.add(Tags.INTEL_STORY);
 		return tags;
 	}

@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -13,7 +12,8 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.SectorManager.VictoryType;
 import exerelin.campaign.ui.VictoryScreenScript.CustomVictoryParams;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -154,7 +154,7 @@ public class VictoryIntel extends BaseIntelPlugin {
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
-		//tags.add(StringHelper.getString("victory", true));
+		tags.add(StringHelper.getString("exerelin_misc", "intelTagPersonal"));
 		tags.add(Tags.INTEL_STORY);
 		tags.add(factionId);
 		return tags;

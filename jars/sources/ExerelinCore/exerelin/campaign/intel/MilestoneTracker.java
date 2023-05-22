@@ -1,24 +1,10 @@
 package exerelin.campaign.intel;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignClockAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.listeners.ColonyInteractionListener;
-import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
-import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
-import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
-import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
-import com.fs.starfarer.api.campaign.listeners.SurveyPlanetListener;
+import com.fs.starfarer.api.campaign.listeners.*;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -27,11 +13,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
@@ -39,18 +21,14 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.*;
 
 public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteractionListener, 
 		ColonyPlayerHostileActListener, EconomyTickListener, FleetEventListener, 
@@ -266,7 +244,7 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
-		tags.add(Tags.INTEL_FLEET_LOG);
+		tags.add(StringHelper.getString("exerelin_misc", "intelTagPersonal"));
 		tags.add(Tags.INTEL_STORY);
 		return tags;
 	}
