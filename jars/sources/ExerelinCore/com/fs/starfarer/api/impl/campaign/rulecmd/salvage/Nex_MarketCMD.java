@@ -1111,7 +1111,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		cleanupResponder();
 		
 		if (true) {
-			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, entity, intel, new CoreInteractionListener(){
+			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, entity, intel, CampaignUIAPI.CoreUITradeMode.NONE, new CoreInteractionListener(){
 				@Override
 				public void coreUIDismissed() {
 					new ShowDefaultVisual().execute(null, dialogF, new ArrayList<Token>(), memMapF);
