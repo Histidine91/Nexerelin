@@ -1,24 +1,21 @@
 package exerelin.campaign.alliances;
 
-import exerelin.campaign.ui.DelayedDialogScreenScript;
-import exerelin.campaign.*;
-import java.util.Map;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CoreInteractionListener;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.AllianceManager;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.AllianceVoter.Vote;
 import exerelin.campaign.alliances.AllianceVoter.VoteResult;
+import exerelin.campaign.ui.DelayedDialogScreenScript;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
+import java.util.Map;
 
 /**
  * Prompts player to do an alliance vote
@@ -49,12 +46,15 @@ public class AllianceVoteScreenScript extends DelayedDialogScreenScript
 
 	protected static class AllianceVoteDialog implements InteractionDialogPlugin, CoreInteractionListener
 	{
+		public static final String OPT_DEFY = "defy";
+
 		protected InteractionDialogAPI dialog;
 		protected TextPanelAPI text;
 		protected OptionPanelAPI options;
 		protected String factionId1, factionId2;
 		protected boolean isWar;
-		String playerFactionId = PlayerFactionStore.getPlayerFactionId();
+		protected String playerFactionId = PlayerFactionStore.getPlayerFactionId();
+		protected boolean willDefy;
 		
 		public AllianceVoteDialog(String factionId1, String factionId2, boolean isWar) {
 			super();
@@ -69,10 +69,13 @@ public class AllianceVoteScreenScript extends DelayedDialogScreenScript
 			
 			String yes = Misc.ucFirst(StringHelper.getString("yes"));
 			String no = Misc.ucFirst(StringHelper.getString("no"));
+			String defy = getString("voteDefy") + ": " + StringHelper.getString(willDefy ? "enabled" : "disabled");
 			options.addOption(yes, Vote.YES);
 			options.addOption(no, Vote.NO);
-			options.addOption(StringHelper.getString("exerelin_misc", "intelScreen"), CoreUITabId.INTEL);
 			options.addOption(Misc.ucFirst(StringHelper.getString("abstain")), Vote.ABSTAIN);
+			options.addOption(defy, OPT_DEFY);
+			options.setTooltip(OPT_DEFY, getString("voteDefyTooltip"));
+			options.addOption(StringHelper.getString("exerelin_misc", "intelScreen"), CoreUITabId.INTEL);
 			
 			for (Vote opt : Vote.values())
 			{
@@ -192,10 +195,17 @@ public class AllianceVoteScreenScript extends DelayedDialogScreenScript
 				dialog.getVisualPanel().showCore(CoreUITabId.INTEL, Global.getSector().getPlayerFleet(), this);
 				return;
 			}
+			if (optionData.equals(OPT_DEFY)) {
+				willDefy = !willDefy;
+				populateOptions();
+				return;
+			}
 			
 			Alliance alliance = AllianceManager.getFactionAlliance(playerFactionId);
 			Global.getSector().getFaction(playerFactionId).getMemoryWithoutUpdate().
-					set(AllianceVoter.VOTE_MEM_KEY, optionData);
+					set(AllianceVoter.VOTE_MEM_KEY, optionData, 15);
+			Global.getSector().getFaction(playerFactionId).getMemoryWithoutUpdate().
+					set(AllianceVoter.VOTE_DEFY_MEM_KEY, willDefy, 15);
 			
 			// allied with faction 1
 			if (AllianceManager.areFactionsAllied(playerFactionId, factionId1))

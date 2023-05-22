@@ -247,6 +247,8 @@
 		"voteAllianceHeader":"Alliance $allianceName: size rating $allianceSize",
 		"voteQuestionLine":"How does $myFaction vote?",
 		"voteConfirm":"Confirm vote?",
+		"voteDefy":"Defy vote",
+		"voteDefyTooltip":"Refuse to comply with a vote that passes, at a cost to relationship with allied factions.",
 		
 		"memberPermanentSuffix":"(permanent)"
 	},

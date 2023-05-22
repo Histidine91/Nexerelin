@@ -38,7 +38,8 @@ public class AllianceVoter {
 	public static final float RANDOM_POINTS = 50;
 	public static final float DEFIER_REP_LOSS_YES = -0.1f;
 	public static final float DEFIER_REP_LOSS_ABSTAIN = -0.05f;
-	public static final String VOTE_MEM_KEY = "$allianceVote";
+	public static final String VOTE_MEM_KEY = "$nex_allianceVote";
+	public static final String VOTE_DEFY_MEM_KEY = "$nex_allianceVote_willDefy";
 	
 	protected static final boolean DEBUG_LOGGING = true;
 	
@@ -164,7 +165,7 @@ public class AllianceVoter {
 		{
 			FactionAPI faction = Global.getSector().getFaction(member);
 			float penalty = DEFIER_REP_LOSS_YES;
-			if (toModify.contains(member))
+			if (vote.abstentions.contains(member))
 				penalty = DEFIER_REP_LOSS_ABSTAIN;
 			for (String defier : vote.defied)
 			{
@@ -438,8 +439,9 @@ public class AllianceVoter {
 					return true;
 			}
 		}
-		if (factionId.equals(Factions.PLAYER))
-			return false;
+		if (factionId.equals(Factions.PLAYER)) {
+			return Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId()).getMemoryWithoutUpdate().getBoolean(VOTE_DEFY_MEM_KEY);
+		}
 		
 		Map<Alignment, Float> alignments = usConf.getAlignmentValues();
 		float hawkishness = alignments.get(Alignment.MILITARIST);
