@@ -72,8 +72,13 @@ public class NexConfig
     public static boolean allowNPCSatBomb = true;
     public static float permaHateFromPlayerSatBomb = 0.2f;
     public static float groundBattleDamageMult = 1;
+
+    // Diplomacy
+    public static boolean enableDiplomacy = true;
+    public static boolean allowRandomDiplomacyTraits = true;
     
     // Alliances
+    public static boolean enableAlliances = true;
     public static float allianceGracePeriod = 120;
     public static float allianceFormationInterval = 30f;
     public static boolean ignoreAlignmentForAlliances = false;
@@ -149,7 +154,6 @@ public class NexConfig
     public static int maxFactionRespawns = 3;
     public static boolean countPiratesForVictory = false;
     public static boolean leaveEliminatedFaction = true;
-    public static boolean allowRandomDiplomacyTraits = true;
     public static boolean useRelationshipBounds = true;
     public static boolean useConfigRelationshipsInNonRandomSector = false;
     public static boolean useEnhancedStartRelations = true;
@@ -213,7 +217,12 @@ public class NexConfig
             allowNPCSatBomb = settings.optBoolean("allowNPCSatBomb", allowNPCSatBomb);
             permaHateFromPlayerSatBomb = (float)settings.optDouble("permaHateFromPlayerSatBomb", permaHateFromPlayerSatBomb);
             groundBattleDamageMult = (float)settings.optDouble("groundBattleDamageMult", groundBattleDamageMult);
-            
+
+            enableDiplomacy = settings.optBoolean("enableDiplomacy", enableDiplomacy);
+            allowRandomDiplomacyTraits = settings.optBoolean("allowRandomDiplomacyTraits", allowRandomDiplomacyTraits);
+            useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
+
+            enableAlliances = settings.optBoolean("enableAlliances", enableAlliances);
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
             ignoreAlignmentForAlliances = settings.optBoolean("ignoreAlignmentForAlliances", ignoreAlignmentForAlliances);
@@ -274,9 +283,7 @@ public class NexConfig
             autoResistAIInspections = settings.optBoolean("autoResistAIInspections", autoResistAIInspections);
             allyVictories = settings.optBoolean("allyVictories", allyVictories);
             updateMarketDescOnCapture = settings.optBoolean("updateMarketDescOnCapture", updateMarketDescOnCapture);
-            
-            allowRandomDiplomacyTraits = settings.optBoolean("allowRandomDiplomacyTraits", allowRandomDiplomacyTraits);
-            useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
+
             useEnhancedStartRelations = settings.optBoolean("useEnhancedStartRelations", useEnhancedStartRelations);
             useConfigRelationshipsInNonRandomSector = settings.optBoolean("useConfigRelationshipsInNonRandomSector", useConfigRelationshipsInNonRandomSector);
             useEnhancedCoreWorlds = settings.optBoolean("useEnhancedCoreWorlds", useEnhancedCoreWorlds);

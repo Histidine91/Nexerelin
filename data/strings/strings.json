@@ -2868,6 +2868,7 @@
 		"header_ui":"User interface",
 		"header_debug":"Debug",
 		"header_diplomacy":"Diplomacy",
+		"header_alliances":"Alliances",
 		"header_invasions":"Invasions",
 		"header_insurance":"Insurance",
 		"header_agents":"Operatives",
@@ -2878,6 +2879,7 @@
 		"header_misc":"Miscellaneous",
 		
 		"tabFleets":"Fleets and battles",
+		"tabDiplomacy":"Diplomacy and alliances",
 		
 		"name_ceasefireNotificationPopup":"Ceasefire notification popup",
 		"name_nexDevMode":"Nexerelin dev mode",
@@ -2922,10 +2924,22 @@
 		"name_groundBattleDamageMult":"Ground battle damage mult",
 		"tooltip_groundBattleDamageMult":"Modifies the damage units do to each other during ground battles.",
 		
+		"name_enableDiplomacy":"Enable diplomacy",
+		"tooltip_followersDiplomacy":"Toggles random and AI-picked diplomacy events between factions.",
 		"name_followersDiplomacy":"Player faction has diplomacy events",
-		"tooltip_followersDiplomacy":"Toggles random and AI-picked diplomacy events for player faction.",
+		#"tooltip_followersDiplomacy":"Toggles random and AI-picked diplomacy events for player faction.",
 		"name_diplomacyInterval":"Diplomacy interval",
-		"tooltip_diplomacyInterval":"Base interval between random diplomacy events, and (when strategic AI is disabled) between 'diplomacy brain' events. Adjusted by number of factions in the game. When modified, the interval period does not update until the current one is finished.",
+		"tooltip_diplomacyInterval":"Base interval between random diplomacy events, and (when strategic AI is disabled) between 'diplomacy brain' events. Adjusted by number of factions in the game. When modified, the interval period does not update until the current one is finished.",		
+		"name_allowRandomDiplomacyTraits":"Allow random diplomacy traits",
+		"tooltip_allowRandomDiplomacyTraits":"When faction relations are randomized, apply random diplomacy traits to each faction as well.",
+		"name_useRelationshipBounds":"Use relationship bounds",
+		"tooltip_useRelationshipBounds":"Relationship boundaries are set in faction config; e.g. some factions can never become really friendly with one another. Bounds do not apply when faction relations are randomized or flattened.",
+		
+		"name_enableAlliances":"Enable faction alliances",
+		"name_allianceGracePeriod":"Alliance grace period",
+		"tooltip_allianceGracePeriod":"Non-scripted alliances cannot form for this many days at start of game.",
+		#"name_allianceFormationInterval":"Interval for attempting to form alliances",
+		"name_ignoreAlignmentForAlliances":"Ignore faction alignments for forming/joining alliances",		
 		
 		"name_legacyInsurance":"Legacy insurance",
 		"tooltip_legacyInsurance":"Old insurance system with automatic free insurance from your commissioning faction (but not from player faction).",

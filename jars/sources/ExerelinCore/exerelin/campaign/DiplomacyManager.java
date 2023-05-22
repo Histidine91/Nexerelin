@@ -708,6 +708,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      */
     public static void createDiplomacyEvent()
     {
+        if (!NexConfig.enableDiplomacy) return;
+
         log.info("Starting diplomacy event creation");
         SectorAPI sector = Global.getSector();
         WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();

@@ -27,6 +27,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         //List<String> tags = DEFAULT_TAGS;
 
         String tabFleets = getString("tabFleets");
+        String tabDiplomacy = getString("tabDiplomacy");
 
         addHeader("ui", null);
         addSetting("directoryDialogKey", "key", NexConfig.directoryDialogKey);
@@ -54,9 +55,18 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("creditLossOnColonyLossMult", "float", tabFleets, NexConfig.creditLossOnColonyLossMult, 0, 1);
         addSetting("groundBattleDamageMult", "float", tabFleets, NexConfig.groundBattleDamageMult, 0, 5);
 
-        addHeader("diplomacy", null);
-        addSetting("followersDiplomacy", "boolean", NexConfig.followersDiplomacy);
-        addSetting("diplomacyInterval", "float", DiplomacyManager.getBaseInterval(), 5, 60);
+        addHeader("diplomacy", tabDiplomacy);
+        addSetting("enableDiplomacy", "boolean", tabDiplomacy, NexConfig.enableDiplomacy);
+        addSetting("followersDiplomacy", "boolean", tabDiplomacy, NexConfig.followersDiplomacy);
+        addSetting("diplomacyInterval", "float", tabDiplomacy, DiplomacyManager.getBaseInterval(), 5, 60);
+        addSetting("allowRandomDiplomacyTraits", "boolean", tabDiplomacy, NexConfig.allowRandomDiplomacyTraits);
+        addSetting("useRelationshipBounds", "boolean", tabDiplomacy, NexConfig.useRelationshipBounds);
+
+        addHeader("alliances", tabDiplomacy);
+        addSetting("enableAlliances", "boolean", tabDiplomacy, NexConfig.enableAlliances);
+        addSetting("allianceGracePeriod", "int", tabDiplomacy, NexConfig.allianceGracePeriod, 0, 1825);
+        //addSetting("allianceFormationInterval", "int", tabDiplomacy, NexConfig.allianceFormationInterval);
+        addSetting("ignoreAlignmentForAlliances", "boolean", tabDiplomacy, NexConfig.ignoreAlignmentForAlliances);
 
         addHeader("insurance", null);
         addSetting("legacyInsurance", "boolean", NexConfig.legacyInsurance);
@@ -156,8 +166,16 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.creditLossOnColonyLossMult = (float)loadSetting("creditLossOnColonyLossMult", "float");
         NexConfig.groundBattleDamageMult = (float)loadSetting("groundBattleDamageMult", "float");
 
+        NexConfig.enableDiplomacy = (boolean)loadSetting("enableDiplomacy", "boolean");
         NexConfig.followersDiplomacy = (boolean)loadSetting("followersDiplomacy", "boolean");
         DiplomacyManager.setBaseInterval((float)loadSetting("diplomacyInterval", "float"));
+        NexConfig.allowRandomDiplomacyTraits = (boolean)loadSetting("allowRandomDiplomacyTraits", "boolean");
+        NexConfig.useRelationshipBounds = (boolean)loadSetting("useRelationshipBounds", "boolean");
+
+        NexConfig.enableAlliances = (boolean)loadSetting("enableAlliances", "boolean");
+        NexConfig.allianceGracePeriod = (int)loadSetting("allianceGracePeriod", "int");
+        //NexConfig.allianceFormationInterval = (float)loadSetting("allianceFormationInterval", "int");
+        NexConfig.ignoreAlignmentForAlliances = (boolean)loadSetting("ignoreAlignmentForAlliances", "boolean");
 
         NexConfig.legacyInsurance = (boolean)loadSetting("legacyInsurance", "boolean");
         NexConfig.playerInsuranceMult = (float)loadSetting("playerInsuranceMult", "float");

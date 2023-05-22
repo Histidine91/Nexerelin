@@ -1,5 +1,7 @@
 package exerelin.campaign.ai.action;
 
+import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
@@ -31,6 +33,17 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
     @Override
     public boolean canUse(StrategicConcern concern) {
+        if (!NexConfig.enableDiplomacy) return false;
+        if (!NexConfig.enableAlliances) return false;
+        if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
+
+        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_GLOBAL_COOLDOWN))
+            return false;
+        if ((ai.getFaction().isPlayerFaction() || faction == Global.getSector().getPlayerFaction())) {
+            if (!NexConfig.followersDiplomacy) return false;
+            if (Misc.getCommissionFaction() != null) return false;
+        }
+
         if (alliance != null) {
             if (!alliance.canJoin(ai.getFaction())) return false;
         }

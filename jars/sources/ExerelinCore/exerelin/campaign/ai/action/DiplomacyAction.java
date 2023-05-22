@@ -122,6 +122,8 @@ public class DiplomacyAction extends BaseStrategicAction {
 
     @Override
     public boolean canUse(StrategicConcern concern) {
+        if (!NexConfig.enableDiplomacy) return false;
+
         if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
 
         if (Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_GLOBAL_COOLDOWN))

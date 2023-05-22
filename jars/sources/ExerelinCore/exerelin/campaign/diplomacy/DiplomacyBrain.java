@@ -866,6 +866,7 @@ public class DiplomacyBrain {
 	
 	public void considerOptions()
 	{
+		if (!NexConfig.enableDiplomacy) return;
 		if (StrategicAI.getAI(factionId) != null) return;
 
 		if (DiplomacyManager.disallowedFactions.contains(factionId)) return;

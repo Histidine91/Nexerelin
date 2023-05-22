@@ -70,6 +70,11 @@
     "permaHateFromPlayerSatBomb": 0.24f,	# sat bombing permanently lowers max relationship with relevant factions by this much (doubled for actual victim)
     "groundBattleDamageMult":1,	# modifier to damage dealt during ground battle resolution; lower this to make battles last longer
     
+    "enableDiplomacy":true,
+    "allowRandomDiplomacyTraits":true,	# randomize diplomacy traits when faction relations are randomized
+    "useRelationshipBounds": true,  # if false, disregard min/max faction relationships in faction config
+    
+    "enableAlliances": true,	# will not dissolve existing alliances if changed, or affect scripted alliances (e.g. Iron Shell with Hegemony)
     "allianceGracePeriod": 120,  # no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
     "ignoreAlignmentForAlliances": false,
@@ -107,11 +112,8 @@
     
     "allyVictories":true,	# player gets victory screen if they are Friendly or Cooperative with actual winner
     "countPiratesForVictory": false,
-    "useRelationshipBounds": true,  # if false, disregard min/max faction relationships in faction config
     "useConfigRelationshipsInNonRandomSector": false,	# use relations defined in the faction config. Specific factions can set this to true for themselves as well
     "leaveEliminatedFaction": true, # if our faction is wiped out, leave it
-    
-    "allowRandomDiplomacyTraits":true,	# randomize diplomacy traits when faction relations are randomized
     
     "enableRevengeFleets": 2,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)
     "revengePointsPerEnemyFP": 0.05,
