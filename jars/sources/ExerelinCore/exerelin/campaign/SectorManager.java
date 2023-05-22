@@ -930,11 +930,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             }
         }
 		else if (type.equals("diplomacy")) {
-            if (winner.equals(playerAlignedFactionId))
+            if (victorFactionId.equals(playerAlignedFactionId)) {
                 victoryType = VictoryType.DIPLOMATIC;
+            }
             else if (NexConfig.allyVictories && AllianceManager.areFactionsAllied(victorFactionId, 
-                        playerAlignedFactionId)) 
+                        playerAlignedFactionId)) {
                 victoryType = VictoryType.DIPLOMATIC_ALLY;
+            }
             else victoryType = VictoryType.DEFEAT_DIPLOMATIC;
         }
         
