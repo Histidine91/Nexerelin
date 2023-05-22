@@ -143,7 +143,8 @@ public class InfiltrateCell extends CovertActionIntel {
 		cellIntel.makeSleeper(disruptDur * 2);
 		cellIntel.sendUpdateIfPlayerHasIntel(LuddicPathCellsIntel.UPDATE_DISRUPTED, false);
 		ListenerUtil.reportCellDisrupted(cellIntel);
-		if (!alreadyDisrupted && HostileActivityEventIntel.get() != null) {
+
+		if (!alreadyDisrupted && HostileActivityEventIntel.get() != null && market.getFaction().isPlayerFaction()) {
 			int perCell = Global.getSettings().getInt("HA_patherBasePerActiveCell");
 
 			int points = -1 * perCell;
