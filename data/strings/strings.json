@@ -2864,6 +2864,11 @@
 		"cottonName2":"Cotton",
 		
 		"abandonColonyStoryCriticalTooltip":"This colony will have a key role in the Sector's history and cannot be abandoned.",
+		
+		"ungp_civilianShips_tip1":"Current military DP: %s",
+		"ungp_civilianShips_tip2":"Current civilian/militarized DP: %s",
+		"ungp_civilianShips_tip3":"CR penalty: %s%%",
+		"ungp_civilianShips_tip4":"Maintenance mult: %s×",
 	},
 	
 	"nex_lunaSettings":{

@@ -5,11 +5,16 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.merc.MercFleetGenPlugin;
+import exerelin.utilities.StringHelper;
 import ungp.api.rules.UNGP_BaseRuleEffect;
 import ungp.api.rules.tags.UNGP_PlayerFleetTag;
 import ungp.scripts.campaign.specialist.UNGP_SpecialistSettings;
 import ungp.scripts.utils.UNGP_BaseBuff;
 
+import java.awt.*;
 import java.util.List;
 
 public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFleetTag {
@@ -101,7 +106,11 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 					|| member.getHullSpec().getHints().contains(ShipTypeHints.CIVILIAN)) {
 				civDP += member.getDeploymentPointsCost();
 			}
-			else milDP += member.getDeploymentPointsCost();
+			else if (member.getVariant().hasHullMod("rugged")) {
+
+			} else {
+				milDP += member.getDeploymentPointsCost();
+			}
 		}
 		if (oldCivDP != civDP || oldMilDP != milDP) {
 			needReapply = true;
@@ -115,6 +124,9 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 		
 		boolean needsSync = false;
 		for (FleetMemberAPI member : members) {
+			if (member.getBuffManager().getBuff(MercFleetGenPlugin.MERC_BUFF_ID) != null)
+				continue;
+
 			String buffId = rule.getBuffID();
 			boolean civ = member.getVariant().hasHullMod(HullMods.CIVGRADE) || member.getVariant().hasHullMod(HullMods.MILITARIZED_SUBSYSTEMS)
 					|| member.getHullSpec().getHints().contains(ShipTypeHints.CIVILIAN);
@@ -166,5 +178,18 @@ public class CivilianShips extends UNGP_BaseRuleEffect implements UNGP_PlayerFle
 	public String getDescriptionParams(int index, UNGP_SpecialistSettings.Difficulty difficulty) 
 	{
 		return getDescriptionParams(index);
+	}
+
+	@Override
+	public boolean addIntelTips(TooltipMakerAPI imageTooltip) {
+		Color hl = Misc.getHighlightColor();
+		Color bad = Misc.getNegativeHighlightColor();
+		String cat = "exerelin_misc";
+		String id = "ungp_civilianShips_tip";
+		imageTooltip.addPara(StringHelper.getString(cat, id + "1"), 0, hl, milDP + "");
+		imageTooltip.addPara(StringHelper.getString(cat, id + "2"), 0, hl, civDP + "");
+		imageTooltip.addPara(StringHelper.getString(cat, id + "3"), 0, (crPenalty > 0 ? bad : hl), Math.round(crPenalty * 100) + "");
+		imageTooltip.addPara(StringHelper.getString(cat, id + "4"), 0, (maintMult > 1 ? bad : hl), String.format("%.1f", maintMult));
+		return true;
 	}
 }
