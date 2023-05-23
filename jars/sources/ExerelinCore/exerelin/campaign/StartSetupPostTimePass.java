@@ -191,6 +191,9 @@ public class StartSetupPostTimePass {
 				handleAcademyVars();
 			} else {
 				mem.set("$gaIntro2found", true);
+				mem.set("$lpp_missionCompleted", true);
+				mem.set("$lpp_didHookStart", true);
+				mem.set("$didSDBarRaid", true);
 			}
 			
 			// alpha site location intel?
@@ -291,7 +294,8 @@ public class StartSetupPostTimePass {
 		seb.getRelToPlayer().setLevel(RepLevel.COOPERATIVE);
 		seb.getMemoryWithoutUpdate().set("$gotGAATGpay", true);
 		seb.getMemoryWithoutUpdate().set("$askedProvostUpset", true);
-		seb.getMemoryWithoutUpdate().set("$metAlready", true);		
+		seb.getMemoryWithoutUpdate().set("$metAlready", true);
+		Global.getSector().getCharacterData().getMemoryWithoutUpdate().set("$metSebestyen", true);
 		
 		market.getCommDirectory().getEntryForPerson(baird).setHidden(false);
 		market.getCommDirectory().getEntryForPerson(seb).setHidden(false);
