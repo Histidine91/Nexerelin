@@ -28,14 +28,10 @@ public class RemnantQuestUtils {
 	public static final String PERSON_DISSONANT = "nex_dissonant";
 	public static final String PERSON_TOWERING = "nex_towering";
 	public static final String PERSON_ARGENT = "nex_luddicKnight";
-	public static final List<String> TAG_AS_REMNANT_MISSION = new ArrayList<>(Arrays.asList(new String[]{
-		//"proCom", // meh
-		"sShip", 
-		//"dhi", "dsp", // don't seem to work, maybe do custom versions later?
-		//"tabo",		// requires military, maybe do custom version
-		"seco", "ssat",
-		//"sitm"	// next time maybe?
-	}));
+	public static final List<String> TAG_AS_REMNANT_MISSION = new ArrayList<>(Arrays.asList(
+			"seco", "ssat"
+			//"sitm"	// blueprint location; next time maybe?
+	));
 	
 	public static void createDissonant(MarketAPI market) {
 		PersonAPI person = Global.getFactory().createPerson();
@@ -73,6 +69,7 @@ public class RemnantQuestUtils {
 		person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "nex_towering"));
 		person.addTag("remnant");
 		person.setAICoreId(Commodities.ALPHA_CORE);
+		person.getMemoryWithoutUpdate().set("$chatterChar", "none");	// could be acecombat_torres but meh
 		Global.getSector().getImportantPeople().addPerson(person);
 
 		person.getStats().setLevel(8);

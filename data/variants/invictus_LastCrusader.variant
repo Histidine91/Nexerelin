@@ -1,27 +1,27 @@
 {
     "displayName": "Crusader",
-    "fluxCapacitors":0,
-    "fluxVents": 46,
+    "fluxCapacitors":2,
+    "fluxVents": 50,
     "goalVariant": false,
     "hullId": "invictus",
     "hullMods": [
-		"augmentedengines",
-		"automated",
+        "augmentedengines",
+        "automated",
         "armoredweapons",
         "converted_hangar",
-		"reinforcedhull",
-		"eccm"
+        "reinforcedhull",
+        "eccm"
     ],
     "permaMods": [
-		"augmentedengines",
-		"automated",
-		"armoredweapons",
-		"reinforcedhull"
+        "augmentedengines",
+        "automated",
+        "armoredweapons",
+        "reinforcedhull"
     ],
     "sMods": [
-		"augmentedengines",
+        "augmentedengines",
         "armoredweapons",
-		"reinforcedhull"
+        "reinforcedhull"
     ],
     "variantId": "invictus_LastCrusader",
     "weaponGroups": [
@@ -39,8 +39,8 @@
             "autofire": false,
             "mode": "ALTERNATING",
             "weapons": {
-                "WS 004": "hurricane",
-                "WS 007": "hurricane"
+                "WS 004": "squall",
+                "WS 007": "squall"
             }
         },
         {
@@ -63,7 +63,7 @@
         }
     ],
     "wings": [
-        "spark_wing",
-        "spark_wing"
+        "lux_wing",
+        "lux_wing"
     ]
 }

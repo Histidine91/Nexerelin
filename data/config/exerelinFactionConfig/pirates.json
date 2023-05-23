@@ -43,7 +43,7 @@
     ],
     "startShipsExplorerLarge":[
       ["uw_stalker_cs", "buffalo_pirates_Standard", "uw_venom_sta"],
-      ["venture_Balanced", "buffalo_pirates_Standard", "cerberus_d_pirates_Standard"]
+      ["venture_p_Pirate", "buffalo_pirates_Standard", "cerberus_d_pirates_Standard"]
     ],
     "startShipsCarrierSmall":[["condor_Attack", "buffalo2_FS", "lasher_Standard"]],
     "startShipsCarrierLarge":[["colossus3_Pirate", "enforcer_d_pirates_Strike", "hound_d_pirates_Standard"]],

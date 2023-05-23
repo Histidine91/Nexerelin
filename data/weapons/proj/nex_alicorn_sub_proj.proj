@@ -16,7 +16,7 @@
 	"behaviorSpec":{"behavior":"PROXIMITY_FUSE",
 					"range":40,
 					"shotRangeVariance":0.5,
-					"probOfVariance":0.5,
+					"probOfVariance":1,
 					"explosionSpec":{"duration":0.1f,
 									 "radius":150,
 									 "coreRadius":60, # full damage within core radius - also equal to proximity fuse range

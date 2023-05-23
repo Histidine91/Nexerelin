@@ -80,7 +80,7 @@ open class PersonalConfigIntel : BaseIntelPlugin(), ModPluginEventListener {
             val faction = Global.getSector().playerFaction
             for (musicType in MUSIC_MAP_KEYS) {
                 var saved : String? = faction.memoryWithoutUpdate.getString(MEMORY_KEY_PREFIX_MUSIC + musicType)
-                log.info("Saved music for $musicType is $saved")
+                //log.info("Saved music for $musicType is $saved")
                 if (saved != null) faction.musicMap[musicType] = saved
             }
         }
