@@ -9,9 +9,11 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI.SurveyLevel;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.People;
-import org.lazywizard.lazylib.MathUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class GalatiaAcademy extends BaseLandmarkDef {
 	
@@ -42,16 +44,6 @@ public class GalatiaAcademy extends BaseLandmarkDef {
 		}
 		if (results.isEmpty()) return resultsBackup;
 		return results;
-	}
-	
-	protected boolean isNearAnotherMarket(SectorEntityToken planet, Collection<MarketAPI> markets) 
-	{		
-		for (MarketAPI market : markets) {
-			if (MathUtils.isWithinRange(planet, market.getPrimaryEntity(), 800)) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	@Override

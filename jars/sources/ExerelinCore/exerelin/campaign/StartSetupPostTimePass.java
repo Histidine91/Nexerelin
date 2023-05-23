@@ -41,9 +41,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import static com.fs.starfarer.api.impl.campaign.ids.People.COTTON;
-import static com.fs.starfarer.api.impl.campaign.ids.People.SIYAVONG;
-
 @Log4j
 public class StartSetupPostTimePass {
 	
@@ -251,9 +248,9 @@ public class StartSetupPostTimePass {
 	public static void createImportantPeopleInRandomSector() {
 		ImportantPeopleAPI ip = Global.getSector().getImportantPeople();
 
-		if (ip.getPerson(SIYAVONG) == null) {
+		if (ip.getPerson(People.SIYAVONG) == null) {
 			PersonAPI person = Global.getFactory().createPerson();
-			person.setId(SIYAVONG);
+			person.setId(People.SIYAVONG);
 			person.setFaction(Factions.PERSEAN);
 			person.setGender(FullName.Gender.MALE);
 			person.setRankId(Ranks.AGENT);
@@ -265,9 +262,9 @@ public class StartSetupPostTimePass {
 			ip.addPerson(person);
 		}
 
-		if (ip.getPerson(COTTON) == null) {
+		if (ip.getPerson(People.COTTON) == null) {
 			PersonAPI person = Global.getFactory().createPerson();
-			person.setId(COTTON);
+			person.setId(People.COTTON);
 			person.setFaction(Factions.LUDDIC_PATH);
 			person.setGender(FullName.Gender.MALE);
 			person.setRankId(Ranks.BROTHER);
@@ -276,6 +273,46 @@ public class StartSetupPostTimePass {
 			person.getName().setFirst(StringHelper.getString("exerelin_misc", "cottonName1"));
 			person.getName().setLast(StringHelper.getString("exerelin_misc", "cottonName2"));
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
+			ip.addPerson(person);
+		}
+
+		MarketAPI market = Global.getSector().getEconomy().getMarket("kantas_den");
+		if (market != null && ip.getPerson(People.KANTA) == null) {
+			PersonAPI person = Global.getFactory().createPerson();
+			person.setId("kanta");
+			person.setFaction(Factions.PIRATES);
+			person.setGender(FullName.Gender.FEMALE);
+			//person.setPostId(Ranks.POST_ADMINISTRATOR);
+			person.setPostId(Ranks.POST_WARLORD);
+			person.setRankId(Ranks.FACTION_LEADER);
+			person.setImportance(PersonImportance.VERY_HIGH);
+			person.getName().setFirst(StringHelper.getString("exerelin_misc", "kantaName1"));
+			person.getName().setLast(StringHelper.getString("exerelin_misc", "kantaName2"));
+			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "kanta"));
+			person.getStats().setSkillLevel(Skills.WOLFPACK_TACTICS, 1);
+//			person.getStats().setSkillLevel(Skills.SPACE_OPERATIONS, 1);
+//			person.getStats().setSkillLevel(Skills.PLANETARY_OPERATIONS, 1);
+			person.getStats().setSkillLevel(Skills.INDUSTRIAL_PLANNING, 1);
+
+			market.getCommDirectory().addPerson(person, 0);
+			market.addPerson(person);
+			ip.addPerson(person);
+		}
+
+		if (market != null && ip.getPerson(People.CYDONIA) == null) {
+			PersonAPI person = Global.getFactory().createPerson();
+			person.setId("cydonia");
+			person.setFaction(Factions.PIRATES);
+			person.setGender(FullName.Gender.MALE);
+			person.setPostId(Ranks.POST_DOCTOR);
+			person.setRankId(Ranks.CITIZEN);
+			person.setImportance(PersonImportance.MEDIUM);
+			person.getName().setFirst(StringHelper.getString("exerelin_misc", "cydoniaName1"));
+			person.getName().setLast(StringHelper.getString("exerelin_misc", "cydoniaName2"));
+			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "doctor"));
+			person.getStats().setSkillLevel(Skills.GUNNERY_IMPLANTS, 1);
+			market.getCommDirectory().addPerson(person, 0);
+			market.addPerson(person);
 			ip.addPerson(person);
 		}
 	}

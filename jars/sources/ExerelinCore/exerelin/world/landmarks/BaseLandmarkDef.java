@@ -8,10 +8,13 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.NexUtilsMarket;
+import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import org.apache.log4j.Logger;
 
 public class BaseLandmarkDef extends LandmarkDef {
 	
@@ -124,5 +127,15 @@ public class BaseLandmarkDef extends LandmarkDef {
 			if (origOwnerId != null) factionId = origOwnerId;
 		}
 		return factionId;
+	}
+
+	protected boolean isNearAnotherMarket(SectorEntityToken planet, Collection<MarketAPI> markets)
+	{
+		for (MarketAPI market : markets) {
+			if (MathUtils.isWithinRange(planet, market.getPrimaryEntity(), 800)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

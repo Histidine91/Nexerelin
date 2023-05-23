@@ -2862,6 +2862,13 @@
 		"siyavongName2":"Siyavong",
 		"cottonName1":"Livewell",
 		"cottonName2":"Cotton",
+		"kantaName1":"Jorien",
+		"kantaName2":"Kanta",
+		"cydoniaName1":"Wyatt",
+		"cydoniaName2":"Cydonia",
+		
+		# used in random sector
+		"marketKantasDen":"Kanta's Den",
 		
 		"abandonColonyStoryCriticalTooltip":"This colony will have a key role in the Sector's history and cannot be abandoned.",
 		
