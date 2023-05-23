@@ -65,6 +65,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	@Setter protected CampaignFleetAPI tempFleet;
 	protected CampaignFleetAPI fleet;
+	@Getter protected String id;
 
 	protected transient IntervalUtil variantCheckInterval = new IntervalUtil(1, 1);
 	
@@ -85,6 +86,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		// no, bad, don't do anything in readResolve that involves anything else
 		//addListenerIfNeeded();
 		variantCheckInterval = new IntervalUtil(1, 1);
+		if (id == null) id = UUID.randomUUID().toString();
 		return this;
 	}
 	
@@ -459,7 +461,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		FDNode fleetNode = report.getNode(MonthlyReport.FLEET);
 		
-		String nodeId = "nex_node_id_psf_" + this.toString();
+		String nodeId = "nex_node_id_psf_" + id;
 		FDNode psfNode = processMonthlyReportNode(report, fleetNode, nodeId, 
 				this.getName(), faction.getCrest(), 0, false);
 		
