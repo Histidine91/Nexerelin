@@ -168,7 +168,7 @@ public class ExerelinProcGen {
 		boolean largeMarket = size >= 5;
 		if (isStation) largeMarket = size >= 4;
 		
-		if(market.hasCondition(Conditions.URBANIZED_POLITY) || largeMarket)
+		if (market.hasCondition(Conditions.URBANIZED_POLITY) || largeMarket)
 		{
 			if (!factionId.equals(Factions.LUDDIC_PATH))
 			{
@@ -184,7 +184,7 @@ public class ExerelinProcGen {
 				allowedImages.add(new String[]{"illustrationz", "streets"} );
 				if (!isStation) allowedImages.add(new String[]{"illustrationz", "twin_cities"} );
 			}
-			if (!isStation)
+			if (!isStation && planetType.contains(Planets.TUNDRA))
 			{
 				allowedImages.add(new String[]{"illustrations", "eochu_bres"} );
 			}
@@ -208,15 +208,36 @@ public class ExerelinProcGen {
 			allowedImages.add(new String[]{"illustrations", "pirate_station"} );
 		if (!isStation && (planetType.equals("rocky_metallic") || planetType.equals("rocky_barren") || planetType.equals("barren-bombarded")) )
 			allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
-		if (market.hasCondition(Conditions.LUDDIC_MAJORITY))
+		if (factionId.equals(Factions.LUDDIC_CHURCH)) {
 			allowedImages.add(new String[]{"illustrations", "luddic_shrine"} );
+			if (planetType.contains(Planets.PLANET_TERRAN))
+				allowedImages.add(new String[]{"illustrations", "gilead"} );
+		}
 		if (isStation && NexUtilsFaction.doesFactionExist("blackrock_driveyards"))
 			allowedImages.add(new String[]{"illustrations", "blackrock_vigil_station"} );
 		
 		//if (isMoon)
 		//	allowedImages.add(new String[]{"illustrations", "asteroid_belt_moon"} );
-		if (planetType.equals("desert") && isMoon)
+
+
+		// note: some of these planet type checks are 'equals', some are just 'contains'
+		if (planetType.contains(Planets.DESERT) && isMoon)
 			allowedImages.add(new String[]{"illustrations", "desert_moons_ruins"} );
+
+		if (planetType.equals(Planets.PLANET_TERRAN_ECCENTRIC))
+			allowedImages.add(new String[]{"illustrations", "eventide"} );
+
+		if (planetType.equals(Planets.PLANET_WATER))
+			allowedImages.add(new String[]{"illustrations", "volturn"} );
+
+		if (planetType.contains(Planets.ARID))
+			allowedImages.add(new String[]{"illustrations", "mazalot"} );
+
+		if (planetType.contains(Planets.BARREN))
+			allowedImages.add(new String[]{"illustrations", "kazeron"} );
+
+		if (planetType.contains("cryovolcanic") || planetType.contains("frozen"))
+			allowedImages.add(new String[]{"illustrations", "ilm"} );
 
 		String[] illustration = allowedImages.pick();
 		entity.setInteractionImage(illustration[0], illustration[1]);
