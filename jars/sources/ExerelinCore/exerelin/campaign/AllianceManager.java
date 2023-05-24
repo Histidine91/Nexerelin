@@ -430,6 +430,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
      */
     public void tryMakeAlliance()
     {
+        if (!NexConfig.enableAlliances) return;
+
         log.info("Trying to make alliance");
         SectorAPI sector = Global.getSector();
         List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
