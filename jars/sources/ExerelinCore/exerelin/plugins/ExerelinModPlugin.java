@@ -259,7 +259,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         new MilestoneTracker().init();
 
         new MercSectorManager().init();
-        new FleetPoolManager().init();
         
         addBarEvents();
         
