@@ -55,6 +55,7 @@ public class RaidAction extends OffensiveFleetAction {
         }
 
         if (concern.getFaction() == Global.getSector().getFaction("nex_derelict")) return false;
+        if (concern.getMarket() != null && concern.getMarket().getFaction().getId().equals("nex_derelict")) return false;
 
         return super.canUse(concern);
     }

@@ -37,8 +37,11 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
         InvasionFleetManager.EventType type = getEventType();
         // always invade rather than raid derelicts
         if (target.getFactionId().equals("nex_derelict")
-                && (type == InvasionFleetManager.EventType.RAID || type == InvasionFleetManager.EventType.SAT_BOMB))
+                && (type == InvasionFleetManager.EventType.RAID || type == InvasionFleetManager.EventType.SAT_BOMB)) {
+            if (this instanceof PirateRaidAction) return false; // don't let our proxies invade derelicts
             type = InvasionFleetManager.EventType.INVASION;
+        }
+
 
         OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(origin, target,
                 type, 1, getFleetPoolRequisitionParams());
