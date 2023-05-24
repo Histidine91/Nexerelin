@@ -2425,6 +2425,8 @@
 		"dialogMsgRevivingShips":"reviving ships",
 		"dialogButtonViewRaid":"View",
 		"dialogButtonJoinRaid":"Join",
+		"dialogMsgStrippedOfficer":"Over officer limit, removing officer %s from ship %s (%s)",
+		"dialogMsgOfficerOverLimitWarning":"Over officer limit after taking ships! We won't remove the officers in case it'd be inconvenient to put them back, but please refrain from using this as an exploit~",
 		
 		"reportNode_commander":"Commander's fee",
 		"reportNode_officer":"Officer payroll",

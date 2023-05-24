@@ -51,6 +51,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	// on the other hand, should combat actually be free?
 	// can't be helped, it _is_ free if far-autoresolved
 	public static final boolean AI_MODE = true;
+	public static final String MEM_KEY_OVER_OFFICER_LIMIT_WARN = "$nex_overOfficerLimitWarn";
 	
 	public static final float CREW_SALARY_MULT = 1f;	// should not be high since the utility of assets in a PSF fleet is much lower than in the player fleet
 	public static final float SUPPLY_COST_MULT = 1f;	// ditto, even though we're getting free combat out of the deal
@@ -281,6 +282,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		//float reviveCostDebug = getReviveCost(deadMembers);
 		//log.info("Reviving dead ships would cost " + reviveCostDebug + " credits");
+
+		List<FleetMemberAPI> checkForSurplusOfficers = new ArrayList<>();
 		
 		for (OfficerDataAPI officer : toDisband.getFleetData().getOfficersCopy()) {
 			if (officer.getPerson().isAICore()) continue;
@@ -288,14 +291,18 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		}
 		for (FleetMemberAPI member : toDisband.getFleetData().getMembersListCopy()) {
 			player.getFleetData().addFleetMember(member);
+			checkForSurplusOfficers.add(member);
 		}
 		for (FleetMemberAPI member : getDeadMembers()) {
 			player.getFleetData().addFleetMember(member);
 			// so they don't vanish if not repaired immediately
 			member.getRepairTracker().performRepairsFraction(0.001f);
+			checkForSurplusOfficers.add(member);
 		}
 		
 		player.getCargo().addAll(toDisband.getCargo());
+
+		stripOfficersIfExcess(Global.getSector().getCampaignUI().getCurrentInteractionDialog(), checkForSurplusOfficers, true);
 				
 		player.forceSync();
 				
@@ -783,6 +790,80 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		float supplyCost = Global.getSettings().getCommoditySpec(Commodities.SUPPLIES).getBasePrice();
 		
 		return Math.round(supplies * supplyCost);
+	}
+
+	public static Set<PersonAPI> getOfficersAsPeople(CampaignFleetAPI fleet) {
+		Set<PersonAPI> results = new LinkedHashSet<>();
+		List<OfficerDataAPI> officers = fleet.getFleetData().getOfficersCopy();
+		for (OfficerDataAPI officer : officers) {
+			results.add(officer.getPerson());
+		}
+		return results;
+	}
+
+	/**
+	 * Call after moving ships back into player fleet. Fixes exploit to have more officers on ships than actually permitted.
+	 * @param dialog
+	 * @param members
+	 */
+	public static void stripOfficersIfExcess(InteractionDialogAPI dialog, List<FleetMemberAPI> members, boolean disband) {
+		if (members.isEmpty()) return;
+
+		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		int max = Global.getSector().getPlayerStats().getOfficerNumber().getModifiedInt();
+		int count = playerFleet.getFleetData().getOfficersCopy().size();
+		if (Global.getSettings().getModManager().isModEnabled("officerExtension")) {
+			count = 0;
+
+			Set<PersonAPI> officers = getOfficersAsPeople(playerFleet);
+			for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy()) {
+				if (officers.contains(member.getCaptain())) count++;
+			}
+		}
+
+		if (count <= max) {
+			return;
+		}
+
+		if (Global.getSettings().getBoolean("nex_specialForces_overOfficerLimitWarningOnly")) {
+			String str = getString("dialogMsgOfficerOverLimitWarning");
+			// already shown warning?
+			if (Global.getSector().getCharacterData().getMemoryWithoutUpdate().getBoolean(MEM_KEY_OVER_OFFICER_LIMIT_WARN))
+				return;
+
+			if (!disband && dialog != null) {
+				dialog.getTextPanel().setFontSmallInsignia();
+				dialog.getTextPanel().addPara(str, Misc.getNegativeHighlightColor());
+				dialog.getTextPanel().setFontInsignia();
+				Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(MEM_KEY_OVER_OFFICER_LIMIT_WARN, true, 0);
+			} else {
+				Global.getSector().getCampaignUI().addMessage(str, Misc.getNegativeHighlightColor());
+			}
+			return;
+		}
+
+		float over = count - max;
+		int num = 0;	// brain too cooked to figure out how to compute this directly from i
+		if (dialog != null) dialog.getTextPanel().setFontSmallInsignia();
+		for (int i=members.size() - 1; i >=0; i--) {
+			FleetMemberAPI member = members.get(i);
+			PersonAPI captain = member.getCaptain();
+			//log.info(String.format("Check for %s: null %s, default %s, AI %s, merc %s, unremovable %s", member.getShipName() + " " + member.getHullSpec().getHullNameWithDashClass(),
+			//		captain == null, captain.isDefault(), captain.isAICore(), Misc.isMercenary(captain), Misc.isUnremovable(captain)));
+			if (captain == null || captain.isDefault() || captain.isAICore() || Misc.isMercenary(captain) || Misc.isUnremovable(captain)) continue;
+
+			member.setCaptain(null);
+			String str = getString("dialogMsgStrippedOfficer");
+			str = String.format(str, captain.getNameString(), member.getShipName(), member.getHullSpec().getHullNameWithDashClass());
+			if (dialog != null) {
+				LabelAPI label = dialog.getTextPanel().addPara(str);
+				label.setHighlight(captain.getNameString(), member.getShipName());
+			}
+
+			num++;
+			if (num >= over) break;
+		}
+		if (dialog != null) dialog.getTextPanel().setFontInsignia();
 	}
 
 	@Override

@@ -458,6 +458,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 					public void pickedFleetMembers(List<FleetMemberAPI> members) {
 						if (members != null) {
 							transferShips(members, from, to);
+							if (to == player) PlayerSpecialForcesIntel.stripOfficersIfExcess(dialog, members, false);
 						}
 						dialog.getVisualPanel().showFleetInfo(null, player, null, other);
 						other.getMemoryWithoutUpdate().set("$fleetPoints", other.getFleetPoints(), 0);
