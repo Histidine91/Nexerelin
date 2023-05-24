@@ -52,6 +52,17 @@ public abstract class StrategicAIModule {
         }
     }
 
+    public void addConcern(StrategicConcern concern) {
+        currentConcerns.add(concern);
+        SAIUtils.reportConcernAdded(ai, concern);
+    }
+
+    public void removeConcern(StrategicConcern concern) {
+        if (!concern.isEnded()) concern.end();
+        currentConcerns.remove(concern);
+        SAIUtils.reportConcernRemoved(ai, concern);
+    }
+
     /**
      * @return List of new concerns found.
      */
@@ -67,10 +78,8 @@ public abstract class StrategicAIModule {
             boolean have = concern.generate();
             have &= SAIUtils.allowConcern(ai, concern);
             if (have) {
-                //log.info("Found concern " + concern.getName());
-                currentConcerns.add(concern);
+                addConcern(concern);
                 newConcerns.add(concern);
-                SAIUtils.reportConcernAdded(ai, concern);
             }
         }
         return newConcerns;
@@ -85,9 +94,7 @@ public abstract class StrategicAIModule {
             }
         }
         for (StrategicConcern concern : toRemove) {
-            if (!concern.isEnded()) concern.end();
-            currentConcerns.remove(concern);
-            SAIUtils.reportConcernRemoved(ai, concern);
+            removeConcern(concern);
         }
 
         // clear already-ended actions so they don't stay in memory/save forever

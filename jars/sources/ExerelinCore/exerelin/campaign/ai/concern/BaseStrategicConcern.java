@@ -193,8 +193,8 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
         int index = 0;
         for (StrategicAction action : actions) {
-            boolean success = initAction(action);
-            if (success) return action;
+            StrategicAction resultAction = initAction(action);
+            if (resultAction != null) return resultAction;
             index++;
             if (index > SAIConstants.MAX_ACTIONS_TO_CHECK_PER_CONCERN)
                 break;
@@ -251,21 +251,21 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     }
 
     @Override
-    public boolean initAction(StrategicAction action) {
+    public StrategicAction initAction(StrategicAction action) {
         if (action instanceof ShimAction) {
             ShimAction shim = (ShimAction)action;
             action = shim.pickShimmedAction();
-            if (action == null) return false;
+            if (action == null) return null;
         }
         boolean success = action.generate();
-        if (!success) return false;
+        if (!success) return null;
 
         this.currentAction = action;
         action.setConcern(this);    // in case it was set to anything else, e.g. by a shim
         action.postGenerate();
         notifyActionUpdate(action, StrategicActionDelegate.ActionStatus.STARTING);
         SAIUtils.reportActionAdded(ai, action);
-        return true;
+        return action;
     }
 
     @Override

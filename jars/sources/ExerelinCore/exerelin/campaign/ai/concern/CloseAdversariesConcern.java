@@ -40,7 +40,7 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
 
         List<Pair<FactionAPI, Float>> adversaries = new ArrayList<>();
         for (String factionId : getRelevantLiveFactionIds()) {
-            if (canPirate && NexUtilsFaction.isPirateFaction(factionId)) continue;
+            if (!canPirate && NexUtilsFaction.isPirateFaction(factionId)) continue;
             if (us.isAtWorst(factionId, RepLevel.NEUTRAL)) continue;
             FactionAPI faction = Global.getSector().getFaction(factionId);
             float theirStrength = getFactionStrength(faction);

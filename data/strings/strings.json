@@ -2521,6 +2521,7 @@
 		"statDispositionNegative":"low disposition",
 		"statWarDecisionRating":"war decision rating vs. target",
 		"statAntiRepetition":"recently used this action",
+		"statAllianceScore":"alliance score",
 		"statNumWars":"number of wars",
 		"statFaction":"faction setting",
 		"statBadAction":"bad action for this concern",

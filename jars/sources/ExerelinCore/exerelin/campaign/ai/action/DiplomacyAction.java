@@ -16,7 +16,8 @@ public class DiplomacyAction extends BaseStrategicAction {
     public static final String MEM_KEY_GLOBAL_COOLDOWN = "$nex_diplomacy_cooldown";
 
     public DiplomacyIntel getIntel() {
-        return (DiplomacyIntel)delegate;
+        if (delegate instanceof  DiplomacyIntel) return (DiplomacyIntel)delegate;
+        return null;
     }
 
     @Override
@@ -116,8 +117,7 @@ public class DiplomacyAction extends BaseStrategicAction {
 
     @Override
     public String getIcon() {
-        if (getIntel() != null)  return getIntel().getIcon();
-        return null;
+        return super.getIcon();
     }
 
     @Override

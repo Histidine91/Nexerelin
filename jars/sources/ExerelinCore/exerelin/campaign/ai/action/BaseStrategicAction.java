@@ -152,7 +152,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
 
     @Override
     public String getIcon() {
-        if (delegate != null&& delegate != this) return delegate.getIcon();
+        if (delegate != null && delegate != this) return delegate.getIcon();
         return "graphics/icons/intel/reputation.png";
     }
 

@@ -99,9 +99,9 @@ public interface StrategicConcern {
     /**
      * Generates and initiates the specified strategic action.
      * @param action
-     * @return True if the action was successfully initiated, false otherwise.
+     * @return The action actually taken (may differ from the param in the case of a shim action).
      */
-    boolean initAction(StrategicAction action);
+    StrategicAction initAction(StrategicAction action);
     //void setCurrentAction(StrategicAction action);
     StrategicAction getCurrentAction();
     void clearAction();

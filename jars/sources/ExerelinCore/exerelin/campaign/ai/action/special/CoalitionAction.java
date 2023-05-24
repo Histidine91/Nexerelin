@@ -5,6 +5,7 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.action.BaseStrategicAction;
 import exerelin.campaign.ai.action.EnterAllianceAction;
@@ -13,6 +14,7 @@ import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 
 import java.util.*;
@@ -33,9 +35,13 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             List<Pair<Alliance, Float>> alliances = getEligibleAlliances(enemyId);
             for (Pair<Alliance, Float> entry : alliances) {
                 Alliance all = entry.one;
+                float allyScore = entry.two;
                 if (all.canJoin(ai.getFaction())) {
                     StrategicAction ally = joinAlliance(all);
-                    if (ally != null) return ally;
+                    if (ally != null) {
+                        ally.getPriority().modifyFlat("allyScore", allyScore, StrategicAI.getString("statAllianceScore", true));
+                        return ally;
+                    }
                 } else {
                     potentialFriends.addAll(all.getMembersCopy());
                 }
@@ -61,13 +67,16 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
     }
 
     protected StrategicAction joinAlliance(Alliance all) {
+        if (!NexConfig.enableAlliances) return null;
         EnterAllianceAction act = (EnterAllianceAction)StrategicDefManager.instantiateAction(StrategicDefManager.getActionDef("enterAlliance"));
         act.initForConcern(concern);
         act.setAlliance(all);
+        act.setDelegate(act);
         return act;
     }
 
     protected StrategicAction createAlliance(String otherFactionId) {
+        if (!NexConfig.enableAlliances) return null;
         EnterAllianceAction act = (EnterAllianceAction)StrategicDefManager.instantiateAction(StrategicDefManager.getActionDef("enterAlliance"));
         act.initForConcern(concern);
         act.setFaction(Global.getSector().getFaction(otherFactionId));
@@ -122,6 +131,12 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
         if (score <= 0) return 0;
         score *= all.getAllianceMarketSizeSum();
         return score;
+    }
+
+    @Override
+    public void applyPriorityModifiers() {
+        super.applyPriorityModifiers();
+        //priority.modifyFlat("temp", 400, "lololol");
     }
 
     @Override
