@@ -19,11 +19,11 @@ public class SAIConstants {
     /**
      * For things like the vulnerable faction concern.
      */
-    public static float MIN_FACTION_PRIORITY_TO_CARE = 40;
+    public static float MIN_FACTION_PRIORITY_TO_CARE = 50;
     /**
      * For things like the inadequate defense concern.
      */
-    public static float MIN_MARKET_VALUE_PRIORITY_TO_CARE = 40;
+    public static float MIN_MARKET_VALUE_PRIORITY_TO_CARE = 50;
 
     public static float MAX_ALIGNMENT_MODIFIER_FOR_PRIORITY = 0.25f;
     public static float TRAIT_POSITIVE_MULT = 1.3f;

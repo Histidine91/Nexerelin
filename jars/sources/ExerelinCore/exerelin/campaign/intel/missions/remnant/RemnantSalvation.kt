@@ -871,7 +871,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     protected fun getCombatSkillLevel(): Float {
         var level = 0f
         for (skill : SkillLevelAPI in Global.getSector().playerStats.skillsCopy) {
-            if (skill.skill.governingAptitudeId != Skills.APT_COMBAT) continue;
+            // count tactical drills too
+            if (skill.skill.governingAptitudeId != Skills.APT_COMBAT && skill.skill.id != Skills.TACTICAL_DRILLS) continue;
             if (skill.level >= 2) level += 2
             else if (skill.level >= 1) level++
         }

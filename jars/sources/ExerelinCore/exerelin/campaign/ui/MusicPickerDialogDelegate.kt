@@ -26,11 +26,11 @@ class MusicPickerDialogDelegate(val musicType: String, val width : Float, val he
         val tracks = LinkedHashSet<String>()
         val colors = HashMap<String, Color>()
         for (faction in Global.getSector().allFactions) {
-            if (faction.isPlayerFaction) continue
+            if (faction.isPlayerFaction || !faction.isShowInIntelTab) continue
             tracks.addAll(faction.musicMap.values)
             for (musicSet : String in faction.musicMap.values) {
                 if (colors.containsKey(musicSet)) continue
-                colors.put(musicSet, faction.baseUIColor)
+                colors[musicSet] = faction.baseUIColor
             }
         }
         return Pair(tracks, colors)

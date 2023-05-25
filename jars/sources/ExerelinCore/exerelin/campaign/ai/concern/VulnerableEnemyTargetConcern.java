@@ -15,7 +15,7 @@ import java.util.*;
 public class VulnerableEnemyTargetConcern extends MarketRelatedConcern {
 
     public static final int MAX_MARKETS_FOR_PICKER = 4;
-    public static final float VALUE_MULT = 1.5f;
+    public static final float VALUE_MULT = 2f;
 
     @Override
     public boolean generate() {
@@ -35,6 +35,7 @@ public class VulnerableEnemyTargetConcern extends MarketRelatedConcern {
                 if (gd/size >= SAIConstants.GROUND_DEF_THRESHOLD) continue;
 
                 float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR * VALUE_MULT;
+                valueMod *= (1 + 0.5f * size/5);
                 if (valueMod < SAIConstants.MIN_MARKET_VALUE_PRIORITY_TO_CARE) continue;
 
                 targetsSorted.add(new Pair<>(market, valueMod));
@@ -69,6 +70,7 @@ public class VulnerableEnemyTargetConcern extends MarketRelatedConcern {
             return;
         }
         float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR * VALUE_MULT;
+        valueMod *= (1 + 0.5f * size/5);
         if (valueMod < SAIConstants.MIN_MARKET_VALUE_PRIORITY_TO_CARE) {
             end();
             return;
