@@ -16,7 +16,7 @@
         "diplomatic":-1,
         "hierarchical":1,
     },
-    "diplomacyTraits":["paranoid", "monopolist", "temperamental"],
+    "diplomacyTraits":["paranoid", "monopolist", "temperamental", "devious"],
 
     "factionIdForHqResponse":"lions_guard",
     "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.DiktatNamer",
