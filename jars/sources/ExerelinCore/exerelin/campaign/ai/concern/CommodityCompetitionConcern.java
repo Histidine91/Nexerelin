@@ -15,9 +15,7 @@ import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.econ.EconomyInfoHelper;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
 import lombok.Getter;
 
 import java.awt.*;
@@ -53,6 +51,8 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
         WeightedRandomPicker<EconomyInfoHelper.ProducerEntry> picker1 = new WeightedRandomPicker<>();
 
         for (EconomyInfoHelper.ProducerEntry pe : competitors) {
+            NexFactionConfig conf = NexConfig.getFactionConfig(pe.factionId);
+            if (!conf.playableFaction || conf.pirateFaction) continue;
             if (alreadyConcerned.contains(pe.factionId)) continue;
             if (alreadyConcerned.contains(pe.commodityId)) continue;
             picker1.add(pe, pe.output);
