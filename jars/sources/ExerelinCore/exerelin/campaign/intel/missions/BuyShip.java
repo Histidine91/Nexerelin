@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMission;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent;
 import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog;
 import com.fs.starfarer.api.impl.campaign.plog.SModRecord;
+import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsBaseOfficial;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -192,6 +193,12 @@ public class BuyShip extends HubMissionWithBarEvent {
 	}
 
 	protected void afterSale(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		if (member.getCaptain().isAICore() && !Misc.isUnremovable(member.getCaptain())) {
+			String aicId = member.getCaptain().getAICoreId();
+			Global.getSector().getPlayerFleet().getCargo().addCommodity(aicId, 1);
+			AddRemoveCommodity.addCommodityGainText(aicId, 1, dialog.getTextPanel());
+		}
+
 		int sMods = this.getSModsInstalledByPlayer(member);
 		if (sMods > 0) {
 			Global.getSector().getPlayerStats().addStoryPoints(sMods, dialog.getTextPanel(), false);
@@ -337,15 +344,15 @@ public class BuyShip extends HubMissionWithBarEvent {
 
 		float price = getPrice();
 		if (price > PRICE_IMPORTANCE_HIGH) {
-			log.info("Setting medium rep changes");
+			//log.info("Setting medium rep changes");
 			setRepFactionChangesLow();
 			setRepPersonChangesMedium();
 		} else if (price > PRICE_IMPORTANCE_LOW) {
-			log.info("Setting low rep changes");
+			//log.info("Setting low rep changes");
 			setRepFactionChangesVeryLow();
 			setRepPersonChangesLow();
 		} else {
-			log.info("Setting tiny rep changes");
+			//log.info("Setting tiny rep changes");
 			setRepFactionChangesTiny();
 			setRepPersonChangesVeryLow();
 		}
