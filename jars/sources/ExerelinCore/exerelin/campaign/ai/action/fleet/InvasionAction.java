@@ -1,7 +1,9 @@
 package exerelin.campaign.ai.action.fleet;
 
 import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.concern.StrategicConcern;
+import exerelin.campaign.ai.concern.VulnerableEnemyTargetConcern;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
@@ -51,5 +53,9 @@ public class InvasionAction extends OffensiveFleetAction {
         super.applyPriorityModifiers();
         // doesn't need the priority penalty relative to raids
         //priority.modifyFlat("base", 75, StrategicAI.getString("statBase", true));
+
+        if (concern instanceof VulnerableEnemyTargetConcern) {
+            priority.modifyMult("vulnerableTarget", 1.2f, StrategicAI.getString("statConcernType", true));
+        }
     }
 }

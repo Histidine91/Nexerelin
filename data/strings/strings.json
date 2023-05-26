@@ -2524,6 +2524,7 @@
 		"statAllianceScore":"alliance score",
 		"statNumWars":"number of wars",
 		"statFaction":"faction setting",
+		"statConcernType":"concern type",
 		"statBadAction":"bad action for this concern",
 		"statCannotBeSolved":"concern cannot be solved with this action",
 		

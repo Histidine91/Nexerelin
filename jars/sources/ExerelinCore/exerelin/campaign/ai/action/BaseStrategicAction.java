@@ -72,8 +72,8 @@ public abstract class BaseStrategicAction implements StrategicAction {
         }
 
         if (def.hasTag(SAIConstants.TAG_AGGRESSIVE)) {
-            SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.NEUTRALIST,
-                    SAIConstants.TRAIT_NEGATIVE_MULT, false);
+            //SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.NEUTRALIST,
+            //        SAIConstants.TRAIT_NEGATIVE_MULT, false);
             SAIUtils.applyPriorityModifierForTrait(ai.getFactionId(), priority, DiplomacyTraits.TraitIds.PACIFIST,
                     SAIConstants.TRAIT_NEGATIVE_MULT, false);
         }

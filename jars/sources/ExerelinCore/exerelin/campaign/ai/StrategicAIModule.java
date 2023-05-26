@@ -70,6 +70,7 @@ public abstract class StrategicAIModule {
         List<StrategicConcern> newConcerns = new ArrayList<>();
 
         for (StrategicDefManager.StrategicConcernDef def : getRelevantConcernDefs()) {
+            if (!def.enabled) continue;
             if (def.noAutoGenerate) continue;
             StrategicConcern concern = StrategicDefManager.instantiateConcern(def);
             if (concern == null) continue;
@@ -89,7 +90,7 @@ public abstract class StrategicAIModule {
         List<StrategicConcern> toRemove = new ArrayList<>();
         for (StrategicConcern concern : currentConcerns) {
             concern.update();
-            if (!concern.isValid() || concern.isEnded()) {
+            if (!concern.isValid() || concern.isEnded() || !concern.getDef().enabled) {
                 toRemove.add(concern);
             }
         }

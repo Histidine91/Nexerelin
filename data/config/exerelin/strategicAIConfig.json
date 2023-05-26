@@ -13,6 +13,7 @@
 			"desc":"$market (size $size) is a highly valuable target, yet poorly defended for its value. This presents us with an opportunity.",
 			"classPath":"exerelin.campaign.ai.concern.VulnerableEnemyTargetConcern",
 			"tags":["military", "economy", "market", "canInvade", "canRaid", "canSatBomb", "canDestabilize", "canRebel", "trait_predatory"],
+			"enabled":false,	# for now, until I implement factions actually building up their defenses on vulnerable targets
 			"module":MILITARY
 		},
 		"enemyInSharedSystem":{
@@ -27,6 +28,7 @@
 			"desc":"$market (size $size) is a highly valuable target, yet poorly defended for its value. We should strengthen its defenses.",
 			"classPath":"exerelin.campaign.ai.concern.InadequateDefenseConcern",
 			"tags":["military", "economy", "market", "trait_paranoid"],
+			"enabled":false,	# until we implement actions for this
 			"module":MILITARY
 		},
 		"pirateActivity":{

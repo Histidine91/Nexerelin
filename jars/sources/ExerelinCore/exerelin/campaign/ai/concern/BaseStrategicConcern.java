@@ -209,14 +209,16 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         boolean printReason = false;
 
         for (StrategicDefManager.StrategicActionDef possibleActionDef : module.getRelevantActionDefs(this)) {
+            if (!possibleActionDef.enabled) continue;
+            if (Math.random() > possibleActionDef.chance) {
+                if (printReason) log.info(String.format("Action def %s failed chance roll", possibleActionDef.name));
+                continue;
+            }
+
             StrategicAction action = StrategicDefManager.instantiateAction(possibleActionDef);
             action.initForConcern(this);
 
             // check if action is usable
-            if (Math.random() > action.getDef().chance) {
-                if (printReason) log.info(String.format("Action %s failed chance roll", action.getName()));
-                continue;
-            }
             if (!this.canTakeAction(action)) {
                 if (printReason) log.info(String.format("Action %s blocked by concern", action.getName()));
                 continue;

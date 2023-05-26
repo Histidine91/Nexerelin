@@ -39,6 +39,7 @@ public class StrategicDefManager {
                 def.classPath = defJSON.getString("classPath");
                 def.module = ModuleType.valueOf(defJSON.getString("module"));
                 def.noAutoGenerate = defJSON.optBoolean("noAutoGenerate", false);
+                def.enabled = defJSON.optBoolean("enabled", true);
                 List<String> tags = NexUtils.JSONArrayToArrayList(defJSON.getJSONArray("tags"));
                 def.tags.addAll(tags);
 
@@ -58,6 +59,7 @@ public class StrategicDefManager {
                 def.antiRepetition = (float)defJSON.optDouble("antiRepetition", SAIConstants.DEFAULT_ANTI_REPETITION_VALUE);
                 def.idForAntiRepetition = defJSON.optString("idForAntiRepetition", null);
                 def.shim = defJSON.optBoolean("shim", false);
+                def.enabled = defJSON.optBoolean("enabled", true);
                 List<String> tags = NexUtils.JSONArrayToArrayList(defJSON.getJSONArray("tags"));
                 def.tags.addAll(tags);
 
@@ -119,6 +121,7 @@ public class StrategicDefManager {
         public String classPath;
         public ModuleType module;
         public boolean noAutoGenerate;
+        public boolean enabled;
         public Set<String> tags = new HashSet<>();
 
         public StrategicConcernDef(String id) {
@@ -142,6 +145,7 @@ public class StrategicDefManager {
          * Intended for actions that exist purely to replace themselves with another action.
          */
         public boolean shim;
+        public boolean enabled;
         public Set<String> tags = new HashSet<>();
 
         public StrategicActionDef(String id) {
