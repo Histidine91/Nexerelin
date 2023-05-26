@@ -2401,7 +2401,7 @@ FireAll Nex_RemFragments_AttackerConvoOptsTT","""Ah, now we get to the bargainin
 ""We can offer you a finder's fee of $nex_remFragments_bribeMediumStr credits to hand over the ship and its contents. Of course, the alternative is to remain in illegal possession of Tri-Tachyon property, in which case we shall have to take the appropriate measures.""
 
 You're guessing $heOrShe doesn't mean a lawsuit.",,
-#nex_remFragments_attackerConvoTT_paymentNone,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_payment
+nex_remFragments_attackerConvoTT_paymentNone,DialogOptionSelected,"$option == nex_remFragments_attackerConvoTT_payment
 $entity.relativeStrength > 0","$nex_remFragments_rights = true 0
 $nex_remFragments_questioned = true 0
 $nex_remFragments_canRefuse = true 0
