@@ -232,7 +232,7 @@ public class ProcureShip extends CovertActionIntel {
 			else
 				destination.getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().getMothballedShips().addFleetMember(ship);
 
-			StoragePlugin plugin = (StoragePlugin)market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
+			StoragePlugin plugin = (StoragePlugin)destination.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
 			plugin.setPlayerPaidToUnlock(true);
 		} 
 		// if no storage, add as derelict around market
