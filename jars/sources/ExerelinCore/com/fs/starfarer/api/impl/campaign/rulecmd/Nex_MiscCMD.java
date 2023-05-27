@@ -43,9 +43,8 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 	
 	public static boolean hasSierra(MemoryAPI mem) {
 		if (Global.getSector().getPlayerFleet() != null) {
-			for (FleetMemberAPI member : Global.getSector().getPlayerFleet().getMembersWithFightersCopy()) {
-				if (member.getVariant().hasHullMod("fronsec_sierrasconcord")) {
-					//Global.getLogger(Nex_MiscCMD.class).info("Has sierra");
+			for (FleetMemberAPI member : Global.getSector().getPlayerFleet().getFleetData().getMembersListCopy()) {
+				if (member.getVariant().hasHullMod("sotf_sierrasconcord") && !member.getVariant().hasTag("sotf_inert")) {
 					mem.set("$nex_relColor", NexUtilsReputation.getRelColor(-0.2f), 0);
 					return true;
 				}
