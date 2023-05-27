@@ -236,7 +236,7 @@ public class IndustryForBattle {
 			
 			totalStr += str;
 		}
-		if (ourStr < totalStr * 0.5f)
+		if (ourStr <= 0 || ourStr < totalStr * 0.5f)
 			return GroundBattleIntel.getString("noLootReasonStrength");
 		
 		
