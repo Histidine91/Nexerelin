@@ -1159,6 +1159,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			
 			String factionId = market.getFactionId();
 			if (Factions.INDEPENDENT.equals(factionId) || "nex_derelict".equals(factionId)) continue;
+
+			if (StrategicAI.getAI(factionId) != null) continue;
 			
 			//if (!pirateInvasions && !ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
 			//	continue;
