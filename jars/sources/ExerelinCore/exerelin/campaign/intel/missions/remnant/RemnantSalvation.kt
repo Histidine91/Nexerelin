@@ -40,6 +40,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySp
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipRecoverySpecialData
 import com.fs.starfarer.api.loading.VariantSource
+import com.fs.starfarer.api.ui.SectorMapAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.DelayedActionScript
 import com.fs.starfarer.api.util.Misc
@@ -132,14 +133,13 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         }
         if (base == null) return false
 
-        arroyoMarket = Global.getSector().importantPeople.getPerson(People.ARROYO).market;
+        arroyoMarket = Global.getSector().importantPeople.getPerson(People.ARROYO)?.market;
         if (arroyoMarket == null) {
             requireMarketFaction(Factions.TRITACHYON)
             requireMarketNotHidden()
             requireMarketNotInHyperspace()
             preferMarketSizeAtLeast(5)
             arroyoMarket = pickMarket()
-            if (arroyoMarket != null) setupArroyoIfNeeded();
         }
         if (arroyoMarket == null) return false;
 
@@ -206,9 +206,11 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         // Approach base: add some wreckage to the attacked base and disrupt its industries
         beginWithinHyperspaceRangeTrigger(base, 2f, false, Stage.GO_TO_BASE)
         currTrigger.id = "approachBase"
-        val loc = LocData(base!!.primaryEntity, true)
+        var loc = LocData(base!!.primaryEntity, true)
         triggerSpawnDebrisField(DEBRIS_MEDIUM, DEBRIS_DENSE, loc)
+        loc = LocData(base!!.primaryEntity, true)
         triggerSpawnShipGraveyard(Factions.REMNANTS, 2, 2, loc)
+        loc = LocData(base!!.primaryEntity, true)
         triggerSpawnShipGraveyard(Factions.PERSEAN, 4, 5, loc)
         triggerRunScriptAfterDelay(0.01f, GenericMissionScript(this, "trashBase"))
         endTrigger()
@@ -436,6 +438,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_NO_REP_IMPACT] = true
         fleet.memoryWithoutUpdate[MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN] = EnemyFIDConfigGen()
         fleet.memoryWithoutUpdate["\$nex_remSalvation_fleet1"] = true
+        fleet.memoryWithoutUpdate.set(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT, 1.1f);
 
         fleet.inflateIfNeeded()
 
@@ -831,8 +834,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             arroyo.rankId = Ranks.CITIZEN
             arroyo.postId = Ranks.POST_SENIOR_EXECUTIVE
             arroyo.importance = PersonImportance.HIGH
-            arroyo.name.first = "Rayan"
-            arroyo.name.last = "Arroyo"
+            arroyo.name.first = StringHelper.getString("exerelin_misc", "arroyoName1")
+            arroyo.name.last = StringHelper.getString("exerelin_misc", "arroyoName2")
             arroyo.portraitSprite = Global.getSettings().getSpriteName("characters", arroyo.id)
             arroyo.stats.setSkillLevel(Skills.BULK_TRANSPORT, 1f)
             arroyo.stats.setSkillLevel(Skills.INDUSTRIAL_PLANNING, 1f)
@@ -840,14 +843,15 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             arroyo.addTag(Tags.CONTACT_MILITARY)
             arroyo.voice = Voices.BUSINESS
 
-            arroyoMarket!!.getCommDirectory().addPerson(arroyo, 1) // second after Sun
+            arroyoMarket!!.getCommDirectory().addPerson(arroyo, 0)
 
-            //arroyoMarket!!.getCommDirectory().getEntryForPerson(arroyo).setHidden(true)
             arroyoMarket!!.addPerson(arroyo)
             Global.getSector().importantPeople.addPerson(arroyo)
         } else {
-            arroyo.market = arroyoMarket
-            arroyoMarket!!.getCommDirectory().getEntryForPerson(arroyo).setHidden(false)
+            if (arroyo.market == null) arroyo.market = arroyoMarket
+            var directory = arroyoMarket!!.commDirectory.getEntryForPerson(arroyo);
+            if (directory == null) arroyoMarket!!.commDirectory.addPerson(arroyo)
+            else directory.setHidden(false)
         }
         makeImportant(arroyo, "\$nex_remSalvation_arroyo_imp", Stage.INVESTIGATE_LEADS)
     }
@@ -913,18 +917,17 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_badEnd"] = true
     }
 
-    protected fun setLuddicFleetsNonHostile() {
-        for (fleet : CampaignFleetAPI in target!!.containingLocation.fleets) {
+    protected fun setFleetsNonHostile(market : MarketAPI, timer : Float) {
+        for (fleet : CampaignFleetAPI in market.containingLocation.fleets) {
             if (fleet.isPlayerFleet) continue
-            if (fleet.faction == target!!.faction) {
-                Misc.setFlagWithReason(
-                    fleet.memoryWithoutUpdate,
-                    MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE,
-                    "nex_remSalvation_def",
-                    true,
-                    1f
-                )
-            }
+            if (fleet.faction != market.faction) continue;
+            Misc.setFlagWithReason(
+                fleet.memoryWithoutUpdate,
+                MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE,
+                "nex_remSalvation_def",
+                true,
+                timer
+            )
         }
     }
 
@@ -978,7 +981,10 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     override fun advanceImpl(amount: Float) {
         super.advanceImpl(amount)
         val days = Global.getSector().clock.convertToDays(amount)
-        if (currentStage == Stage.DEFEND_PLANET) {
+        if (currentStage == Stage.INVESTIGATE_LEADS) {
+            setFleetsNonHostile(base!!, 30f)
+        }
+        else if (currentStage == Stage.DEFEND_PLANET) {
 
             if (fleet2 != null) {
                 /*
@@ -989,7 +995,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
                 */
                 fleet2AILoop()
             } else {
-                setLuddicFleetsNonHostile()
+                setFleetsNonHostile(target!!, 1f)
             }
 
             if (!targetPKed && fleet2 == null) {
@@ -1083,8 +1089,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         set("\$nex_remSalvation_baseName", base!!.name);
         set("\$nex_remSalvation_baseNameAllCaps", base!!.name.uppercase());
         set("\$nex_remSalvation_baseOnOrAt", base!!.onOrAt);
-        set("\$nex_remSalvation_arroyoMarketName", arroyoMarket!!.name);
-        set("\$nex_remSalvation_arroyoMarketOnOrAt", arroyoMarket!!.onOrAt);
+        set("\$nex_remSalvation_arroyoMarketName", arroyoMarket?.name);
+        set("\$nex_remSalvation_arroyoMarketOnOrAt", arroyoMarket?.onOrAt);
         set("\$nex_remSalvation_remnantSystem", remnantSystem!!.baseName);
         set("\$nex_remSalvation_targetName", target!!.name);
         set("\$nex_remSalvation_targetId", target!!.id);
@@ -1096,14 +1102,15 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         //val clock = Global.getSector().clock.createClock(Global.getSector().clock.timestamp - 1000000);
         //set("\$nex_remSalvation_attackDate", "" + clock.getDay() + " " + Global.getSector().clock.shortMonthString);
 
-        val factionId = PlayerFactionStore.getPlayerFactionId()
+        val faction = PlayerFactionStore.getPlayerFaction();
+        val factionId = faction.id
 
         set("\$nex_remSalvation_playerFactionId", factionId)
-        set("\$nex_remSalvation_isRepresentingState", SectorManager.isFactionAlive(factionId))
-        set("\$nex_remSalvation_playerFaction", PlayerFactionStore.getPlayerFaction().displayName)
-        set("\$nex_remSalvation_thePlayerFaction", PlayerFactionStore.getPlayerFaction().displayNameWithArticle)
-        set("\$nex_remSalvation_playerFactionLeaderRank", PlayerFactionStore.getPlayerFaction().getRank(Ranks.FACTION_LEADER))
-        set("\$nex_remSalvation_haveOwnFaction", PlayerFactionStore.getPlayerFaction().isPlayerFaction && SectorManager.isFactionAlive(Factions.PLAYER))
+        set("\$nex_remSalvation_isRepresentingState", SectorManager.isFactionAlive(factionId) && !Misc.isDecentralized(faction))
+        set("\$nex_remSalvation_playerFaction", faction.displayName)
+        set("\$nex_remSalvation_thePlayerFaction", faction.displayNameWithArticle)
+        set("\$nex_remSalvation_playerFactionLeaderRank", faction.getRank(Ranks.FACTION_LEADER))
+        set("\$nex_remSalvation_haveOwnFaction", faction.isPlayerFaction && SectorManager.isFactionAlive(Factions.PLAYER))
 
         val metSiyavong = Global.getSector().importantPeople.getPerson(People.SIYAVONG)?.memoryWithoutUpdate?.getBoolean("\$metAlready")
         set("\$nex_remSalvation_metSiyavongBefore", metSiyavong)

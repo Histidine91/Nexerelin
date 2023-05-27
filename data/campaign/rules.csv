@@ -2008,6 +2008,10 @@ Highlight $bcb_targetFaction $bcb_reward $bcb_days","""This will be a real test 
 nex_remM1_begin,AddBarEvents,"$global.daysSinceStart > 180
 $global.nex_remM1_seenMission != true
 Nex_CreateMission nex_remM1 score:999","AddBarEvent nex_remM1_barEvent ""Examine your TriPad"" ""As you look around the bar, your TriPad emits an odd noise. Like a cross between the 'message received' and 'error' sounds."" highlight",,,
+nex_remM1_beginDev,AddBarEvents,"$global.daysSinceStart <= 180
+$global.isDevMode
+$global.nex_remM1_seenMission != true
+Nex_CreateMission nex_remM1 score:999","AddBarEvent nex_remM1_barEvent "">> (dev) Examine your TriPad"" ""As you look around the bar, your TriPad emits an odd noise. Like a cross between the 'message received' and 'error' sounds."" highlight",,,
 nex_remM1_intro,DialogOptionSelected,$option == nex_remM1_barEvent,"$global.nex_remM1_seenMission = true
 CallEvent $global.nex_remM1_ref beginIntro","A meaningless error message appears on the screen. Before you can try the system management utility, without any input, something appears on your display.
 
@@ -2130,7 +2134,7 @@ nex_remM1_betrayHegemony2,DialogOptionSelected,"$option == nex_remM1_betray2
 $faction.id == hegemony","AddRemoveCommodity beta_core -2
 Call $global.nex_remM1_ref betray
 $global.nex_remM1_completed = true
-Call $global.nex_remM1 updateStage
+Call $global.nex_remM1_ref updateStage
 AddStoryPoints 1
 FireAll PopulateOptions
 $player.ethosMercenary++","The $personRank's eyes light up like a flux capacitor. ""Excellent work, citizen. I won't ask how you found these, but my superiors will hear of this service to the Hegemony.
@@ -2152,7 +2156,7 @@ nex_remM1_betrayPersean2,DialogOptionSelected,"$option == nex_remM1_betray2
 $faction.id == persean","AddRemoveCommodity beta_core -2
 Call $global.nex_remM1_ref betray
 $global.nex_remM1_completed = true
-Call $global.nex_remM1 updateStage
+Call $global.nex_remM1_ref updateStage
 AddStoryPoints 1
 FireAll PopulateOptions
 $player.ethosMercenary++","The $personRank smiles. ""You came to the right place. I will see to it that these things are sent to their proper place.
@@ -2717,7 +2721,7 @@ nex_remSalvation_base2,DialogOptionSelected,$option == nex_remSalvation_base2,,"
 
 So long as they don't do it with their guns.","nex_remSalvation_base3:Devise a cunning plan
 cutCommLinkNoText:Better think this over first",
-nex_remSalvation_base3,DialogOptionSelected,$option == nex_remSalvation_base3,ShowLargePlanet,"A while later, League aerospace defence goes on high alert when a cargo shuttle enters their defensive network at high speed. Not quite directly at the damaged base.
+nex_remSalvation_base3,DialogOptionSelected,$option == nex_remSalvation_base3,,"A while later, League aerospace defence goes on high alert when a cargo shuttle enters their defensive network at high speed. Not quite directly at the damaged base.
 
 A hail is promptly transmitted. ""Unknown shuttle, you are entering a restricted area! Change course immediately or be fired upon! This is your only warning!""",nex_remSalvation_base4:Continue,
 nex_remSalvation_base4,DialogOptionSelected,$option == nex_remSalvation_base4,"Call $global.nex_remSalvation_ref setupConvoWithOperator
@@ -2731,7 +2735,8 @@ nex_remSalvation_base5,DialogOptionSelected,$option == nex_remSalvation_base5,"F
 AddText ""By now the $personRank is looking like $heOrShe wants to disappear into $hisOrHer uniform. $HeOrShe has been led to believe that this is way above $hisOrHer pay grade, and in truth, $heOrShe is right. ""Stand by, please,"" $heOrShe croaks, before vanishing into the crest of the Persean League Fleet.""","""A likely story! You — did you say Remnants?"" Well, anyone watching the news could come up with that one, but best not to point it out.",nex_remSalvation_base6:Continue,
 nex_remSalvation_base5CommissionOrFree,Nex_RemSalvation_base5_Message,,,"The $personRank is starting to sweat at the situation going off-script. You seize the opportunity to explain that you were sent directly from Kazeron by Navarch Kato himself, who emphasized the critical importance of your mission to the security of the League. Casually, you note that a court-martial is the absolute best $heOrShe could expect were $heOrShe to blow your shuttle out of the sky. You make an offhand mention of the words 'need-to-know'.",,"Has League commission, or no commission and no live player faction"
 nex_remSalvation_base5CommissionOther,Nex_RemSalvation_base5_Message,"$nex_remSalvation_playerFactionId != persean
-$nex_remSalvation_playerFactionId != player",,"The $personRank is starting to sweat at the situation going off-script. You seize the opportunity to explain that you were sent directly from the office of the $nex_remSalvation_playerFactionLeaderRank, to offer the assistance of $nex_remSalvation_thePlayerFaction in this difficult time. Casually you note that any form of aggression directed against your person would constitute an act of war. You make an offhand mention of the words 'need-to-know'.",,Commissioned by non-League faction
+$nex_remSalvation_playerFactionId != player
+$nex_remSalvation_isRepresentingState",,"The $personRank is starting to sweat at the situation going off-script. You seize the opportunity to explain that you were sent directly from the office of the $nex_remSalvation_playerFactionLeaderRank, to offer the assistance of $nex_remSalvation_thePlayerFaction in this difficult time. Casually you note that any form of aggression directed against your person would constitute an act of war. You make an offhand mention of the words 'need-to-know'.",,Commissioned by non-League faction
 nex_remSalvation_base5CommissionPlayerFaction,Nex_RemSalvation_base5_Message,"$nex_remSalvation_isRepresentingState
 $nex_remSalvation_playerFactionId == player",,"The $personRank is starting to sweat at the situation going off-script. You seize the opportunity to explain that you came directly from $nex_remSalvation_thePlayerFaction, offering your assistance as a good citizen of the interstellar community in this time of crisis. Firing on you would have highly negative repercussions for $nex_remSalvation_playerFaction–League relations, which in turn would have highly negative repercussions for the $personRank's career. You make an offhand mention of the words 'need-to-know'.",,No commission and has live player faction
 nex_remSalvation_base6,DialogOptionSelected,"$option == nex_remSalvation_base6
@@ -2754,7 +2759,7 @@ nex_remSalvation_base8,DialogOptionSelected,$option == nex_remSalvation_base8,,"
 Of course not. You were hardly going to risk getting blown out of the sky by a hypervelocity missile if the defenders were jittery enough to shoot first and ask questions later. The shuttle's communications gear is perfectly capable of relaying transmissions from your $shipOrFleet.
 
 For the first time in this conversation, $personLastName smiles. ""Very wise, $playerLastName. Very well, we shall speak of this once you are down here.""",nex_remSalvation_base9:Cut the comm link and continue,
-nex_remSalvation_base9,DialogOptionSelected,$option == nex_remSalvation_base9,ShowDefaultVisual,"You board your actual shuttle and ride it down to $marketName. The defense grid cautiously greenlights your arrival, and the craft touches down smoothly on its assigned pad.
+nex_remSalvation_base9,DialogOptionSelected,$option == nex_remSalvation_base9,ShowLargePlanet,"You board your actual shuttle and ride it down to $marketName. The defense grid cautiously greenlights your arrival, and the craft touches down smoothly on its assigned pad.
 
 Half a platoon of armored League Marines is there to receive you, along with a couple of light armored vehicles further back, their autocannons ready to hose API rounds through the shuttle hatch. Quite excessive considering the threat you can actually pose in person, but no-one's taking any chances.
 
@@ -2800,7 +2805,8 @@ $global.nex_remSalvation_ref != null
 Call $global.nex_remSalvation_ref updateData
 $nex_remSalvation_stage == INVESTIGATE_LEADS
 !$nex_remSalvation_haveArroyoComms",SetOptionColor nex_remSalvation_askForArroyoCommsID highlight,,nex_remSalvation_askForArroyoCommsID:Ask if $heOrShe knows any senior Tri-Tachyon executives,
-nex_remSalvation_askForArroyoCommsID,DialogOptionSelected,$option == nex_remSalvation_askForArroyoCommsID,"Highlight ""Rayan Arroyo""
+nex_remSalvation_askForArroyoCommsID,DialogOptionSelected,$option == nex_remSalvation_askForArroyoCommsID,"SetTextHighlightColors h $nex_remSalvation_ttColor
+Highlight $nex_remSalvation_arroyoMarketName ""Rayan Arroyo""
 Call $global.nex_remSalvation_ref setupArroyo
 AddTextSmall ""Received comms ID for Rayan Arroyo"" highlight
 FireAll PopulateOptions","When you explain what you need, $personName nods. ""$nex_remSalvation_arroyoMarketName, man $nex_remSalvation_arroyoMarketOnOrAt named Rayan Arroyo. Known figure in Tri-Tachyon hierarchy. Points of vulnerability to selfkind known. Susceptible to outside influence.
@@ -2860,11 +2866,20 @@ nex_remSalvation_arroyoIntro6,DialogOptionSelected,$option == nex_remSalvation_a
 
 $personLastName acknowledges this with the rise of one perfectly groomed eyebrow. ""Calm down. Just making sure no one's listening."" $HeOrShe flips through a series of null readouts on a datapad and, satisfied, sets it aside.",nex_remSalvation_arroyo1:Continue,
 nex_remSalvation_arroyoIntro3Fast,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro3
-$nex_remSalvation_metArroyoBefore",ShowDefaultVisual,"It doesn't take your shuttle long to reach $personLastName's chalet once more. The servants, human and robot, usher you into the same grand parlor as before, where the $personPost is seated at a silk-draped wooden table.
+$nex_remSalvation_metArroyoBefore score:15",ShowDefaultVisual,"It doesn't take your shuttle long to reach $personLastName's chalet once more. The servants, human and robot, usher you into the same grand parlor as before, where the $personPost is seated at a silk-draped wooden table.
 
 You catch a view of the display on the entertainment console before $personLastName shuts it off; a list of recent purchases, including the complete Water Sigil game series. An interesting choice; normally non-space and supernatural settings only have a large following on the Luddic worlds.",nex_remSalvation_arroyo1:Continue,
-nex_remSalvation_arroyo1,DialogOptionSelected,"$option == nex_remSalvation_arroyo1
-",ShowPersonVisual true,"""So,"" $heOrShe says as you take a seat opposite him, ""why do you think I can help you?""
+nex_remSalvation_arroyoIntro3NotEochuBres,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro3
+$market.id != eochu_bres score:10",ShowLargePlanet,"Your shuttle descends swiftly upon $marketName. The flight path soon deviates from the general approach corridor which has been ticking off minor use-fees from the Tri-Tachyon owned flight control: general volume access fee, priority flight lane fee, service fee, customer satisfaction insurance charge, advertisement bypass fee - you swipe the notifications off and focus on the landscape.
+
+Your shuttle approaches an ellipsoid landing pad that appears to hang in the thin air over a gorge.",nex_remSalvation_arroyoIntro4:Continue,
+nex_remSalvation_arroyoIntro4NotEochuBres,DialogOptionSelected,"$option == nex_remSalvation_arroyoIntro4
+$market.id != eochu_bres score:10",ShowPersonVisual true,"A human and a robotic servant greet you placidly as you arrive and lead you inside to a grand parlor done in dark geometric style. Gold inlay gleams in onyx tabletops, and the polished granite floor is set with tastefully patterned jewel-tone carpets placed slightly askew.
+
+Seated at a silk-draped table, $personLastName acknowledges your entrance with a nod as the servants disappear. $HeOrShe taps his datapad with two fingers. You hear the soft signal loss ping from your datapad and your sidearm hand twitches instinctively.
+
+$personLastName acknowledges this with the rise of one perfectly groomed eyebrow. ""Calm down. Just making sure no one's listening."" $HeOrShe flips through a series of null readouts on a datapad and, satisfied, sets it aside.",nex_remSalvation_arroyo1:Continue,
+nex_remSalvation_arroyo1,DialogOptionSelected,$option == nex_remSalvation_arroyo1,ShowPersonVisual true,"""So,"" $heOrShe says as you take a seat opposite him, ""why do you think I can help you?""
 
 You start to sketch out your encounter on $nex_remSalvation_baseOnOrAt $nex_remSalvation_baseName, but $personLastName waves you off. ""I do view the news, captain. I already know the public details, and the ones that aren't I don't need or want to know. What I meant was, why are you coming to me with a League affair?""","nex_remSalvation_arroyo2:""Tri-Tachyon made the Remnants. You might know something about them.""",
 nex_remSalvation_arroyo2,DialogOptionSelected,"$option == nex_remSalvation_arroyo2
@@ -3195,21 +3210,22 @@ nex_remSalvation_epilogue2,DialogOptionSelected,"$option == nex_remSalvation_epi
 Call $global.nex_remSalvation_ref complete","""Swift action, I expect. The Sector has seen that these demons are not a distant memory of the past, but a present, mortal danger to everything we whole dear. Perhaps,"" $hisOrHer face hardens, ""the Hegemony will not be so slack this time in purging the threat from the Sector.
 
 ""I look forward to my next deployment with the Knights to the fringes, hunting the demons in their very lairs. When that day comes, you would do the Church honor by joining us, captain.""","#nex_remSalvation_epilogue3:Continue
-cutCommLinkPolite:Thank $himOrHer for the offer and cut the comm link",
+cutCommLinkPolite:Say goodbye and cut the comm link",
 nex_remSalvation_epilogue2Commission,DialogOptionSelected,"$option == nex_remSalvation_epilogue2
 !$global.nex_remSalvation_toldKnightsAboutMidnight
 $nex_remSalvation_playerFactionId == luddic_church score:100","AddStoryPoints 2
 Call $global.nex_remSalvation_ref complete","""Swift action, I expect. The Sector has seen that these demons are not a distant memory of the past, but a present, mortal danger to everything we whole dear. Perhaps,"" $hisOrHer face hardens, ""the Hegemony will not be so slack this time in purging the threat from the Sector.
 
 ""I look forward to my next deployment with the Knights to the fringes, hunting the demons in their very lairs. When that day comes, I would be honored if you would join me, captain.""","#nex_remSalvation_epilogue3:Continue
-cutCommLinkPolite:Thank $himOrHer for the offer and cut the comm link",
+cutCommLinkPolite:Say goodbye and cut the comm link",
 nex_remSalvation_epilogue2Midnight,DialogOptionSelected,"$option == nex_remSalvation_epilogue2
 $global.nex_remSalvation_toldKnightsAboutMidnight ","AddStoryPoints 2
 Call $global.nex_remSalvation_ref complete","$personLastName sighs and rests $hisOrHer head on a hand. ""I cannot truthfully say. We have accepted the aid of demons to fight other demons. What does it mean, and where do we go from here? Is this a message from Ludd that will be revealed to us in time?
 
 ""I confess that I am no theologian. But the Synod is full of theologians, and they will be debating the significance of this event for many nights to come. For myself..."" here, a distant gaze, ""I... may have to re-examine my own understanding of scripture. It is easy enough to name these thinking artificial constructs 'demon'... but when does a label clarify, and when does it obscure?""
 
-$HeOrShe shakes $hisOrHer head. ""I apologize for the ramble, captain. Thank you again for all that you have done.""",cutCommLinkPolite:Thank $himOrHer for the offer and cut the comm link,
+$HeOrShe shakes $hisOrHer head. ""I apologize for the ramble, captain. Thank you again for all that you have done.""","#nex_remSalvation_epilogue3:Continue
+cutCommLinkPolite:Say goodbye and cut the comm link",
 #nex_remSalvation_epilogue3,DialogOptionSelected,$option == nex_remSalvation_epilogue3,$player.haveArgentShrineInvitation = true,"""Oh, and... if you are ever on Gilead again, we could visit the shrine together. It is a beautiful place, and one that soothes body and soul alike.""",cutCommLinkPolite:Thank $himOrHer for the offer and cut the comm link,
 nex_remSalvation_knightGeneric,OpenCommLink,"$id == nex_luddicKnight score:5
 $global.nex_remSalvation_ref != null score:5
