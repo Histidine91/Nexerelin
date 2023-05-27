@@ -72,6 +72,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	protected SectorEntityToken scoutPoint;
 	protected CampaignFleetAPI station;
 	protected CampaignFleetAPI straggler;
+	protected SectorEntityToken stationToken;
 	protected boolean stationIsStrong = false;
 	
 	protected PersonAPI admiral;
@@ -93,7 +94,13 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	// runcode exerelin.campaign.intel.missions.remnant.RemnantBrawl.fixDebug()
 	public static void fixDebug() {
 		RemnantBrawl mission = (RemnantBrawl)Global.getSector().getMemoryWithoutUpdate().get("$nex_remBrawl_ref");
-		mission.setDefendersNonHostile();
+
+		for (CampaignFleetAPI fleet : mission.attackFleets) {
+			fleet.clearAssignments();
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, mission.stationToken, 20,
+					StringHelper.getFleetAssignmentString("attacking", mission.station.getName()));
+			fleet.addAssignment(FleetAssignment.INTERCEPT, mission.station, 20);
+		}
 	}
 	
 	@Override
@@ -503,16 +510,23 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	public void orderAttack() {
 		if (launchedAttack) return;
 		
-		SectorEntityToken targetToken = station.getContainingLocation().createToken(station.getLocation().x, station.getLocation().y);
+		stationToken = station.getContainingLocation().createToken(station.getLocation().x, station.getLocation().y);
+		station.getContainingLocation().addEntity(stationToken);
+		stationToken.setCircularOrbit(station, 0, 100, 60);
 		
 		for (CampaignFleetAPI fleet : attackFleets) {
 			fleet.clearAssignments();
 			boolean sittingOnSystem = currentStage == Stage.SCOUT;
-			int time = sittingOnSystem ? 15 : 45; 
+			int time = sittingOnSystem ? 15 : 45;
 			fleet.addAssignment(betrayed ? FleetAssignment.DELIVER_MARINES : FleetAssignment.ATTACK_LOCATION, 
-					targetToken, time, StringHelper.getFleetAssignmentString("attacking", station.getName()));
+					stationToken, time, StringHelper.getFleetAssignmentString("attacking", station.getName()));
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, stationToken, 20,
+					StringHelper.getFleetAssignmentString("attacking", station.getName()));
 			fleet.addAssignment(FleetAssignment.INTERCEPT, station, 20);
 		}
+
+		straggler.getMemoryWithoutUpdate().unset(MemFlags.FLEET_IGNORES_OTHER_FLEETS);
+		straggler.getMemoryWithoutUpdate().unset(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS);
 		
 		//unsetFleetSus();
 		setFleetSusExpire();
@@ -770,7 +784,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		for (final CampaignFleetAPI fleet : createdFleets) {
 			if (!fleet.isAlive()) continue;
 			Misc.giveStandardReturnToSourceAssignments(fleet, true);
-			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_remBrawl", false, 9999);
+			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_remBrawl", false, 0);
 			if (FleetTypes.MERC_ARMADA.equals(NexUtilsFleet.getFleetType(fleet))) {
 				fleet.addScript(new DelayedActionScript(9) {
 					@Override
@@ -781,6 +795,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 				});
 			}
 		}
+		if (stationToken != null) stationToken.getContainingLocation().removeEntity(stationToken);
 		stagingPoint.getContainingLocation().removeEntity(stagingPoint);
 	}
 	
