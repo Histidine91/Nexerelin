@@ -10,6 +10,8 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.ai.action.StrategicAction;
+import exerelin.campaign.ai.action.fleet.OffensiveFleetAction;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
@@ -102,6 +104,15 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
             markets.add(entry.market);
         }
         return markets;
+    }
+
+    @Override
+    public boolean canTakeAction(StrategicAction action) {
+        if (action instanceof OffensiveFleetAction && getMarkets().isEmpty()) {
+            return false;
+        }
+
+        return super.canTakeAction(action);
     }
 
     @Override

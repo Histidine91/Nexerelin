@@ -443,6 +443,12 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			else return ActionStatus.CANCELLED;
 		}
 		if (getCurrentStage() == 0) return ActionStatus.STARTING;
+		if (isEnding() || isEnded()) {
+			if (currentStage >= stages.size()) return ActionStatus.SUCCESS;
+			RaidStage stage = stages.get(currentStage);
+			RaidStageStatus status = stage.getStatus();
+			return status == RaidStageStatus.SUCCESS ? ActionStatus.SUCCESS : ActionStatus.FAILURE;
+		}
 		return ActionStatus.IN_PROGRESS;
 	}
 

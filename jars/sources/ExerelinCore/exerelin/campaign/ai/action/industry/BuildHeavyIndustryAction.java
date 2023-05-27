@@ -54,6 +54,12 @@ public class BuildHeavyIndustryAction extends BuildIndustryAction {
 
         // first look for existing heavy industries we can upgrade
         for (MarketAPI market : markets) {
+            if (market.hasIndustry(Industries.ORBITALWORKS) || market.hasIndustry("ms_orbitalShipyard")) {
+                // we already have the best industry already, it's probably just disrupted or something
+                // could just exit the action here, but it may be worth building a backup
+                continue;
+            }
+
             if (market.hasIndustry(Industries.HEAVYINDUSTRY) || market.hasIndustry("ms_modularFac")) {
                 float score = market.getSize();
                 if (score > bestScore) {

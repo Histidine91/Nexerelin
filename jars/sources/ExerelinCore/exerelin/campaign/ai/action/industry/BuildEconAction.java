@@ -85,14 +85,6 @@ public class BuildEconAction extends BuildIndustryAction {
     public void applyPriorityModifiers() {
         super.applyPriorityModifiers();
 
-        // don't bother building a new econ industry if this is an import dependency concern and we're already producing the good
-        if (concern instanceof ImportDependencyConcern) {
-            String commodityId = ((HasCommodityTarget)concern).getCommodityIds().get(0);
-            int existingProduction = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
-            if (existingProduction > 0)
-                priority.modifyMult("cannotBeSolved", 0, StrategicAI.getString("statCannotBeSolved", true));
-        }
-
         // this is not a good way to solve commodity competition
         if (concern instanceof CommodityCompetitionConcern) {
             String commodityId = ((HasCommodityTarget)concern).getCommodityIds().get(0);
@@ -105,6 +97,14 @@ public class BuildEconAction extends BuildIndustryAction {
     public boolean canUse(StrategicConcern concern) {
         if (!concern.getDef().hasTag("canBuildEcon")) return false;
         if (!super.canUse(concern)) return false;
+
+        // don't bother building a new econ industry if this is an import dependency concern and we're already producing the good
+        if (concern instanceof ImportDependencyConcern) {
+            String commodityId = ((HasCommodityTarget)concern).getCommodityIds().get(0);
+            int existingProduction = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
+            if (existingProduction > 0)
+                return false;
+        }
 
         return concern instanceof HasCommodityTarget || concern instanceof HasIndustryToBuild;
     }

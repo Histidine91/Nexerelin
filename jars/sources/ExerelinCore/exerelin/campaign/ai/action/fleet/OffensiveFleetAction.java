@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.BaseStrategicAction;
+import exerelin.campaign.ai.concern.ImportDependencyConcern;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -73,6 +74,7 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
     @Override
     public void applyPriorityModifiers() {
         super.applyPriorityModifiers();
+
         if (FleetPoolManager.USE_POOL) {
 
             float curPool = FleetPoolManager.getManager().getCurrentPool(ai.getFactionId());
@@ -99,6 +101,13 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
     public boolean canUse(StrategicConcern concern) {
         if (ai.getFaction().isPlayerFaction() && !NexConfig.followersInvasions)
             return false;
+
+        // don't try to fix an import dependency with this if none of the targets actually produce the thing
+        if (concern instanceof ImportDependencyConcern) {
+            if (concern.getMarkets().isEmpty()) {
+                return false;
+            }
+        }
 
         return true;
     }

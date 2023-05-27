@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.concern.HostileInSharedSystemConcern;
+import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
@@ -77,5 +79,13 @@ public class PirateRaidAction extends RaidAction {
         FleetPoolManager.RequisitionParams rp = new FleetPoolManager.RequisitionParams();
         rp.factionId = ai.getFactionId();   // faction taking the action pays the fleet pool cost, rather than our proxies
         return rp;
+    }
+
+    @Override
+    public boolean canUse(StrategicConcern concern) {
+        // don't get ourselves raided as well as the target
+        if (concern instanceof HostileInSharedSystemConcern) return false;
+
+        return super.canUse(concern);
     }
 }

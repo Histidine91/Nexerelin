@@ -57,12 +57,13 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
     @Override
     public String getName() {
+        if (alliance == null) return "Alliance - error";
         return alliance.getName();
     }
 
     @Override
     public String getIcon() {
-        if (alliance.getIntel() != null) return alliance.getIntel().getIcon();
+        if (alliance != null && alliance.getIntel() != null) return alliance.getIntel().getIcon();
         return null;
     }
 
