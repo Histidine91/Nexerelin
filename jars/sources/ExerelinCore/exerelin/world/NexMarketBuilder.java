@@ -194,7 +194,7 @@ public class NexMarketBuilder
 		// add Cabal submarkets
 		if (ExerelinModPlugin.HAVE_UNDERWORLD)
 		{
-			if (!UnderworldModPlugin.Module_StarlightCabal) return;
+			if (!UnderworldModPlugin.isStarlightCabalEnabled()) return;
 			List<MarketAPI> cabalCandidates = new ArrayList<>();
 			List<MarketAPI> cabalCandidatesBackup = new ArrayList<>();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
