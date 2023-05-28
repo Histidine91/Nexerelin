@@ -97,6 +97,8 @@ public class HostileInSharedSystemConcern extends MarketRelatedConcern {
     public boolean isValid() {
         if (market == null) return false;
         if (!repCheck(market)) return false;
+        boolean theyArePirate = NexUtilsFaction.isPirateFaction(market.getFactionId());
+        if (NexUtilsFaction.isPirateFaction(ai.getFactionId()) != theyArePirate) return false;
 
         return havePresenceInSystem();
     }

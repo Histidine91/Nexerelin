@@ -5,6 +5,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.campaign.intel.agents.InstigateRebellion;
+import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.utilities.NexConfig;
 
 public class InstigateRebellionAction extends CovertAction {
@@ -40,6 +41,7 @@ public class InstigateRebellionAction extends CovertAction {
     @Override
     public boolean canUse(StrategicConcern concern) {
         if (!NexConfig.enableInvasions) return false;
+        if (!RebellionCreator.ENABLE_REBELLIONS) return false;
         if (!concern.getDef().hasTag("canInvade") && !concern.getDef().hasTag("canInstigateRebellion"))
             return false;
         MarketAPI concernTarget = concern.getMarket();
