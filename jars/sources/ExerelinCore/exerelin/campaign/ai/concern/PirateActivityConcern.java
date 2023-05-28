@@ -24,7 +24,7 @@ import java.util.*;
 
 public class PirateActivityConcern extends BaseStrategicConcern {
 
-    public static final float RAGE_REDUCTION_ON_SUCCESS = 35;
+    public static final float RAGE_REDUCTION_ON_SUCCESS = 50;
 
     @Getter protected float rage = 0;
     Set<RageEntry> affectedMarkets = new HashSet<>();

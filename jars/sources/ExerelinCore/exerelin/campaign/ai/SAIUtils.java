@@ -10,8 +10,10 @@ import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import lombok.extern.log4j.Log4j;
+import org.apache.log4j.Logger;
 
 import java.util.Collection;
 
@@ -72,7 +74,11 @@ public class SAIUtils {
         }
     }
 
-
+    public static void logDebug(Logger log, String msg) {
+        boolean logThis = ExerelinModPlugin.isNexDev && SAIConstants.DEBUG_LOGGING;
+        if (!logThis) return;
+        log.info(msg);
+    }
 
     public static void reportStrategyMeetingHeld(StrategicAI ai)
     {

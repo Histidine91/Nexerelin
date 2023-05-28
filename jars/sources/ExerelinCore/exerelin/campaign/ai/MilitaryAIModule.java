@@ -63,6 +63,7 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
             RaidRecord record = raidIter.next();
             record.age += days;
             if (record.age > RaidRecord.MAX_AGE) {
+                SAIUtils.logDebug(log, String.format("Removing raid record %s, age %s", record.name, record.age));
                 raidIter.remove();
             }
         }

@@ -8,30 +8,29 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.MilitaryAIModule;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.StrategicAIListener;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
+import exerelin.campaign.ai.concern.RetaliationConcernV2;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Log4j
 public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener {
@@ -177,6 +176,74 @@ public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener {
 		tooltip.addTable("", 0, pad);
 	}
 
+	public void printRetaliationEntries(TooltipMakerAPI tooltip, float width, float pad) {
+		tooltip.addSectionHeading("Strategic AI retaliation", com.fs.starfarer.api.ui.Alignment.MID, pad);
+		float smallPad = 3;
+		Color hl = Misc.getHighlightColor();
+
+		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+			StrategicAI ai = StrategicAI.getAI(factionId);
+			if (ai == null) continue;
+			MilitaryAIModule mil = ai.getMilModule();
+			Color f = ai.getFaction().getBaseUIColor();
+
+			for (StrategicConcern concern : mil.getCurrentConcerns()) {
+				if (!(concern instanceof RetaliationConcernV2)) continue;
+
+				tooltip.addPara(ai.getFaction().getDisplayName(), f, pad);
+
+				List<Pair<MilitaryAIModule.RaidRecord, Float>> raidsSorted = new ArrayList<>();
+				List<MilitaryAIModule.RaidRecord> recentRaids = new ArrayList<>();
+				Map<String, Integer> numRaidsByFaction = new HashMap<>();
+
+				float totalImpact = 0;
+				for (MilitaryAIModule.RaidRecord raid : mil.getRecentRaids()) {
+					if (raid.defender != ai.getFaction()) continue;
+					if (!raid.attacker.isHostileTo(ai.getFaction())) continue;
+					if (!SectorManager.isFactionAlive(raid.attacker.getId())) continue;
+
+					recentRaids.add(raid);
+					NexUtils.modifyMapEntry(numRaidsByFaction, raid.attacker.getId(), 1);
+					totalImpact += raid.getAgeAdjustedImpact();
+				}
+				if (recentRaids.isEmpty()) {
+					continue;
+				}
+
+				MilitaryAIModule.RaidRecord topRaid = null;
+
+				for (MilitaryAIModule.RaidRecord raid : recentRaids) {
+					// multiply each raid's impact by number of raids that faction has in total, so if someone is frequently attacking us we're extra mad
+					float adjImpact = raid.getAgeAdjustedImpact() * (1 + 0.25f * numRaidsByFaction.get(raid.attacker.getId()));
+					raidsSorted.add(new Pair<>(raid, adjImpact));
+				}
+
+				Collections.sort(raidsSorted, RetaliationConcernV2.VALUE_COMPARATOR);
+
+				topRaid = raidsSorted.get(0).one;
+				float adjustedImpact = raidsSorted.get(0).two;
+				float prio = (adjustedImpact + totalImpact)*20;
+
+				tooltip.addPara("Priority: %s", smallPad, Misc.getHighlightColor(), String.format("%.0f", prio));
+
+				bullet(tooltip);
+				tooltip.setTextWidthOverride(0);
+				for (Pair<MilitaryAIModule.RaidRecord, Float> raidEntry : raidsSorted) {
+					MilitaryAIModule.RaidRecord raid = raidEntry.one;
+					String str = "%s by %s: %s (age %s)";
+					LabelAPI label = tooltip.addPara(str, smallPad, hl, raid.name, raid.attacker.getDisplayName(),
+							String.format("%.2f", raidEntry.two), String.format("%.0f", raid.age));
+					label.setHighlightColors(hl, raid.attacker.getBaseUIColor(), hl, hl);
+				}
+
+				unindent(tooltip);
+
+				//InvasionFleetManager.getManager().modifySpawnCounterV2(factionId, 36000);
+				break;
+			}
+		}
+	}
+
 	@Override
 	public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
 		TooltipMakerAPI superheaderHolder = panel.createUIElement(width/3, 40, false);
@@ -189,7 +256,13 @@ public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener {
 		
 		TooltipMakerAPI tableHolder = panel.createUIElement(width, 600, true);
 		
-		createCommodityProfitTable(tableHolder, width, 10);
+		//createCommodityProfitTable(tableHolder, width, 10);
+		try {
+			printRetaliationEntries(tableHolder, width, 10);
+		} catch (Exception ex) {
+			log.error("Failed to generate retalation entries", ex);
+		}
+
 		panel.addUIElement(tableHolder).inTL(3, 48);
 	}
 
@@ -241,12 +314,12 @@ public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener {
 
 	@Override
 	public void reportConcernAdded(StrategicAI ai, StrategicConcern concern) {
-		concern.getPriority().modifyFlat("debug", 1, "Listener debug (added)");
+		//concern.getPriority().modifyFlat("debug", 1, "Listener debug (added)");
 	}
 
 	@Override
 	public void reportConcernUpdated(StrategicAI ai, StrategicConcern concern) {
-		concern.getPriority().modifyFlat("debug", 1, "Listener debug (updated)");
+		//concern.getPriority().modifyFlat("debug", 1, "Listener debug (updated)");
 	}
 
 	@Override
