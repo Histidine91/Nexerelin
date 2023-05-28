@@ -3795,7 +3795,16 @@ nex_PKHackStoryWhatDoGiveMidnight,DialogOptionSelected,$option == nex_pk_hackSto
 
    (much amusement!)
 ",pk_hackStoryGetData:Continue,
-,,,,,,
+nex_pkCacheDefenderPreEmptAlly,TriggerAutomatedDefenses,"$core_pkCache score:100
+Nex_Alliance isPlayerAlliedWith hegemony
+!$pk_triedCommLink
+!$pk_detectedCommLink","$pk_triedCommLink = true 0
+$pk_detectedCommLink = true","""$PlayerSirOrMadam!"" 
+
+Your comms officer calls for your attention with an excited look, ""I'm picking up an anomalous signal, it's an open channel. Just a carrier signal, a low-grade military fallback standard. Very faint and lossy. We're really only picking this up because of the MILAUX package installed in our comms system to help integrate with Hegemony fleet actions.""
+
+""Shall I open a link?"" Their hands don't quite tremble over the controls. Whatever is using this frequency is either Hegemony or has some of their less secure emergency codes.","pk_investigate:Try to open a comm link on this channel
+pk_ignore:Ignore it and close in on the asteroid",
 ,,,,,,
 #END Scythe of Orion modifications,,,,,,
 ,,,,,,

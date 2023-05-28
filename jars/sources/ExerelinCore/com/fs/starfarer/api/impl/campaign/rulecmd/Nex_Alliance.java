@@ -6,16 +6,19 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler.isRuler;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import lombok.extern.log4j.Log4j;
+
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.log4j.Log4j;
+
+import static com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler.isRuler;
 
 @Log4j
 public class Nex_Alliance extends BaseCommandPlugin {
@@ -31,6 +34,10 @@ public class Nex_Alliance extends BaseCommandPlugin {
 		
 		String arg = params.get(0).getString(memoryMap);
 		switch (arg) {
+			case "isPlayerAlliedWith":
+				String factionId = params.get(1).getString(memoryMap);
+				return AllianceManager.areFactionsAllied(PlayerFactionStore.getPlayerFactionId(), factionId)
+						|| AllianceManager.areFactionsAllied(Factions.PLAYER, factionId);
 			case "enoughRep":
 				return enoughRepToJoin(params.get(1).getString(memoryMap), 
 						params.get(2).getString(memoryMap));
