@@ -902,17 +902,17 @@ Nex_IsBaseOfficial any
 $faction.id != player",,,"11:nex_stabilizePackage_main:""I can help with your unrest problem.""",
 nex_stabilizePackageOptionDisabled,PopulateOptions,"$entity.hasMarket
 $faction.id != player
-!Nex_StabilizePackage enabled","SetTooltip nex_stabilizePackage_main ""$market does not require such assistance at present.""
+!Nex_StabilizePackage enabled","SetTooltip nex_stabilizePackage_main ""$marketName does not require such assistance at present.""
 SetEnabled nex_stabilizePackage_main false",,,
 nex_stabilizePackageOptionCooldown,PopulateOptions,"$entity.hasMarket
 $faction.id != player
-$market.nex_stabilizePackage_cooldown","SetTooltip nex_stabilizePackage_main ""$market has already been recently stabilized. Delivery of further packages will not be worthwhile for $nex_stabilizePackage_textCooldown.""
+$market.nex_stabilizePackage_cooldown","SetTooltip nex_stabilizePackage_main ""$marketName has already been recently stabilized. Delivery of further packages will not be worthwhile for $nex_stabilizePackage_textCooldown.""
 SetTooltipHighlightColors nex_stabilizePackage_main hColor
 SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textCooldown
 SetEnabled nex_stabilizePackage_main false",,,
 nex_stabilizePackageOptionCooldownInvasion,PopulateOptions,"$entity.hasMarket
 $faction.id != player
-$market.nex_captureStabilizeTimeout","SetTooltip nex_stabilizePackage_main ""$market was recently conquered, and the situation remains too chaotic for stabilization to be feasible. This will last for $nex_stabilizePackage_textInvadeCooldown.""
+$market.nex_captureStabilizeTimeout","SetTooltip nex_stabilizePackage_main ""$marketName was recently conquered, and the situation remains too chaotic for stabilization to be feasible. This will last for $nex_stabilizePackage_textInvadeCooldown.""
 SetTooltipHighlightColors nex_stabilizePackage_main hColor
 SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textInvadeCooldown
 SetEnabled nex_stabilizePackage_main false",,,
@@ -1025,10 +1025,10 @@ SetTooltip nex_buyColony ""Requires:\n- Friendly reputation for size 3\n- Cooper
 SetTooltipHighlightColors nex_buyColony good hColor good hColor
 SetTooltipHighlights nex_buyColony Friendly 3 Cooperative 4",,,
 nex_buyColonyOptionDisable2,Nex_BuyColonyDisableCheck,$market.nex_unbuyable score:10,"SetEnabled nex_buyColony false 
-SetTooltip nex_buyColony ""$market cannot be purchased.""",,,
+SetTooltip nex_buyColony ""$marketName cannot be purchased.""",,,
 nex_buyColonyOptionDisableMacau,Nex_BuyColonyDisableCheck,"$faction.id == tiandong
 $market.id == tiandong_macau_market score:15","SetEnabled nex_buyColony false 
-SetTooltip nex_buyColony ""$market is under THI's special administration and cannot be purchased.""",,,
+SetTooltip nex_buyColony ""$marketName is under THI's special administration and cannot be purchased.""",,,
 nex_cedeColonyOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
@@ -1050,7 +1050,7 @@ nex_buyColonyPromptDialog_generic,Nex_BuyColonyPromptDialog,,,"""Hmm, perhaps. Y
 nex_cedeColonyPromptDialog_generic,Nex_CedeColonyPromptDialog,,,"""You do not wish to govern $marketName any longer? That is entirely acceptable to us, but be warned that you will not receive any recompense for this.""",,
 nex_buyColonyConfirm,DialogOptionSelected,$option == nex_buyColony_confirm,"FireBest Nex_BuyColonyConfirmDialog
 Nex_BuyColony buy
-FireAll PopulateOptions","""$market is now under your administration. Welcome to your new duties, $playerName.""",,
+FireAll PopulateOptions","""$marketName is now under your administration. Welcome to your new duties, $playerName.""",,
 nex_cedeColonyConfirm,DialogOptionSelected,$option == nex_cedeColony_confirm,"FireBest Nex_CedeColonyConfirmDialog
 Nex_BuyColony cede
 FireAll PopulateOptions","""Confirmed. Control of $marketName has now reverted to $faction administration.""",,
