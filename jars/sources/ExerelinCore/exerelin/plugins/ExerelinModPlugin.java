@@ -638,8 +638,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         new LandmarkGenerator().generate(Global.getSector(), SectorManager.getManager().isCorvusMode());
         
         addBarEvents();
-        EconomyInfoHelper.createInstance();
-        MilitaryInfoHelper.createInstance();
+        // add an instance before onGameLoad is called, in case anything needs us during pregame
+        EconomyInfoHelper.createInstance(true);
+        MilitaryInfoHelper.createInstance(true);
 
         for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
         {

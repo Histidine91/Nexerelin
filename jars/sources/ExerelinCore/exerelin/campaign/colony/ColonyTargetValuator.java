@@ -94,8 +94,7 @@ public class ColonyTargetValuator {
 	}
 	
 	public void initForFaction(String factionId) {
-		EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
-		if (helper == null) helper = EconomyInfoHelper.createInstance();
+		EconomyInfoHelper helper = EconomyInfoHelper.getInstance(true);
 		oreProduction = helper.getFactionCommodityProduction(factionId, Commodities.ORE);
 		rareOreProduction = helper.getFactionCommodityProduction(factionId, Commodities.RARE_ORE);
 		organicsProduction = helper.getFactionCommodityProduction(factionId, Commodities.ORGANICS);

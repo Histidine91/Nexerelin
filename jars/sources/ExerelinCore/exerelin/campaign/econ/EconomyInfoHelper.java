@@ -2,12 +2,7 @@ package exerelin.campaign.econ;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.econ.CommodityMarketDataAPI;
-import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
-import com.fs.starfarer.api.campaign.econ.CommoditySourceType;
-import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
-import com.fs.starfarer.api.campaign.econ.Industry;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.*;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.impl.campaign.econ.ResourceDepositsCondition;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -15,20 +10,14 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.util.DelayedActionScript;
 import com.fs.starfarer.api.util.Pair;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.magiclib.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.NexUtils;
-import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.lazywizard.console.Console;
+import org.magiclib.util.MagicSettings;
+
+import java.util.*;
 
 public class EconomyInfoHelper implements EconomyTickListener {
 	
@@ -43,7 +32,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 			COMMODITY_OUTPUT_MODIFIERS.put(commodityId, Math.round(modifiers.get(commodityId)));
 		}
 	}
-	
+
 	protected static EconomyInfoHelper currInstance;
 	
 	protected Set<String> haveHeavyIndustry = new HashSet<>();
@@ -61,15 +50,13 @@ public class EconomyInfoHelper implements EconomyTickListener {
 	protected Map<MarketAPI, Float> aiCoreUsers = new HashMap<>();
 	protected Map<String, Integer> empireSizeCache = new HashMap<>();
 	protected Map<String, Float> netIncomeByFaction = new HashMap<>();
-
-	public static EconomyInfoHelper createInstance() {
-		return createInstance(false);
-	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.createInstance()
 	/**
 	 * Creates and stores an instance of the economy info helper. Should be called on every game load.
-	 * @return 
+	 * @param replace Replaces the existing instance of the helper if true. Should only be false if called from {@code getInstance},
+	 *                   to avoid the helper being retained between sectors.
+	 * @return
 	 */
 	public static EconomyInfoHelper createInstance(boolean replace) {
 		if (currInstance != null) {

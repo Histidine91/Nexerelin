@@ -1,39 +1,34 @@
 package exerelin.campaign.ai;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.econ.*;
-import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
-import com.fs.starfarer.api.util.Pair;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.NexUtils;
 import org.apache.log4j.Logger;
 import org.lazywizard.console.Console;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class MilitaryInfoHelper {
 	
 	public static Logger log = Global.getLogger(MilitaryInfoHelper.class);
 	public static boolean loggingMode = false;
-	
+
 	protected static MilitaryInfoHelper currInstance;
 	
 	protected Set<String> haveHeavyIndustry = new HashSet<>();
 
 	protected Map<LocationAPI, PatrolStrengthEntry> patrolStrength = new HashMap<>();
-
-	public static MilitaryInfoHelper createInstance() {
-		return createInstance(false);
-	}
 	
 	// runcode exerelin.campaign.econ.EconomyInfoHelper.createInstance()
 	/**
 	 * Creates and stores an instance of the military info helper. Should be called on every game load.
+	 * @param replace Replaces the existing instance of the helper if true. Should only be false if called from {@code getInstance},
+	 *                   to avoid the helper being retained between sectors.
 	 * @return 
 	 */
 	public static MilitaryInfoHelper createInstance(boolean replace) {
