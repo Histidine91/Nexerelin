@@ -3,29 +3,22 @@ TO DO FOR STARSECTOR 0.96
 Files to check on Starsector update, because they significantly modify vanilla code that could change under us.
 Partial list.
 
+- ExerelinNewGameSetup
+- rules.csv "vanilla overrides"
 - NexCoreLifecyclePlugin
 - NexFleetInteractionDialogPluginImpl
 - NexFleetEncounterContext
 - Nex_MarketCMD
 - Nex_SustainedBurnAbilityAI
-- [deprecated] SSP_BattleCreationPluginImpl
+- Nex_AICores
+- SSP_BattleCreationPluginImpl
 - InvasionFleetManager.getPatrolCombatFP
 - Submarket plugins
 - Colony manager: getFreePortGrowthBonus()
 - Everything that uses Industries.TAG_UNRAIDABLE
 - Objective entity plugins
 
-	needs checking (0.95.1a):
-	- [updated] NexCoreLifecyclePlugin
-	- [updated] NexFleetInteractionDialogPluginImpl
-	- [check later] Nex_MarketCMD
-
-last thing to look at is Nex_MarketCMD
-
 0.96 notes:
-- [done] Remove RestoreCommanderPlugin, Nex_CheapCommodityMission
-- tabo mission override might need to be in bar_events as well
-- showCampaignEntityPicker has new methods, check those out
 
 0.95 notes:
 - SSP_BattleCreationPluginImpl looks RIP, it can't access needed variables from the data class

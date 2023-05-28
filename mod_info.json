@@ -4,22 +4,16 @@
     "author":"Histidine (original by Zaphide)",
     "version":{
         "major":0, 
-        "minor":10, 
-        "patch":"6z"
+        "minor":11, 
+        "patch":"0"
     },
     "description":"Join a faction and conquer the Sector!",
-    "gameVersion":"0.96a-RC9",
+    "gameVersion":"0.96a-RC10",
     "totalConversion":false,
     "jars":["jars/ExerelinCore.jar"],
     "dependencies": [
         {"id": "lw_lazylib", "name": "LazyLib"},
-        {"id": "MagicLib", "name": "MagicLib", 
-            "version":{
-                "major":1,
-                "minor":0,
-                "patch":0
-            }
-        },
+        {"id": "MagicLib", "name": "MagicLib"},
     ],
     "modPlugin":"exerelin.plugins.ExerelinModPlugin",
 }

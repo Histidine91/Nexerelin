@@ -1,22 +1,58 @@
-Version 0.10.6z
+Version 0.11.0
 
-* Ground battle fixes/enhancements
-	* Fix crash with liberation outcome
-	* Fix possible NaN industry disruption time
-	* Custom ground unit types can have their sprite specified
-	* Fix various cases where ground unit behavior was hardcoded instead of reading from definition
-* Prism no longer sells no_dealer items (including Kinetic Blaster and Gigacannon)
-* Operative find pirate base action should support Hostile Activity system
-* AI admin hiding on market capture by 'hates AI' faction works properly, including with admins existing at start of game
-* Fix Remnant mission 2 not being completable
-* Rebellion intel doesn't print no-relationship-changes to notification on event end
-* Add relevant arrows to maps in destination picker dialogs (e.g. operative travel action, special task group orders)
+Does not include changes in beta 0.10.6y-z
 
-Version 0.10.6y
+### Gameplay ###
+* Add Remnant mission 4, with a unique boss ship (recoverable after end of mission)
+    * Available at cooperative relations with contact after starting mission 3
+* Hostile activity integration
+    * Operatives disrupting a cell will reduce activity by -20
+	* Special task groups anywhere, and requested defense fleets in a player system, contribute to hostile activity reduction
+	    * Only largest defense fleet event counts; all STGs count but with diminishing returns from the sum of their strength
+	* Talk to an AIM representative to buy an anti-piracy patrol package (reduction equal to 15% of current hostile activity progress for 3 months)
+	* Operatives' internal security mode will find pirate bases involved in Hostile Activity
+* Player can choose to defy the outcome of an alliance vote (ignore the vote if it passes, at a cost to relations with allies)
+* Patrols won't care about player transponder if player is system owner
+* Respawn invasion events have a 1000x revanchism mult when picking targets
+* Starfarer mode colony growth mult 0.5x -> 0.75x
+* Buy ship mission returns the AI core if selling an automated ship
+* Militia Power UNGP rule: Rugged Construction ships do not count as military for Militia Power 
+* Add a new Luddic Church merc company; adjust some of the others
+* Random sector: Add Kanta's Den, add a few pilgrim fleets
+* Sindrian Diktat has Devious trait
 
-* Fix random sector crashes
+### GUI ###
+* Add a "Personal Info" intel item (allows setting player honorific and interaction music)
+* Add a 'Personal' intel tab and move some things to it, including insurance
+* Add more settings to Luna menu
+* Militia Power UNGP rule displays breakdown in tips screen 
+* Add arrows to fleet request screen
+* Add a warning if player is over officer limit after taking ships from special task group
 
+### Bugfixes ###
+* Fix Nex loading wrong Luna settings value for fleet request cost
+* Fix crash due to procure ship action unlocking storage in wrong place
+* Remove old Nex override for Pather tithe check (no longer desirable)
+* Block The Pilgrim's Path and The Usurpers events in random sector
+* Fix player being able to trade with a market immediately after starting invasion
+* Fix bug where defying vote cost 5 relation points instead of 10
+* Fix player stats tracker persisting between different saves
+* Fix non-ally diplomatic victory not working
+* Properly handle pirate/Pather base manager replacement when adding Nex to existing save
+* Remnant missions: try to make things not pick IndEvo artillery station when they want a nexus
+* Ground battle: Fix being able to loot items when no troops onsite
+* Maybe fix financial report for player special task group being split after game load
+* Fix Sierra interactions with latest SotF
+* Fix some lingering instances of `$market`
+* Fix a minor memory leak on new game
 
-Version 0.10.6x
+### Modding ###
+* Fix various issues where ground battle unit defs were still relying on old hardcoded system
+* AIM mercenary fleets improvements
+    * Merc ships can now have names specified
+	* Merc officers can have personality set
+	* Free skeleton crew is based on ship's actual min crew, not the hull spec's
 
-Too many changes to list here, please see online changelog at https://github.com/Histidine91/Nexerelin/wiki/Changelog
+### Misc ###
+* Add a couple of Scythe of Orion interactions when player has relations with Remnants
+* Update random sector entity image picker
