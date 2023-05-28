@@ -83,13 +83,14 @@ public class SilverlightDashStats extends BaseShipSystemScript {
         if (engine == null) return; // I don't trust Alex
 
         pruneAspectList(engine);
-        if (aspects.size() > MAX_ASPECTS) return;
+        if (aspects.size() >= MAX_ASPECTS) return;
 
         String wingId = pickWingId(ship);
         if (wingId == null) return; //wingId = "aspect_attack_wing";
         ShipAPI leader = engine.getFleetManager(ship.getOwner()).spawnShipOrWing(wingId, ship.getLocation(), ship.getFacing(), 3f);
         FighterWingAPI myWing = leader.getWing();
         aspects.addAll(myWing.getWingMembers());
+        //Global.getLogger(this.getClass()).info("Now have " + aspects.size() + " Aspects");
 
         // we really don't need the extra FX
         for (ShipAPI fighter : myWing.getWingMembers()) {
@@ -122,9 +123,10 @@ public class SilverlightDashStats extends BaseShipSystemScript {
     protected void pruneAspectList(CombatEngineAPI engine) {
         List<ShipAPI> toRemove = new ArrayList<>();
         for (ShipAPI aspect : aspects) {
-            if (!engine.isEntityInPlay(aspect)) toRemove.add(aspect);
+            if (!aspect.isAlive()) toRemove.add(aspect);
         }
-        aspects.retainAll(toRemove);
+        //Global.getLogger(this.getClass()).info("Removing " + toRemove.size() + " Aspects");
+        aspects.removeAll(toRemove);
     }
 
     /**
@@ -194,6 +196,15 @@ public class SilverlightDashStats extends BaseShipSystemScript {
             return new StatusData(String.format(str, percent), false);
         }
         return null;
+    }
+
+    @Override
+    public String getInfoText(ShipSystemAPI system, ShipAPI ship) {
+        CombatEngineAPI engine = Global.getCombatEngine();
+        //if (engine == null) return null;
+        pruneAspectList(engine);
+        String str = StringHelper.getString("nex_ships", "silverlightDash_descAspects");
+        return (String.format(str, aspects.size(), MAX_ASPECTS));
     }
 
     /**

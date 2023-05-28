@@ -2479,6 +2479,7 @@
 		"silverlightDash_descTimeMob":"%.1fx time mult and mobility",
 		"silverlightDash_descZFSB":"always zero flux speed boost",
 		"silverlightDash_descDamper":"%.0f%% less damage taken",
+		"silverlightDash_descAspects":"%s/%s Aspects",
 	},
 	
 	"nex_strategicAI":{
