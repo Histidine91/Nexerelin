@@ -477,13 +477,13 @@ public class AgentIntel extends BaseIntelPlugin {
 		MarketAPI best = null;
 		float bestDist = 9999999;
 		HostileActivityEventIntel ha = HostileActivityEventIntel.get();
-		Set<LocationAPI> seen = new HashSet<>();
+		Set<LocationAPI> checkedForHA = new HashSet<>();
 		
 		for (MarketAPI market : toCheck) {
-			if (!market.hasCondition(Conditions.PIRATE_ACTIVITY)) continue;
 			PirateBaseIntel baseIntel = null;
+			if (checkedForHA.contains(market.getContainingLocation())) continue;
 
-			if (!seen.contains(market.getContainingLocation())) {
+			if (!checkedForHA.contains(market.getContainingLocation())) {
 				baseIntel = PirateBasePirateActivityCause2.getBaseIntel(market.getStarSystem());
 			}
 			else if (market.hasCondition(Conditions.PIRATE_ACTIVITY)) {
@@ -492,7 +492,7 @@ public class AgentIntel extends BaseIntelPlugin {
 				baseIntel = activityCond.getIntel();
 			}
 
-			seen.add(market.getContainingLocation());
+			checkedForHA.add(market.getContainingLocation());
 
 			if (baseIntel == null || baseIntel.isEnding() || baseIntel.isEnded() || baseIntel.isPlayerVisible())
 				continue;
