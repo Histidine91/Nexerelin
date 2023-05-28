@@ -8,9 +8,11 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.MilitaryAIModule;
+import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -47,6 +49,11 @@ public class RetaliationConcernV2 extends BaseStrategicConcern {
         List<Pair<RaidRecord, Float>> raidsSorted = new ArrayList<>();
         List<RaidRecord> recentRaids = new ArrayList<>();
         Map<String, Integer> numRaidsByFaction = new HashMap<>();
+
+        if (ExerelinModPlugin.isNexDev && SAIConstants.DEBUG_LOGGING) {
+            if (!recentRaids.isEmpty())
+                log.info(ai.getFaction().getId() + " update for retaliation concern: " + ((MilitaryAIModule)module).getRecentRaids().size());
+        }
 
         float totalImpact = 0;
         for (RaidRecord raid : ((MilitaryAIModule)module).getRecentRaids()) {

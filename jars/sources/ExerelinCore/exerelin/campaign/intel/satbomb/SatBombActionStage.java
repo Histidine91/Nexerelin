@@ -48,7 +48,7 @@ public class SatBombActionStage extends InvActionStage {
 			
 			SatBombIntel intel = ((SatBombIntel)this.intel);
 			status = RaidIntel.RaidStageStatus.SUCCESS;
-			intel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
+			intel.reportOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
 			intel.sendOutcomeUpdate();
 			NexUtils.incrementMemoryValue(intel.getFaction().getMemoryWithoutUpdate(), SatBombIntel.FACTION_MEMORY_KEY, 1);
 		}

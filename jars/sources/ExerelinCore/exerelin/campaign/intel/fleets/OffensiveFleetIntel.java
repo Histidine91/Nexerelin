@@ -55,17 +55,17 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	public static Logger log = Global.getLogger(OffensiveFleetIntel.class);
 	
-	protected MarketAPI from;
-	protected MarketAPI target;
-	protected FactionAPI targetFaction;
-	protected OffensiveOutcome outcome;
-	protected boolean isRespawn = false;
+	@Getter protected MarketAPI from;
+	@Getter protected MarketAPI target;
+	@Getter protected FactionAPI targetFaction;
+	@Getter @Setter protected OffensiveOutcome outcome;
+	@Getter protected boolean isRespawn = false;
 	protected boolean intelQueuedOrAdded;
 	protected boolean outcomeUpdateSent;
-	protected boolean playerSpawned;	// was this fleet spawned by player fleet request?
+	@Getter protected boolean playerSpawned;	// was this fleet spawned by player fleet request?
 	@Getter @Setter protected int playerFee;
-	protected float fp;
-	protected float baseFP;
+	@Getter protected float fp;
+	@Getter protected float baseFP;
 	protected float orgDur;
 	protected boolean useMarketFleetSizeMult = InvasionFleetManager.USE_MARKET_FLEET_SIZE_MULT;
 	protected boolean requiresSpaceportOrBase = true;
@@ -76,6 +76,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	protected boolean brawlMode;
 	protected float brawlMult = -1;
+	protected boolean reportedRaid = false;
 		
 	protected Set<RouteData> alreadyActionedRoutes = new HashSet<>();
 	
@@ -146,6 +147,12 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public boolean isRequiresSpaceportOrBase() {
 		return requiresSpaceportOrBase;
 	}
+
+	/**
+	 * If true, call raid listeners' {@code reportRaidEnded} on outcome being set in {@code reportOutcome}. If not, wait for {@code notifyRaidEnded}.
+	 * @return
+	 */
+	public boolean shouldCallListenerOnOutcome() { return true; }
 	
 	public RouteData getRouteFromFleet(CampaignFleetAPI fleet) {
 		if (fleet == null) return null;
@@ -290,7 +297,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			DiplomacyManager.getManager().modifyWarWeariness(faction.getId(), impact);
 		}
 
-		reportRaid(this);
+		reportRaidIfNeeded();
 	}
 
 	@Override
@@ -499,16 +506,19 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		return StringHelper.getString("has");
 	}
 
-	public void setOutcome(OffensiveOutcome outcome) {
-		this.outcome = outcome;
-	}
-
 	public boolean isPlayerSpawned() {
 		return playerSpawned;
 	}
 	
 	public void setPlayerSpawned(boolean playerSpawned) {
 		this.playerSpawned = playerSpawned;
+	}
+
+	public void reportOutcome(OffensiveOutcome outcome) {
+		this.outcome = outcome;
+		if (this.shouldCallListenerOnOutcome()) {
+			reportRaidIfNeeded();
+		}
 	}
 		
 	@Override
@@ -543,7 +553,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		
 	public void terminateEvent(OffensiveOutcome outcome)
 	{
-		setOutcome(outcome);
+		reportOutcome(outcome);
 		forceFail(true);
 	}
 	
@@ -915,8 +925,15 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		return getBaseName();
 	}
 
+	protected void reportRaidIfNeeded() {
+		if (reportedRaid) return;
+		reportedRaid = true;
+		reportRaid(this);
+	}
+
 	public static void reportRaid(OffensiveFleetIntel intel)
 	{
+		log.info("Reporting raid: " + intel.getName());
 		for (RaidListener x : Global.getSector().getListenerManager().getListeners(RaidListener.class)) {
 			x.reportRaidEnded(intel, intel.faction, intel.targetFaction, intel.target, intel.outcome == OffensiveOutcome.SUCCESS);
 		}

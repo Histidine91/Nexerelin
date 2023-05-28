@@ -24,7 +24,7 @@ public class BaseStrikeActionStage extends InvActionStage {
 		if (!target.isInEconomy()) {
 			status = RaidIntel.RaidStageStatus.SUCCESS;
 			BaseStrikeIntel intel = (BaseStrikeIntel)this.intel;
-			intel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
+			intel.reportOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
 			intel.sendOutcomeUpdate();
 		}
 		
@@ -72,7 +72,7 @@ public class BaseStrikeActionStage extends InvActionStage {
 			removeMilScripts();
 			giveReturnOrdersToStragglers(getRoutes());
 			
-			intel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.TASK_FORCE_DEFEATED);
+			intel.reportOutcome(OffensiveFleetIntel.OffensiveOutcome.TASK_FORCE_DEFEATED);
 			return;
 		}
 		
@@ -93,7 +93,7 @@ public class BaseStrikeActionStage extends InvActionStage {
 		
 		// base killed; we're done 
 		status = RaidIntel.RaidStageStatus.SUCCESS;
-		intel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
+		intel.reportOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
 		intel.sendOutcomeUpdate();
 	}
 	

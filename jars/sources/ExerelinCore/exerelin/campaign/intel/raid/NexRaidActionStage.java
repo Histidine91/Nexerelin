@@ -109,7 +109,7 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 		// All targets too strong, either pick the weakest one, or retreat and say so
 		if (steps.isEmpty()) {
 			if (((NexRaidIntel)intel).shouldRetreatIfOvermatched()) {
-				((OffensiveFleetIntel)intel).setOutcome(OffensiveOutcome.RETREAT_BEFORE_ACTION);
+				((OffensiveFleetIntel)intel).reportOutcome(OffensiveOutcome.RETREAT_BEFORE_ACTION);
 			}
 			else {
 				targetWeakest();

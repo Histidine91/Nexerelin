@@ -1,10 +1,6 @@
 package exerelin.campaign.intel.invasion;
 
 import com.fs.starfarer.api.Global;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.ActionType;
@@ -34,6 +30,10 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	
@@ -151,11 +151,11 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			else if (target.getFaction() != intel.getFaction()) {
 				// target not captured yet				
 				if (target.getFaction().isHostileTo(intel.getFaction())) {
-					offFltIntel.setOutcome(OffensiveOutcome.FAIL);
+					offFltIntel.reportOutcome(OffensiveOutcome.FAIL);
 					status = RaidStageStatus.FAILURE;
 					log.info("Invasion failed, no raiders remaining");
 				} else {
-					offFltIntel.setOutcome(OffensiveOutcome.NO_LONGER_HOSTILE);
+					offFltIntel.reportOutcome(OffensiveOutcome.NO_LONGER_HOSTILE);
 					status = RaidStageStatus.FAILURE;
 				}
 				//offFltIntel.sendOutcomeUpdate();	// don't send for failure, advanceImpl() handles that
@@ -164,7 +164,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	}
 	
 	public void succeed(boolean sendUpdate) {
-		offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
+		offFltIntel.reportOutcome(OffensiveOutcome.SUCCESS);
 		status = RaidStageStatus.SUCCESS;
 		if (sendUpdate) offFltIntel.sendOutcomeUpdate();
 	}
@@ -194,7 +194,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		//enoughMadeIt = false;
 		if (!enoughMadeIt) {
 			log.info("Not enough made it, fail");
-			offFltIntel.setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
+			offFltIntel.reportOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
 			status = RaidStageStatus.FAILURE;
 			if (giveReturnOrders) {
 				giveReturnOrdersToStragglers(routes);
@@ -298,7 +298,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			boolean success = InvasionRound.npcInvade(atkStrength, fleet, offFltIntel.getFaction(), market);
 			if (success)
 			{
-				offFltIntel.setOutcome(OffensiveOutcome.SUCCESS);
+				offFltIntel.reportOutcome(OffensiveOutcome.SUCCESS);
 				status = RaidStageStatus.SUCCESS;
 				//offFltIntel.endAfterDelay();	// can't end now, it breaks the subsequent wait stage
 			}
@@ -348,7 +348,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			removeMilScripts();
 			giveReturnOrdersToStragglers(getRoutes());
 			
-			offFltIntel.setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
+			offFltIntel.reportOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
 			return;
 		}
 		
@@ -383,7 +383,7 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		if (fail)
 		{
 			status = RaidStageStatus.FAILURE;
-			offFltIntel.setOutcome(OffensiveOutcome.FAIL);
+			offFltIntel.reportOutcome(OffensiveOutcome.FAIL);
 		}
 		else if (isNewInvade) {
 			succeed(false);

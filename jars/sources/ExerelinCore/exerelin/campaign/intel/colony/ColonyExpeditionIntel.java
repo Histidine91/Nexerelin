@@ -463,7 +463,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	
 	public void notifyQueueJumpedEarly() {
 		lastOwner = getTarget().getFaction();
-		setOutcome(OffensiveFleetIntel.OffensiveOutcome.FAIL);
+		reportOutcome(OffensiveFleetIntel.OffensiveOutcome.FAIL);
 		setColonyOutcome(ColonyOutcome.QUEUE_JUMPED_EARLY);
 		if (lastOwner.isPlayerFaction()) {
 			NexUtilsReputation.adjustPlayerReputation(faction, 

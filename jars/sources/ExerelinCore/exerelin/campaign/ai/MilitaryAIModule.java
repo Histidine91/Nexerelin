@@ -11,6 +11,7 @@ import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.RaidListener;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtilsMath;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -69,8 +70,13 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
 
     @Override
     public void reportRaidEnded(RaidIntel intel, FactionAPI attacker, FactionAPI defender, MarketAPI target, boolean success) {
-        if (defender == ai.getFaction()) {
-            log.info(String.format("Raid against %s ended: %s", defender.getDisplayName(), intel.getName()));
+        boolean logThis = ExerelinModPlugin.isNexDev && SAIConstants.DEBUG_LOGGING;
+        if (logThis) {
+            //log.info(ai.getFaction().getId() + " strategic AI reports raid ended");
+        }
+        if (logThis && defender == ai.getFaction()) {
+            //log.info(String.format("Raid against %s ended: %s; attacker is AI %s, defender is AI %s", defender.getDisplayName(),
+            //        intel.getName(), attacker == ai.faction, defender == ai.faction));
         }
         if (attacker != ai.faction && defender != ai.faction) {
             return;
@@ -107,7 +113,7 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
     }
 
     public static class RaidRecord {
-        public static final float MAX_AGE = 210;
+        public static final float MAX_AGE = 240;
         public static final float IMPACT_MULT_AT_MAX_AGE = 0.5f;
 
         public transient RaidIntel intelTransient;

@@ -1,10 +1,6 @@
 package exerelin.campaign.intel.colony;
 
 import com.fs.starfarer.api.Global;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -28,13 +24,17 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseAssignmentAI.FleetA
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.intel.colony.ColonyExpeditionIntel.ColonyOutcome;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
-import exerelin.campaign.intel.colony.ColonyExpeditionIntel.ColonyOutcome;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ColonyActionStage extends ActionStage implements FleetActionDelegate {
 	
@@ -132,7 +132,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 			}
 			// if queue-jumped and not hostile, we failed
 			if (!colonyFleetIntel.hostileMode) {
-				colonyFleetIntel.setOutcome(OffensiveOutcome.FAIL);
+				colonyFleetIntel.reportOutcome(OffensiveOutcome.FAIL);
 				colonyFleetIntel.setColonyOutcome(ColonyOutcome.QUEUE_JUMPED);
 				status = RaidStageStatus.FAILURE;
 			} else {	// mark fleets as hostile and extend autoresolve time
@@ -173,12 +173,12 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 			if (getTarget().getFaction() != intel.getFaction()) {
 				// colonization failed
 				if (getTarget().getFaction().isHostileTo(intel.getFaction())) {
-					colonyFleetIntel.setOutcome(OffensiveOutcome.FAIL);
+					colonyFleetIntel.reportOutcome(OffensiveOutcome.FAIL);
 					colonyFleetIntel.setColonyOutcome(ColonyOutcome.FAIL);
 					status = RaidStageStatus.FAILURE;
 					log.info("Colonization failed, no colony fleets remaining");
 				} else {
-					colonyFleetIntel.setOutcome(OffensiveOutcome.NO_LONGER_HOSTILE);
+					colonyFleetIntel.reportOutcome(OffensiveOutcome.NO_LONGER_HOSTILE);
 					status = RaidStageStatus.FAILURE;
 				}
 				//offFltIntel.sendOutcomeUpdate();	// don't send for failure, advanceImpl() handles that
@@ -211,7 +211,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		//enoughMadeIt = false;
 		if (!enoughMadeIt) {
 			log.info("Not enough made it, fail");
-			colonyFleetIntel.setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
+			colonyFleetIntel.reportOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
 			status = RaidStageStatus.FAILURE;
 			if (giveReturnOrders) {
 				giveReturnOrdersToStragglers(routes);
@@ -260,7 +260,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		if (!market.isInEconomy()) {
 			colonyFleetIntel.createColony();
 			colonyFleetIntel.colonyOutcome = ColonyOutcome.SUCCESS;
-			colonyFleetIntel.setOutcome(OffensiveOutcome.SUCCESS);
+			colonyFleetIntel.reportOutcome(OffensiveOutcome.SUCCESS);
 			status = RaidStageStatus.SUCCESS;
 			colonyFleetIntel.sendOutcomeUpdate();
 		}
@@ -269,7 +269,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 			float atkStrength = InvasionRound.getAttackerStrength(intel.getFaction(), 300);
 			boolean success = InvasionRound.npcInvade(atkStrength, fleet, intel.getFaction(), market);
 			if (success) {
-				colonyFleetIntel.setOutcome(OffensiveOutcome.SUCCESS);
+				colonyFleetIntel.reportOutcome(OffensiveOutcome.SUCCESS);
 				colonyFleetIntel.colonyOutcome = ColonyOutcome.INVADE_SUCCESS;
 				status = RaidStageStatus.SUCCESS;
 				colonyFleetIntel.sendOutcomeUpdate();
@@ -289,7 +289,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		if (getTarget().isInEconomy() && !colonyFleetIntel.hostileMode)
 		{
 			status = RaidStageStatus.FAILURE;
-			colonyFleetIntel.setOutcome(OffensiveOutcome.FAIL);
+			colonyFleetIntel.reportOutcome(OffensiveOutcome.FAIL);
 			colonyFleetIntel.setColonyOutcome(ColonyOutcome.QUEUE_JUMPED);
 		}
 		
@@ -306,7 +306,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 				removeMilScripts();
 				giveReturnOrdersToStragglers(getRoutes());
 
-				colonyFleetIntel.setOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
+				colonyFleetIntel.reportOutcome(OffensiveOutcome.TASK_FORCE_DEFEATED);
 				colonyFleetIntel.setColonyOutcome(ColonyOutcome.INVADE_FAILED);
 				return;
 			}
@@ -325,7 +325,7 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		if (colonyFleetIntel.getOutcome() != OffensiveOutcome.SUCCESS)
 		{
 			status = RaidStageStatus.FAILURE;
-			colonyFleetIntel.setOutcome(OffensiveOutcome.FAIL);
+			colonyFleetIntel.reportOutcome(OffensiveOutcome.FAIL);
 			//offFltIntel.sendOutcomeUpdate();	// don't send for failure, advanceImpl() handles that
 		}
 	}

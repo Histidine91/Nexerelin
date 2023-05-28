@@ -111,7 +111,7 @@ public class NexOrganizeStage extends OrganizeStage {
 		}
 		if (fail) {
 			status = RaidStageStatus.FAILURE;
-			offFltIntel.setOutcome(OffensiveOutcome.FAIL);
+			offFltIntel.reportOutcome(OffensiveOutcome.FAIL);
 		}
 	}
 	

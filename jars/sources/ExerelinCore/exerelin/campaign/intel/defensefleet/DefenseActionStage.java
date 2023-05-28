@@ -35,7 +35,7 @@ public class DefenseActionStage extends PirateRaidActionStage {
 		
 		if (dwellTime < 0) {
 			status = RaidIntel.RaidStageStatus.SUCCESS;
-			defIntel.setOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
+			defIntel.reportOutcome(OffensiveFleetIntel.OffensiveOutcome.SUCCESS);
 		}
 	}
 	

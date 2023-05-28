@@ -754,7 +754,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 			log.info("Setting outcome for brawl defense, " + outcome.toString());
 			if (outcome == null) return;
 			if (outcome.isFailed()) {
-				brawlDefIntel.setOutcome(OffensiveOutcome.SUCCESS);
+				brawlDefIntel.reportOutcome(OffensiveOutcome.SUCCESS);
 				brawlDefIntel.endAfterDelay();
 				brawlDefIntel.sendOutcomeUpdate();
 			}
