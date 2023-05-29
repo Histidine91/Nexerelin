@@ -4,8 +4,6 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseManager;
@@ -42,28 +40,20 @@ public class Nex_LuddicPathBaseManager extends LuddicPathBaseManager {
 			if (script instanceof LuddicPathBaseManager && !(script instanceof Nex_LuddicPathBaseManager)) {
 
 				Global.getSector().removeScript(script);
-				List<LuddicPathCellsIntel> validCells = ((Nex_LuddicPathBaseManager)LuddicPathBaseManager.getInstance()).getCells();
+				Nex_LuddicPathBaseManager manager = new Nex_LuddicPathBaseManager();
+				Global.getSector().addScript(manager);
+
+				// migrate existing cells to new script
 				for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(LuddicPathCellsIntel.class)) {
 					LuddicPathCellsIntel cell = (LuddicPathCellsIntel) intel;
-					if (!validCells.contains(cell)) cell.endImmediately();
+					manager.cells.put(cell.getMarket(), cell);
 				}
 
-				// readd any cell conditions that were removed when we purged the cells
-				for (LuddicPathCellsIntel cell : validCells) {
-					MarketAPI market = cell.getMarket();
-					if (market != null && !market.hasCondition(Conditions.PATHER_CELLS)) {
-						market.addCondition(Conditions.PATHER_CELLS, cell);
-					}
-				}
-
-				Nex_LuddicPathBaseManager manager = new Nex_LuddicPathBaseManager();
 				// migrate the existing bases to new script
 				for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(LuddicPathBaseIntel.class)) {
 					LuddicPathBaseIntel base = (LuddicPathBaseIntel)intel;
 					manager.getActive().add(base);
 				}
-
-				Global.getSector().addScript(manager);
 				break;
 			}
 		}
