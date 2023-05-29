@@ -1,27 +1,20 @@
 package exerelin.campaign.intel.groundbattle.dialog;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.IndustryPickerListener;
-import java.util.Map;
-
-import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
-import exerelin.campaign.intel.groundbattle.IndustryForBattle;
-import org.lwjgl.input.Keyboard;
-
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.campaign.VisualPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
-import static exerelin.campaign.intel.agents.AgentOrdersDialog.getString;
-import exerelin.campaign.intel.groundbattle.GBUtils;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 import exerelin.campaign.intel.groundbattle.plugins.AbilityPlugin;
 import exerelin.utilities.StringHelper;
+import org.lwjgl.input.Keyboard;
+
 import java.util.List;
+import java.util.Map;
 
 public class AbilityDialogPlugin implements InteractionDialogPlugin {
 
@@ -62,7 +55,14 @@ public class AbilityDialogPlugin implements InteractionDialogPlugin {
 		} else {
 			visual.showPlanetInfo(ability.getIntel().getMarket().getPrimaryEntity());
 		}
-		ability.dialogAddVisualPanel(dialog);
+		try {
+			ability.dialogAddVisualPanel(dialog);
+		} catch (Throwable t) {
+			Global.getLogger(this.getClass()).error("Failed to add visual panel for ability " + ability.getId(), t);
+			textPanel.setFontSmallInsignia();
+			textPanel.addPara("Error adding ability visual panel, mod may need update for Nexerelin v0.11.0", Misc.getNegativeHighlightColor());
+			textPanel.setFontInsignia();
+		}
 		printInit();
 	}
 	

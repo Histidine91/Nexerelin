@@ -16,7 +16,7 @@ public class InteractionDialogCustomPanelPlugin extends FramedCustomPanelPlugin 
 	}
 
 	/**
-	 * Moved to {@code CustomPanelPluginWithInput}, kept here for reverse compatibility reasons.
+	 * Moved to {@code CustomPanelPluginWithInput}, kept here for reverse compatibility reasons (which turned out to not work).
 	 */
 	@Deprecated
 	public static class ButtonEntry extends CustomPanelPluginWithInput.ButtonEntry {
@@ -29,7 +29,7 @@ public class InteractionDialogCustomPanelPlugin extends FramedCustomPanelPlugin 
 	}
 
 	/**
-	 * Moved to {@code CustomPanelPluginWithInput}, kept here for reverse compatibility reasons.
+	 * Moved to {@code CustomPanelPluginWithInput}, kept here for reverse compatibility reasons (which turned out to not work).
 	 */
 	@Deprecated
 	public static class RadioButtonEntry extends CustomPanelPluginWithInput.RadioButtonEntry {
