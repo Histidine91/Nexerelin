@@ -4,13 +4,16 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import exerelin.campaign.ColonyManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.world.ExerelinCorvusLocations;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,7 +42,9 @@ public class DerelictEmpire extends Scenario {
 				
 				SectorManager.transferMarket(market, derelict, market.getFaction(), 
 						false, false, null, 0, true);
+				PersonAPI currAdmin = market.getAdmin();
 				market.setAdmin(null);
+				ColonyManager.replaceDisappearedAdmin(market, currAdmin);
 			}
 		}
 		

@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -429,8 +430,9 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		market.getPrimaryEntity().setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
 		
 		if (!fromDeciv) {
-			NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
+			PersonAPI admin = NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(),
 					market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
+			market.setAdmin(admin);
 			if (!isPlayer)
 				market.setImmigrationIncentivesOn(true);
 		}
