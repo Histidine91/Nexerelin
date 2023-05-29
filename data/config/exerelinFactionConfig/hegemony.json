@@ -35,14 +35,17 @@
     "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.PlanetNamer",
     #"specialForcesFlagshipVariants":{ "paragon_Elite":1, "astral_Strike":0.5 },
     
-    "startShipsSolo":[["lasher_Starting"]],
+    "startShipsSolo":[
+	  ["swp_alastor_xiv_eli"],
+	  ["lasher_Starting"]
+	],
     "startShipsCombatSmall":[
-      ["enforcer_Balanced", "swp_brawler_hegemony_ass", "lasher_CS"],
+      ["swp_caliber_sta", "swp_brawler_hegemony_ass", "swp_lasher_xiv_eli"],
       ["enforcer_Balanced", "lasher_CS", "wolf_hegemony_CS"]
     ],
     "startShipsTradeSmall":[["mule_Starting", "hound_hegemony_Standard", "kite_hegemony_Interceptor"]],
     "startShipsCombatLarge":[
-      ["swp_punisher_cs", "swp_vanguard_sta", "wolf_hegemony_CS"],
+      ["swp_punisher_sta", "swp_caliber_cs", "wolf_hegemony_CS"],
       ["dominator_Assault", "enforcer_Escort", "kite_hegemony_Interceptor"]
     ],
     "startShipsTradeLarge":[["colossus_Standard", "mule_Standard", "kite_Starting"]],

@@ -36,20 +36,24 @@
     
     "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.LuddicNamer",
     
-    "startShipsSolo":[["vigilance_Standard"]],
+    "startShipsSolo":[["lasher_luddic_church_Standard"]],
     "startShipsCombatSmall":[
-      ["swp_striker_luddic_church_sup", "lasher_luddic_church_Standard", "centurion_Assault"],
-      ["enforcer_Balanced", "lasher_luddic_church_Standard", "centurion_Assault"]
+      ["swp_striker_luddic_church_sup", "lasher_luddic_church_Standard", "vanguard_Outdated2"],
+      ["manticore_Balanced", "lasher_luddic_church_Standard", "vanguard_Outdated2"]
     ],
-    "startShipsTradeSmall":[["tarsus_Standard", "cerberus_Standard", "lasher_CS"]],
+    "startShipsTradeSmall":[["tarsus_Standard", "cerberus_Standard", "lasher_luddic_church_Standard"]],
     "startShipsCombatLarge":[
-      ["swp_vulture_sta", "swp_albatross_sta", "kite_Standard"],
-      ["dominator_Support", "enforcer_Outdated", "kite_Support"]
+      ["swp_punisher_ham", "swp_striker_luddic_church_sup", "kite_Standard"],
+      ["eradicator_Outdated", "manticore_Outdated", "kite_Support"]
     ],
-     "startShipsTradeLarge":[["colossus_Standard", "mule_Standard", "wayfarer_Standard"]],
+    "startShipsTradeLarge":[["colossus_Standard", "mule_Standard", "wayfarer_Standard"]],
     "startShipsExplorerLarge":[["venture_Balanced", "buffalo_luddic_church_Standard", "hound_luddic_church_Standard"]],
     "startShipsCarrierSmall":[["condor_Attack", "lasher_luddic_church_Standard", "hound_luddic_church_Standard"]],
-    "startShipsSuper":[["swp_cathedral_gra"]],
+	"startShipsCarrierLarge":[["mora_Torpedo", "manticore_Balanced", "lasher_luddic_church_Standard"]],
+    "startShipsSuper":[
+	  ["swp_cathedral_gra"],
+	  ["invictus_Support"]
+	],
     
     "startSpecialItems":[
         [["LC_package", ""]],

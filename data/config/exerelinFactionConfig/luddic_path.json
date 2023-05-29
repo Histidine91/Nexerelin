@@ -41,9 +41,9 @@
     },
     
     "startShipsSolo":[["lasher_luddic_path_Raider"]],
-    "startShipsCombatSmall":[["swp_enforcer_luddic_path_rai", "swp_wolf_luddic_path_rai", "kite_luddic_path_Strike"]],
+    "startShipsCombatSmall":[["enforcer_Overdriven", "cerberus_luddic_path_Attack", "kite_luddic_path_Strike"]],
     "startShipsTradeSmall":[["swp_buffalo_luddic_path_att", "swp_dram_luddic_path_rai", "cerberus_luddic_path_Attack"]],
-    "startShipsCombatLarge":[["colossus2_Pather", "swp_enforcer_luddic_path_rai", "lasher_luddic_path_Raider"]],
+    "startShipsCombatLarge":[["venture_pather_Attack", "enforcer_Overdriven", "lasher_luddic_path_Raider"]],
     "startShipsCarrierSmall":[["swp_condor_luddic_path_rai", "swp_nebula_luddic_path_rai", "hound_luddic_path_Attack"]],
     
     "startSpecialItems":[

@@ -26,25 +26,23 @@
     "colonyExpeditionChance":0.75,	# not really their kind of thing...? I guess
     
     "startShipsSolo":[
-      ["swp_brawler_lions_guard_eli"],
-      ["brawler_Elite"]
+      ["centurion_LG_Assault"]
     ],
     "startShipsCombatSmall":[
-      ["swp_hammerhead_lions_guard_eli", "swp_vigilance_lions_guard_eli", "kite_Standard"],
-      ["hammerhead_Balanced", "vigilance_AP", "monitor_Escort"]
+      ["hammerhead_LG_Elite", "vigilance_AP", "brawler_LG_Elite"]
     ],
-    "startShipsTradeSmall":[["tarsus_Standard", "vigilance_Starting", "mercury_PD"]],
+    "startShipsTradeSmall":[["tarsus_Standard", "centurion_LG_Assault", "mercury_PD"]],
     "startShipsCombatLarge":[
-      ["swp_vulture_sta", "swp_hammerhead_lions_guard_eli", "swp_vigilance_lions_guard_eli"],
-      ["gryphon_FS", "hammerhead_Elite", "vigilance_FS"]
+      ["swp_vulture_sta", "sunder_LG_Assault", "swp_alastor_sta"],
+      ["eagle_LG_Support", "hammerhead_LG_Elite", "vigilance_FS"]
     ],
     "startShipsTradeLarge":[["colossus_Standard", "mule_Standard", "wayfarer_Standard"]],
     "startShipsExplorerLarge":[["venture_Balanced", "gemini_Standard", "wayfarer_Standard"]],
-    "startShipsCarrierSmall":[["drover_Strike", "vigilance_Standard", "brawler_Elite"]],
-    "startShipsCarrierLarge":[
-      ["swp_heron_lions_guard_eli", "swp_archon_att", "kite_Standard"],
-      ["heron_Strike", "sunder_Assault", "centurion_Starting"]
-    ],
+    #"startShipsCarrierSmall":[["drover_Strike", "vigilance_Standard", "brawler_Elite"]],
+    #"startShipsCarrierLarge":[
+    #  ["swp_heron_lions_guard_eli", "swp_archon_att", "kite_Standard"],
+    #  ["heron_Strike", "sunder_Assault", "centurion_Starting"]
+    #],
     
     "startSpecialItems":[
         [["midline_package", ""]],

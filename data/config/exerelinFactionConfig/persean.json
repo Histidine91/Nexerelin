@@ -25,20 +25,23 @@
     
     "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.PlanetNamer",
         
-    "startShipsSolo":[["brawler_Elite"]],
+    "startShipsSolo":[
+	  ["swp_alastor_dem"],
+	  ["brawler_Support"]
+	],
     "startShipsCombatSmall":[
-      ["swp_archon_att", "brawler_Assault", "centurion_Starting"],
-      ["hammerhead_Balanced", "vigilance_AP", "monitor_Escort"]
+      ["swp_archer_dem", "brawler_Support", "swp_alastor_dem"],
+      ["hammerhead_DEM", "vigilance_Support1", "monitor_Escort"]
     ],
-    "startShipsTradeSmall":[["tarsus_Standard", "vigilance_Starting", "mercury_PD"]],
+    "startShipsTradeSmall":[["tarsus_Standard", "vigilance_Support1", "mercury_PD"]],
     "startShipsCombatLarge":[
-      ["swp_eagle_black_eli", "swp_archer_cs", "swp_alastor_sta"],
-      ["eagle_Balanced", "hammerhead_Elite", "vigilance_FS"]
+      ["swp_eagle_black_dem", "swp_archer_dem2", "swp_alastor_dem"],
+      ["champion_DEMEscort", "hammerhead_DEM", "vigilance_Support2"]
     ],
     "startShipsTradeLarge":[["colossus_Standard", "mule_Standard", "shepherd_Frontier"]],
     "startShipsExplorerLarge":[["venture_Balanced", "gemini_Standard", "wayfarer_Standard"]],
-    "startShipsCarrierSmall":[["drover_Strike", "vigilance_Standard", "brawler_Elite"]],
-    "startShipsCarrierLarge":[["heron_Strike", "hammerhead_Balanced", "centurion_Starting"]],
+    "startShipsCarrierSmall":[["drover_Support", "vigilance_Support2", "brawler_Support"]],
+    "startShipsCarrierLarge":[["heron_Attack1", "hammerhead_DEM", "vigilance_Support1"]],
     
     "defenceStations":[
         {"ids":["orbitalstation", "battlestation", "starfortress"], "weight":0.5},
