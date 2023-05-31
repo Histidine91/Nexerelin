@@ -44,6 +44,8 @@ public class DeclareWarAction extends DiplomacyAction {
     public boolean canUse(StrategicConcern concern) {
         // we have the military tag for alignment purposes, but don't use this action for actual military actions
         if (concern.getDef().module == StrategicDefManager.ModuleType.MILITARY) return false;
+        if (!concern.getDef().hasTag("canDeclareWar")) return false;
+
         if (faction != null) {
             // already at war
             if (faction.isHostileTo(ai.getFaction())) return false;
