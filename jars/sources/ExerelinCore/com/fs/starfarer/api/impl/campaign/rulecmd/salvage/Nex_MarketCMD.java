@@ -635,10 +635,11 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.addOption(StringHelper.getString("goBack", true), GO_BACK);
 		options.setShortcut(GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);
 		
-		
 		if (plugin != null) {
 			plugin.cleanUpBattle();
 		}
+
+		FireAll.fire("", dialog, memoryMap, "NexPostShowDefenses");
 	}
 	
 	// Changes from vanilla: Add handling of response fleet
