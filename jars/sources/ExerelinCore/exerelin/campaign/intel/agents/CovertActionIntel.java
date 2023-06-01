@@ -476,7 +476,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		}
 		if (!market.isInEconomy() && canAbort()) {
 			abort();
-			agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
+			if (agent != null) agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
 			return;
 		}
 		
