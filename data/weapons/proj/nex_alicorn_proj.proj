@@ -32,5 +32,6 @@
 	"fadeTime":0.2, # fadeout duration			
 	"glowColor":[100,128,255,75],
 	"glowRadius":125,
+	"passThroughMissiles":true,
+	"passThroughFighters":true,
 }
-			
