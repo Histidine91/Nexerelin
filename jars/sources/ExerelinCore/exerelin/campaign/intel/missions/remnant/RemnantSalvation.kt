@@ -151,6 +151,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             requireMarketSizeAtLeast(6)
             preferMarketSizeAtLeast(7)
             requireMarketConditions(ReqMode.ALL, Conditions.HABITABLE)
+            preferMarketConditions(ReqMode.ANY, Conditions.MILD_CLIMATE, Conditions.FARMLAND_ADEQUATE, Conditions.FARMLAND_RICH, Conditions.FARMLAND_BOUNTIFUL)
             // prefer non-military
             search.marketPrefs.add(MarketRequirement { market -> !Misc.isMilitary(market) })
             pickMarket()
@@ -400,7 +401,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         val stationDefId = if (Global.getSettings().modManager.isModEnabled("IndEvo")) "IndEvo_arsenalStation" else "station_mining_remnant"
         var station = remnantSystem!!.addCustomEntity("nex_remSalvation_fleet1_station", null, stationDefId, Factions.REMNANTS)
         station.isDiscoverable = true
-        station.orbit = loc.orbit.makeCopy()
+        station.orbit = loc?.orbit?.makeCopy()
         //log.info(String.format("Wololo, orbit period %s, target %s", station.orbit.orbitalPeriod, station.orbit.focus.name))
         return station
     }
