@@ -25,7 +25,9 @@ import exerelin.campaign.intel.missions.ConquestMissionIntel;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import lombok.extern.log4j.Log4j;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 @Log4j
 public class NexUtilsMarket {
@@ -87,12 +89,19 @@ public class NexUtilsMarket {
 				try {
 					value += Global.getSettings().getCommoditySpec(aiCoreId).getBasePrice();
 				} catch (Exception ex) {
-					Global.getLogger(NexUtilsMarket.class).warn("Failed to get commodity value of AI core " + aiCoreId, ex);
+					log.warn("Failed to get commodity value of AI core " + aiCoreId, ex);
 				}
 			}
 			if (ind.getSpecialItem() != null) {
-				String id = ind.getSpecialItem().getId();
-				value += Global.getSettings().getSpecialItemSpec(id).getBasePrice();
+				try {
+					String id = ind.getSpecialItem().getId();
+					value += Global.getSettings().getSpecialItemSpec(id).getBasePrice();
+				} catch (NullPointerException npe) {
+					String msg = "Nonexistent special item found on " + market.getName() + ", id " + ind.getSpecialItem().getId();
+					log.error(msg);
+					Global.getSector().getCampaignUI().addMessage(msg, Color.red);
+					//throw npe;
+				}
 			}
 		}
 		return value;
