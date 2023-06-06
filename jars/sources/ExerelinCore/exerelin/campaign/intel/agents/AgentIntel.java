@@ -1091,7 +1091,7 @@ public class AgentIntel extends BaseIntelPlugin {
 		CovertActionIntel currentAction = getCurrentAction();
 		List<ArrowData> result = new ArrayList<ArrowData>();
 		MarketAPI origin = market;
-		if (origin == null) return null;
+		if (origin == null) return result;
 		CovertActionIntel act = currentAction;
 		if (act != null && act.getDefId().equals(CovertActionType.TRAVEL))
 		{
