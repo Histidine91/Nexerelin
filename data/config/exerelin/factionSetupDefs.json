@@ -32,6 +32,7 @@
 			"cost":20,
 			"params": {
 				"upgrade":"heavyindustry",
+				"upgradeTo":"orbitalworks",	# force upgrade target, currently use for Ashes of the Domain compatibility
 				"add":"heavyindustry",
 			},
 			"className":"exerelin.world.factionsetup.AddOrUpgradeIndustry",

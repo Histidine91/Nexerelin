@@ -466,6 +466,24 @@ public class NexUtilsMarket {
 		return true;
 	}
 
+	/**
+	 * Upgrades the industry to the specified type (doesn't need to be its 'normal' upgrade option).
+	 * Obeys {@code IndustryAPI.canUpgrade()} unless {@code force} is used.
+	 * @param ind
+	 * @param upgradeId
+	 */
+	public static boolean upgradeIndustryToTarget(Industry ind, String upgradeId, boolean force, boolean instant) {
+		if (ind == null) return false;
+		if (!ind.canUpgrade() && !force) return false;
+
+		String prevUpgradeId = ind.getSpec().getUpgrade();
+		ind.getSpec().setUpgrade(upgradeId);
+		ind.startUpgrading();
+		ind.getSpec().setUpgrade(prevUpgradeId);
+		if (instant) ind.finishBuildingOrUpgrading();
+		return true;
+	}
+
 	public static void pickEntityDestination(final InteractionDialogAPI dialog,
 											 final List<SectorEntityToken> destinations, String confirmText,
 											 final CampaignEntityPickerWrapper wrapper) {

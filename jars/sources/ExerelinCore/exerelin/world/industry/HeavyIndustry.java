@@ -9,6 +9,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 
@@ -132,8 +133,7 @@ public class HeavyIndustry extends IndustryClassGen {
 		MarketAPI market = entity.market;
 		if (market.hasIndustry(Industries.HEAVYINDUSTRY)) {
 			Industry ind = market.getIndustry(Industries.HEAVYINDUSTRY);
-			ind.startUpgrading();
-			if (instant) ind.finishBuildingOrUpgrading();
+			NexUtilsMarket.upgradeIndustryIfCan(ind, instant);
 		}
 		else if (market.hasIndustry("ms_modularFac")) {
 			String wantedIndustry = market.getMemoryWithoutUpdate().getString(MEM_KEY_WANTED_SHADOWYARDS_UPGRADE);
@@ -142,8 +142,7 @@ public class HeavyIndustry extends IndustryClassGen {
 
 			Industry ind = market.getIndustry("ms_modularFac");
 			ind.setSpecialItem(new SpecialItemData(wantedSpecial, null));
-			ind.startUpgrading();
-			if (instant) ind.finishBuildingOrUpgrading();
+			NexUtilsMarket.upgradeIndustryIfCan(ind, instant);
 		}
 		else {
 			boolean upgrade = false;

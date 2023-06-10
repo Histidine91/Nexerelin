@@ -23,9 +23,10 @@ public class AddOrUpgradeIndustry extends FactionSetupItem {
 		MarketAPI home = getPlayerHome();
 		if (home == null) return;
 		
-		String upgrade = (String)def.params.get("upgrade");
-		if (home.hasIndustry(upgrade)) {
-			NexUtilsMarket.upgradeIndustryIfCan(home.getIndustry(upgrade), true);
+		String toUpgrade = (String)def.params.get("upgrade");
+		if (home.hasIndustry(toUpgrade)) {
+			String target = (String)def.params.get("upgradeTo");
+			NexUtilsMarket.upgradeIndustryToTarget(home.getIndustry(toUpgrade), target, true, true);
 			return;
 		}
 		
