@@ -136,8 +136,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		if (route != null && fleet != null) route.getExtra().fp = (float)fleet.getFleetPoints();
 	}
 
-	public void notifyShipAdded(FleetMemberAPI member) {
+	protected void notifyShipAdded(FleetMemberAPI member) {
 		membersBackup.add(member);
+		// weird hax because the variants stop being stock once they're used in the PSF, perhaps due to inflater
+		if (member.getVariant().getSource() == VariantSource.STOCK) {
+			member.setVariant(member.getVariant().clone(), false, false);
+			member.getVariant().setSource(VariantSource.REFIT);
+		}
+
 		storedVariants.put(member, member.getVariant());
 	}
 
@@ -148,7 +154,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		if (route != null && fleet != null) route.getExtra().fp = (float)fleet.getFleetPoints();
 	}
 
-	public void notifyShipRemoved(FleetMemberAPI member) {
+	protected void notifyShipRemoved(FleetMemberAPI member) {
 		membersBackup.remove(member);
 		storedVariants.remove(member);
 	}
@@ -336,6 +342,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	}
 
 	public void checkVariants() {
+		int errorCount = 0;
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			ShipVariantAPI variant = member.getVariant();
 			ShipVariantAPI saved = storedVariants.get(member);
@@ -347,11 +354,16 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			if (variant != saved) {
 				String warn = "Warning: Variant for " + member.getShipName() + ", " + member.getHullSpec().getNameWithDesignationWithDashClass()
 						+ " does not match saved variant, restoring";
-				Global.getSector().getCampaignUI().addMessage(warn, Misc.getNegativeHighlightColor(), member.getShipName(),
-						"", Misc.getHighlightColor(), Color.WHITE);
+				//Global.getSector().getCampaignUI().addMessage(warn, Misc.getNegativeHighlightColor(), member.getShipName(), "", Misc.getHighlightColor(), Color.WHITE);
 				log.warn(warn);
 				member.setVariant(saved, false, true);
+				errorCount++;
 			}
+		}
+		if (errorCount > 0) {
+			String warn = String.format("Warning: Variants for %s ship(s) do not match saved variant, restoring", errorCount);
+			Global.getSector().getCampaignUI().addMessage(warn, Misc.getNegativeHighlightColor(),
+					errorCount + "", "", Misc.getHighlightColor(), Color.WHITE);
 		}
 	}
 	
