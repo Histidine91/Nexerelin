@@ -455,6 +455,10 @@ public class ExerelinProcGen {
 				return 0.35f;
 			case Conditions.FARMLAND_BOUNTIFUL:
 				return 0.6f;
+			case Conditions.NO_ATMOSPHERE:
+				return 0;	// higher than normal hazard conditions so we can have more synchrotron candidates
+			case Conditions.HIGH_GRAVITY:
+				return -0.5f;	// hate it
 		}
 		if (cond.getGenSpec() != null)
 		{
@@ -516,7 +520,7 @@ public class ExerelinProcGen {
 	}
 	
 	/**
-	 * Creates ProcGenEntities for planets in the star system
+	 * Creates ProcGenEntities for planets in the star system.
 	 * @param system
 	 */
 	protected void createEntityDataForSystem(StarSystemAPI system)
@@ -546,6 +550,7 @@ public class ExerelinProcGen {
 			
 			log.info("Creating entity data for planet " + planet.getName());
 			ProcGenEntity planetData = createEntityData(planet);
+			planetData.desirability = getDesirability(planet);
 			procGenEntitiesByToken.put(planet, planetData);
 			planets.add(planetData);
 			log.info("\tPlanet desirability: " + planetData.desirability);
