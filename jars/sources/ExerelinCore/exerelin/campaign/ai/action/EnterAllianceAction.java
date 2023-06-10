@@ -1,12 +1,12 @@
 package exerelin.campaign.ai.action;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,9 +19,10 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
         if (alliance != null) {
             AllianceManager.joinAllianceStatic(ai.getFactionId(), alliance);
         } else {
-            AllianceManager.createAlliance(ai.getFactionId(), this.faction.getId());
+            alliance = AllianceManager.createAlliance(ai.getFactionId(), this.faction.getId());
         }
-        if (AllianceManager.getFactionAlliance(ai.getFactionId()) == null) return false;
+        if (alliance == null) return false;
+
         delegate = this;
         return true;
     }
@@ -39,16 +40,25 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
         if (Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_GLOBAL_COOLDOWN))
             return false;
-        if ((ai.getFaction().isPlayerFaction() || faction == Global.getSector().getPlayerFaction())) {
+
+        // don't spontaneously ally with player
+        // in future, make an explicit offer to player
+        if (faction == Global.getSector().getPlayerFaction()) return false;
+        /*
+        if ((ai.getFaction().isPlayerFaction())) {
             if (!NexConfig.followersDiplomacy) return false;
             if (Misc.getCommissionFaction() != null) return false;
         }
+        */
+
+        if (NexUtilsFaction.isPirateFaction(ai.getFactionId())) return false;
 
         if (alliance != null) {
             if (!alliance.canJoin(ai.getFaction())) return false;
         }
         else if (faction != null) {
             if (!AllianceManager.getManager().canAlly(ai.getFactionId(), faction.getId())) return false;
+            if (NexUtilsFaction.isPirateFaction(faction.getId())) return false;
         }
 
         if (NexUtils.getTrueDaysSinceStart() < NexConfig.allianceGracePeriod) return false;
@@ -64,7 +74,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
     @Override
     public String getIcon() {
         if (alliance != null && alliance.getIntel() != null) return alliance.getIntel().getIcon();
-        return null;
+        return Global.getSettings().getSpriteName("intel", "alliance");
     }
 
     @Override
