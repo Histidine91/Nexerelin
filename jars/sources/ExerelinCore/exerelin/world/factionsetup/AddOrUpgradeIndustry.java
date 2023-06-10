@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.world.factionsetup.FactionSetupHandler.FactionSetupItemDef;
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +25,7 @@ public class AddOrUpgradeIndustry extends FactionSetupItem {
 		
 		String upgrade = (String)def.params.get("upgrade");
 		if (home.hasIndustry(upgrade)) {
-			home.getIndustry(upgrade).startUpgrading();
-			home.getIndustry(upgrade).finishBuildingOrUpgrading();
+			NexUtilsMarket.upgradeIndustryIfCan(home.getIndustry(upgrade), true);
 			return;
 		}
 		

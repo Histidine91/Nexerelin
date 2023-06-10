@@ -497,7 +497,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		if (wantedLevel > currLevel) {
 			log.info(String.format("Wanted VIC EVC level %s, current %s", wantedLevel, currLevel));
-			if (ind != null) ind.startUpgrading();
+			if (ind != null) NexUtilsMarket.upgradeIndustryIfCan(ind, false);
 			else {
 				market.addIndustry("vic_antiEVCt1");
 				market.getIndustry("vic_antiEVCt1").startBuilding();
@@ -639,8 +639,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 						removeItemFromQueue(item, queue);
 						continue;
 					}
-					if (ind.canUpgrade() && ind.getSpec().getUpgrade() != null) {
-						market.getIndustry(item.industry).startUpgrading();
+					if (NexUtilsMarket.upgradeIndustryIfCan(ind, false)) {
 						removeItemFromQueue(item, queue);
 					}
 					else continue;

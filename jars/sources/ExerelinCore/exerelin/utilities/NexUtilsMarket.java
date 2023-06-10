@@ -448,6 +448,24 @@ public class NexUtilsMarket {
 		return quant.getQuantity().getModifiedInt();
 	}
 
+	/**
+	 * Checks for whether the industry has an upgrade and its {@code canUpgrade} method returns true.
+	 * @param ind
+	 * @param instant
+	 * @return True if upgrade was carried out, false if unable to upgrade.
+	 */
+	public static boolean upgradeIndustryIfCan(Industry ind, boolean instant) {
+		if (ind == null) return false;
+		if (!ind.canUpgrade()) return false;
+		String upg = ind.getSpec().getUpgrade();
+		if (upg == null) return false;
+		// I could add a check for whether the upgrade actually exists here, but we only want to check for things that don't reflect underlying errors
+
+		ind.startUpgrading();
+		if (instant) ind.finishBuildingOrUpgrading();
+		return true;
+	}
+
 	public static void pickEntityDestination(final InteractionDialogAPI dialog,
 											 final List<SectorEntityToken> destinations, String confirmText,
 											 final CampaignEntityPickerWrapper wrapper) {

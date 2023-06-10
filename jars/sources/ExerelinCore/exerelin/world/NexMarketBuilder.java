@@ -384,8 +384,7 @@ public class NexMarketBuilder
 		if (instant) {
 			Industry groundDef = market.getIndustry(Industries.GROUNDDEFENSES);
 			if (groundDef != null) {
-				groundDef.startUpgrading();
-				groundDef.finishBuildingOrUpgrading();
+				NexUtilsMarket.upgradeIndustryIfCan(groundDef, instant);
 				return;
 			}
 			addIndustry(market, Industries.HEAVYBATTERIES, instant);
@@ -422,10 +421,7 @@ public class NexMarketBuilder
 			if (wantUpgrade)
 			{
 				Industry station = currStation.one;
-				if (station.getSpec().getUpgrade() != null) {
-					station.startUpgrading();
-					if (instant) station.finishBuildingOrUpgrading();
-				}
+				NexUtilsMarket.upgradeIndustryIfCan(station, instant);
 			}
 		}
 		// no station, add one

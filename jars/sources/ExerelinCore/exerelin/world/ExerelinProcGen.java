@@ -544,11 +544,11 @@ public class ExerelinProcGen {
 				continue;
 			}
 			
-			//log.info("Creating entity data for planet " + planet.getName());
+			log.info("Creating entity data for planet " + planet.getName());
 			ProcGenEntity planetData = createEntityData(planet);
 			procGenEntitiesByToken.put(planet, planetData);
 			planets.add(planetData);
-			//log.info("\tPlanet desirability: " + planetData.desirability);
+			log.info("\tPlanet desirability: " + planetData.desirability);
 			if (planetData.desirability >= 0)
 			{
 				desirablePlanets.add(planetData);
