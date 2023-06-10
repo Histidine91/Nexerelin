@@ -295,21 +295,24 @@ public class AgentIntel extends BaseIntelPlugin {
 		pushActionQueue();
 	}
 	
-	public void repeatLastAction(boolean toFront) {
+	public CovertActionIntel repeatLastAction(boolean toFront) {
 		try {
 			CovertActionIntel repeat = (CovertActionIntel)lastAction.clone();
+			repeat.setTargetFaction(market.getFaction());
 			MutableValue currCredits = Global.getSector().getPlayerFleet().getCargo().getCredits();
 			if (currCredits.get() < repeat.cost)
-				return;
+				return null;
 			
 			if (toFront) addAction(repeat, 0);
 			else addAction(repeat);
 			
 			Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(repeat.cost);
 			repeat.activate();
+			return repeat;
 		} catch (CloneNotSupportedException ex) {
 			Global.getLogger(this.getClass()).error("Failed to repeat action, clone failed", ex);
 		}
+		return null;
 	}
 	
 	public boolean tryRepeatRelations() {
@@ -331,8 +334,10 @@ public class AgentIntel extends BaseIntelPlugin {
 
 		if (!doneAllWeCan) {
 			actionQueue.remove(0);
-			repeatLastAction(true);
-			sendUpdateIfPlayerHasIntel(UPDATE_REPEAT_RELATIONS, false);
+			CovertActionIntel repeat = repeatLastAction(true);
+			if (repeat != null) {
+				sendUpdateIfPlayerHasIntel(UPDATE_REPEAT_RELATIONS, false);
+			}
 			return true;
 		}
 		return false;
