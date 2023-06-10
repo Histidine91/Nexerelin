@@ -32,17 +32,17 @@ public class FactionBonusSubplugin {
 	protected FactionAPI getFaction() {
 		return Global.getSector().getFaction(factionId);
 	}
-	
-	// fucking awful hax for a ClassCastException a couple of people are having
-	// how is this possible, the value is never stored as a double in the map!
+
 	public Float getSettingsFloat(String key) {
-		try {
-			return (Float)conf.groundBattleSettings.get(key);
-		} catch (ClassCastException ex) {
-			Double value = (Double)conf.groundBattleSettings.get(key);
-			if (value == null) return null;
-			return (float)(double)value;
-		}
+		Object val = conf.groundBattleSettings.get(key);
+		if (val == null) return null;
+
+		if (val instanceof Float) return (Float)val;
+		else if (val instanceof Double) return ((Double)val).floatValue();
+		else if (val instanceof Integer) return ((Integer)val).floatValue();
+		else if (val instanceof String) return Float.parseFloat((String)val);
+
+		return (float)val;	// if there's a ClassCastException just throw it
 	}
 	
 	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
