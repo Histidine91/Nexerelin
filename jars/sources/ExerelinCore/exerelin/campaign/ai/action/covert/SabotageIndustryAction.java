@@ -29,7 +29,7 @@ public class SabotageIndustryAction extends CovertAction {
         // get the target industry from concern if it has one
         if (concern instanceof HasIndustryTarget) {
             List<Industry> candidates = ((HasIndustryTarget)concern).getTargetIndustries();
-            if (!candidates.isEmpty()) {
+            if (candidates != null && !candidates.isEmpty()) {
                 industry = candidates.get(0);
             }
 
