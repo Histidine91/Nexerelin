@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.econ.EconomyInfoHelper;
@@ -139,10 +140,21 @@ public class HeavyIndustry extends IndustryClassGen {
 			String wantedIndustry = market.getMemoryWithoutUpdate().getString(MEM_KEY_WANTED_SHADOWYARDS_UPGRADE);
 			if (wantedIndustry == null) wantedIndustry = pickRandomModularFabIndustry(random);
 			String wantedSpecial = SHADOWYARDS_MODULARFAC_UPGRADES_BY_INDUSTRY.get(wantedIndustry);
+			if (Global.getSettings().getSpecialItemSpec(wantedSpecial) == null) {
+				String err = String.format("Picked nonexistent special item %s for modular fac upgrade on %s",
+						wantedSpecial, market.getName());
+				Global.getLogger(this.getClass()).error(err);
+				Global.getSector().getCampaignUI().addMessage(err, Misc.getNegativeHighlightColor(), wantedSpecial, market.getName(),
+						Misc.getHighlightColor(), market.getTextColorForFactionOrPlanet());
+				return;
+			}
 
 			Industry ind = market.getIndustry("ms_modularFac");
+			if (!ind.canUpgrade()) return;
 			ind.setSpecialItem(new SpecialItemData(wantedSpecial, null));
-			NexUtilsMarket.upgradeIndustryIfCan(ind, instant);
+			//NexUtilsMarket.upgradeIndustryIfCan(ind, instant);	// checks for upgrade target spec, which doesn't exist
+			NexUtilsMarket.upgradeIndustryToTarget(ind, wantedIndustry, false, true);
+
 		}
 		else {
 			boolean upgrade = false;
