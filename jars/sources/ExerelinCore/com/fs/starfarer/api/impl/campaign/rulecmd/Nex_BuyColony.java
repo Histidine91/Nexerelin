@@ -1,15 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import java.util.List;
-import java.util.Map;
-
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.RuleBasedDialog;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -27,7 +19,10 @@ import exerelin.campaign.intel.BuyColonyIntel;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
+import java.util.List;
+import java.util.Map;
 
 public class Nex_BuyColony extends BaseCommandPlugin {
 	
@@ -97,6 +92,8 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 	}
 	
 	public static boolean canBuy(MarketAPI market) {
+		if (market.isHidden()) return false;
+
 		if (market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_NO_BUY))
 			return false;
 		
@@ -131,7 +128,7 @@ public class Nex_BuyColony extends BaseCommandPlugin {
 		
 		// (practically) free for size 3 player-founded colonies
 		String origOwner = NexUtilsMarket.getOriginalOwner(market);
-		if ((origOwner == null || Factions.PLAYER.equals(origOwner)) && market.getSize() <= 3) 
+		if ((Factions.PLAYER.equals(origOwner)) && market.getSize() <= 3)
 		{
 			stat.modifyFlat("playerFounded", 1, StringHelper.getString("nex_buyColony", 
 				"costFactorPlayerFounded", true));

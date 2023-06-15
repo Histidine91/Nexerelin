@@ -1026,6 +1026,8 @@ SetTooltipHighlightColors nex_buyColony good hColor good hColor
 SetTooltipHighlights nex_buyColony Friendly 3 Cooperative 4",,,
 nex_buyColonyOptionDisable2,Nex_BuyColonyDisableCheck,$market.nex_unbuyable score:10,"SetEnabled nex_buyColony false 
 SetTooltip nex_buyColony ""$marketName cannot be purchased.""",,,
+nex_buyColonyOptionDisableHidden,Nex_BuyColonyDisableCheck,$market.isHidden score:5,"SetEnabled nex_buyColony false 
+SetTooltip nex_buyColony ""$marketName cannot be purchased.""",,,
 nex_buyColonyOptionDisableMacau,Nex_BuyColonyDisableCheck,"$faction.id == tiandong
 $market.id == tiandong_macau_market score:15","SetEnabled nex_buyColony false 
 SetTooltip nex_buyColony ""$marketName is under THI's special administration and cannot be purchased.""",,,
