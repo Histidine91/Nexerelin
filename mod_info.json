@@ -5,7 +5,7 @@
     "version":{
         "major":0, 
         "minor":11, 
-        "patch":"0"
+        "patch":"0b"
     },
     "description":"Join a faction and conquer the Sector!",
     "gameVersion":"0.96a-RC10",

@@ -1,3 +1,30 @@
+Version 0.11.0b
+
+### Gameplay ###
+* Update vanilla faction starting fleets to comply with doctrines (including ships added by SWP)
+* When repeating operative action, update target faction if current market owner has changed
+* Alicorn main projectile passes through missiles and fighters
+* Silverlight no longer tagged as known to Remnants (does not apply to existing saves)
+
+### Bugfixes ###
+* Fix a crash in Remnant mission 'Salvation' if it couldn't find an orbit for station
+* Remove autofit goal variant for boss ship that would crash the game if used (may not apply to existing saves)
+* Fix null pointer in operative travel order dialog when an operative has no market
+* Fix null pointer if a market decivilizes while NPC covert action is ongoing
+* Workaround some weird crash with nonexistent special item when computing industry value
+* Fix Luddic Path base manager replacement when adding to existing save
+* Fix planet desirability detection for random sector/own faction planet picking
+    * Also adjust some condition valuations for desirability
+* Maybe fix variant breakages in player special task groups
+* Safety for invalid ground battle ability visual panels
+* Fix some missing admins in Derelict Empire or from expedition-founded colonies
+
+### Modding ###
+* Some handling for Ashes of the Domain mod
+* Nex_MarketCMD calls `NexPostShowDefenses` after `showDefenses`
+* Fix ground battle's faction bonus subplugin not handling integers (or strings)
+
+
 Version 0.11.0
 
 Does not include changes in beta 0.10.6y-z
