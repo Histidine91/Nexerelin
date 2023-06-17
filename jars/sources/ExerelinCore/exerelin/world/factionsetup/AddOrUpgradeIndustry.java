@@ -3,12 +3,14 @@ package exerelin.world.factionsetup;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoTransferHandlerAPI;
 import com.fs.starfarer.api.campaign.SpecialItemPlugin;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.world.factionsetup.FactionSetupHandler.FactionSetupItemDef;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +27,13 @@ public class AddOrUpgradeIndustry extends FactionSetupItem {
 		
 		String toUpgrade = (String)def.params.get("upgrade");
 		if (home.hasIndustry(toUpgrade)) {
+			Industry ind = home.getIndustry(toUpgrade);
 			String target = (String)def.params.get("upgradeTo");
-			NexUtilsMarket.upgradeIndustryToTarget(home.getIndustry(toUpgrade), target, true, true);
+			if (target == null) target = ind.getSpec().getUpgrade();
+			if (target == null) {
+				Global.getLogger(this.getClass()).error("No upgrade target for industry " + ind.getCurrentName());
+			}
+			NexUtilsMarket.upgradeIndustryToTarget(ind, target, true, true);
 			return;
 		}
 		
