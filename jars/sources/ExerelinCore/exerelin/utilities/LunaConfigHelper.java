@@ -1,5 +1,6 @@
 package exerelin.utilities;
 
+import com.fs.starfarer.api.Global;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.plugins.ExerelinModPlugin;
@@ -110,6 +111,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         //addSetting("prismNumBossShips", "int", NexConfig.prismNumBossShips, 0, 10);
         addSetting("officerDeaths", "boolean", NexConfig.officerDeaths);
         addSetting("rebellionMult", "float", NexConfig.rebellionMult, 0f, 10f);
+        addSetting("skipStoryDefault", "boolean", Global.getSettings().getBoolean("nex_skipStoryDefault"));
 
         addHeader("debug", null);
         addSetting("nexDevMode", "boolean", ExerelinModPlugin.isNexDev);
@@ -210,6 +212,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.enablePunitiveExpeditions = (boolean)loadSetting("enablePunitiveExpeditions", "boolean");
         NexConfig.officerDeaths = (boolean)loadSetting("officerDeaths", "boolean");
         NexConfig.rebellionMult = (float)loadSetting("rebellionMult", "float");
+        Global.getSettings().setBoolean("nex_skipStoryDefault", (boolean)loadSetting("skipStoryDefault", "boolean"));
         //NexConfig.prismNumBossShips = (int)loadSetting("prismNumBossShips", "int");
 
         ExerelinModPlugin.isNexDev = (boolean)loadSetting("nexDevMode", "boolean");

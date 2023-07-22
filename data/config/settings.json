@@ -32,7 +32,7 @@
 	# (and the "go to Academy" bar quest doesn't appear)
 	"nex_noStoryCriticalMarkets":false,
 	
-	"nex_skipStoryDefault":false,
+	"nex_skipStoryDefault":false,	# also has LunaLib config
 	
 	"nex_keepSModsForRecoveredShips":true,	# note: only affects enemy ships, friendly ships already keep their mods
 	
