@@ -57,6 +57,7 @@
 		#	"averageSMods":1,	# requires autofit to take effect
 		#	#"plugin":"",
 		#	#"requiredMods":[],
+		#	"blockScuttle":true,	# set to true to make ships non-scuttleable
 		#	"canPatrol":false,	# can this company appear in an NPC fleet when purchasing the anti-piracy patrol package? (default true)
 		#	"pickChance":1,
 		#	"miscData":{},
@@ -363,7 +364,8 @@
 				"ignoreMarketRelationship":true,
 			},
 			#"plugin":"",
-			"canPatrol":false
+			"canPatrol":false,
+			"blockScuttle":true,
 		},
 	}
 }

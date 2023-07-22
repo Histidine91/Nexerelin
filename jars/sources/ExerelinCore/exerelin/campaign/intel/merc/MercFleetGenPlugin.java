@@ -126,6 +126,8 @@ public class MercFleetGenPlugin {
 				}
 				member.getVariant().addTag(Tags.TAG_AUTOMATED_NO_PENALTY);
 			}
+
+			if (def.blockScuttle) member.getVariant().addTag(Tags.SHIP_CAN_NOT_SCUTTLE);
 		}
 		
 		// custom name if present

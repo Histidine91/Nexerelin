@@ -65,6 +65,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	
 	protected Object readResolve() {
 		if (stored == null) stored = new HashMap<>();
+		MercFleetGenPlugin.createPlugin(this);
 		return this;
 	}
 	
@@ -190,7 +191,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 			member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
 			
 			PersonAPI officer = member.getCaptain();
-			if (officer != null && !officer.isDefault()) {
+			if (officer != null && !officer.isDefault() && !officer.isAICore()) {
 				player.getFleetData().addOfficer(officer);
 				offeredFleet.getFleetData().removeOfficer(officer);
 				officers.add(officer);
