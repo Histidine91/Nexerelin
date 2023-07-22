@@ -363,7 +363,7 @@ public class StrategicAI extends BaseIntelPlugin {
 
 	@Override
 	public boolean isHidden() {
-		return !ExerelinModPlugin.isNexDev;
+		return false;
 	}
 
 	public static String getString(String id) {
