@@ -71,6 +71,7 @@ public class MercPackageIntel extends BaseIntelPlugin implements EconomyTickList
         }
 
         if (isEnded() || isEnded()) return;
+        if (HostileActivityEventIntel.get() == null) return;
 
         info.addPara(NexHostileActivityManager.getString("mercPackageBulletFee"), initPad, tc, Misc.getHighlightColor(),
                 Misc.getWithDGS(MercPackageActivityCause.MONTHLY_FEE));
