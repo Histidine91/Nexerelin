@@ -36,7 +36,28 @@
 			"fuel":-2,
 			"luxury_goods":-2,
 			"drugs":-2
-		}
+		},
+		
+		"customFactionTracks":[
+			#"my_custom_track",	# must be an entry in the music table of sounds.json,
+			"music_default_market_friendly",
+			"music_default_market_hostile",
+			"music_default_market_neutral",
+			"music_default_encounter_friendly",
+			"music_default_encounter_hostile",
+			"music_default_encounter_neutral",			
+			
+			"music_luddite_shrine",
+		],
+		
+		# these can also be used to override the colors of tracks obtained from the faction file
+		"customFactionTrackColors":{	# supersedes faction colors
+			#"music_default_market_friendly":[0, 255, 255, 255],
+		},
+		"customFactionTrackFactionColors":{
+			#"music_tritach_encounter_friendly":"hegemony",
+			"music_luddite_shrine":"luddic_church",
+		},
 		
 		# currently unused
 		#"faction_spawn_points":{
