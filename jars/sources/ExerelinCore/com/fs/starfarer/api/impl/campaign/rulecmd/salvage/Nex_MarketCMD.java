@@ -639,7 +639,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			plugin.cleanUpBattle();
 		}
 
-		FireAll.fire("", dialog, memoryMap, "NexPostShowDefenses");
+		FireAll.fire(null, dialog, memoryMap, "NexPostShowDefenses");
 	}
 	
 	// Changes from vanilla: Add handling of response fleet
@@ -2421,7 +2421,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	 */
 	protected boolean wasPlayerMarket() {
 		String origOwner = NexUtilsMarket.getOriginalOwner(market);
-		boolean originallyPlayer = origOwner.equals(Factions.PLAYER);
+		boolean originallyPlayer = Factions.PLAYER.equals(origOwner);
 		return originallyPlayer;
 	}
 	
