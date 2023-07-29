@@ -17,7 +17,10 @@ public abstract class BaseGroundBattlePlugin implements GroundBattlePlugin {
 	{
 		this.intel = intel;
 	}
-	
+
+	@Override
+	public void onBattleStart() {}
+
 	@Override
 	public void apply() {}
 	

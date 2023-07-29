@@ -1,6 +1,5 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.impl.campaign.econ.impl.GroundDefenses;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -9,17 +8,16 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.intel.groundbattle.GBConstants;
-import exerelin.campaign.intel.groundbattle.GBDataManager;
+import exerelin.campaign.intel.groundbattle.*;
 import exerelin.campaign.intel.groundbattle.GBDataManager.IndustryDef;
-import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
-import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
-import exerelin.campaign.intel.groundbattle.GroundBattleSide;
-import exerelin.campaign.intel.groundbattle.IndustryForBattle;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
+
+import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 
 public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 	
@@ -214,16 +212,8 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 		String className = GBDataManager.getIndustryDef(defId).plugin;
 		if (className == null) className = "exerelin.campaign.intel.groundbattle.plugins.IndustryForBattlePlugin";
 		
-		IndustryForBattlePlugin plugin = null;
-		
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(className);
-			plugin = (IndustryForBattlePlugin)clazz.newInstance();
-			plugin.init(defId, ind);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			Global.getLogger(IndustryForBattlePlugin.class).error("Failed to load industry plugin " + defId, ex);
-		}
+		IndustryForBattlePlugin plugin = (IndustryForBattlePlugin)NexUtils.instantiateClassByName(className);
+		plugin.init(defId, ind);
 		
 		return plugin;
 	}

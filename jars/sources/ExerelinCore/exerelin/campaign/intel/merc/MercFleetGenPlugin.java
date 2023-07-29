@@ -23,6 +23,7 @@ import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.campaign.intel.merc.MercDataManager.OfficerDef;
+import exerelin.utilities.NexUtils;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -254,15 +255,8 @@ public class MercFleetGenPlugin {
 	public static MercFleetGenPlugin createPlugin(MercContractIntel intel) {
 		String className = intel.getDef().plugin;
 		if (className == null) className = "exerelin.campaign.intel.merc.MercFleetGenPlugin";
-		MercFleetGenPlugin plugin = null;
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(className);
-			plugin = (MercFleetGenPlugin)clazz.newInstance();
-			plugin.intel = intel;
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			log.error("Failed to load merc fleet generator plugin" + className, ex);
-		}
+		MercFleetGenPlugin plugin = (MercFleetGenPlugin) NexUtils.instantiateClassByName(className);
+		plugin.intel = intel;
 		return plugin;
 	}
 	

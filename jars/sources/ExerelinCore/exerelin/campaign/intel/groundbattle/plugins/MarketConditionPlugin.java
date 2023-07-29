@@ -1,6 +1,5 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -10,6 +9,7 @@ import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBDataManager;
 import exerelin.campaign.intel.groundbattle.GBDataManager.ConditionDef;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
 
@@ -97,16 +97,8 @@ public class MarketConditionPlugin extends BaseGroundBattlePlugin {
 		String className = GBDataManager.getConditionDef(defId).plugin;
 		if (className == null) className = "exerelin.campaign.intel.groundbattle.plugins.MarketConditionPlugin";
 		
-		MarketConditionPlugin plugin = null;
-		
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(className);
-			plugin = (MarketConditionPlugin)clazz.newInstance();
-			plugin.init(intel, defId);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			Global.getLogger(IndustryForBattlePlugin.class).error("Failed to load market condition plugin " + defId, ex);
-		}
+		MarketConditionPlugin plugin = (MarketConditionPlugin) NexUtils.instantiateClassByName(className);
+		plugin.init(intel, defId);
 		
 		return plugin;
 	}

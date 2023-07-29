@@ -12,6 +12,8 @@ public interface GroundBattlePlugin {
 	public static final float MODIFIER_ENTRY_HEIGHT = 32;
 	
 	public void init(GroundBattleIntel intel);
+
+	public void onBattleStart();
 	
 	/**
 	 * Called at least once per turn.

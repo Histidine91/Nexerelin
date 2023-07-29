@@ -1,7 +1,7 @@
 package exerelin.world.industry.bonus;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.Industry;
+import exerelin.utilities.NexUtils;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import lombok.Setter;
@@ -79,16 +79,8 @@ public abstract class BonusGen {
 	
 	public static <T extends BonusGen> T loadBonusGen(String id, String name, String generatorClass)
 	{
-		BonusGen gen = null;
-		
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(generatorClass);
-			gen = (BonusGen)clazz.newInstance();
-			gen.init(id, name);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			Global.getLogger(BonusGen.class).error("Failed to load bonus generator " + name, ex);
-		}
+		BonusGen gen = (BonusGen) NexUtils.instantiateClassByName(generatorClass);
+		gen.init(id, name);
 
 		return (T)gen;
 	}

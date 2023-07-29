@@ -1,10 +1,10 @@
 package exerelin.world.factionsetup;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.CargoTransferHandlerAPI;
 import com.fs.starfarer.api.campaign.impl.items.BaseSpecialItemPlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import exerelin.utilities.NexUtils;
 
 public class FactionSetupItemPlugin extends BaseSpecialItemPlugin {
 	
@@ -41,16 +41,8 @@ public class FactionSetupItemPlugin extends BaseSpecialItemPlugin {
 	
 	public static <T extends FactionSetupItem> T loadFactionSetupItem(String id, String className)
 	{
-		FactionSetupItem item = null;
-		
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(className);
-			item = (FactionSetupItem)clazz.newInstance();
-			item.init(id);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			Global.getLogger(FactionSetupItem.class).error("Failed to load FactionSetupItem " + id, ex);
-		}
+		FactionSetupItem item = (FactionSetupItem) NexUtils.instantiateClassByName(className);
+		item.init(id);
 
 		return (T)item;
 	}

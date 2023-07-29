@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import org.json.JSONArray;
@@ -92,15 +93,8 @@ public class CustomStartDefs {
 	
 	public static void loadCustomStart(String id, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
 		CustomStartDef def = defsByID.get(id);
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(def.className);
-			CustomStart start = (CustomStart)clazz.newInstance();
-			start.execute(dialog, memoryMap);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			//Global.getLogger(StartScenarioManager.class).error("Failed to load scenario " + id, ex);
-			throw new RuntimeException("Failed to load custom start " + id, ex);
-		}
+		CustomStart start = (CustomStart) NexUtils.instantiateClassByName(def.className);
+		start.execute(dialog, memoryMap);
 	}
 	
 	public static boolean validateCustomStart(String id) {

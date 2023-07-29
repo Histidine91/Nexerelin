@@ -20,6 +20,7 @@ import exerelin.campaign.battle.NexBattleAutoresolverPlugin;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.colony.AICoreAdminPluginOmega;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFleet;
 import lombok.extern.log4j.Log4j;
 
@@ -135,14 +136,8 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 			}
 			
 			String className = (String)curr;
-			try {
-				ClassLoader loader = Global.getSettings().getScriptClassLoader();
-				Class<?> clazz = loader.loadClass(className);
-				BattleCreationPlugin bcp = (BattleCreationPlugin)clazz.newInstance();
-				return new PluginPick<>(bcp, PickPriority.MOD_SPECIFIC);
-			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-				throw new RuntimeException("Failed to load battle plugin for fleet " + opponent.getFullName(), ex);
-			}
+			BattleCreationPlugin bcp = (BattleCreationPlugin) NexUtils.instantiateClassByName(className);
+			return new PluginPick<>(bcp, PickPriority.MOD_SPECIFIC);
 		}
 		
 		return null;

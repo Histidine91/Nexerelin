@@ -83,15 +83,8 @@ public class StrategicDefManager {
      * @return
      */
     public static StrategicConcern instantiateConcern(StrategicConcernDef def) {
-        StrategicConcern concern = null;
-        try {
-            ClassLoader loader = Global.getSettings().getScriptClassLoader();
-            Class<?> clazz = loader.loadClass(def.classPath);
-            concern = (StrategicConcern)clazz.newInstance();
-            concern.setId(def.id);
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-            log.error("Failed to load concern " + def.id, ex);
-        }
+        StrategicConcern concern = (StrategicConcern)NexUtils.instantiateClassByName(def.classPath);
+        concern.setId(def.id);
         return concern;
     }
 
@@ -101,15 +94,8 @@ public class StrategicDefManager {
      * @return
      */
     public static StrategicAction instantiateAction(StrategicActionDef def) {
-        StrategicAction action = null;
-        try {
-            ClassLoader loader = Global.getSettings().getScriptClassLoader();
-            Class<?> clazz = loader.loadClass(def.classPath);
-            action = (StrategicAction)clazz.newInstance();
-            action.setId(def.id);
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-            log.error("Failed to load action " + def.id, ex);
-        }
+        StrategicAction action = (StrategicAction)NexUtils.instantiateClassByName(def.classPath);
+        action.setId(def.id);
         return action;
     }
 

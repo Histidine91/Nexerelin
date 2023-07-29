@@ -19,6 +19,7 @@ import exerelin.campaign.intel.groundbattle.GroundBattleSide;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 import exerelin.campaign.intel.groundbattle.dialog.AbilityDialogPlugin;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -350,16 +351,8 @@ public abstract class AbilityPlugin {
 	public static AbilityPlugin loadPlugin(GroundBattleSide side, String defId) 
 	{
 		String className = GBDataManager.getAbilityDef(defId).plugin;
-		AbilityPlugin plugin = null;
-		
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(className);
-			plugin = (AbilityPlugin)clazz.newInstance();
-			plugin.init(defId, side);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			Global.getLogger(IndustryForBattlePlugin.class).error("Failed to load market condition plugin " + defId, ex);
-		}
+		AbilityPlugin plugin = (AbilityPlugin)NexUtils.instantiateClassByName(className);
+		plugin.init(defId, side);
 		
 		return plugin;
 	}

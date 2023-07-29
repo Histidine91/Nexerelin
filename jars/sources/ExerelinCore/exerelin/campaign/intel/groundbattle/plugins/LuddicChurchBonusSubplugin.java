@@ -1,6 +1,5 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -42,21 +41,5 @@ public class LuddicChurchBonusSubplugin extends FactionBonusSubplugin {
 					0, col, String.format("%.1f×", moraleMult));
 		}
 		tooltip.setBulletedListMode(null);
-	}
-	
-	public static LuddicChurchBonusSubplugin loadPlugin(GroundBattleIntel intel, String factionId, String className) 
-	{		
-		LuddicChurchBonusSubplugin plugin = null;
-		
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(className);
-			plugin = (LuddicChurchBonusSubplugin)clazz.newInstance();
-			plugin.init(intel, factionId);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			Global.getLogger(IndustryForBattlePlugin.class).error("Failed to load faction subplugin " + className, ex);
-		}
-		
-		return plugin;
 	}
 }

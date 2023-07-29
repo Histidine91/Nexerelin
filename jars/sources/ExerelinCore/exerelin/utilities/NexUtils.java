@@ -407,6 +407,21 @@ public class NexUtils
 		return sb.toString();
 	}
 
+	public static Object instantiateClassByName(String className)
+	{
+		Object object = null;
+
+		try {
+			ClassLoader loader = Global.getSettings().getScriptClassLoader();
+			Class<?> clazz = loader.loadClass(className);
+			object = clazz.newInstance();
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+			Global.getLogger(NexUtils.class).error("Class load-by-name failure: " + className, ex);
+		}
+
+		return object;
+	}
+
 	public static class PairWithFloatComparator implements Comparator<Pair<?, Float>> {
 
 		public boolean descending;

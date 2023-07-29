@@ -3,6 +3,7 @@ package exerelin.world.industry;
 import com.fs.starfarer.api.Global;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import lombok.Getter;
@@ -144,16 +145,8 @@ public abstract class IndustryClassGen implements Comparable {
 	
 	public static <T extends IndustryClassGen> T loadIndustryClassGen(String id, String name, float priority, String generatorClass, boolean special)
 	{
-		IndustryClassGen gen = null;
-		
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(generatorClass);
-			gen = (IndustryClassGen)clazz.newInstance();
-			gen.init(id, name, priority, special);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			Global.getLogger(IndustryClassGen.class).error("Failed to load industry class generator " + name, ex);
-		}
+		IndustryClassGen gen = (IndustryClassGen) NexUtils.instantiateClassByName(generatorClass);
+		gen.init(id, name, priority, special);
 
 		return (T)gen;
 	}

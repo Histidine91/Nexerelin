@@ -4,14 +4,16 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
 import exerelin.ExerelinConstants;
+import exerelin.utilities.NexUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Handles custom scenarios for the starting sector.
@@ -60,15 +62,8 @@ public class ScenarioManager {
 		}
 		
 		StartScenarioDef def = defsByID.get(id);
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(def.className);
-			scenario = (Scenario)clazz.newInstance();
-			scenario.init();
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			//Global.getLogger(StartScenarioManager.class).error("Failed to load scenario " + id, ex);
-			throw new RuntimeException("Failed to load scenario " + id, ex);
-		}
+		scenario = (Scenario) NexUtils.instantiateClassByName(def.className);
+		scenario.init();
 	}
 	
 	public static void clearScenario() {

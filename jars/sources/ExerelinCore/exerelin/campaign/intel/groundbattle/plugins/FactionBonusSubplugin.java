@@ -10,6 +10,8 @@ import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtils;
+
 import java.awt.Color;
 
 /**
@@ -95,16 +97,8 @@ public class FactionBonusSubplugin {
 	
 	public static FactionBonusSubplugin loadPlugin(GroundBattleIntel intel, String factionId, String className) 
 	{		
-		FactionBonusSubplugin plugin = null;
-		
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(className);
-			plugin = (FactionBonusSubplugin)clazz.newInstance();
-			plugin.init(intel, factionId);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			Global.getLogger(IndustryForBattlePlugin.class).error("Failed to load faction subplugin " + className, ex);
-		}
+		FactionBonusSubplugin plugin = (FactionBonusSubplugin)NexUtils.instantiateClassByName(className);
+		if (plugin != null) plugin.init(intel, factionId);
 		
 		return plugin;
 	}

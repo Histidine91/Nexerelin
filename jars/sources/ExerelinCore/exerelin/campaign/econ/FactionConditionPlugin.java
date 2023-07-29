@@ -7,10 +7,12 @@ import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.econ.faction.FactionConditionSubplugin;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
-import java.util.Map;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
+
+import java.util.Map;
 
 @Log4j
 public class FactionConditionPlugin extends BaseMarketConditionPlugin {
@@ -117,17 +119,9 @@ public class FactionConditionPlugin extends BaseMarketConditionPlugin {
 	public FactionConditionSubplugin loadPlugin(String factionId) 
 	{
 		String className = NexConfig.getFactionConfig(factionId).factionConditionSubplugin;
-		FactionConditionSubplugin plugin = null;
 		if (className == null) return null;
-		
-		try {
-			ClassLoader loader = Global.getSettings().getScriptClassLoader();
-			Class<?> clazz = loader.loadClass(className);
-			plugin = (FactionConditionSubplugin)clazz.newInstance();
-			plugin.init(factionId, this);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-			log.error("Failed to load market condition subplugin " + factionId, ex);
-		}
+		FactionConditionSubplugin plugin = (FactionConditionSubplugin)NexUtils.instantiateClassByName(className);
+		plugin.init(factionId, this);
 		
 		return plugin;
 	}
