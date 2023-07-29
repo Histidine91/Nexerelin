@@ -613,6 +613,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         expandSector();
         
+        new LandmarkGenerator().generate(Global.getSector(), SectorManager.getManager().isCorvusMode());
         ScenarioManager.afterEconomyLoad(Global.getSector());
         
         SectorManager.reinitLiveFactions();
@@ -634,8 +635,6 @@ public class ExerelinModPlugin extends BaseModPlugin
 				market.setInvalidMissionTarget(true);
 			}
         }
-        
-        new LandmarkGenerator().generate(Global.getSector(), SectorManager.getManager().isCorvusMode());
         
         addBarEvents();
         // add an instance before onGameLoad is called, in case anything needs us during pregame
