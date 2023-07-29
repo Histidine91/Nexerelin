@@ -40,6 +40,7 @@ import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.GroundUnitDef;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
@@ -328,7 +329,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			doneAllWeCan = rel + 0.005f >= max;
 		} else if (lastAction instanceof LowerRelations) {
 			float rel = act.getTargetFaction().getRelationship(act.getThirdFaction().getId());
-			float min = DiplomacyManager.getManager().getMaxRelationship(act.getTargetFaction().getId(), act.getThirdFaction().getId());
+			float min = NexFactionConfig.getMinRelationship(act.getTargetFaction().getId(), act.getThirdFaction().getId());
 			doneAllWeCan = rel - 0.005f <= min;
 		}
 
@@ -1095,8 +1096,6 @@ public class AgentIntel extends BaseIntelPlugin {
 	public List<ArrowData> getArrowData(SectorMapAPI map) {
 		CovertActionIntel currentAction = getCurrentAction();
 		List<ArrowData> result = new ArrayList<ArrowData>();
-		MarketAPI origin = market;
-		if (origin == null) return result;
 		CovertActionIntel act = currentAction;
 		if (act != null && act.getDefId().equals(CovertActionType.TRAVEL))
 		{
@@ -1106,11 +1105,10 @@ public class AgentIntel extends BaseIntelPlugin {
 				return null;
 			}
 
-			ArrowData arrow = new ArrowData(origin.getPrimaryEntity(), travel.market.getPrimaryEntity());
+			ArrowData arrow = new ArrowData(travel.from.getPrimaryEntity(), travel.market.getPrimaryEntity());
 			arrow.color = Global.getSector().getPlayerFaction().getColor();
 			arrow.width = 10f;
 			result.add(arrow);
-			origin = travel.market;
 		}
 
 		act = this.getNextAction();
@@ -1122,7 +1120,7 @@ public class AgentIntel extends BaseIntelPlugin {
 				return null;
 			}
 
-			ArrowData arrow = new ArrowData(origin.getPrimaryEntity(), travel.market.getPrimaryEntity());
+			ArrowData arrow = new ArrowData(travel.from.getPrimaryEntity(), travel.market.getPrimaryEntity());
 			arrow.color = Global.getSector().getPlayerFaction().getColor();
 			arrow.width = 10f;
 			result.add(arrow);
