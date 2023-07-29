@@ -7,23 +7,21 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.awt.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.*;
+
 public class CustomStartDefs {
 	public static final String CONFIG_FILE = "data/config/exerelin/customStarts.json";
-	protected static final List<CustomStartDef> defs = new ArrayList<>();
-	protected static final Map<String, CustomStartDef> defsByID = new HashMap<>();
-	protected static final Map<String, Color> difficultyColors = new HashMap<>(); 
+	@Getter	protected static final List<CustomStartDef> defs = new ArrayList<>();
+	@Getter	protected static final Map<String, CustomStartDef> defsByID = new HashMap<>();
+	@Getter	protected static final Map<String, Color> difficultyColors = new HashMap<>();
 	
 	static {
 		try {
@@ -64,9 +62,17 @@ public class CustomStartDefs {
 			def.randomSector = defJson.optInt("randomSector", 0);
 			//def.configStartingResources = defJson.optBoolean("configStartingResources", true);
 			
-			defs.add(def);
-			defsByID.put(id, def);
+			addCustomStart(def);
 		}
+	}
+
+	public static void addCustomStart(CustomStartDef def) {
+		defs.add(def);
+		defsByID.put(def.id, def);
+	}
+
+	public static void setDifficultyColors(String id, Color color) {
+		difficultyColors.put(id, color);
 	}
 	
 	public static CustomStartDef getStartDef(String id) {
