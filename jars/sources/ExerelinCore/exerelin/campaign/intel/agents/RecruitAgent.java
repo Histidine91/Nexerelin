@@ -9,6 +9,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.intel.agents.AgentIntel.Specialization;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
@@ -88,6 +89,12 @@ public class RecruitAgent extends CovertActionIntel {
 	@Override
 	public String getDefId() {
 		return "recruitAgent";
+	}
+
+	@Override
+	public CovertOpsManager.CovertActionResult execute() {
+		result = CovertOpsManager.CovertActionResult.SUCCESS;
+		return super.execute();
 	}
 
 	@Override

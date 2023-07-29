@@ -401,7 +401,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 			}
 		}
 		
-		result = covertActionRoll();
+		if (result == null) result = covertActionRoll();
 				
 		if (result.isSuccessful())
 			onSuccess();
