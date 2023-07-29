@@ -1873,7 +1873,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		List<FactionAPI> nonHostile = new ArrayList<FactionAPI>();
 		List<FactionAPI> vengeful = new ArrayList<>();
 		
-		if (!hidden) {
+		if (!hidden && !Global.getSettings().getBoolean("nex_ignoreSatBomb")) {
 			for (FactionAPI faction : Global.getSector().getAllFactions()) {
 				if (temp.willBecomeHostile.contains(faction)) continue;
 

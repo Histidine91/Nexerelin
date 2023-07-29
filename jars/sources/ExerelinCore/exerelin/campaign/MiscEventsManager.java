@@ -243,6 +243,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 		if (actionData == null || actionData.willBecomeHostile == null) return;
 				
 		if (market.isHidden()) return;
+		if (Global.getSettings().getBoolean("nex_ignoreSatBomb")) return;
 		if (NexConfig.permaHateFromPlayerSatBomb <= 0) return;
 		FactionAPI target = market.getFaction();
 		int size = market.getSize();

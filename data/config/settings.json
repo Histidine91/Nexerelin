@@ -120,6 +120,7 @@
 	"nex_spawnHypershuntComplication":true,
 	
 	"nex_vicVirusBombChance":0.5,	# at 0.5, half of sat bomb expeditions by VIC will be converted to virus bomb expeditions
+	"nex_ignoreSatBomb":false,	# no rep loss with third parties for sat bombing (also no perma-hatred with anyone)
 	
 	"nex_specialForces_overOfficerLimitWarningOnly":true,
 	
