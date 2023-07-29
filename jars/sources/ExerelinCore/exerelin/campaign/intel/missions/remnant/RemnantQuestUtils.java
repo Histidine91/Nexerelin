@@ -28,6 +28,7 @@ public class RemnantQuestUtils {
 	public static final String PERSON_DISSONANT = "nex_dissonant";
 	public static final String PERSON_TOWERING = "nex_towering";
 	public static final String PERSON_ARGENT = "nex_luddicKnight";
+	public static final String PERSON_LOST_SCIENTIST = "nex_lostScientist";
 	public static final List<String> TAG_AS_REMNANT_MISSION = new ArrayList<>(Arrays.asList(
 			"seco", "ssat"
 			//"sitm"	// blueprint location; next time maybe?
@@ -49,6 +50,26 @@ public class RemnantQuestUtils {
 		person.setAICoreId(Commodities.ALPHA_CORE);
 		Global.getSector().getImportantPeople().addPerson(person);
 		market.addPerson(person);
+	}
+
+	public static PersonAPI getOrCreateLostScientist() {
+		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_LOST_SCIENTIST);
+		if (person != null) return person;
+
+		person = Global.getFactory().createPerson();
+		person.setId(PERSON_LOST_SCIENTIST);
+		person.setImportance(PersonImportance.MEDIUM);
+		person.setVoice(Voices.SCIENTIST);
+		person.setFaction(Factions.INDEPENDENT);
+		person.setGender(FullName.Gender.MALE);
+		person.setRankId(Ranks.CITIZEN);
+		person.setPostId(Ranks.POST_ACADEMICIAN);
+		person.getName().setFirst(getString("scientistName1"));
+		person.getName().setLast(getString("scientistName2"));
+		person.setPortraitSprite("graphics/portraits/portrait31.png");
+		Global.getSector().getImportantPeople().addPerson(person);
+
+		return person;
 	}
 
 	public static PersonAPI getOrCreateTowering() {

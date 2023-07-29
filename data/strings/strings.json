@@ -2692,6 +2692,10 @@
 		"knightName1":"Rhianne",
 		"knightName2":"Argent",
 		
+		# I haven't actually read either of these books, just needed a name ref
+		"scientistName1":"Yasutaka",	# after Yasutaka Tsutsui
+		"scientistName2":"Liu",			# after Liu Cixin
+		
 		"m1_name":"Captive Cores",
 		"m1_stage1Desc":"Recover the Beta Cores stored on %s. You could hit the secure facility where they're stored, or talk to someone in authority who can help you.",
 		"m1_stage2Desc":"Return the Beta Cores you've recovered to %s at %s. Alternatively, you might choose to bring them to either %s or %s.",
@@ -2712,6 +2716,17 @@
 		"fragments_returnNextStep":"Return to %s and talk to $name",
 		
 		"fragments_fleetName":"Mysterious Allies",
+		
+		"lostScientist_name":"File Drawer Problem",
+		"lostScientist_goToAcademyDesc":"Go to the %s to look for clues on the missing scientist, %s.",
+		"lostScientist_goToPlanetDesc":"Travel to %s in the %s to find the missing scientist %s.",
+		"lostScientist_checkFleetDesc":"Investigate the nearby battle in the %s system.",
+		"lostScientist_returnMidnightDesc":"Return to $name on %s and deliver the research paper.",
+		
+		"lostScientist_goToAcademyNextStep":"Go to the %s",
+		"lostScientist_goToPlanetNextStep":"Go to %s in the %s system",
+		"lostScientist_checkFleetNextStep":"Investigate battle in %s",
+		#"missingSci_returnMidnightNextStep":"Return to $name on %s",	# generated in code
 		
 		"brawl_name":"Showdown",
 		"brawl_boilerplateDesc":"A large Hegemony and allied operation is planned against the Remnants. $name has asked you to prevent it from succeeding.",
