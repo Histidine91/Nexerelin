@@ -162,7 +162,8 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 		FactionAPI player = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
 
 		DiplomacyIntel intel = DiplomacyManager.createDiplomacyEventV2(faction, player, eventId, null);
-		repResult = intel.reputation;
+		if (intel != null) repResult = intel.reputation;
+		else repResult = new ExerelinReputationAdjustmentResult(0);
 		DiplomacyManager.getManager().modifyWarWeariness(factionId, -reduction);
 		DiplomacyManager.getManager().modifyWarWeariness(PlayerFactionStore.getPlayerFactionId(), -reduction);
 		storedRelation = faction.getRelationship(PlayerFactionStore.getPlayerFactionId());
