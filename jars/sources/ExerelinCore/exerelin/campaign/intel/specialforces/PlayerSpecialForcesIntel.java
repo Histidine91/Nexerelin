@@ -51,6 +51,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	// on the other hand, should combat actually be free?
 	// can't be helped, it _is_ free if far-autoresolved
 	public static final boolean AI_MODE = true;
+	public static final boolean PRINT_VARIANT_WARNING = true;
 	public static final String MEM_KEY_OVER_OFFICER_LIMIT_WARN = "$nex_overOfficerLimitWarn";
 	
 	public static final float CREW_SALARY_MULT = 1f;	// should not be high since the utility of assets in a PSF fleet is much lower than in the player fleet
@@ -139,6 +140,9 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected void notifyShipAdded(FleetMemberAPI member) {
 		membersBackup.add(member);
 		// weird hax because the variants stop being stock once they're used in the PSF, perhaps due to inflater
+		// update: they will stay stock if they haven't been modified from the said stock variant
+		//log.info(String.format("Adding ship %s (%s), variant source %s", member.getShipName(),
+		//		member.getHullSpec().getHullNameWithDashClass(), member.getVariant().getSource()));
 		if (member.getVariant().getSource() == VariantSource.STOCK) {
 			member.setVariant(member.getVariant().clone(), false, false);
 			member.getVariant().setSource(VariantSource.REFIT);
@@ -341,6 +345,13 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		log.info("Fleet teleported to " + to.getName());
 	}
 
+	/*
+		Bug: If a fresh-from-custom-production variant is added to a special task group, the variant in the fleet will revert to stock on game load
+		until this method reverts it to the variant saved in intel
+		This happens every game load
+
+		For now we'll just call this method on game load to quietly fix it
+	 */
 	public void checkVariants() {
 		int errorCount = 0;
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
@@ -355,12 +366,14 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 				String warn = "Warning: Variant for " + member.getShipName() + ", " + member.getHullSpec().getNameWithDesignationWithDashClass()
 						+ " does not match saved variant, restoring";
 				//Global.getSector().getCampaignUI().addMessage(warn, Misc.getNegativeHighlightColor(), member.getShipName(), "", Misc.getHighlightColor(), Color.WHITE);
-				log.warn(warn);
+				if (PRINT_VARIANT_WARNING) log.warn(warn);
+				//printVariant(member, variant);
+				//printVariant(member, saved);
 				member.setVariant(saved, false, true);
 				errorCount++;
 			}
 		}
-		if (errorCount > 0) {
+		if (PRINT_VARIANT_WARNING && errorCount > 0) {
 			String warn = String.format("Warning: Variants for %s ship(s) do not match saved variant, restoring", errorCount);
 			Global.getSector().getCampaignUI().addMessage(warn, Misc.getNegativeHighlightColor(),
 					errorCount + "", "", Misc.getHighlightColor(), Color.WHITE);
@@ -441,8 +454,6 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected void advanceImpl(float amount) {
 		super.advanceImpl(amount);
 		updateFuelUse();
-		
-		reverseCompatibility();
 
 		float days = Misc.getDays(amount);
 		variantCheckInterval.advance(days);
@@ -881,6 +892,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	@Override
 	public void onGameLoad(boolean newGame) {
 		addListenerIfNeeded();
+		checkVariants();
 	}
 
 	@Override
@@ -900,4 +912,16 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 
 	@Override
 	public void onNewGameAfterTimePass() {}
+
+	public static void printVariant(FleetMemberAPI member, ShipVariantAPI variant) {
+		StringBuilder sb = new StringBuilder();
+		String str = "\r\n--------------------";
+		sb.append(str);
+		str = String.format("Variant %s for ship %s (%s)", variant.getDisplayName(), member.getShipName(), member.getHullSpec().getHullNameWithDashClass());
+		sb.append("\r\n" + str);
+		str = String.format("Source: %s", variant.getSource());
+		sb.append("\r\n" + str);
+		sb.append("\r\n" + variant.toString());
+		log.info(sb.toString());
+	}
 }
