@@ -114,7 +114,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 			{
 				if (Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().contains(MEM_KEY_RESPAWN_DELAY))
 					continue;
-				
+
 				SpecialForcesIntel intel = generateFleet(factionId);
 				if (intel != null) {
 					incrementPoints(factionId, -POINTS_TO_SPAWN);
@@ -157,10 +157,17 @@ public class SpecialForcesManager implements EveryFrameScript {
 		}
 		
 		float fp = POINTS_TO_SPAWN * MathUtils.getRandomNumberInRange(0.95f, 1.05f) * SIZE_MULT;
-		SpecialForcesIntel intel = new SpecialForcesIntel(origin, faction, fp);
-		FleetPoolManager.getManager().modifyPool(factionId, -fp);
-		intel.init(null);
-		return intel;
+		log.info("Generating special forces intel for faction " + factionId);
+		try {
+			SpecialForcesIntel intel = new SpecialForcesIntel(origin, faction, fp);
+			FleetPoolManager.getManager().modifyPool(factionId, -fp);
+			intel.init(null);
+			return intel;
+		} catch (Exception ex) {
+			Global.getSector().getCampaignUI().addMessage("Failed to generate special task group for faction " + factionId + ", please report with log",
+					Misc.getNegativeHighlightColor());
+		}
+		return null;
 	}
 	
 	public List<SpecialForcesIntel> getActiveIntelCopy() {
