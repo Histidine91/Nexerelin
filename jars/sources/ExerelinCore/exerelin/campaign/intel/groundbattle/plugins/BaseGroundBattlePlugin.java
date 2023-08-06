@@ -7,6 +7,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseGroundBattlePlugin implements GroundBattlePlugin {
 	
@@ -100,5 +101,15 @@ public abstract class BaseGroundBattlePlugin implements GroundBattlePlugin {
 	@Override
 	public boolean isDone() {
 		return false;
+	}
+
+	@Override
+	public float getSortOrder() {
+		return 0;
+	}
+
+	@Override
+	public int compareTo(@NotNull GroundBattlePlugin o) {
+		return Float.compare(this.getSortOrder(), o.getSortOrder());
 	}
 }

@@ -276,4 +276,9 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 		str = GroundBattleIntel.getString("modifierGroundSupportDesc3");
 		tooltip.addPara(str, 10);
 	}
+
+	@Override
+	public float getSortOrder() {
+		return -700;
+	}
 }

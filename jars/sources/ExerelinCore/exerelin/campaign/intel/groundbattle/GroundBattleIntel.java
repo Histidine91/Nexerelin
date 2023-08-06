@@ -201,6 +201,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 	
 	public void initPlugins() {
+		// moved to definition file
+		/*
 		GeneralPlugin general = new GeneralPlugin();
 		addOtherPlugin(general);
 		
@@ -212,11 +214,14 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		FleetSupportPlugin fSupport = new FleetSupportPlugin();
 		addOtherPlugin(fSupport);
+		*/
 
 		for (String pluginId : GBDataManager.getPlugins()) {
 			GroundBattlePlugin plugin = (GroundBattlePlugin)NexUtils.instantiateClassByName(pluginId);
 			addOtherPlugin(plugin);
 		}
+
+		Collections.sort(otherPlugins);
 	}
 	
 	public List<GroundBattlePlugin> getOtherPlugins() {

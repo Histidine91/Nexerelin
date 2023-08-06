@@ -275,6 +275,10 @@
 	
 	# specify plugins not associated with an industry, condition, faction or such here
 	"plugins":{
+		"generalPlugin":"exerelin.campaign.intel.groundbattle.plugins.GeneralPlugin",
+		"factionBonusPlugin":"exerelin.campaign.intel.groundbattle.plugins.FactionBonusPlugin",
+		"planetHazardPlugin":"exerelin.campaign.intel.groundbattle.plugins.PlanetHazardPlugin",
+		"fleetSupportPlugin":"exerelin.campaign.intel.groundbattle.plugins.FleetSupportPlugin",
 		#"lobsterTroops":"exerelin.campaign.intel.groundbattle.plugins.LobsterTroopPlugin",
 	},
 	

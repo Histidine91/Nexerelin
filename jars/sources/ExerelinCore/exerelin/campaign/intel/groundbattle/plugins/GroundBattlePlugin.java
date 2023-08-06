@@ -7,7 +7,7 @@ import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 
-public interface GroundBattlePlugin {
+public interface GroundBattlePlugin extends Comparable<GroundBattlePlugin> {
 	
 	public static final float MODIFIER_ENTRY_HEIGHT = 32;
 	
@@ -84,6 +84,12 @@ public interface GroundBattlePlugin {
 	 */
 	public void addModifierEntry(TooltipMakerAPI info, CustomPanelAPI outer, 
 			float width, float pad, Boolean isAttacker);
-	
+
+	/**
+	 * If this returns false, plugin should remove itself after turn resolution.
+	 * @return
+	 */
 	public boolean isDone();
+
+	public float getSortOrder();
 }

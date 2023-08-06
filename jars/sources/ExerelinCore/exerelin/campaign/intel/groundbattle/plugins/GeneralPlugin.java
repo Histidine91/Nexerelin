@@ -65,4 +65,9 @@ public class GeneralPlugin extends BaseGroundBattlePlugin {
 		tooltip.addPara(GroundBattleIntel.getString("modifierStationDesc"), 0,
 				Misc.getHighlightColor(), GroundBattleIntel.getString("modifierStationDescHighlight"));
 	}
+
+	@Override
+	public float getSortOrder() {
+		return -1000;
+	}
 }

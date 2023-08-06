@@ -127,4 +127,9 @@ public class FactionBonusPlugin extends BaseGroundBattlePlugin {
 		
 		tooltip.addPara(GroundBattleIntel.getString("modifierFactionDescPost"), opad);
 	}
+
+	@Override
+	public float getSortOrder() {
+		return -900;
+	}
 }

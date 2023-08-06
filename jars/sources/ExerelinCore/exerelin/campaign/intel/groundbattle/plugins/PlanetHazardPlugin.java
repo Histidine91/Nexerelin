@@ -114,4 +114,9 @@ public class PlanetHazardPlugin extends BaseGroundBattlePlugin {
 		String limitStr = StringHelper.toPercent(morale >= 0 ? MAX_MORALE : MIN_MORALE);
 		label = tooltip.addPara(str, 3, h, moraleStr, limitStr);
 	}
+
+	@Override
+	public float getSortOrder() {
+		return -800;
+	}
 }
