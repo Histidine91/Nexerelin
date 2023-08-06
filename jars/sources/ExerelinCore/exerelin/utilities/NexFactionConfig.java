@@ -667,7 +667,8 @@ public class NexFactionConfig
     public static boolean canCeasefire(String factionId1, String factionId2)
     {
         // remove relationship bound clamp if both sides have random relations
-        if (DiplomacyManager.haveRandomRelationships(factionId1, factionId2)) return true;
+        // moved the check to DiplomacyManager's getMaxRelationship
+        //if (DiplomacyManager.haveRandomRelationships(factionId1, factionId2)) return true;
         
         if (DiplomacyManager.getManager().getMaxRelationship(factionId1, factionId2) <= -0.5) return false;
         if (getDiplomacyPositiveChance(factionId1, factionId2) <= 0) return false;

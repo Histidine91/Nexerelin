@@ -878,14 +878,20 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 	
 	public float getMaxRelationship(String factionId, String otherFactionId) {
 		if (factionId.equals(otherFactionId)) return 1;
+
+		// check max relationship modifiers
 		float mod1 = getMaxRelationshipModValue(factionId, otherFactionId);
 		float mod2 = getMaxRelationshipModValue(otherFactionId, factionId);
-		
 		float mod = Math.min(mod1, mod2);
-		float result = mod + NexFactionConfig.getMaxRelationship(factionId, otherFactionId);
+		float baseMax = 1;
+
+		if (!haveRandomRelationships(factionId, otherFactionId))
+			baseMax = NexFactionConfig.getMaxRelationship(factionId, otherFactionId);
+
+		float result = mod + baseMax;
 		if (result < -1) result = -1;
 		
-		return mod + NexFactionConfig.getMaxRelationship(factionId, otherFactionId);
+		return result;
 	}
 	
 	public void modifyMaxRelationshipMod(String modifierId, float mod, String factionId, String otherFactionId, String desc) 
