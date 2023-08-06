@@ -27,6 +27,7 @@ import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
@@ -59,9 +60,9 @@ public class GroundUnit {
 	protected transient GroundUnitDef unitDef;
 	protected int index;
 	protected GroundBattleIntel intel;
-	@Getter protected String name;
-	@Getter protected FactionAPI faction;
-	@Getter protected CampaignFleetAPI fleet;
+	@Getter @Setter	protected String name;
+	@Getter @Setter	protected FactionAPI faction;
+	@Getter @Setter protected CampaignFleetAPI fleet;
 	protected RouteData route;
 	protected boolean isPlayer;
 	@Getter protected boolean isAttacker;
@@ -136,6 +137,11 @@ public class GroundUnit {
 
 	public GroundUnitDef getUnitDef() {
 		return GroundUnitDef.getUnitDef(unitDefId);
+	}
+
+	public void setUnitDef(String unitDefId) {
+		this.unitDefId = unitDefId;
+		unitDef = getUnitDef();
 	}
 	
 	protected static CargoAPI getCargo() {
@@ -1213,7 +1219,7 @@ public class GroundUnit {
 	
 	@Override
 	public String toString() {
-		return String.format("%s (%s)", name, type.toString().toLowerCase());
+		return String.format("%s (%s)", name, unitDef.name.toLowerCase());
 	}
 
 	@Deprecated
