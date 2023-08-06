@@ -3,22 +3,12 @@ package exerelin.campaign.intel.groundbattle;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.util.Pair;
-import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.groundbattle.plugins.AbilityPlugin;
 import exerelin.plugins.ExerelinModPlugin;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import exerelin.utilities.NexUtils;
 import org.apache.log4j.Logger;
+
+import java.util.*;
 
 public class GroundBattleAI {
 	
@@ -32,6 +22,7 @@ public class GroundBattleAI {
 	protected GroundBattleIntel intel;
 	protected boolean isAttacker;
 	protected boolean isPlayer;
+	protected boolean allowDrop = true;	// can the AI drop new units from orbit?
 	protected int movePointThreshold;
 	
 	/**
@@ -61,6 +52,12 @@ public class GroundBattleAI {
 		this.intel = intel;
 		this.isAttacker = isAttacker;
 		this.isPlayer = isPlayer;
+		allowDrop = !isPlayer;
+	}
+
+	public GroundBattleAI(GroundBattleIntel intel, boolean isAttacker, boolean isPlayer, boolean allowDrop) {
+		this(intel, isAttacker, isPlayer);
+		this.allowDrop = allowDrop;
 	}
 	
 	public List<IFBStrengthRecord> getIndustriesWithEnemySorted() {
@@ -152,7 +149,7 @@ public class GroundBattleAI {
 		boolean allowMilitia = canUnleashMilitia();
 		for (GroundUnit unit : intel.getSide(isAttacker).getUnits()) {
 			if (unit.isPlayer != this.isPlayer) continue;	// ally AI doesn't move player units (or vice-versa)
-			if (isPlayer && !unit.isDeployed()) continue;	// don't drop new units for player AI
+			if (!allowDrop && !unit.isDeployed()) continue;
 			if (unit.getDestination() != null) continue;
 			if (unit.isWithdrawing()) continue;
 			if (unit.getMorale() < MIN_MORALE_TO_REDEPLOY) continue;

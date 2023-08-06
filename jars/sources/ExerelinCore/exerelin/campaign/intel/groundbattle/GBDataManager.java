@@ -3,6 +3,7 @@ package exerelin.campaign.intel.groundbattle;
 import com.fs.starfarer.api.Global;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.NexUtils;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,14 +18,17 @@ public class GBDataManager {
 	public static final String CONFIG_PATH = "data/config/exerelin/groundBattleDefs.json";
 	public static final List<String> NATO_ALPHABET = new ArrayList<>();
 	
-	protected static List<IndustryDef> industryDefs = new ArrayList<>();
-	protected static Map<String, IndustryDef> industryDefsById = new HashMap<>();
-	
-	protected static List<ConditionDef> conditionDefs = new ArrayList<>();
-	protected static Map<String, ConditionDef> conditionDefsById = new HashMap<>();
-	
-	protected static List<AbilityDef> abilityDefs = new ArrayList<>();
-	protected static Map<String, AbilityDef> abilityDefsById = new HashMap<>();
+	@Getter	protected static List<IndustryDef> industryDefs = new ArrayList<>();
+	@Getter	protected static Map<String, IndustryDef> industryDefsById = new HashMap<>();
+
+	@Getter	protected static List<ConditionDef> conditionDefs = new ArrayList<>();
+	@Getter	protected static Map<String, ConditionDef> conditionDefsById = new HashMap<>();
+
+	@Getter	protected static List<AbilityDef> abilityDefs = new ArrayList<>();
+	@Getter	protected static Map<String, AbilityDef> abilityDefsById = new HashMap<>();
+
+	@Getter	protected static List<String> plugins = new ArrayList<>();
+	@Getter	protected static Map<String, String> pluginsById = new HashMap<>();
 	
 	static {
 		loadDefs();
@@ -160,11 +164,22 @@ public class GBDataManager {
 
 				GroundUnitDef.addUnitDef(def);
 			}
+
+			// load plugins
+			JSONObject jsonPlugin = json.getJSONObject("plugins");
+			iter = jsonPlugin.keys();
+			while (iter.hasNext()) {
+				String id = (String) iter.next();
+				String plugin = jsonPlugin.getString(id);
+				plugins.add(plugin);
+				pluginsById.put(id, plugin);
+			}
 			
 			JSONArray jsonAlphabet = json.getJSONArray("natoAlphabet");
 			NATO_ALPHABET.addAll(NexUtils.JSONArrayToArrayList(jsonAlphabet));
 		} catch (Exception ex) {
-			Global.getLogger(GBDataManager.class).error(ex);
+			throw new RuntimeException("Failed to load ground battle defs", ex);
+			//Global.getLogger(GBDataManager.class).error(ex);
 		}
 	}	
 	

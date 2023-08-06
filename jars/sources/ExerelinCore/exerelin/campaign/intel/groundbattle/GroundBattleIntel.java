@@ -201,20 +201,21 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public void initPlugins() {
 		GeneralPlugin general = new GeneralPlugin();
-		general.init(this);
-		otherPlugins.add(general);
+		addOtherPlugin(general);
 		
 		FactionBonusPlugin fb = new FactionBonusPlugin();
-		fb.init(this);
-		otherPlugins.add(fb);
+		addOtherPlugin(fb);
 		
 		PlanetHazardPlugin hazard = new PlanetHazardPlugin();
-		hazard.init(this);
-		otherPlugins.add(hazard);
+		addOtherPlugin(hazard);
 		
 		FleetSupportPlugin fSupport = new FleetSupportPlugin();
-		fSupport.init(this);
-		otherPlugins.add(fSupport);
+		addOtherPlugin(fSupport);
+
+		for (String pluginId : GBDataManager.getPlugins()) {
+			GroundBattlePlugin plugin = (GroundBattlePlugin)NexUtils.instantiateClassByName(pluginId);
+			addOtherPlugin(plugin);
+		}
 	}
 	
 	public List<GroundBattlePlugin> getOtherPlugins() {
@@ -223,6 +224,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public void addOtherPlugin(GroundBattlePlugin plugin) {
 		otherPlugins.add(plugin);
+		plugin.init(this);
 	}
 	
 	public void removePlugin(GroundBattlePlugin plugin) {
@@ -296,12 +298,17 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 * Called when the player actually decides to proceed with the invasion.
 	 */
 	public void start() {
+		if (playerInitiated) { // || defender.getFaction().isPlayerFaction() || defender.getFaction() == Misc.getCommissionFaction()) {
+			this.setImportant(true);
+		}
+
 		defender.generateDefenders();
 		if (playerInitiated) {
 			autoGeneratePlayerUnits();
 		}
-		if (playerInitiated) { // || defender.getFaction().isPlayerFaction() || defender.getFaction() == Misc.getCommissionFaction()) {
-			this.setImportant(true);
+
+		for (GroundBattlePlugin plugin : getPlugins()) {
+			plugin.onBattleStart();
 		}
 		
 		addMilitaryResponse();

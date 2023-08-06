@@ -256,7 +256,26 @@
 			},
 			"tags":["rebel"],
 			"sortOrder":4,
-		}
+		},
+		
+		#"lobster":{
+		#	"name":"lobster",
+		#	"type":"MARINE",
+		#	"playerCanCreate":false,
+		#	"strength":1,
+		#	"personnel":{
+		#		"commodityId":"lobster",
+		#		"crewReplacerJobId":"nex_groundBattle_lobsters",
+		#		"mult":1,
+		#	},
+		#	"tags":["marine", "lobster"],
+		#	"sortOrder":1,
+		#},
+	},
+	
+	# specify plugins not associated with an industry, condition, faction or such here
+	"plugins":{
+		#"lobsterTroops":"exerelin.campaign.intel.groundbattle.plugins.LobsterTroopPlugin",
 	},
 	
 	
