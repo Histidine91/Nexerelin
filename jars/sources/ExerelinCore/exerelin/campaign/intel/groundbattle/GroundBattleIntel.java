@@ -77,6 +77,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	public static final Object BUTTON_CANCEL_MOVES = new Object();
 	public static final Object BUTTON_AUTO_MOVE = new Object();
 	public static final Object BUTTON_AUTO_MOVE_TOGGLE = new Object();
+	public static final Object BUTTON_AUTO_MOVE_CAN_DROP = new Object();
 	public static final Object BUTTON_ANDRADA = new Object();
 	public static final Object BUTTON_GOVERNORSHIP = new Object();
 	public static final Object BUTTON_JOIN_ATTACKER = new Object();
@@ -822,12 +823,17 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		GroundBattleAI ai = new GroundBattleAI(this, isAttacker, isPlayer);
 		ai.giveOrders();
 	}
+
+	public void runAI(boolean isAttacker, boolean isPlayer, boolean allowDrop) {
+		GroundBattleAI ai = new GroundBattleAI(this, isAttacker, isPlayer, allowDrop);
+		ai.giveOrders();
+	}
 	
 	public void runAI() {
 		if (playerIsAttacker != null) {
 			// run player AI if automove is enabled
 			if (playerData.autoMoveAtEndTurn)
-				runAI(playerIsAttacker, true);
+				runAI(playerIsAttacker, true, playerData.autoMoveAllowDrop);
 			
 			// run friendly non-player AI if any such units exist
 			for (GroundUnit unit : getSide(playerIsAttacker).getUnits()) {
@@ -1813,7 +1819,18 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 					240, VIEW_BUTTON_HEIGHT, 0);
 			check.setChecked(playerData.autoMoveAtEndTurn);
 			btnHolder3.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
-			buttonRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);	
+			buttonRow.addUIElement(btnHolder3).rightOfTop(btnHolder2, 4);
+
+			TooltipMakerAPI btnHolder4 = buttonRow.createUIElement(240,
+					VIEW_BUTTON_HEIGHT, false);
+			check = btnHolder4.addAreaCheckbox(getString("btnPlayerAICanDrop"), BUTTON_AUTO_MOVE_CAN_DROP,
+					base, bg, fc.getBrightUIColor(),
+					240, VIEW_BUTTON_HEIGHT, 0);
+			check.setChecked(playerData.autoMoveAllowDrop);
+			tooltipStr = getString("btnPlayerAICanDrop_tooltip");
+			tt = NexUtilsGUI.createSimpleTextTooltip(tooltipStr, 360);
+			btnHolder4.addTooltipToPrevious(tt, TooltipMakerAPI.TooltipLocation.BELOW);
+			buttonRow.addUIElement(btnHolder4).rightOfTop(btnHolder3, 4);
 
 			info.addCustom(buttonRow, 0);
 		}
@@ -2380,12 +2397,16 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			return;
 		}
 		if (buttonId == BUTTON_AUTO_MOVE) {
-			runAI(playerIsAttacker, true);
+			runAI(playerIsAttacker, true, playerData.autoMoveAllowDrop);
 			ui.updateUIForItem(this);
 			return;
 		}
 		if (buttonId == BUTTON_AUTO_MOVE_TOGGLE) {
 			playerData.autoMoveAtEndTurn = !playerData.autoMoveAtEndTurn;
+			return;
+		}
+		if (buttonId == BUTTON_AUTO_MOVE_CAN_DROP) {
+			playerData.autoMoveAllowDrop = !playerData.autoMoveAllowDrop;
 			return;
 		}
 		if (buttonId == BUTTON_CANCEL_MOVES) {

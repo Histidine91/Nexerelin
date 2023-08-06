@@ -34,6 +34,7 @@ public class GBPlayerData {
 	protected Float andradaRepAfter;
 	protected Float governorshipPrice;
 	protected boolean autoMoveAtEndTurn;
+	protected boolean autoMoveAllowDrop;
 
 	/**
 	 * Ratio of friend strength to enemy strength at the time of joining an ongoing battle.

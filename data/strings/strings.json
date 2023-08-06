@@ -1323,6 +1323,8 @@
 		"btnRunPlayerAI":"Auto-move units",
 		"btnRunPlayerAI_tooltip":"Let the AI move all deployed units as it sees fit. Will not move units that already have a move or withdraw order. Will not deploy new units or use special abilities.",
 		"btnTogglePlayerAI":"Auto-move at turn end",
+		"btnPlayerAICanDrop":"Auto-move can deploy units",
+		"btnPlayerAICanDrop_tooltip":"Auto-move will deploy player units from orbit as it sees fit.",
 		"btnNewUnit":"New %s %s",
 		"btnNewUnitMarine":"New marine %s",
 		"btnNewUnitHeavy":"New heavy %s",

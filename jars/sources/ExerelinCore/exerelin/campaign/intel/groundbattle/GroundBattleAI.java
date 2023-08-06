@@ -23,6 +23,7 @@ public class GroundBattleAI {
 	protected boolean isAttacker;
 	protected boolean isPlayer;
 	protected boolean allowDrop = true;	// can the AI drop new units from orbit?
+	protected int movePointsAvailable;
 	protected int movePointThreshold;
 	
 	/**
@@ -88,8 +89,7 @@ public class GroundBattleAI {
 	 * @return
 	 */
 	protected float recomputeAvailableStrength() {
-		int remainingMovePoints = intel.getSide(isAttacker).getMovementPointsPerTurn().getModifiedInt()
-				- intel.getSide(isAttacker).getMovementPointsSpent().getModifiedInt();
+		int remainingMovePoints = movePointsAvailable - intel.getSide(isAttacker).getMovementPointsSpent().getModifiedInt();
 			
 		availableStrength = 0;
 		for (GroundUnit unit : availableUnitsSorted) {
@@ -241,6 +241,15 @@ public class GroundBattleAI {
 	
 	public void getInfo() {
 		printDebug("Preparing information for AI, is attacker: " + isAttacker);
+
+		movePointsAvailable = intel.getSide(isAttacker).getMovementPointsPerTurn().getModifiedInt();
+
+		// wrong way to do it, since moving units already on ground doesn't use supplies
+		/*
+		if (this.isPlayer) {
+			movePointsAvailable = (int)Math.min(movePointsAvailable, Global.getSector().getPlayerFleet().getCargo().getSupplies());
+		}
+		*/
 		
 		// leave some move points for player to use
 		movePointThreshold = 0;
@@ -296,6 +305,7 @@ public class GroundBattleAI {
 		// ---------------------------------------------------------------------
 		// Get units we can redeploy to threatened areas
 		printDebug("Getting units available for move orders");
+
 		for (GroundUnit unit : mobile) {
 			if (unit.getLocation() != null) {
 				IFBStrengthRecord strAtLoc = strengthRecords.get(unit.getLocation());
@@ -327,6 +337,24 @@ public class GroundBattleAI {
 				return Float.compare(two.getBaseStrength(), one.getBaseStrength());
 			}
 		});
+
+		// for player, remove units that we don't have supplies to deploy
+		if (isPlayer) {
+			float suppliesAvailable = Global.getSector().getPlayerFleet().getCargo().getSupplies();
+			Iterator<GroundUnit> iter = availableUnitsSorted.iterator();
+			while (iter.hasNext()) {
+				GroundUnit unit = iter.next();
+				if (unit.getLocation() != null) continue;
+				float cost = unit.getDeployCost();
+				if (cost > suppliesAvailable) {
+					//log.info("Removing available unit due to lack of supplies: " + unit.getName());
+					iter.remove();
+					continue;
+				}
+				suppliesAvailable -= cost;
+			}
+		}
+
 		/*
 		log.info("Printing sorted units");
 		for (GroundUnit unit : availableUnitsSorted) {
@@ -420,8 +448,7 @@ public class GroundBattleAI {
 	}
 	
 	public void orderWithdrawal() {
-		int remainingMovePoints = intel.getSide(isAttacker).getMovementPointsPerTurn().getModifiedInt()
-				- intel.getSide(isAttacker).getMovementPointsSpent().getModifiedInt();
+		int remainingMovePoints = movePointsAvailable - intel.getSide(isAttacker).getMovementPointsSpent().getModifiedInt();
 		
 		for (GroundUnit unit : availableUnitsSorted) {
 			if (remainingMovePoints <= movePointThreshold) break;
