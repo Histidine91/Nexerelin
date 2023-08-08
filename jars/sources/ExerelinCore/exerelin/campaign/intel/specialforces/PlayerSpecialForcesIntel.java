@@ -17,10 +17,7 @@ import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.loading.VariantSource;
@@ -145,8 +142,11 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		//		member.getHullSpec().getHullNameWithDashClass(), member.getVariant().getSource()));
 		if (member.getVariant().getSource() == VariantSource.STOCK) {
 			NexUtilsFleet.setClonedVariant(member, true);
+			//printVariant(member, member.getVariant());
+		} else if (member.getVariant().getOriginalVariant() != null) {
+			NexUtilsFleet.setClonedVariant(member, true);
+			//log.info("Forcing null variant");
 		}
-
 		storedVariants.put(member, member.getVariant());
 	}
 
@@ -348,7 +348,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		until this method reverts it to the variant saved in intel
 		This happens every game load
 
-		For now we'll just call this method on game load to quietly fix it
+		To prevent this, the variant source needs to be marked as REFIT *and* its originalVariant needs to be set to null;
+		the latter prevents reverting to stock variant on fleet deflation
 	 */
 	public void checkVariants() {
 		int errorCount = 0;
@@ -364,9 +365,12 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 				String warn = "Warning: Variant for " + member.getShipName() + ", " + member.getHullSpec().getNameWithDesignationWithDashClass()
 						+ " does not match saved variant, restoring";
 				//Global.getSector().getCampaignUI().addMessage(warn, Misc.getNegativeHighlightColor(), member.getShipName(), "", Misc.getHighlightColor(), Color.WHITE);
-				if (PRINT_VARIANT_WARNING) log.warn(warn);
-				//printVariant(member, variant);
-				//printVariant(member, saved);
+				if (PRINT_VARIANT_WARNING) {
+					log.warn(warn);
+					//printVariant(member, variant);
+					//printVariant(member, saved);
+				}
+				saved.setOriginalVariant(null);
 				member.setVariant(saved, false, true);
 				errorCount++;
 			}
@@ -456,7 +460,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		float days = Misc.getDays(amount);
 		variantCheckInterval.advance(days);
 		if (variantCheckInterval.intervalElapsed()) {
-			checkVariants();
+			//checkVariants();
 		}
 	}
 	
