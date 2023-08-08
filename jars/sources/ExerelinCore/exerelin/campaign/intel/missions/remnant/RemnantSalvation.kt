@@ -40,7 +40,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySp
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipRecoverySpecialData
 import com.fs.starfarer.api.loading.VariantSource
-import com.fs.starfarer.api.ui.SectorMapAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.DelayedActionScript
 import com.fs.starfarer.api.util.Misc
@@ -59,7 +58,6 @@ import lombok.Getter
 import org.apache.log4j.Logger
 import org.lazywizard.lazylib.MathUtils
 import java.awt.Color
-import java.util.*
 import kotlin.math.abs
 
 
@@ -160,6 +158,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         // pick Remnant location
         requireSystemNotHasPulsar()
+        requireSystemNotBlackHole()
         requireSystemTags(
             ReqMode.NOT_ANY,
             Tags.THEME_UNSAFE,
@@ -567,7 +566,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         //fleet.setLocation(target!!.locationInHyperspace.x, target!!.locationInHyperspace.y)
         insertFleet2(fleet)
 
-        knightFleet!!.memoryWithoutUpdate.unset(MemFlags.FLEET_IGNORES_OTHER_FLEETS)
+        knightFleet!!.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true, 0.5f)
         knightFleet!!.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true, 0.5f)
 
         return fleet
