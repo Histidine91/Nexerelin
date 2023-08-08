@@ -2554,7 +2554,7 @@ Highlight transponder ""follow from front""","""We know one Hegemony fleet in op
 
 ""Not know how far travel must. Lots of fuel bring. And follow from front try to.""",nex_remBrawl_missionText3:Continue,
 nex_remBrawl_missionText3,DialogOptionSelected,$option == nex_remBrawl_missionText3,"Highlight $nex_remBrawl_stragglerOriginName $nex_remBrawl_reward
-AddTextSmall ""Once this mission is started, it can progress without player intervention. Be prepared to focus on it to the exclusion of other tasks, and consider leaving slow ships behind."" highlight","""For this, generous reward selfkind is prepared to offer. $nex_remBrawl_reward credits. But $personName knows, $playerName would do it out of friendship for self and selfkind.""","nex_remBrawl_accept:Accept
+AddTextSmall ""Once this mission is started, it can progress without player intervention. Be prepared to focus on it to the exclusion of other tasks, and consider leaving slow ships behind, but be ready for intensive combat."" highlight","""For this, generous reward selfkind is prepared to offer. $nex_remBrawl_reward credits. But $personName knows, $playerName would do it out of friendship for self and selfkind.""","nex_remBrawl_accept:Accept
 nex_remBrawl_declineAlt:""Give me some time to prepare.""
 nex_remBrawl_decline:Decline",
 nex_remBrawl_accept,DialogOptionSelected,$option == nex_remBrawl_accept,"Call $mHub accept $missionId
@@ -2695,7 +2695,7 @@ The entire Persean League was thrown into shock today when an unknown naval forc
 [...]
 
 Even more concerningly, unconfirmed eyewitness reports describe both the attacking ships and their ground raiders as being autonomous systems, likely AI-controlled. Commentators have alleged similarities to the droneships deployed by Tri-Tachyon in the First AI War, and speculate that this is either a new development by TT or some other party, or perhaps a return of the terrifying AI war machines that went rogue after AIW1 until they were defeated by the Hegemony and Luddic Church. While League authorities have refused to comment on this point, already [...]","nex_remSalvation_missionText2:""This is a Remnant attack on a League facility.""",
-nex_remSalvation_missionText2,DialogOptionSelected,$option == nex_remSalvation_missionText2,"AddTextSmall ""This mission may have permanent consequences if attempted and failed."" h","""Just so. But this attack without consensus of selfkind carried out. In defiance of will of omega committed. All selfkind nodes involvement deny. At least one lying be.""
+nex_remSalvation_missionText2,DialogOptionSelected,$option == nex_remSalvation_missionText2,"AddTextSmall ""This mission may have permanent consequences if attempted and failed. Be prepared for difficult fights."" h","""Just so. But this attack without consensus of selfkind carried out. In defiance of will of omega committed. All selfkind nodes involvement deny. At least one lying be.""
 
 $personFirstName's avatar is torn by static for an instant. Shock, perhaps. It seems that such a rift within the AI Remnants should not be possible... and yet it has clearly happened. Perhaps this is precisely why you are being brought on board.
 
