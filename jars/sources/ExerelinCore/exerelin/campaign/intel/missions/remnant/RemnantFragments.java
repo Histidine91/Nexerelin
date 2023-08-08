@@ -26,7 +26,6 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.Enti
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.LocationType;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BaseSalvageSpecial;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial;
-import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.missions.BuildStation;
@@ -431,8 +430,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 			if (aiCore != null) {
 				member.setCaptain(Misc.getAICoreOfficerPlugin(aiCore).createPerson(aiCore, Factions.OMEGA, genRandom));
 			}
-			member.setVariant(member.getVariant().clone(), false, false);
-			member.getVariant().setSource(VariantSource.REFIT);
+			NexUtilsFleet.setClonedVariant(member, false);
 			member.getVariant().addTag(Tags.SHIP_LIMITED_TOOLTIP);
 			member.getVariant().addTag(Tags.VARIANT_CONSISTENT_WEAPON_DROPS);
 			member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());

@@ -19,11 +19,11 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.campaign.intel.merc.MercDataManager.OfficerDef;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFleet;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -121,10 +121,7 @@ public class MercFleetGenPlugin {
 
 			// automated merc ships have no automated penalty
 			if (Misc.isAutomated(member)) {
-				if (member.getVariant().getSource() != VariantSource.REFIT) {
-					member.setVariant(member.getVariant().clone(), false, false);
-					member.getVariant().setSource(VariantSource.REFIT);
-				}
+				NexUtilsFleet.setClonedVariant(member, false);
 				member.getVariant().addTag(Tags.TAG_AUTOMATED_NO_PENALTY);
 			}
 

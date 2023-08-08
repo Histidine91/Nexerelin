@@ -144,8 +144,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		//log.info(String.format("Adding ship %s (%s), variant source %s", member.getShipName(),
 		//		member.getHullSpec().getHullNameWithDashClass(), member.getVariant().getSource()));
 		if (member.getVariant().getSource() == VariantSource.STOCK) {
-			member.setVariant(member.getVariant().clone(), false, false);
-			member.getVariant().setSource(VariantSource.REFIT);
+			NexUtilsFleet.setClonedVariant(member, true);
 		}
 
 		storedVariants.put(member, member.getVariant());
@@ -184,9 +183,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		for (FleetMemberAPI live : tempFleet.getFleetData().getMembersListCopy()) {
 			fleet.getFleetData().addFleetMember(live);
 			if (live.getVariant().getSource() != VariantSource.REFIT) {
-				live.setVariant(live.getVariant().clone(), false, false);
-				live.getVariant().setSource(VariantSource.REFIT);
-				live.getVariant().addTag(Tags.TAG_NO_AUTOFIT);
+				NexUtilsFleet.setClonedVariant(live, true);
+				live.getVariant().addTag(Tags.TAG_NO_AUTOFIT_UNLESS_PLAYER);
 			}
 		}
 		

@@ -656,11 +656,11 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     }
 
     protected fun setupSpecialVariant(flagship : FleetMemberAPI, consistentWeapons : Boolean) {
-        flagship.setVariant(flagship.variant.clone(), false, false)
-        flagship.variant.source = VariantSource.REFIT
+        NexUtilsFleet.setClonedVariant(flagship, true)
         flagship.variant.addTag(Tags.SHIP_LIMITED_TOOLTIP)  // might be lost if done before inflating
         if (consistentWeapons) flagship.variant.addTag(Tags.VARIANT_CONSISTENT_WEAPON_DROPS)
         flagship.variant.addTag(Tags.VARIANT_UNBOARDABLE)
+        flagship.variant.addTag(Tags.TAG_NO_AUTOFIT_UNLESS_PLAYER)
         flagship.variant.addTag(Tags.VARIANT_DO_NOT_DROP_AI_CORE_FROM_CAPTAIN)
     }
 
