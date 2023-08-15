@@ -143,7 +143,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public boolean isShipAllowed(ShipHullSpecAPI spec, float requiredFP)
     {
         if (spec.isDHull()) return false;
-        if (spec.hasTag(Tags.NO_SELL) && spec.hasTag(Items.TAG_NO_DEALER)) return false;
+        if (spec.hasTag(Tags.NO_SELL)) return false;
         if (spec.hasTag(Tags.RESTRICTED)) return false;
         if (spec.hasTag(Items.TAG_NO_DEALER)) return false;
         if (spec.getFleetPoints() < requiredFP) return false; //quality check
@@ -180,6 +180,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         if (spec.getTier() < 2 || spec.getTier() > 4) return false;
         if (spec.hasTag(Tags.RESTRICTED)) return false;
         if (spec.hasTag(Items.TAG_NO_DEALER)) return false;
+        if (spec.hasTag(Tags.NO_SELL)) return false;
         String specId = spec.getWeaponId();
         for (String prefix : DISALLOWED_PREFIXES)
         {
