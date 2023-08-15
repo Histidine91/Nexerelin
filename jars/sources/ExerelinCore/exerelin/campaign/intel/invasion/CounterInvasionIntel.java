@@ -2,6 +2,8 @@ package exerelin.campaign.intel.invasion;
 
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.groundbattle.GBUtils;
@@ -9,6 +11,7 @@ import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Used for 'counter-invasions' in response to a player invasion of the faction's market.
@@ -104,5 +107,14 @@ public class CounterInvasionIntel extends InvasionIntel {
 		if (marineEstimate <= 0) marineEstimate = 100;
 		
 		info.addPara(str, opad, Misc.getHighlightColor(), marineEstimate + "");
+	}
+
+	@Override
+	public Set<String> getIntelTags(SectorMapAPI map) {
+		Set<String> tags = super.getIntelTags(map);
+		if (triggerBattle != null && triggerBattle.isPlayerAttacker() != null) {
+			tags.add(Tags.INTEL_COLONIES);
+		}
+		return tags;
 	}
 }
