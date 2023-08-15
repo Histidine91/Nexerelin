@@ -2963,7 +2963,7 @@
 		"tooltip_groundBattleDamageMult":"Modifies the damage units do to each other during ground battles.",
 		
 		"name_enableDiplomacy":"Enable diplomacy",
-		"tooltip_followersDiplomacy":"Toggles random and AI-picked diplomacy events between factions.",
+		"tooltip_enableDiplomacy":"Toggles random and AI-picked diplomacy events between factions.",
 		"name_followersDiplomacy":"Player faction has diplomacy events",
 		#"tooltip_followersDiplomacy":"Toggles random and AI-picked diplomacy events for player faction.",
 		"name_diplomacyInterval":"Diplomacy interval",
