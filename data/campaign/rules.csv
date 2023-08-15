@@ -2541,6 +2541,307 @@ Call $global.nex_remFragments_ref complete","$personLastName's virtual visage di
 ""In time, self and $playerFirstName's faith will rewarded be. For now, please this payment accept.""",contact_pickAnotherGreeting:Continue,
 #END Remnant fragments mission,,,,,,
 ,,,,,,
+# Remnant lost scientist mission,,,,,,
+nex_remLostSci_blurb,nex_remLostSci_blurb,,,"""Academician of interest from Galatia Academy gone missing has. Would like $playerName assistance tracking down.""",,
+nex_remLostSci_offerOption,nex_remLostSci_option,,SetOptionColor nex_remLostSci_start highlight,,nex_remLostSci_start:Pursue the case of the missing academician,
+nex_remLostSci_missionText,DialogOptionSelected,$option == nex_remLostSci_start,,"""At Galatia Academy, temporal physicist named Yasutaka Liu, theory relevant to warship design developing. But disappeared in c.206, after Kallichore incident. Self would like $playerName find him.  ""If accept, to Academy go and for clues of their whearabouts search. Self will pay $nex_lostScientist_reward1 for Liu finding, and another $nex_lostScientist_reward1 if the paper they were working on you recover."" ","nex_remLostSci_missionText2:""What about the scientist themselves? And do you need exclusive ownership?""",
+nex_remLostSci_missionText2,DialogOptionSelected,$option == nex_remLostSci_missionText2,,"""Selfkind does not the person or exclusivity require. Act at $playerFirstName's discretion.""","contact_accept:Accept
+contact_decline:Decline",
+,,,,,,
+nex_remLostSci_inquireSebOpt,PopulateOptions,"$id == sebestyen
+$global.nex_remLostSci_ref != null
+!$global.nex_remLostSci_wantTalkToSpacer
+Call $global.nex_remLostSci_ref updateData
+$nex_remLostSci_stage == GO_TO_ACADEMY
+!$nex_remLostSci_askedAboutLiu",,,nex_remLostSci_inquireSeb:Ask about Academician Liu,
+nex_remLostSci_inquireSeb,DialogOptionSelected,$option == nex_remLostSci_inquireSeb,,"""Ah, Liu? They're, uh... not here any more. And, well, nobody seems to know where they've gone.""
+
+You explain what you're looking for and ask for more details. $personLastName seems to perk up at this. ""Captain, if you could find them... that would be good. Even if they never come back to the Academy, it'd be good to know they're all right.""",nex_remLostSci_inquireSeb2:Ask about the paper,
+nex_remLostSci_inquireSeb2,DialogOptionSelected,$option == nex_remLostSci_inquireSeb2,"Highlight ""temporal manipulation""","""Well... are you familiar with temporal manipulation? It's a physical effect used by Tri-Tachyon to increase the effectiveness of some of their warships, by 'compressing' time relative to their enemies. This lets them... ah,"" he trails off, visibly feeling a little foolish. As a starship captain, you likely have far more direct experience with the capability than he does.
+
+""Anyway! Academician Liu believed they had a theoretical model for application of the phenomenon to create other effects as well. Like mitigating physical damage to the ship's hull, for one."" $personLastName shakes $hisOrHer head ruefully. ""I couldn't explain how it'd work, mind, even if I'd read the paper myself. Once you get into causality modification like that...  I don't think anything short of an alpha core could keep everything straight."" ","nex_remLostSci_inquireSeb3:""Do you have a copy?""",
+nex_remLostSci_inquireSeb3,DialogOptionSelected,$option == nex_remLostSci_inquireSeb3,,"""Well, no. Liu was the only one working on it, and while they did discuss their work with colleagues in the T-Physics department, no-one else had seen the manuscript. It was supposed to go to the reviewers around the time they, ah, left. That was around the time of the Kallichore incident, when Hegemony officers were tramping the corridors."" $personLastName winces in recollection. ""Several of the other faculty left not long after too — the ones who hadn't been arrested, at any rate — like Academician Coureuse. But none did it quite as dramatically as Liu did. Well. Dramatic isn't the right word, actually.""","nex_remLostSci_inquireSeb4:""What happened?""",
+nex_remLostSci_inquireSeb4,DialogOptionSelected,$option == nex_remLostSci_inquireSeb4,"$nex_remLostSci_askedAboutLiu = true
+$global.nex_remLostSci_wantTalkToSpacer = true
+FireAll PopulateOptions","""They just... vanished. Rumor has it they hitched a ride with one of the freelance captains who run services for the Academy, disappearing into the fringe worlds. It's possible, you know. Some of these freelancers run the trade routes with, ah,"" $heOrShe seems to color a little, ""communities outside the official Sector economy.""
+
+Decivilized worlds, $heOrShe means. A great place to hide, at the cost of losing a quality of life even the meanest core world dockworker takes for granted. You ask if this freelancer is still around.
+
+""Well... perhaps? We don't actually know who it was, but word circulates in their little community. If you ask around the guest amenities, someone might be able to help.""",,
+,,,,,,
+nex_remLostSci_inquireGradStudentOpt,PopulateOptions,"$id == station_galatia_academy
+$nex_remLostSci_academy_imp
+$global.nex_remLostSci_ref != null
+!$global.nex_remLostSci_wantTalkToSpacer
+!$nex_remLostSci_askedAboutLiu",,,nex_remLostSci_inquireGradStudent:Call the faculty about Academician Liu,
+nex_remLostSci_inquireGradStudent,DialogOptionSelected,$option == nex_remLostSci_inquireGradStudent,,"You make a call to the Temporal Physics department. The robo-secretary confirms that Academician Liu went AWOL in c.206, and helpfully presents their CV with copies of all their publications, but cannot give any useful information on the missing paper. It looks like you'll have to resort to some old-fashioned HUMINT.",nex_remLostSci_inquireGradStudent2:Continue,
+nex_remLostSci_inquireGradStudent2,DialogOptionSelected,$option == nex_remLostSci_inquireGradStudent2,"Highlight ""temporal manipulation""","You spend several hours wandering the Academy, looking for people to question. Unfortunately almost no-one you meet seems interested in stopping to help, and indeed most of them regard you as a curious specimen escaped from the xenobiology labs. Finally, you stumble upon a grad student who's willing to be bribed with coffee and Terran croissants long enough to answer a few queries.
+
+""The old guy was talking about new applications of temporal manipulation technology,"" she explains between bites. ""Like the stuff Tri-Tachyon uses. They thought it could be modified to do new things, like resist explosions and energy weapons on a ship. Stuff like that. And don't ask me to explain how it works; I don't think even the T-Physics people could make sense of it.
+
+""Anyway, though, they apparently disappeared right when the paper was due to be submitted to review. This was just after the whole thing with the Gate experiment went down, so a lot of the professors were running away at the time. Spooked by the big scary Hegemony, I suppose. Although most of the others at least submitted their resignations first.""",,
+nex_remLostSci_inquireGradStudent3,DialogOptionSelected,$option == nex_remLostSci_inquireGradStudent3,"$global.nex_remLostSci_wantTalkToSpacer = true
+$nex_remLostSci_askedAboutLiu = true","""Who knows?"" Munch, munch, sip. ""The rumor is they stowed away with one of the freelancers who do odd jobs for the Academy, people like you. Some of them trade with the deciv worlds out in the fringes; good place to hide from the law. I could never do it, though. I like air conditioning and my TriPad too much.""
+
+You ask where you might find the freelancer in question. ""Nobody knows. You could ask one of them, though. They stick together, you know; maybe they'll talk to you where others won't.""",nex_remLostSci_inquireGradStudentEnd:Thank her and leave,
+nex_remLostSci_inquireGradStudentEnd,DialogOptionSelected,$option == nex_remLostSci_inquireGradStudentEnd,"ShowDefaultVisual
+FireAll PopulateOptions",You return to the main concourse to consider your options.,,
+,,,,,,
+nex_remLostSci_inquireSpacerOpt,PopulateOptions,"$id == station_galatia_academy
+$nex_remLostSci_academy_imp
+$global.nex_remLostSci_ref != null
+$global.nex_remLostSci_wantTalkToSpacer",,You could try to find the spacer who transported Academician Liu out to decivilized space.,nex_remLostSci_inquireSpacer:Try to find information about the spacer,
+nex_remLostSci_inquireSpacer,DialogOptionSelected,$option == nex_remLostSci_inquireSpacer,"Call $global.nex_remLostSci_ref beginSpacerConvo
+Call $global.nex_remLostSci_ref updateData","You make your way to the lounge for outside support contractors. By luck, the spacer who (claims to have) transported Academician Liu is in town, and agrees to a bar chat.
+
+""Yeah, I run the deciv trade sometimes. It's not exactly Chicomoztoc out there, but people gotta eat no matter what. They're gonna buy, grow and make stuff, too. There's a lot of things they need from the core worlds, and sometimes they have things to offer for it - rare plants and animals, guns, drugs, or rare gadgets from some ruins somewhere. Not as profitable as running guns and supplies to the Pathers, but it's good enough, if you run a lean fleet. Way safer, too.
+
+""As for your academician, the rad-addled fella stowed away on my ship, you know. Though I didn't know who they were, at first. Don’t interact much with the boffins; they pay me, I take out some trash for them, we shake digital hands and go our separate ways.""","nex_remLostSci_inquireSpacer2:""So what happened?""",
+nex_remLostSci_inquireSpacer2,DialogOptionSelected,$option == nex_remLostSci_inquireSpacer2,"Call $global.nex_remLostSci_ref beginPlanetStage
+unset $global.nex_remLostSci_wantTalkToSpacer","""Well, they didn't hide very well; Ludd knows what a surprise I had when my first mate comes running to me. I would've sent them out the airlock, but they paid their fare after the fact, so it all worked out it the end. Paid me a generous tip too, to keep quiet about it.""
+
+The spacer stops, realizing that he is not, in fact, keeping quiet. Then he sighs and throws back his beer. ""Ah, to vacuum with it. Buy me another one and I'll tell you the name of this planet.""
+
+You do so, and get a name and system: $nex_remLostSci_planet, in $nex_remLostSci_system. ""You couldn’t pay me to settle down someplace like that, but I guess they really didn’t want to be found.""",nex_remLostSci_inquireSpacerEnd:Thank him and leave,
+nex_remLostSci_inquireSpacerEnd,DialogOptionSelected,$option == nex_remLostSci_inquireSpacerEnd,"EndConversation
+ShowDefaultVisual
+FireAll PopulateOptions","On your way out, you notice someone leaving the room in a hurry.",,
+,,,,,,
+nex_remLostSci_planetDialog,OpenInteractionDialog,"$nex_remLostSci_planet_imp
+$global.nex_remLostSci_ref != null","ShowDefaultVisual
+PrintDescription 3
+Call $nex_remLostSci_ref updateData
+FireAll Nex_RemLostSci_PlanetDialogOpts",Your $shipOrFleet approaches $entityName.,"1:nex_remLostSci_findScientist1: Look for the missing academician
+10:surveyLeave:Leave",
+nex_remLostSci_planetFirst,Nex_RemLostSci_PlanetDialogOpts,"!$nex_remLostSci_planetFirstVisit
+$nex_remLostSci_isBaseAlive",$nex_remLostSci_planetFirstVisit = true,The spacer didn't mention a pirate base in orbit around $nex_remLostSci_planet. Presumably they moved in recently.,,
+nex_remLostSci_planetNoGo,Nex_RemLostSci_PlanetDialogOpts,"!$player.nex_remLostSci_gotAccessRightsToPlanet
+!$nex_remLostSci_hasSKDeal
+$nex_remLostSci_isBaseAlive
+FactionFleetNearbyAndAware pirates",SetEnabled nex_remLostSci_findLiu1 false,"The fleet hanging around the station warns you off when you try to approach the planet. ""Talk to the boss,"" its commander says.",,
+,,,,,,
+nex_remLostSci_stationKingConvoOpt,PopulateOptions,"$isPerson
+$pirateBaseCommander
+$market.nex_remLostSci_pirateBase
+$global.nex_remLostSci_ref != null
+!$player.nex_remLostSci_gotAccessRightsToPlanet
+!$nex_remLostSci_accessDenied",Call $global.nex_remLostSci_ref updateData,,1:nex_remLostSci_stationKingConvoStart:Ask about travel to $nex_remLostSci_planet,
+nex_remLostSci_stationKingConvoStart,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoStart
+!$askedAboutVisit","Highlight $nex_remLostSci_bribeStr
+FireAll Nex_RemLostSci_stationKingConvoOpts
+$askedAboutVisit = true","""Ah, yes, that little dirtball. Well, we've got a problem here, because this here's mah turf and I can't just let anyone waltz in here. Now, if you were to pay an entry fee... say $nex_remLostSci_bribeStr credits... it'd be a different story.""
+
+You have $player.creditsStr credits.",,
+nex_remLostSci_stationKingConvoStartRepeat,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoStart
+$askedAboutVisit","Highlight $nex_remLostSci_bribeStr
+FireAll Nex_RemLostSci_stationKingConvoOpts","""Well, made up your mind yet? I'm not gonna be here all day, y'know. $nex_remLostSci_bribeStr credits, it was.""
+
+You have$player.creditsStr credits.",,
+nex_remLostSci_stationKingConvoStartRepeatCheap,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoStart
+$askedAboutVisit
+$nex_remLostSci_loweredFee","Highlight $nex_remLostSci_bribeSmallStr
+FireAll Nex_RemLostSci_stationKingConvoOpts","""So how about it, friend? $nex_remLostSci_bribeStr credits, and we'll all be happy together!""
+
+You have$player.creditsStr credits.",,
+nex_remLostSci_stationKingConvoOptPay,Nex_RemLostSci_StationKingConvoOpts,,,,"1:nex_remLostSci_stationKingConvoPay:Pay the ""entry fee""",
+nex_remLostSci_stationKingConvoOptPirateComm,Nex_RemLostSci_StationKingConvoOpts,"$player.fcm_faction == pirates
+!$nex_remLostSci_loweredFee",,,2:nex_remLostSci_stationKingConvoPirateComm:Say you're a pirate like $himOrHer,
+nex_remLostSci_stationKingConvoOptKanta,Nex_RemLostSci_StationKingConvoOpts,$player.kantaProtection,,,3:nex_remLostSci_stationKingConvoKanta:Say that you are under the protection of Warlord Kanta,
+nex_remLostSci_stationKingConvoOptKantaLie,Nex_RemLostSci_StationKingConvoOpts,!$player.kantaProtection,,,3:nex_remLostSci_stationKingConvoKanta:Say that you are under the protection of Warlord Kanta (lie),
+nex_remLostSci_stationKingConvoOptThreaten,Nex_RemLostSci_StationKingConvoOpts,,,,4:nex_remLostSci_stationKingConvoThreaten:Threaten $himOrHer with your superior fleet,
+nex_remLostSci_stationKingConvoOptCancel,Nex_RemLostSci_StationKingConvoOpts,,,,5:nex_remLostSci_stationKingConvoBack:Say that you'll think it over,
+nex_remLostSci_stationKingConvoBribeHighlightsNotEnough,Nex_RemLostSci_StationKingConvoOpts,"!$nex_remLostSci_loweredFee
+$player.credits < $nex_remLostSci_bribe",SetTextHighlightColors h bad,,,
+nex_remLostSci_stationKingConvoBribeHighlightsNotEnoughSmall,Nex_RemLostSci_StationKingConvoOpts,"$nex_remLostSci_loweredFee
+$player.credits < $nex_remLostSci_bribeSmall",SetTextHighlightColors h bad,,,
+nex_remLostSci_stationKingConvoPay,DialogOptionSelected,$option == nex_remLostSci_stationKingConvoPay,"$player.nex_remLostSci_gotAccessRightsToPlanet = true
+AddRemoveCommodity credits -$nex_remLostSci_bribe
+FireAll Nex_RemLostSci_StationKingConvoEndOpts","""Good... very good!"" The $personPost makes an excessive show of rubbing $hisOrHer hands. ""Okay, feel free to roam this dirtball to your heart's content. Not that there's much to see, I can tell you that.""",,
+nex_remLostSci_stationKingConvoPaySmall,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoPay
+$nex_remLostSci_loweredFee","$player.nex_remLostSci_gotAccessRightsToPlanet = true
+AddRemoveCommodity credits -$nex_remLostSci_bribeSmall
+FireAll Nex_RemLostSci_StationKingConvoEndOpts","""Good... very good!"" The $personPost makes an excessive show of rubbing $hisOrHer hands. ""Okay, feel free to roam this dirtball to your heart's content. Not that there's much to see, I can tell you that.""",,
+nex_remLostSci_stationKingConvoPirateComm,DialogOptionSelected,$option == nex_remLostSci_stationKingConvoPirateComm,"$nex_remLostSci_loweredFee = true
+$nex_remLostSci_heardAboutExtortion = true
+Highlight $nex_remLostSci_bribeSmall
+FireAll Nex_RemLostSci_stationKingConvoOpts","You introduce yourself as pirate captain $playerName, interstellar predator, scourge of the spaceways. The $personPost's eyes seem to light up. ""Ah, you! I've heard of you, alright; my bad for not recognizing you at first.""
+
+""Listen, friend,"" $heOrShe leans closer to the screen, voice taking on a quasi-conspiratorial tone, ""how about $nex_remLostSci_bribeSmall credits? Call it an act of charity; this wretched dump barely pays for the security forces I have to maintain. Can't get any decent taxes out of these dirt-grubbers.""",,
+nex_remLostSci_stationKingConvoKanta,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoKanta
+$player.kantaProtection","$player.nex_remLostSci_gotAccessRightsToPlanet = true
+FireAll Nex_RemLostSci_StationKingConvoEndOpts","After you explain the matter to $personRank $personName, $heOrShe is visibly sweating. Truly the hand of Kanta extends all the way into the fringe of the Sector.
+
+""Ah, um, well... of course, of course! Anything for the, the Warlord! I'll, uh, have the boys clear you right away!""",,
+nex_remLostSci_stationKingConvoKantaLie,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoKanta
+!$player.kantaProtection","$player.nex_remLostSci_gotAccessRightsToPlanet = true
+$player.kantaBluffs++
+$player.ethosLiar++
+FireAll Nex_RemLostSci_StationKingConvoEndOpts","After you explain the matter to $personRank $personName, $heOrShe is visibly sweating. Truly the hand of Kanta extends all the way into the fringe of the Sector.
+
+""Ah, um, well... of course, of course! Anything for the, the Warlord! I'll, uh, have the boys clear you right away!""",,
+nex_remLostSci_stationKingConvoThreatenSuccess,DialogOptionSelected,"$option == :nex_remLostSci_stationKingConvoThreaten
+$nex_remLostSci_playerDP > 120","$player.ethosRuthless++
+$nex_remLostSci_threatened = true
+$ignorePlayerCommRequests = true 7
+AdjustRepActivePerson HOSTILE -15
+FireAll Nex_RemLostSci_StationKingConvoEndOpts","""Y-You! How dare you come in here and threaten me with, with...""
+
+The $personPost pauses, presumably considering the strength of your fleet in $hisOrHer sensor display. It's always a good idea to come packing, even for a simple lost-and-found excursion.
+
+Finally $heOrShe snarls. ""Fine! Do what you want, just get out of mah sight!""",,
+nex_remLostSci_stationKingConvoThreatenFail,DialogOptionSelected,"$option == :nex_remLostSci_stationKingConvoThreaten
+$nex_remLostSci_playerDP <= 120","$player.ethosRuthless++
+$nex_remLostSci_accessDenied = true
+$ignorePlayerCommRequests = true 30
+AdjustRepActivePerson HOSTILE -20
+Call $nex_remLostSci_ref addMilitaryResponse
+EndConversation
+ShowDefaultVisual","""Y-You! How dare you come in here and threaten me with, with...""
+
+The $personPost slams a fist on a button. ""$personLastName to all fleets! Kill this interloper at once!""
+
+No point waiting for $himOrHer to be the one to cut the comm link. You do it yourself.",,
+nex_remLostSci_stationKingConvoBack,DialogOptionSelected,$option == nex_remLostSci_stationKingConvoBack,FireAll PopulateOptions,"""Of course, of course."" The $personPost waves a hand languidly. ""When you decide, $nex_remLostSci_planet will still be there, yes?""",,
+nex_remLostSci_stationKingConvoOptEnd,Nex_RemLostSci_StationKingConvoEndOpts,,,,nex_remLostSci_stationKingConvoOptEnd:Cut the comm link,
+nex_remLostSci_stationKingConvoOptEndPolite,Nex_RemLostSci_StationKingConvoEndOpts,,,,nex_remLostSci_stationKingConvoOptEndPolite:Thank $himOrHer and cut the comm link,
+nex_remLostSci_stationKingConvoEnd,DialogOptionSelected,$option == nex_remLostSci_stationKingConvoOptEnd,,You cut the comm link.,,
+nex_remLostSci_stationKingConvoEndPolite,DialogOptionSelected,$option == nex_remLostSci_stationKingConvoOptEndPolite,,You cut the comm link after exchanging a few pleasantries.,,
+nex_remLostSci_stationKingConvoEndPoliteSarcastic,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoOptEndPolite
+$nex_remLostSci_threatened",$player.ethosSarcastic++,You cut the comm link after a one-sided expression of pleasantries.,,
+,,,,,,
+nex_remLostSci_findScientist1,DialogOptionSelected,$option == nex_remLostSci_findScientist1,ShowLargePlanet,"This place is unlikely to have a central directory of residents for you to conveniently look up. Time for you to do this the pre-Domain way.
+		
+You and a number of officers, NCOs and crew go down by shuttle to the surface of $nex_remLostSci_planet. There's a few places Liu might be, but it'd be easiest to start with the largest settlement first.",nex_remLostSci_findScientist2:Continue,
+nex_remLostSci_findScientist2,DialogOptionSelected,$option == nex_remLostSci_findScientist2,,"Luck is with you; you hit pay dirt after a few hours of questioning. Some people do indeed know the eccentric offworlder who showed up sometime in c.206, and eventually you get what passes for an address in such places.",nex_remLostSci_findScientist3:Continue,
+nex_remLostSci_findScientist3Habitable,DialogOptionSelected,"$option == nex_remLostSci_findScientist3
+$market.mc:habitable",ShowDefaultVisual,"The Academician's shanty lies on the outskirts of town. A wretched little thing assembled from sheets of scrap, that would be considered poor by the standards of the meanest Chicomoztoc hive-dweller. A couple of half-wilted potted plants sit in silence beside the door.
+		
+You knock on the door. It opens after a quarter of a minute; the interior is dark, but you can make out a ragged figure.","nex_remLostSci_findScientist4:""Academician Liu, I presume.""",
+nex_remLostSci_findScientist3Uninhabitable,DialogOptionSelected,"$option == nex_remLostSci_findScientist3
+!$market.mc:habitable",ShowDefaultVisual,"The Academician's little warren is tucked into a corner of the underground habitat. A wretched little thing assembled from sheets of scrap, that would be considered poor by the standards of the meanest Chicomoztoc hive-dweller. A couple of half-wilted potted plants sit in silence beside the door.
+		
+You knock on the door. It opens after a quarter of a minute; the interior is dark, but you can make out a ragged figure.","nex_remLostSci_findScientist4:""Academician Liu, I presume.""",
+nex_remLostSci_findScientist4,DialogOptionSelected,$option == nex_remLostSci_findScientist4,BeginConversation $nex_remLostSci_scientist false true,"""Who's asking?""
+
+When you explain that you're a spacer looking for a certain document, the person seems to sink inwards. ""Come on in, then. Make yourself at home, what there is of it.""",nex_remLostSci_findScientist5:Enter,
+nex_remLostSci_findScientist5,DialogOptionSelected,$option == nex_remLostSci_findScientist5,,"The interior of the shack isn't quite as trashy as its outside might have led you to believe. There is a certain sense of order, of hygeine in this place; the prevailing scent is 'lived-in', not 'filthy'. A creaky ventilation fan overlays its sound over the outer room.
+
+In the corner of the room, glowing lights faintly illuminate a workbench. An active computer terminal, newer and better-maintained than anything else in this dwelling, sits atop it.
+
+""So."" Liu pulls the chair from the workbench, gesturing at its solitary sibling sitting against the wall. ""What do you want?""",nex_remLostSci_findScientist6:Describe the manuscript you're seeking,
+nex_remLostSci_findScientist6,DialogOptionSelected,$option == nex_remLostSci_findScientist6,"Highlight ""you""","At this, the academician goes into a barking fit of laughter. ""Of course. Of course! I thought that if I didn't publish for a change maybe the Sector would let me perish in peace. What a fool I've been!""
+		
+They get up and start pacing. ""I was born on Culann, you know. My parents were R&D types for TT, expected me to follow in their footsteps. Only I saw what kind of things they and their colleagues were doing and left as soon as I graduated.
+		
+""So I went to Opis, jewel of the Sector. Jewel after Mairaath, that is. And everything was *just fine* until Philip Andrada, Hero of the Sector, showed up."" They shake their head. ""I actually made it out alive. Got a new job in pretty short order, even. Until the Lion's interference got too much and I had to flee again.""
+		
+Thump, thump, thump, go the footsteps on the polymer-panelled floor. ""So I ran to the Galatia Academy. 'Finally, a place where knowledge and study are cherished for their own sake,' I thought. And for many cycles I taught and did research there. Until, of course, the Provost had to upset the Hegemony and their marines came crashing down on our lecture halls and laboratories,"" they slam a fist into an open hand.  ""There's no place anymore where a person can do science without the hand of the state reaching down their neck!""
+
+They slump back down in the chair, hands on thighs, and laugh again. ""And so I ran here, to $nex_remLostSci_planet... and then of course you come hounding me to the edge of the Sector!""",nex_remLostSci_findScientist7:Continue,
+nex_remLostSci_findScientist7,DialogOptionSelected,$option == nex_remLostSci_findScientist7,FireAll Nex_RemSalvation_ArroyoSkillCheck,"""As for your paper,"" they sigh after a while, then gesture at the workbench. ""Red chip, 2x2, top rack on the left.""
+
+You walk over and find the chip, taking a moment to hold it up to the light.
+
+It slots neatly in a burner knockoff TriPad you keep for such ocassions, and you browse through the contents. The paper's abstract matches the description you got back at the Galatia Academy; the rest is abtruse temporal physics of the kind that requires a doctorate and a decade of experience in the field to understand.
+
+You glance at Liu, who shrugs. ""It was one of the great works of my life, once. That life is now gone. Do as you will with it.""",,
+nex_remLostSci_findScientistContinue,Nex_RemLostSci_ScientistConvoQuestioning,"$nex_remLostSci_askedOnlyCopy
+$nex_remLostSci_askedLikeItHere",,,nex_remLostSci_findScientist8:Continue,
+nex_remLostSci_findScientist_onlyCopyOpt,Nex_RemLostSci_ScientistConvoQuestioning,!$nex_remLostSci_askedOnlyCopy,,,"nex_remLostSci_findScientist_onlyCopy:""Is this the only copy?""",
+nex_remLostSci_findScientist_likeItHereOpt,Nex_RemLostSci_ScientistConvoQuestioning,!$nex_remLostSci_askedLikeItHere,,,"nex_remLostSci_findScientist_likeItHere:""Do you like it here?""",
+nex_remLostSci_findScientist_onlyCopy,DialogOptionSelected,$option == nex_remLostSci_findScientist_onlyCopy,"$nex_remLostSci_askedOnlyCopy = true 0
+FireAll Nex_RemLostSci_ScientistConvoQuestioning","""It is. Funny, all my other works have all the immortality of endlessly copied data, but this one... I suppose, when I left the Academy, I no longer cared whether my work was extinguished.""",,
+nex_remLostSci_findScientist_likeItHere,DialogOptionSelected,$option == nex_remLostSci_findScientist_likeItHere,"$nex_remLostSci_askedLikeItHere = true 0
+FireAll Nex_RemLostSci_ScientistConvoQuestioning","""As far as creature comforts go, it's positively awful. And the main attraction of the nightlife is getting shot. Not to mention the pirates shaking you down for all you've got.",,
+nex_remLostSci_findScientist_likeItHereBaseKilled,DialogOptionSelected,$option == nex_remLostSci_findScientist_likeItHere,$nex_remLostSci_askedLikeItHere = true 0,"""As far as creature comforts go, it's positively awful. And the main attraction of the nightlife is getting shot.""
+
+They look up at you. ""They say someone destroyed the pirate base in orbit. Was that you?""","nex_remLostSci_findScientist_baseYes:""Yes.""
+nex_remLostSci_findScientist_baseNo:""No.""",
+nex_remLostSci_findScientist_baseYes,DialogOptionSelected,$option == nex_remLostSci_findScientist_baseYes,,"Liu eyes you, perhaps just a little more warily than before this bit of information. ""Why?""","nex_remLostSci_findScientist_baseTyrant:""They were tyrannizing the local population.""
+nex_remLostSci_findScientist_baseSelfDefense:""They attacked me first.""
+nex_remLostSci_findScientist_baseObstacle:""They got in my way.""
+nex_remLostSci_findScientist_baseNoReason:""It just happened, is all.""",
+nex_remLostSci_findScientist_baseNo,DialogOptionSelected,$option == nex_remLostSci_findScientist_baseNo,FireAll Nex_RemLostSci_ScientistConvoQuestioning,"""I see. Well, I suppose it doesn't really matter.""",,
+nex_remLostSci_findScientist_baseTyrant,DialogOptionSelected,$option == nex_remLostSci_findScientist_baseTyrant,"FireAll Nex_RemLostSci_ScientistConvoQuestioning
+$player.ethosHumanitarian++ ","They nod. ""A good deed, although I'm afraid it won't last. You have not removed the underlying economic reasons for a pirate presence.""",,
+nex_remLostSci_findScientist_baseSelfDefense,DialogOptionSelected,$option == nex_remLostSci_findScientist_baseSelfDefense,FireAll Nex_RemLostSci_ScientistConvoQuestioning,"""I'm told that happens a lot with you spacer types.""",,
+nex_remLostSci_findScientist_baseObstacle,DialogOptionSelected,$option == nex_remLostSci_findScientist_baseObstacle,"FireAll Nex_RemLostSci_ScientistConvoQuestioning
+$player.ethosRuthless++ ","The academician shakes their head ruefully. ""You really are just like the others,"" you catch a mutter.",,
+nex_remLostSci_findScientist_baseNoReason,DialogOptionSelected,$option ==  nex_remLostSci_findScientist_baseNoReason,FireAll Nex_RemLostSci_ScientistConvoQuestioning,"""Happened,"" they mutter. ""When you see the world as I do, captain, you will realize that nothing in the universe 'just happens'"".",,
+,,,,,,
+nex_remLostSci_findScientist8,DialogOptionSelected,$option == nex_remLostSci_findScientist8,FireAll Nex_RemLostSci_ScientistConvoQuestioning,"You take out the chip and consider your options. Your contract with Midnight calls for retrieval of the manuscript. 
+
+But if for whatever reason you decided that it should not see the light of day... well, only you and Liu would ever know.","nex_remLostSci_findScientist9KeepPaper:Keep the paper
+nex_remLostSci_findScientist9Destroy:Destroy the paper",
+nex_remLostSci_findScientist9Keep,DialogOptionSelected,$option == nex_remLostSci_findScientist9Keep,"$player.ethosKnowledge++
+$player.ethosHonorable++
+$player.nex_remLostSci_destroyedPaper = false
+$option = nex_remLostSci_findScientist10
+FireBest DialogOptionSelected",It slides easily into your pocket.,,
+nex_remLostSci_findScientist9Destroy,DialogOptionSelected,$option == nex_remLostSci_findScientist9Destroy,$player.nex_remLostSci_destroyedPaper = true,"You take out a vibroknife and apply it to the datachip. The red plastic sheath and its underlying circuitry disintegrate in a flash, and you pocket the fragments for complete destruction later.
+		
+The academician looks at you, both brows raised. ""Why?""","nex_remLostSci_findScientist_destroyDeny:""I do not wish others to possess this capability.""
+nex_remLostSci_findScientist_destroyArms:""The Sector does not need more arms technologies.""
+nex_remLostSci_findScientist_destroyChurch:""Such technologies go against the teachings of the Church.""
+nex_remLostSci_findScientist_destroyPath:""I follow the Path.""
+nex_remLostSci_findScientist_destroyShrug:Shrug",
+nex_remLostSci_findScientist_destroyDeny,DialogOptionSelected,$option == nex_remLostSci_findScientist_destroyDeny,"$option = nex_remLostSci_findScientist10
+FireBest DialogOptionSelected",Liu sags in their chair with a resigned look. They don't meet your eyes.,,
+nex_remLostSci_findScientist_destroyArms,DialogOptionSelected,$option == nex_remLostSci_findScientist_destroyArms,"$player.ethosHumanitarian++
+$option = nex_remLostSci_findScientist10
+FireBest DialogOptionSelected",Liu sags in their chair with a resigned look. They don't meet your eyes.,,
+nex_remLostSci_findScientist_destroyChurch,DialogOptionSelected,$option == nex_remLostSci_findScientist_destroyChurch,"$player.luddicAttitudeFaithful++
+$option = nex_remLostSci_findScientist10
+FireBest DialogOptionSelected",Liu sags in their chair with a resigned look. They don't meet your eyes.,,
+nex_remLostSci_findScientist_destroyPath,DialogOptionSelected,$option == nex_remLostSci_findScientist_destroyPath,"$player.luddicAttitudePather++
+$option = nex_remLostSci_findScientist10
+FireBest DialogOptionSelected",Liu sags in their chair with a resigned look. They don't meet your eyes.,,
+nex_remLostSci_findScientist_destroyShrug,DialogOptionSelected,$option == nex_remLostSci_findScientist_destroyShrug,"$option = nex_remLostSci_findScientist10
+FireBest DialogOptionSelected",Liu sags in their chair with a resigned look. They don't meet your eyes.,,
+nex_remLostSci_findScientist10,DialogOptionSelected,$option == nex_remLostSci_findScientist10,,"You consider the scientist again. Regardless of what you did with the paper, the mind that created it is still around, and could in principle, with sufficient inducement, recreate part or all of it. Assuming they were ever found; if not, they'd presumably just live out the rest of their life here on $entity.name and be buried quietly. But they've already been found once.","nex_remLostSci_findScientist11Leave:Just leave. You've done what you needed.
+nex_remLostSci_findScientist11Kill:Kill Liu
+nex_remLostSci_findScientist11BringBack:""Want to come back to the Academy?""",
+nex_remLostSci_findScientist11Leave,DialogOptionSelected,$option == nex_remLostSci_findScientist11Leave,"$player.nex_remLostSci_killedScientist = false
+EndConversation","You say what you consider a goodbye and step out, closing the door behind you. There's nothing left to do here.",nex_remLostSci_findScientist12:Return to your $shipOrFleet,
+nex_remLostSci_findScientist11KillGun,DialogOptionSelected,"$option == nex_remLostSci_findScientist11Kill
+!$player.nex_remLostSci_destroyedPaper","$player.nex_remLostSci_killedScientist = true
+EndConversation","Your gun swiftly comes out of its holster. The small room lights up briefly, and Academician Liu's body tumbles back along with the chair. An expression of incipient surprise is still written on their face.
+
+Two can keep a secret, if one is dead.
+
+This isn't the kind of place where neighbors will come knocking, much less law enforcement. You leave the corpse for someone else to find in a few hours, maybe a day or two.",nex_remLostSci_findScientist12:Return to your $shipOrFleet,
+nex_remLostSci_findScientist11KillKnife,DialogOptionSelected,"$option == nex_remLostSci_findScientist11Kill
+$player.nex_remLostSci_destroyedPaper","$player.nex_remLostSci_killedScientist = true
+EndConversation","The vibroknife is still in your hand. You cross the room in an easy stride, and Academician Liu's head parts from their body in a scarlet geyser. An expression of incipient surprise is still written on their face.
+
+Two can keep a secret, if one is dead.
+
+This isn't the kind of place where neighbors will come knocking, much less law enforcement. You leave the corpse for someone else to find in a few hours, maybe a day or two.",nex_remLostSci_findScientist12:Return to your $shipOrFleet,
+nex_remLostSci_findScientist11BringBack,DialogOptionSelected,$option == nex_remLostSci_findScientist11BringBack,"$player.nex_remLostSci_killedScientist = false
+$player.nex_remLostSci_returnedScientist = true","""What?"" For the first time since the start of your meeting, Liu looks startled. ""I...""
+	
+Another sigh. ""I suppose I did say this was not an ideal place to live. The only thing it offered was secrecy... but you've demonstrated that that's gone now.
+		
+""Very well."" They stand up. ""I suppose I would not mind going back, if the Academy will have me. Just give me, call it fifteen minutes. Pack up what little I can, say goodbye to the neighbors, that sort of thing.""",nex_remLostSci_findScientist11BringBack2:Continue,
+nex_remLostSci_findScientist11BringBack2,DialogOptionSelected,$option == nex_remLostSci_findScientist11BringBack2,EndConversation,"You step outside to wait, taking the opportunity to notify the other search parties and your $shipOrFleet. The potted plants are still beside the door; do you wonder what will happen to them once their owner has left?
+
+Soon enough, Academician Liu joins you again. ""Let's go. And don't worry about heading all the way back to the Academy; just drop me off somewhere in the Core Worlds and I can book my own passage back.""",nex_remLostSci_findScientist12:Return to your $shipOrFleet,
+nex_remLostSci_findScientist12,DialogOptionSelected,$option == nex_remLostSci_findScientist12,ShowLargePlanet,"On the trip back, your second-in-command hails you. ""Got a problem, $playerSirOrMadam. There may be another fleet or two out there; you'd better get up here quick.""",nex_remLostSci_findScientist13:Continue,
+nex_remLostSci_findScientist13,DialogOptionSelected,$option == nex_remLostSci_findScientist13,ShowDefaultVisual,"The explanation comes as soon as you're back on the bridge. ""While you were on your way back, we had a fleet signature approaching us at high speed. Then a second. The contacts merged, and... we confirmed weapon discharge signatures. After that... we can't confirm the presence of either fleet through the debris, but no-one has come out. Any survivors are presumably still in there.""","nex_remLostSci_findScientist14Investigate:Check out the suspicious fleet(s)
+nex_remLostSci_findScientist14Leave:Ignore it and return to Midnight",
+nex_remLostSci_findScientist14Investigate,DialogOptionSelected,$option == nex_remLostSci_findScientist14Investigate,"Call $nex_remLostSci_ref investigateFleet
+FireAll PopulateOptions","One fleet coming out to an isolated planet like this is happenstance. Two is coincidence. Three may well be enemy action. If someone is attempting to interfere with your mission, it needs to be dealt with.
+
+You order your $shipOrFleet to prepare for departure with possible combat. There's still time to conclude any business on $entity.name if needed.",,
+nex_remLostSci_findScientist14Leave,DialogOptionSelected,$option == nex_remLostSci_findScientist14Leave,"Call $nex_remLostSci_ref noInvestigateFleet
+FireAll PopulateOptions","Your mission is to get the paper back to Midnight Dissonant. There's no real reason to walk your $shipOrFleet into an unidentified hazard at this juncture.
+
+You order your $shipOrFleet to prepare for return to the core worlds. There's still time to conclude any business on $entity.name if needed.",,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
 # Remnant brawl mission,,,,,,
 nex_remBrawl_blurb,nex_remBrawl_blurb,,"Highlight ""Special request""","""Special request that $playerName only can fulfill. Massive Hegemony operation against selfkind planned. In unravelling plot require assistance.""",,
 nex_remBrawl_offerOption,nex_remBrawl_option,,SetOptionColor nex_remBrawl_start highlight,,nex_remBrawl_start:Ask about the Hegemony operation,
@@ -3903,7 +4204,7 @@ FireAll PopulateOptions","A squad of Knights led by an inquisitor-captain shuttl
 ""If there is anything further I can do for you, let me know.""",,
 nex_pkTurnInArgentCancel,DialogOptionSelected,$option == nex_pkTurnInArgentCancel,FireAll PopulateOptions,"""Do not delay too long, $playerBrotherOrSister. I shudder to think what such an instrument were to do in the wrong hands.""",,
 ,,,,,,
-,,,,,,
+nex_greetingIgnoreCommRequests,PickGreeting,$ignorePlayerCommRequests score:50,"SetShortcut cutCommLink ""ESCAPE""","After a short wait, your connection request is denied.",0:cutCommLink:Cut the comm link,
 ,,,,,,
 #END chatty stuff,,,,,,
 #END missions,,,,,,
