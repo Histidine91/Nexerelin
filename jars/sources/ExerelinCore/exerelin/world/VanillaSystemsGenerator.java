@@ -13,9 +13,10 @@ import exerelin.campaign.skills.NexSkills;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
+import org.codehaus.janino.ScriptEvaluator;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.codehaus.janino.ScriptEvaluator;
 
 public class VanillaSystemsGenerator {
 		
@@ -278,7 +279,7 @@ public class VanillaSystemsGenerator {
 		eochu_bres.getIndustry(Industries.STARFORTRESS_HIGH).setAICoreId("alpha_core");
 		
 		MarketAPI eventide = getMarket("eventide");
-		eventide.addIndustry(Industries.BATTLESTATION_HIGH);
+		eventide.addIndustry(Industries.BATTLESTATION_MID);
 		
 		MarketAPI fikenhild = getMarket("fikenhild");
 		//fikenhild.removeIndustry(Industries.PATROLHQ, null, false);
@@ -298,9 +299,12 @@ public class VanillaSystemsGenerator {
 		}
 		
 		MarketAPI tigraCity = getMarket("tigra_city");
-		tigraCity.addCondition(Conditions.ORE_MODERATE);
-		tigraCity.getCondition(Conditions.ORE_MODERATE).setSurveyed(true);
+		tigraCity.addCondition(Conditions.ORE_SPARSE);
+		tigraCity.getCondition(Conditions.ORE_SPARSE).setSurveyed(true);
+		tigraCity.addCondition(Conditions.FARMLAND_POOR);
+		tigraCity.getCondition(Conditions.FARMLAND_POOR).setSurveyed(true);
 		tigraCity.addIndustry(Industries.MINING);
+		tigraCity.addIndustry(Industries.FARMING);
 	}
 	
 	public static void enhanceVanillaAdmins() {
