@@ -159,7 +159,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		system.getLocation().set(PRISM_LOC);
 		ProcgenUsedNames.notifyUsed(name);
 		
-		// temporarily create a "star"
+		// temporarily create a "star" (needed for some things)
 		PlanetAPI star = system.initStar("nex_prism_center", "nebula_center_young", 0, 0);
 		star.setSkipForJumpPointAutoGen(true);
 		star.addTag(Tags.AMBIENT_LS);

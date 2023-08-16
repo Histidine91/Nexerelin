@@ -20,6 +20,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import com.fs.starfarer.api.impl.hullmods.Automated;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
@@ -79,6 +80,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected boolean isAlive;
 	protected boolean waitingForSpawn;
 	protected float fuelUsedLastInterval;
+	protected int autoShipDP;
 	protected transient Vector2f lastPos;
 	
 	protected Object readResolve() {
@@ -379,6 +381,21 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			String warn = String.format("Warning: Variants for %s ship(s) do not match saved variant, restoring", errorCount);
 			Global.getSector().getCampaignUI().addMessage(warn, Misc.getNegativeHighlightColor(),
 					errorCount + "", "", Misc.getHighlightColor(), Color.WHITE);
+		}
+	}
+
+	// was going to do something with this but decided not to
+	@Deprecated
+	protected void checkAutomatedShips() {
+		if (fleet == null) return;
+		if (commander == null || commander.getStats().getSkillLevel(Skills.AUTOMATED_SHIPS) >= 1) return;
+
+		log.info("Checking PSF automated ship status");
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			if (!Misc.isAutomated(member)) continue;
+			if (Automated.isAutomatedNoPenalty(member)) continue;
+			member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
+			log.info("Applying max CR for automated ship " + member.getShipName() + " (" + member.getHullSpec().getHullNameWithDashClass() + ")");
 		}
 	}
 	

@@ -307,7 +307,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
 
     public static LunaConfigHelper createListener() {
         LunaConfigHelper helper = new LunaConfigHelper();
-        LunaSettings.INSTANCE.addListener(helper);
+        LunaSettings.INSTANCE.addSettingsListener(helper);
         return helper;
     }
 

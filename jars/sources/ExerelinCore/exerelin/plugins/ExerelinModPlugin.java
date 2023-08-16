@@ -263,6 +263,10 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         if (!ExerelinSetupData.getInstance().skipStory)
             new AcademyStoryVictoryScript().init();
+
+        if (isNexDev) {
+            DebugIntel.createIntel();
+        }
     }
     
     // Stuff here should be moved to new game once it is expected that no existing saves lack them
