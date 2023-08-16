@@ -18,7 +18,6 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.groundbattle.GBConstants;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
@@ -35,6 +34,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	
 	public static final float SIZE_REWARD_MULT = 6000;
 	public static final String BUTTON_TRANSFER = "BUTTON_TRANSFER";
+	public static final String MEMKEY_CONQUEST_VALUE_BONUS = "$nex_conquest_value_bonus";
 	
 	protected MarketAPI market;
 	protected FactionAPI faction;
@@ -126,7 +126,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 	}
 	
 	protected void missionComplete() {
-		int reward = calculateReward(true);
+		int reward = calculateReward(market, true);
 		float repAmount = 0.02f * market.getSize();
 		if (repAmount < 0.01f) repAmount = 0.01f;
 
@@ -144,8 +144,13 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		endMissionWithUpdate(false);
 	}
 	
-	protected int calculateReward(boolean includeBonus) {
-		float value = NexUtilsMarket.getMarketIndustryValue(market) * Global.getSettings().getFloat("industryRefundFraction");
+	public static int calculateReward(MarketAPI market, boolean includeBonus) {
+		float value = NexUtilsMarket.getMarketIndustryValue(market);
+		if (market.getMemoryWithoutUpdate().contains(MEMKEY_CONQUEST_VALUE_BONUS)) {
+			value += market.getMemoryWithoutUpdate().getFloat(MEMKEY_CONQUEST_VALUE_BONUS);
+		}
+
+		value *= Global.getSettings().getFloat("industryRefundFraction");
 		
 		value += NexUtilsMarket.getIncomeNetPresentValue(market, 6, 0);
 		
@@ -286,7 +291,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 				info.addPara(getString("intelBulletReward"), 
 						initPad, tc,
 						h,
-						Misc.getDGSCredits(calculateReward(false)));
+						Misc.getDGSCredits(calculateReward(market, false)));
 				addDays(info, getString("intelDescDuration_post_short"), duration - elapsedDays, tc, 0);
 			}
 		}

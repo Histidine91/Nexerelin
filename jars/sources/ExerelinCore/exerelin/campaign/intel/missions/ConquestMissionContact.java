@@ -20,6 +20,7 @@ import exerelin.utilities.InvasionListener;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
+import lombok.extern.log4j.Log4j;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.*;
 
 import static exerelin.campaign.intel.missions.ConquestMissionManager.MIN_PLAYER_LEVEL;
-import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class ConquestMissionContact extends HubMissionWithSearch implements InvasionListener {
@@ -103,7 +103,7 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		connectWithMarketDecivilized(Stage.CAPTURE, EventCancelReason.NOT_IN_ECONOMY, market);
 		
 		//setCreditReward(80000, 100000);
-		setCreditReward(calculateReward(true));
+		setCreditReward(ConquestMissionIntel.calculateReward(market, true));
 		float repAmount = 0.02f * market.getSize();
 		if (repAmount < 0.01f) repAmount = 0.01f;
 		setRepRewardFaction(repAmount);
@@ -157,21 +157,6 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 	
 	protected void missionComplete() {
 		setCurrentStage(Stage.COMPLETED, null, null);
-	}
-	
-	protected int calculateReward(boolean includeBonus) {
-		float value = NexUtilsMarket.getMarketIndustryValue(market) * Global.getSettings().getFloat("industryRefundFraction");
-		
-		value += NexUtilsMarket.getIncomeNetPresentValue(market, 6, 0);
-		
-		if (includeBonus) {
-			float sizeBonus = (float)(Math.pow(market.getSize(), 2) * SIZE_REWARD_MULT);
-			float stabilityMult = (market.getStabilityValue() + 5)/15;
-			value += (sizeBonus * stabilityMult);
-		}
-		
-		if (value < 0) value = 0;
-		return (int)value;
 	}
 
 	protected void transferViaButton() {

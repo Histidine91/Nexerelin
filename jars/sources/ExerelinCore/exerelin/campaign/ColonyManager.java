@@ -30,7 +30,6 @@ import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.DelayedActionScript;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
@@ -48,6 +47,7 @@ import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBUtils;
+import exerelin.campaign.intel.missions.ConquestMissionIntel;
 import exerelin.utilities.*;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
@@ -1491,8 +1491,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 						toRemove.add(ind.getId());
 					}
 				}
-				final MarketAPI marketF = market;
+
 				// delay the actual removal to avoid screwing with payout on conquest missions
+				// actually no, since this allows the exploit to continue if you don't leave the screen
+				// instead, we'll add a memory key to inform the conquest mission
+				/*
+				final MarketAPI marketF = market;
 				Global.getSector().addScript(new DelayedActionScript(0) {
 					@Override
 					public void doAction() {
@@ -1500,9 +1504,21 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 							moveSpecialsToBestSubmarket(marketF, marketF.getIndustry(indId));
 							marketF.removeIndustry(indId, null, false);
 						}
+						marketF.reapplyIndustries();
 					}
 				});
+				 */
 
+				float bonus = 0;
+				if (market.getMemoryWithoutUpdate().contains(ConquestMissionIntel.MEMKEY_CONQUEST_VALUE_BONUS)) {
+					bonus = market.getMemoryWithoutUpdate().getFloat(ConquestMissionIntel.MEMKEY_CONQUEST_VALUE_BONUS);
+				}
+				for (String indId : toRemove) {
+					moveSpecialsToBestSubmarket(market, market.getIndustry(indId));
+					bonus += market.getIndustry(indId).getBuildCost();
+					market.removeIndustry(indId, null, false);
+				}
+				market.getMemoryWithoutUpdate().set(ConquestMissionIntel.MEMKEY_CONQUEST_VALUE_BONUS, bonus, 0);
 				
 				market.reapplyIndustries();
 			}
