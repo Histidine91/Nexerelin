@@ -41,6 +41,8 @@ import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.FactionConditionPlugin;
+import exerelin.campaign.econ.GroundPoolManager;
+import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
@@ -210,8 +212,20 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				float garDamage = GBUtils.getGarrisonDamageMemory(market);
 				if (garDamage > 0) {
 					float recoveryFactor = 1/(numTicksPerMonth*GBConstants.INVASION_HEALTH_MONTHS_TO_RECOVER);
+
+					// check ground pool and deduct recovery expenses
+					float recoverMarineCount = recoveryFactor * GBUtils.getTroopCountForMarketSize(market) * 0.25f;
+					float wantedPts = recoverMarineCount * GroundPoolManager.POOL_PER_MARINE;
+					ResourcePoolManager.RequisitionParams rp = new ResourcePoolManager.RequisitionParams(wantedPts);
+					float available = GroundPoolManager.getManager().drawFromPool(market.getFactionId(), rp);
+					if (available <= 0) continue;
+
+					float mult = Math.max(available/wantedPts, 1);
+					recoveryFactor *= mult;
 					garDamage -= recoveryFactor;
 					GBUtils.setGarrisonDamageMemory(market, garDamage);
+					log.info(String.format("%s (size %s) expending %.1f ground pool points to recover garrison health by %.3f",
+							market.getName(), market.getSize(), wantedPts, recoveryFactor));
 				}
 			}
 			

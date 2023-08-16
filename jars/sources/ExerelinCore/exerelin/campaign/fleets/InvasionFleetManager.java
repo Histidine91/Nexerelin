@@ -27,7 +27,9 @@ import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.FleetPoolManager;
-import exerelin.campaign.econ.FleetPoolManager.RequisitionParams;
+import exerelin.campaign.econ.GroundPoolManager;
+import exerelin.campaign.econ.ResourcePoolManager;
+import exerelin.campaign.econ.ResourcePoolManager.RequisitionParams;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
@@ -499,7 +501,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	@Deprecated
 	public void modifySpawnCounter(String factionId, float amount) {
 		NexUtils.modifyMapEntry(spawnCounter, factionId, amount);
-		FleetPoolManager.getManager().modifyPool(factionId, amount * FleetPoolManager.FLEET_POOL_MULT);
+		FleetPoolManager.getManager().modifyPool(factionId, amount * ResourcePoolManager.FLEET_POOL_MULT);
+		GroundPoolManager.getManager().modifyPool(factionId, amount * ResourcePoolManager.FLEET_POOL_MULT);
 	}
 	
 	/**

@@ -64,7 +64,7 @@ public abstract class DiplomacyConcern extends BaseStrategicConcern {
     // TODO: should count allies as well
     protected float getFactionStrength(FactionAPI faction) {
         int size = NexUtilsFaction.getFactionMarketSizeSum(faction.getId());
-        float lastFleetPoolIncrement = FleetPoolManager.getPointsLastTick(faction);
+        float lastFleetPoolIncrement = FleetPoolManager.getManager().getPointsLastTick(faction);
         float strength = size + lastFleetPoolIncrement * 5;
         //log.info(String.format("Faction %s has size %s, last pool increment %.2f", faction.getId(), size, lastFleetPoolIncrement));
         return strength;

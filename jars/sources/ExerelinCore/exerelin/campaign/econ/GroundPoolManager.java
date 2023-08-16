@@ -2,14 +2,12 @@ package exerelin.campaign.econ;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsFaction;
@@ -22,16 +20,12 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j
-public class FleetPoolManager extends ResourcePoolManager {
+public class GroundPoolManager extends ResourcePoolManager {
 
-	public static final boolean USE_POOL = true;
+	public static final float POOL_PER_MARINE = 0.1f;
 
-	public static FleetPoolManager getManager() {
-		return (FleetPoolManager) Global.getSector().getPersistentData().get("nex_fleetPoolManager");
-	}
-
-	public static float getMarketCommodityValueStatic(MarketAPI market) {
-		return ResourcePoolManager.getMarketCommodityValueStatic(market, ResourcePoolManager.COMMODITIES_SPACE);
+	public static GroundPoolManager getManager() {
+		return (GroundPoolManager) Global.getSector().getPersistentData().get("nex_groundPoolManager");
 	}
 
 	@Override
@@ -41,12 +35,12 @@ public class FleetPoolManager extends ResourcePoolManager {
 
 	@Override
 	public String getDataKey() {
-		return "nex_fleetPoolManager";
+		return "nex_groundPoolManager";
 	}
 
 	@Override
 	public String getPointsLastTickMemoryKey() {
-		return "$nex_fleetPoolPointsLastTick";
+		return "$nex_groundPoolPointsLastTick";
 	}
 	
 	/*
@@ -130,16 +124,6 @@ public class FleetPoolManager extends ResourcePoolManager {
 
 	@Override
 	public boolean isHidden() {
-		return !isEnabled() && !ExerelinModPlugin.isNexDev;
-	}
-
-	@Override
-	protected boolean isInIntel() {
 		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return USE_POOL;
 	}
 }

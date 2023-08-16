@@ -39,10 +39,7 @@ import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.ai.MilitaryInfoHelper;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.battle.EncounterLootHandler;
-import exerelin.campaign.econ.EconomyInfoHelper;
-import exerelin.campaign.econ.FactionConditionPlugin;
-import exerelin.campaign.econ.FleetPoolManager;
-import exerelin.campaign.econ.Nex_BoostIndustryInstallableItemEffect;
+import exerelin.campaign.econ.*;
 import exerelin.campaign.fleets.*;
 import exerelin.campaign.graphics.MiningCooldownDrawerV2;
 import exerelin.campaign.intel.*;
@@ -60,6 +57,7 @@ import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.ui.PlayerFactionSetupNag;
 import exerelin.campaign.ui.ReinitScreenScript;
+import exerelin.debug.DebugIntel;
 import exerelin.utilities.*;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
 import exerelin.world.*;
@@ -239,6 +237,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public static void addScripts() {
         SectorAPI sector = Global.getSector();
         new FleetPoolManager().init();
+        new GroundPoolManager().init();
         sector.addScript(SectorManager.create());
         sector.addScript(DiplomacyManager.create());
         sector.addScript(InvasionFleetManager.create());
@@ -268,6 +267,11 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     // Stuff here should be moved to new game once it is expected that no existing saves lack them
     protected void addScriptsAndEventsIfNeeded() {
+        if (GroundPoolManager.getManager() == null) {
+            GroundPoolManager man = new GroundPoolManager();
+            man.init();
+            man.initPointsFromIFM();
+        }
     }
 
 

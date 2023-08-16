@@ -73,7 +73,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 		float totalPoints = 0;
 		for (MarketAPI market : markets)
 		{
-			float points = FleetPoolManager.getMarketFleetPoolCommodityValue(market);
+			float points = FleetPoolManager.getMarketCommodityValueStatic(market);
 			points *= POINT_GENERATION_MULT;
 			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			points *= conf.specialForcesPointMult;
@@ -99,7 +99,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 			String factionId = market.getFactionId();
 			if (!factions.contains(factionId)) continue;
 			
-			float points = FleetPoolManager.getMarketFleetPoolCommodityValue(market);
+			float points = FleetPoolManager.getMarketCommodityValueStatic(market);
 			points *= days * POINT_GENERATION_MULT * NexConfig.specialForcesPointMult;
 			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 			points *= conf.specialForcesPointMult;

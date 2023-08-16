@@ -22,6 +22,8 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.econ.GroundPoolManager;
+import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
@@ -216,6 +218,11 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		if (this instanceof RespawnInvasionIntel) {
 			marinesTotal *= RESPAWN_MARINE_MULT;
 		}
+
+		// draw from ground pool
+		ResourcePoolManager.RequisitionParams rp = new ResourcePoolManager.RequisitionParams(marinesTotal * GroundPoolManager.POOL_PER_MARINE);
+		rp.abortIfNotAtLeast = 0;	// always have the marines we need
+		GroundPoolManager.getManager().drawFromPool(faction.getId(), rp);
 	}
 
 	/*
