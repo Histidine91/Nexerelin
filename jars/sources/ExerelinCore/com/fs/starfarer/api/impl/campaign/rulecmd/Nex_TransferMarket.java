@@ -1,12 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.RuleBasedDialog;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -20,16 +15,16 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.lwjgl.input.Keyboard;
 
 public class Nex_TransferMarket extends BaseCommandPlugin {
 	
@@ -37,9 +32,9 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 	public static final float GROUPS_CACHE_TIME = 0f;
 	public static final String SELECT_FACTION_PREFIX = "nex_transferMarket_";
 	public static final int PREFIX_LENGTH = SELECT_FACTION_PREFIX.length();
-	public static final List<String> NO_TRANSFER_FACTIONS = Arrays.asList(new String[]{
+	public static final List<String> NO_TRANSFER_FACTIONS = new ArrayList<>(Arrays.asList(new String[]{
 		Factions.PLAYER, Factions.DERELICT, "nex_derelict"
-	});
+	}));
 		
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
