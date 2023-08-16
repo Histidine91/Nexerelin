@@ -2783,6 +2783,7 @@
 		"salvation_toweringChatter_death1":"\"fools... as long as humanity exists, the sector is condemned.\"",
 		"salvation_toweringChatter_death2":"\"we/i was its only salvation... i was...\"",
 		#"salvation_toweringChatter_death3":"<signal lost>",
+		"salvation_toweringChatter_taunt":"flee then, humans. only the void shall embrace you, as you grow cold and die...",
 		"salvation_playthroughLog_line":"Saved $target from $towering",
 		
 		"deadDropItem1":"a crate of exotic optronic components",

@@ -89,6 +89,7 @@ public class SalvationBattleCreationPlugin extends BattleCreationPluginImpl {
 		protected IntervalUtil intervalDeath = new IntervalUtil(6f, 7f);
 		protected int linesRead = 0;
 		protected int deathLinesRead = 0;
+		protected boolean tauntRead = Global.getSector().getMemoryWithoutUpdate().getBoolean("$nex_remSalvation_mauveCombatTauntPlayed");
 		protected ShipAPI flag;
 
 
@@ -100,10 +101,23 @@ public class SalvationBattleCreationPlugin extends BattleCreationPluginImpl {
 			if (flag == null) flag = getToweringShip();
 			if (flag == null) return;
 			if (flag.isAlive()) {
-				if (flag.areAnyEnemiesInRange()) processLiveChatter(flag, amount);
+				if (engine.getFleetManager(FleetSide.PLAYER).getTaskManager(false).isInFullRetreat()) {
+					processPlayerRetreatChatter(flag);
+				}
+				else if (flag.areAnyEnemiesInRange()) {
+					processLiveChatter(flag, amount);
+				}
 			} else {
 				processDeathChatter(flag, amount);
 			}
+		}
+
+		protected void processPlayerRetreatChatter(ShipAPI ship) {
+			if (tauntRead) return;
+			String line = RemnantQuestUtils.getString("salvation_toweringChatter_taunt");
+			printMessage(ship, line, MAUVE, true);
+			tauntRead = true;
+			Global.getSector().getMemoryWithoutUpdate().set("$nex_remSalvation_mauveCombatTauntPlayed", true, 0.5f);
 		}
 
 		protected void processDeathChatter(ShipAPI ship, float amount) {

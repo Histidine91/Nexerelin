@@ -401,6 +401,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         var station = remnantSystem!!.addCustomEntity("nex_remSalvation_fleet1_station", null, stationDefId, Factions.REMNANTS)
         station.isDiscoverable = true
         station.orbit = loc?.orbit?.makeCopy()
+        station.setSensorProfile(null)
         //log.info(String.format("Wololo, orbit period %s, target %s", station.orbit.orbitalPeriod, station.orbit.focus.name))
         return station
     }
