@@ -3,6 +3,7 @@ package exerelin.campaign.ai.concern;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.ai.MilitaryAIModule;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.utilities.NexUtilsFaction;
@@ -35,7 +36,9 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
             float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR * 2;
             if (valueMod < SAIConstants.MIN_MARKET_VALUE_PRIORITY_TO_CARE) continue;
 
-            targetsSorted.add(new Pair<>(market, valueMod));
+            float score = valueMod + getPriorityFromRaids(market);
+
+            targetsSorted.add(new Pair<>(market, score));
         }
 
         Collections.sort(targetsSorted, MARKET_PAIR_COMPARATOR);
@@ -49,9 +52,7 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
         Pair<MarketAPI, Float> goal = picker.pick();
         if (goal != null) {
             market = goal.one;
-            priority.modifyFlat("defenseAdjustedValue", goal.two,
-                    StrategicAI.getString("statDefenseAdjustedValue", true));
-            reapplyPriorityModifiers();
+            update();
         }
 
         return market != null;
@@ -74,7 +75,33 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
         }
         priority.modifyFlat("defenseAdjustedValue", valueMod * 2,
                 StrategicAI.getString("statDefenseAdjustedValue", true));
+
+        float fromRaids = getPriorityFromRaids(market);
+        priority.modifyFlat("recentAttacks", fromRaids,
+                StrategicAI.getString("statRecentAttacks", true));
+
         super.update();
+    }
+
+    /**
+     * Gets the priority contribution from recent raid-type events on the specified market.
+     * @param market
+     * @return
+     */
+    public float getPriorityFromRaids(MarketAPI market) {
+        List<Pair<MilitaryAIModule.RaidRecord, Float>> raidsSorted = new ArrayList<>();
+        List<MilitaryAIModule.RaidRecord> recentRaids = new ArrayList<>();
+
+        float totalImpact = 0;
+        for (MilitaryAIModule.RaidRecord raid : ai.getMilModule().getRecentRaids()) {
+            //log.info("Checking raid " + raid.name);
+            if (raid.defender != ai.getFaction()) continue;
+            if (raid.target != market) continue;
+
+            recentRaids.add(raid);
+            totalImpact += raid.getAgeAdjustedImpact();
+        }
+        return totalImpact;
     }
 
     @Override

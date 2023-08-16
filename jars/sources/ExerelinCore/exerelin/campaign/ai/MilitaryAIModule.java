@@ -1,17 +1,27 @@
 package exerelin.campaign.ai;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.InvasionRound;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.RaidListener;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.InvasionListener;
 import exerelin.utilities.NexUtilsMath;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -23,7 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Log4j
-public class MilitaryAIModule extends StrategicAIModule implements RaidListener {
+public class MilitaryAIModule extends StrategicAIModule implements RaidListener, ColonyPlayerHostileActListener, InvasionListener {
 
     @Getter public List<RaidRecord> recentRaids = new LinkedList<>();
 
@@ -113,12 +123,70 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
         recentRaids.add(record);
     }
 
+    public void reportPlayerHostileAction(String name, String type, MarketAPI target, float impactMult, boolean success) {
+        FactionAPI attacker = PlayerFactionStore.getPlayerFaction();
+        FactionAPI defender = target.getFaction();
+        if (attacker != ai.faction && defender != ai.faction) {
+            return;
+        }
+
+        float impact = 1;
+        if (target != null) {
+            impact = target.getSize();
+        }
+        impact *= impactMult;
+
+        RaidRecord record = new RaidRecord(null, name, type, attacker, defender, target, null, success, impact);
+    }
+
+    @Override
+    public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {
+        if (actionData.secret || !Global.getSector().getPlayerFleet().isTransponderOn()) return;
+        String name = StrategicAI.getString("playerRaid", true);
+        reportPlayerHostileAction(name, "raid", market, 1, true);
+    }
+
+    @Override
+    public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData, Industry industry) {
+        if (actionData.secret || !Global.getSector().getPlayerFleet().isTransponderOn()) return;
+        String name = StrategicAI.getString("playerRaid", true);
+        reportPlayerHostileAction(name, "raid", market, 1, true);
+    }
+
+    @Override
+    public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
+        String name = StrategicAI.getString("playerBombardment", true);
+        reportPlayerHostileAction(name, "bombardment", market, 1.5f, true);
+    }
+
+    @Override
+    public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
+        String name = StrategicAI.getString("playerRaid", true);
+        reportPlayerHostileAction(name, "bombardment", market, 3f, true);
+    }
+
+    @Override
+    public void reportInvasionFinished(CampaignFleetAPI fleet, FactionAPI attackerFaction, MarketAPI market, float numRounds, boolean success) {
+        String name = StrategicAI.getString("playerInvasion", true);
+        reportPlayerHostileAction(name, "invasion", market, 3f, success);
+    }
+
+    @Override
+    public void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, Nex_MarketCMD.TempDataInvasion actionData, CargoAPI cargo) {}
+
+    @Override
+    public void reportInvasionRound(InvasionRound.InvasionRoundResult result, CampaignFleetAPI fleet, MarketAPI defender, float atkStr, float defStr) {}
+
+    @Override
+    public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved,
+                                       boolean isCapture, List<String> factionsToNotify, float repChangeStrength) {}
+
     public static class RaidRecord {
         public static final float MAX_AGE = 240;
         public static final float IMPACT_MULT_AT_MAX_AGE = 0.5f;
 
-        public transient RaidIntel intelTransient;
-        public Class intelClass;
+        @Nullable public transient RaidIntel intelTransient;
+        @Nullable public Class intelClass;
         public String name;
         public FactionAPI attacker;
         public FactionAPI defender;
@@ -130,10 +198,10 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener 
 
         public float age;
 
-        public RaidRecord(RaidIntel intel, String name, String type, FactionAPI attacker, @Nullable FactionAPI defender,
+        public RaidRecord(@Nullable RaidIntel intel, String name, String type, FactionAPI attacker, @Nullable FactionAPI defender,
                           @Nullable MarketAPI target, @Nullable MarketAPI origin, boolean success, float impact) {
             this.intelTransient = intel;
-            intelClass = intel.getClass();
+            if (intel != null) intelClass = intel.getClass();
             this.name = name;
             this.type = type;
             this.attacker = attacker;

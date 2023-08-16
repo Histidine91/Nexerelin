@@ -2511,6 +2511,7 @@
 		"statFactionPower":"faction power",
 		"statCompetingShare":"competitor's market share",
 		"statExistingMarketShare":"existing market share",
+		"statRecentAttacks":"recent attacks",
 		"statRage":"current pirate rage",
 		"statRaidAnger":"rage at recent attacks",
 		"statQualityDeficit":"Distance to target quality",
@@ -2548,6 +2549,10 @@
 		"concernDesc_predatoryHigherRepLevel":"This concern is applying at a higher reputation level than normal due to the Predatory trait.",
 		"concernDesc_retaliation_success":"We must respond in kind at once, to show $theFaction that we are not defenseless.",
 		"concernDesc_retaliation_fail":"Although their attempt failed, we must swiftly punish them for their insolence.",
+		
+		"playerRaid":"player raid",
+		"playerBombardment":"player bombardment",
+		"playerInvasion":"player invasion",
 		
 		"btnGoIntel":"Go to intel",
 		"btnGoIntelShort":"goto",
