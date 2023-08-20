@@ -1,7 +1,10 @@
 package exerelin.campaign.intel.hostileactivity
 
+import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel
 import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityManager
+import com.fs.starfarer.api.impl.campaign.intel.events.LuddicPathHostileActivityFactor
+import com.fs.starfarer.api.impl.campaign.intel.events.PirateHostileActivityFactor
 import exerelin.utilities.NexUtilsFaction
 import exerelin.utilities.StringHelper
 
@@ -16,10 +19,15 @@ class NexHostileActivityManager : HostileActivityManager() {
         if (tracker.intervalElapsed()) {
             val playerHasColonies = !NexUtilsFaction.getPlayerMarkets(INCLUDE_AUTONOMOUS, false).isEmpty()
             if (HostileActivityEventIntel.get() == null && playerHasColonies) {
-                val ha = HostileActivityEventIntel()
-                addDefenseFleetFactorsIfNeeded(ha)
+                HostileActivityEventIntel()
             } else if (HostileActivityEventIntel.get() != null && !playerHasColonies) {
                 HostileActivityEventIntel.get().endImmediately()
+            }
+
+            val ha = HostileActivityEventIntel.get()
+            if (ha != null) {
+                addDefenseFleetFactorsIfNeeded(ha)
+                addCommissionFactorsIfNeeded(ha)
             }
         }
     }
@@ -50,6 +58,24 @@ class NexHostileActivityManager : HostileActivityManager() {
             ha.addActivity(defFactor, DefenseFleetActivityCause(ha))
             ha.addActivity(defFactor, SpecialTaskGroupActivityCause(ha))
             ha.addActivity(defFactor, MercPackageActivityCause(ha))
+        }
+
+        @JvmStatic
+        fun addCommissionFactorsIfNeeded(ha: HostileActivityEventIntel?) {
+            if (ha == null) return
+            //val alreadyHas = hasFactorOfClass(ha, DefenseFleetsFactor::class.java)
+
+            val pirateFactor = ha.getActivityOfClass(PirateHostileActivityFactor::class.java)
+            val wantAddPC = pirateFactor != null && pirateFactor?.getCauseOfClass(OutlawCommissionActivityCause::class.java) == null
+            if (wantAddPC) {
+                pirateFactor.addCause(OutlawCommissionActivityCause(ha, Factions.PIRATES, "pirate"))
+            }
+
+            val patherFactor = ha.getActivityOfClass(LuddicPathHostileActivityFactor::class.java)
+            val wantAddLPC = patherFactor != null && patherFactor?.getCauseOfClass(OutlawCommissionActivityCause::class.java) == null
+            if (wantAddLPC) {
+                patherFactor.addCause(OutlawCommissionActivityCause(ha, Factions.LUDDIC_PATH, "lp"))
+            }
         }
 
         @JvmStatic

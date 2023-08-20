@@ -1639,6 +1639,15 @@
 		"cellDisruptName":"Cell infiltrated",
 		"cellDisruptDesc":"Your operative has infiltrated and destroyed a Luddic Path cell on one of your colonies.",
 		
+		"pirateCommissionName":"Pirate commission",
+		"pirateCommissionDesc":"Being an 'official' pirate gives you some protection from predation by fellow pirates, although honor among theives only goes so far. Effect increases with relationship level.",
+		"lpCommissionName":"Pather commission",
+		"lpCommissionDesc":"A fellow walker of the Path has a certain leeway in using the Adversary's tools against it, although other cells may not see it that way. Effect increases with relationship level.",
+		"pirateFriendlyName":"Pirate relations",
+		"pirateFriendlyDesc":"You've established some positive ties in the pirate community, making them less likely to prey on your faction. Effect increases with relationship level.",
+		"lpFriendlyName":"Pather relations",
+		"lpFriendlyDesc":"Your relations with the way of the Path have made some (but not all) of the cells more likely to overlook your transgressions. Effect increases with relationship level.",		
+		
 		"defensiveFleetName":"Defensive fleets",
 		"defensiveFleetDesc":"Fleets of various types can keep the spaceways safe from marauding Pathers and pirates.",
 		"defenseFleetName":"Defense fleets",

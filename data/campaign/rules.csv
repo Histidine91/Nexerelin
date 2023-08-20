@@ -4511,7 +4511,7 @@ FireAll Nex_MercPatrolPackageCheckCredits","""So, you got a pest problem you nee
 
 ""Our patrol package costs $nex_HAmercPackage_monthlyCreditsStr credits per month, with a one-month retainer fee in addition, and runs for $nex_HAmercPackage_days days. The contract can be terminated prematurely at any time by the employer, or by AIM in the event of a missed payment.""
 
-Hostile activity will be reduced by $nex_HAmercPackage_progressPercent of its current value at the end of each month. A new package cannot be purchased for 270 days after the signing of the current contract.
+Hostile activity will be reduced by approximately $nex_HAmercPackage_progressPercent of its current value each month. A new package cannot be purchased for 270 days after the signing of the current contract.
 
 You have $player.creditsStr credits available.","nex_mercPatrolPackageConfirm:Confirm contract
 nex_mercPatrolPackageCancel:Go back",
