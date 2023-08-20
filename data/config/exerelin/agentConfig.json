@@ -19,19 +19,24 @@
 	"actions":{
 		"travel":{
 			"name":"Travel",
+			"className":"exerelin.campaign.intel.agents.Travel",
 			"costScaling":false,
 			"useAlertLevel":false,
 			"listInIntel":false,
+			"sortOrder":1,
 		},
 		"injury":{
 			"name":"Injury Recovery",
+			"className":"exerelin.campaign.intel.agents.Injury",
 			"time":40,
 			"costScaling":false,
 			"useAlertLevel":false,
 			"listInIntel":false,
+			"sortOrder":2,
 		},
 		"raiseRelations":{
 			"name":"Raise Relations",
+			"className":"exerelin.campaign.intel.agents.RaiseRelations",
 			"time":90,
 			"successChance":0.6,
 			"detectionChance":0,	# it logically won't work if you get found out
@@ -47,9 +52,11 @@
 			"injuryChanceMult":0,
 			"xp":500,
 			"specializations":["negotiator", "hybrid"],
+			"sortOrder":3,
 		},
 		"lowerRelations":{
 			"name":"Lower Relations",
+			"className":"exerelin.campaign.intel.agents.LowerRelations",
 			"time":90,
 			"successChance":0.65,
 			"detectionChance":0,
@@ -65,10 +72,12 @@
 			"injuryChanceMult":0,
 			"xp":500,
 			"specializations":["negotiator", "hybrid"],
+			"sortOrder":4,
 		},
 		"destabilizeMarket":{
 			"name":"Destabilize Market",
 			"nameForSub":"Destabilize %s",
+			"className":"exerelin.campaign.intel.agents.DestabilizeMarket",
 			"time":20,
 			"successChance":0.65,
 			"detectionChance":0.3,
@@ -81,10 +90,12 @@
 			"baseCost":20000,
 			"xp":750,
 			"specializations":["saboteur", "hybrid"],
+			"sortOrder":5,
 		},
 		"sabotageIndustry":{
 			"name":"Sabotage Industry",
 			"nameForSub":"Sabotage %s",
+			"className":"exerelin.campaign.intel.agents.SabotageIndustry",
 			"time":45,
 			"successChance":0.5,
 			"detectionChance":0.5,
@@ -98,10 +109,12 @@
 			"injuryChanceMult":2,
 			"xp":1500,
 			"specializations":["saboteur"],
+			"sortOrder":6,
 		},
 		"destroyCommodities":{
 			"name":"Destroy Commodity Stocks",
 			"nameForSub":"Destroy %s Stocks",
+			"className":"exerelin.campaign.intel.agents.DestroyCommodityStocks",
 			"time":25,
 			"successChance":0.65,
 			"detectionChance":0.25,
@@ -115,6 +128,7 @@
 			"costScaling":false,
 			"xp":1000,
 			"specializations":["saboteur", "hybrid"],
+			"sortOrder":7,
 		},
 		#"stealBlueprints":{
 		#	"name":"Steal Blueprints",
@@ -133,6 +147,7 @@
 		"infiltrateCell":{
 			"time":30,
 			"name":"Infiltrate Luddic Cell",
+			"className":"exerelin.campaign.intel.agents.InfiltrateCell",
 			"successChance":0.75,
 			"useAlertLevel":false,
 			"repLossOnDetectionMin":0.2,
@@ -141,10 +156,12 @@
 			"baseCost":20000,
 			"injuryChanceMult":1.5,
 			"xp":600,
+			"sortOrder":8,
 		},
 		"instigateRebellion":{
 			"time":75,
 			"name":"Instigate Rebellion",
+			"className":"exerelin.campaign.intel.agents.InstigateRebellion",
 			"successChance":0.5,
 			"detectionChance":0.3,
 			"detectionChanceFail":0.6,
@@ -155,10 +172,12 @@
 			"injuryChanceMult":1.5,
 			"xp":2000,
 			"specializations":["negotiator"],
+			"sortOrder":9,
 		},
 		"procureShip":{
 			"time":40,
 			"name":"Procure Ship",
+			"className":"exerelin.campaign.intel.agents.ProcureShip",
 			"successChance":0.75,
 			"detectionChance":0.4,
 			"detectionChanceFail":0.5,
@@ -170,16 +189,20 @@
 			"injuryChanceMult":0,
 			"xp":750,	# multiplied in code
 			#"specializations":[],	# handled in code
+			"sortOrder":10,
 		},
 		"findPirateBase":{
 			"name":"Find Pirate Base",
+			"className":"exerelin.campaign.intel.agents.FindPirateBase",
 			"time":2,
 			"costScaling":false,
 			"useAlertLevel":false,
+			"sortOrder":11,
 		},
 		"recruitAgent":{
 			"time":120,
 			"name":"Recruit Operative",
+			"className":"exerelin.campaign.intel.agents.RecruitAgent",
 			"successChance":1,
 			"useAlertLevel":false,
 			"alertLevelIncrease":0,
@@ -187,6 +210,7 @@
 			#"baseCost":20000,	# handled in code
 			"injuryChanceMult":0,
 			"xp":1000,
+			"sortOrder":12,
 		},
 	},
 }

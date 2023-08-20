@@ -2,33 +2,33 @@ package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
-import exerelin.campaign.CovertOpsManager;
+import exerelin.campaign.*;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
+import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static exerelin.campaign.intel.agents.RaiseRelations.applyMemoryCooldown;
 
+@NoArgsConstructor
 public class LowerRelations extends CovertActionIntel {
 	
 	/*
@@ -266,6 +266,95 @@ public class LowerRelations extends CovertActionIntel {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(thirdFaction.getId());
 		return tags;
+	}
+
+	@Override
+	public Set<FactionAPI> dialogGetFactions(AgentOrdersDialog dialog) {
+		Set<FactionAPI> factionsSet = new HashSet<>();
+		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
+			if (!conf.allowAgentActions) continue;
+			factionsSet.add(Global.getSector().getFaction(factionId));
+		}
+		// don't allow lowering relationship with self or commissioning faction
+		// nor the target faction
+		factionsSet.remove(PlayerFactionStore.getPlayerFaction());
+		factionsSet.remove(Global.getSector().getPlayerFaction());
+		factionsSet.remove(market.getFaction());
+		return factionsSet;
+	}
+
+	@Override
+	public void dialogPrintActionInfo(AgentOrdersDialog dialog) {
+		if (thirdFaction == null) return;
+
+		TextPanelAPI text = dialog.getText();
+		String other = thirdFaction.getId();
+		String factionName = Nex_FactionDirectoryHelper.getFactionDisplayName(targetFaction);
+		Color factionColor = targetFaction.getBaseUIColor();
+
+		text.addPara(getString("dialogInfoHeaderLowerRelations"), factionColor, factionName, thirdFaction.getDisplayName());
+		dialog.addEffectPara(0, 100);
+
+		// print max relationship if applicable
+		if (other.equals(Factions.PLAYER))
+			other = PlayerFactionStore.getPlayerFactionId();
+		if (!DiplomacyManager.haveRandomRelationships(targetFaction.getId(), other))
+		{
+			float max = NexFactionConfig.getMinRelationship(targetFaction.getId(),	other);
+			if (max < 1) {
+				String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
+				str = StringHelper.substituteToken(str, "$faction1",
+						NexUtilsFaction.getFactionShortName(targetFaction));
+				str = StringHelper.substituteToken(str, "$faction2",
+						NexUtilsFaction.getFactionShortName(thirdFaction));
+				String maxStr = NexUtilsReputation.getRelationStr(max);
+				str = StringHelper.substituteToken(str, "$relationship", maxStr);
+				text.addPara(str, NexUtilsReputation.getRelColor(max), maxStr);
+			}
+		}
+		// print current relationship
+		text.addPara(StringHelper.getString("exerelin_factions", "relationshipCurr"),
+				targetFaction.getRelColor(thirdFaction.getId()),
+				NexUtilsReputation.getRelationStr(targetFaction, thirdFaction));
+
+		super.dialogPrintActionInfo(dialog);
+
+		float cooldown = RaiseRelations.getModifyRelationsCooldown(targetFaction);
+		if (cooldown > 0) {
+			text.addPara(getString("dialogInfoModifyingRelationsCooldown"));
+		}
+	}
+
+	@Override
+	protected void dialogPopulateMainMenuOptions(AgentOrdersDialog dialog) {
+		String str = getString("dialogOption_faction");
+		str = StringHelper.substituteToken(str, "$faction", thirdFaction != null ?
+				thirdFaction.getDisplayName() : StringHelper.getString("none"));
+		dialog.getOptions().addOption(str, AgentOrdersDialog.Menu.FACTION);
+		if (dialog.getFactions().isEmpty()) {
+			dialog.getOptions().setEnabled(AgentOrdersDialog.Menu.FACTION, false);
+		}
+	}
+
+	@Override
+	protected void dialogPaginatedMenuShown(AgentOrdersDialog dialog, AgentOrdersDialog.Menu menu) {
+		if (menu != AgentOrdersDialog.Menu.ACTION_TYPE) return;
+		OptionPanelAPI opts = dialog.getDialog().getOptionPanel();
+		CovertOpsManager.CovertActionDef def = this.getDef();
+		if (!opts.hasOption(def)) return;
+
+		if (!RaiseRelations.canModifyRelations(targetFaction, agent)) {
+			opts.setEnabled(def, false);
+			String tooltip = getString("dialogTooltipAlreadyModifyingRelations");
+			opts.setTooltip(def, tooltip);
+		}
+	}
+
+	@Override
+	public void dialogInitAction(AgentOrdersDialog dialog) {
+		super.dialogInitAction(dialog);
+		dialog.getFactions();
 	}
 
 	@Override

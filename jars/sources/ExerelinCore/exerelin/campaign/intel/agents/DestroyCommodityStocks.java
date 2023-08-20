@@ -9,15 +9,18 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.utilities.StringHelper;
+import lombok.NoArgsConstructor;
 import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 
+@NoArgsConstructor
 public class DestroyCommodityStocks extends CovertActionIntel {
 	
 	protected String commodityId;
@@ -113,13 +116,83 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 				getCommodityName(), Math.round(daysRemaining) + "");
 	}
 	
-	
 	@Override
 	protected List<Pair<String, String>> getStandardReplacements() {
 		List<Pair<String, String>> sub = super.getStandardReplacements();
 		sub.add(new Pair<>("$commodity", getCommodityName()));
 		
 		return sub;
+	}
+
+	@Override
+	public List<Object> dialogGetTargets(AgentOrdersDialog dialog) {
+		List<Object> targets = new ArrayList<>();
+		for (CommodityOnMarketAPI commodity : market.getCommoditiesCopy()) {
+			if (commodity.isNonEcon() || commodity.isIllegal()) continue;
+			if (commodity.isPersonnel()) continue;
+			if (commodity.getAvailable() < 2) continue;
+			targets.add(commodity.getId());
+		}
+		return targets;
+	}
+
+	@Override
+	public void dialogSetTarget(AgentOrdersDialog dialog, Object target) {
+		this.commodityId = (String)target;
+		dialog.printActionInfo();
+	}
+	
+	@Override
+	public void dialogAutopickTarget(AgentOrdersDialog dialog, List<Object> targets) {
+		if (targets == null) {
+			dialogSetTarget(dialog, null);
+			return;
+		}
+		dialogSetTarget(dialog, targets.get(0));
+	}
+
+	@Override
+	public void dialogPrintActionInfo(AgentOrdersDialog dialog) {
+		String commodity = getCommodityName();
+		String mktName = market.getName();
+		Color hl = Misc.getHighlightColor();
+
+		dialog.getText().addPara(getString("dialogInfoHeaderDestroyCommodities"), hl, commodity, mktName);
+		dialog.setHighlights(commodity, mktName, hl, targetFaction.getColor());
+		dialog.addEffectPara(0, 1);
+
+		super.dialogPrintActionInfo(dialog);
+	}
+
+	@Override
+	protected void dialogPopulateMainMenuOptions(AgentOrdersDialog dialog) {
+		String str = getString("dialogOption_target");
+		String target = commodityId != null? StringHelper.getCommodityName(commodityId) : StringHelper.getString("none");
+		str = StringHelper.substituteToken(str, "$target", target);
+		dialog.getOptions().addOption(str, AgentOrdersDialog.Menu.TARGET);
+		if (dialog.getTargets().isEmpty()) {
+			dialog.getOptions().setEnabled(AgentOrdersDialog.Menu.TARGET, false);
+		}
+	}
+
+	@Override
+	protected void dialogPopulateTargetOptions(final AgentOrdersDialog dialog) {
+		for (Object commod : dialog.getTargets()) {
+			String commodityId = (String)commod;
+			String name = StringHelper.getCommodityName(commodityId);
+			dialog.optionsList.add(new Pair<String, Object>(name, commodityId));
+		}
+	}
+
+	@Override
+	public void dialogInitAction(AgentOrdersDialog dialog) {
+		super.dialogInitAction(dialog);
+		dialog.getTargets();
+	}
+
+	@Override
+	public boolean dialogCanActionProceed(AgentOrdersDialog dialog) {
+		return commodityId != null;
 	}
 
 	@Override

@@ -12,11 +12,13 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
+import lombok.NoArgsConstructor;
 import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
 import java.util.Map;
 
+@NoArgsConstructor
 public class FindPirateBase extends CovertActionIntel {
 		
 	public FindPirateBase(AgentIntel agent, MarketAPI market, FactionAPI agentFaction, 
@@ -61,11 +63,6 @@ public class FindPirateBase extends CovertActionIntel {
 	public boolean showSuccessChance() {
 		return false;
 	}
-	
-	@Override
-	public String getDefId() {
-		return "findPirateBase";
-	}
 
 	@Override
 	protected void onSuccess() {
@@ -93,6 +90,24 @@ public class FindPirateBase extends CovertActionIntel {
 	@Override
 	public String getIcon() {
 		return Global.getSettings().getSpriteName("intel", "pirate_base");
+	}
+
+	@Override
+	public void dialogInitAction(AgentOrdersDialog dialog) {
+		super.dialogInitAction(dialog);
+		dialog.printActionInfo();
+	}
+
+	@Override
+	public boolean dialogCanShowAction(AgentOrdersDialog dialog) {
+		if (dialog.getAgentMarket() == null) return false;
+		PirateBaseIntel baseIntel = getRelevantPirateBase(dialog.getAgentMarket());
+		return baseIntel != null && !baseIntel.isEnding() && !baseIntel.isEnded() && !baseIntel.isPlayerVisible();
+	}
+
+	@Override
+	public String getDefId() {
+		return "findPirateBase";
 	}
 
 	public static PirateBaseIntel getRelevantPirateBase(MarketAPI market) {

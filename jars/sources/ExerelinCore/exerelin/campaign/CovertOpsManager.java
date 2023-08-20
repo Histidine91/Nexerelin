@@ -24,6 +24,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import org.jetbrains.annotations.NotNull;
 import org.magiclib.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ai.StrategicAI;
@@ -129,7 +130,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		baseInjuryChanceFailed = (float)configJson.optDouble("baseInjuryChanceDetected", 0);
 		
 		JSONObject actionsJson = configJson.getJSONObject("actions");
-		Iterator<String> keys = actionsJson.sortedKeys();
+		Iterator<String> keys = actionsJson.keys();
 		while (keys.hasNext()) {
 			String id = keys.next();
 			JSONObject defJson = actionsJson.getJSONObject(id);
@@ -138,6 +139,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			def.id = id;
 			def.name = defJson.getString("name");
 			def.nameForSub = defJson.optString("nameForSub", def.name);
+			def.className = defJson.getString("className");
 			def.successChance = (float)defJson.optDouble("successChance", 0);
 			def.detectionChance = (float)defJson.optDouble("detectionChance", 0);
 			def.detectionChanceFail = (float)defJson.optDouble("detectionChanceFail", 0);
@@ -154,6 +156,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			def.xp = defJson.optInt("xp");
 			def.alertLevelIncrease = (float)defJson.optDouble("alertLevelIncrease", 0);
 			def.listInIntel = defJson.optBoolean("listInIntel", true);
+			def.sortOrder = (float)defJson.optDouble("sortOrder", 1000);
 			if (defJson.has("specializations")) {
 				def.addSpecializations(NexUtils.JSONArrayToArrayList(defJson.getJSONArray("specializations")));
 			}			
@@ -161,6 +164,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			actionDefs.add(def);
 			actionDefsById.put(id, def);
 		}
+
+		Collections.sort(actionDefs);
 		
 		JSONObject indSuccess = configJson.getJSONObject("industrySuccessMods");
 		keys = indSuccess.sortedKeys();
@@ -1037,10 +1042,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         }
     }
 	
-	public static class CovertActionDef {
+	public static class CovertActionDef implements Comparable<CovertActionDef> {
 		public String id;
 		public String name;
 		public String nameForSub;
+		public String className;
 		public float successChance;
 		public float detectionChance;
 		public float detectionChanceFail;
@@ -1056,6 +1062,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		public Pair<Float, Float> repLossOnDetect;
 		public Set<Specialization> specializations = new HashSet<>();
 		public boolean listInIntel;
+		public float sortOrder;
 		
 		public void addSpecializations(Collection<String> specs) {
 			for (String spec : specs) {
@@ -1081,6 +1088,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		public boolean isCompatibleWithSpecialization(Specialization spec) {
 			if (specializations.isEmpty()) return true;
 			return specializations.contains(spec);
+		}
+
+		@Override
+		public int compareTo(@NotNull CovertOpsManager.CovertActionDef o) {
+			return Float.compare(this.sortOrder, o.sortOrder);
 		}
 	}
 	

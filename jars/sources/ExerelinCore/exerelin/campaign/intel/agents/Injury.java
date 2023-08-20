@@ -5,11 +5,13 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
-import exerelin.utilities.NexUtilsMarket;
-import java.awt.Color;
-import java.util.Map;
+import lombok.NoArgsConstructor;
 import org.lazywizard.lazylib.MathUtils;
 
+import java.awt.*;
+import java.util.Map;
+
+@NoArgsConstructor
 public class Injury extends CovertActionIntel {
 		
 	public Injury(AgentIntel agent, FactionAPI agentFaction, 
@@ -80,6 +82,11 @@ public class Injury extends CovertActionIntel {
 	@Override
 	public boolean allowOwnMarket() {
 		return true;
+	}
+
+	@Override
+	public boolean dialogCanShowAction(AgentOrdersDialog dialog) {
+		return false;
 	}
 	
 	@Override

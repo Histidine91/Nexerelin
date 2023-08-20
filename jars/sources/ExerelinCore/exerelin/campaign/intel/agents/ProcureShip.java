@@ -30,6 +30,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.*;
+import lombok.NoArgsConstructor;
 import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
@@ -41,6 +42,7 @@ import static com.fs.starfarer.api.util.Misc.random;
 /**
  * Obtains semi-illegally a ship from the target faction and sends it to a specified location.
  */
+@NoArgsConstructor
 public class ProcureShip extends CovertActionIntel {
 	
 	public static final float FAILURE_REFUND_MULT = 0.75f;
@@ -472,12 +474,22 @@ public class ProcureShip extends CovertActionIntel {
 		
 		return sub;
 	}
-	
+
 	@Override
-	public String getDefId() {
-		return "procureShip";
+	public List<Object> dialogGetTargets(AgentOrdersDialog dialog) {
+		List<Object> targets = new ArrayList<>();
+		targets.addAll(getEligibleTargets(market, this));
+		Collections.sort(targets, PROCURE_SHIP_COMPARATOR);
+		return targets;
 	}
-	
+
+	@Override
+	public void dialogPrintActionInfo(AgentOrdersDialog dialog) {
+		String shipName = ship.getHullSpec().getNameWithDesignationWithDashClass();
+		dialog.getText().addPara(getString("dialogInfoHeaderProcureShip"), Misc.getHighlightColor(), shipName);
+		super.dialogPrintActionInfo(dialog);
+	}
+
 	@Override
 	public String getIcon() {
 		return ship.getHullSpec().getSpriteName();
@@ -505,8 +517,48 @@ public class ProcureShip extends CovertActionIntel {
 		
 		return null;
 	}
-	
-	public static List<FleetMemberAPI> getEligibleTargets(MarketAPI market, ProcureShip action) 
+
+	@Override
+	public void dialogSetTarget(AgentOrdersDialog dialog, Object target) {
+		ship = (FleetMemberAPI)target;
+		dialog.printActionInfo();
+	}
+
+	@Override
+	protected void dialogPopulateMainMenuOptions(AgentOrdersDialog dialog) {
+		String str = getString("dialogOption_target");
+		String target = ship != null? ship.getHullSpec().getNameWithDesignationWithDashClass() : StringHelper.getString("none");
+		str = StringHelper.substituteToken(str, "$target", target);
+		dialog.getOptions().addOption(str, AgentOrdersDialog.Menu.TARGET);
+	}
+
+	@Override
+	protected void dialogPopulateTargetOptions(final AgentOrdersDialog dialog) {
+		dialog.addBackOption();	// fallback in case player closes menu by pressing Escape
+		List<FleetMemberAPI> ships = new ArrayList<>();
+		for (Object obj : dialog.getTargets()) {
+			ships.add((FleetMemberAPI)obj);
+		}
+
+		dialog.getDialog().showFleetMemberPickerDialog(getString("dialogShipPickerHeader"),
+				StringHelper.getString("confirm", true),
+				StringHelper.getString("cancel", true),
+				5, 9, 96, // 3, 7, 58 or so
+				true, false, ships,
+				new FleetMemberPickerListener() {
+					public void pickedFleetMembers(List<FleetMemberAPI> members) {
+						if (members != null && !members.isEmpty()) {
+							dialogSetTarget(dialog, members.get(0));
+						}
+						dialog.optionSelected(null, AgentOrdersDialog.Menu.MAIN_MENU);
+					}
+					public void cancelledFleetMemberPicking() {
+						dialog.optionSelected(null, AgentOrdersDialog.Menu.MAIN_MENU);
+					}
+				});
+	}
+
+	public static List<FleetMemberAPI> getEligibleTargets(MarketAPI market, ProcureShip action)
 	{
 		List<FleetMemberAPI> targets = new ArrayList<>();
 		Set<String> hullsToCheck = new HashSet<>();
@@ -553,4 +605,51 @@ public class ProcureShip extends CovertActionIntel {
 		
 		return targets;
 	}
+
+	@Override
+	public void dialogInitAction(AgentOrdersDialog dialog) {
+		super.dialogInitAction(dialog);
+		destination = pickDestination();
+
+		TextPanelAPI text = dialog.getText();
+		text.setFontSmallInsignia();
+		text.addPara(getString("dialogProcureShipIntro"));
+		text.addPara(getString("dialogProcureShipIntro2"));
+		text.addPara(getString("dialogProcureShipIntro3"), Misc.getHighlightColor(),
+				(int)(ProcureShip.FAILURE_REFUND_MULT * 100) + "%");
+		if (!agent.canStealShip()) {
+			text.addPara(getString("dialogProcureShipIntroSpecialization"), Misc.getHighlightColor(),
+					AgentIntel.Specialization.NEGOTIATOR.getName());
+		}
+		text.setFontInsignia();
+
+		dialog.getTargets();
+	}
+
+	@Override
+	public boolean dialogCanActionProceed(AgentOrdersDialog dialog) {
+		return ship != null;
+	}
+
+	@Override
+	public String getDefId() {
+		return "procureShip";
+	}
+
+	public static final Comparator PROCURE_SHIP_COMPARATOR = new Comparator<Object>() {
+		@Override
+		public int compare(Object obj1, Object obj2) {
+			FleetMemberAPI fm1 = (FleetMemberAPI)obj1;
+			FleetMemberAPI fm2 = (FleetMemberAPI)obj2;
+
+			int compare = fm1.getHullSpec().getHullSize().compareTo(fm2.getHullSpec().getHullSize());
+			if (compare != 0) return -compare;
+
+			compare = Float.compare(fm1.getBaseDeploymentCostSupplies(), fm2.getBaseDeploymentCostSupplies());
+			if (compare != 0) return -compare;
+
+			compare = fm1.getHullSpec().getHullName().compareTo(fm2.getHullSpec().getHullName());
+			return compare;
+		}
+	};
 }

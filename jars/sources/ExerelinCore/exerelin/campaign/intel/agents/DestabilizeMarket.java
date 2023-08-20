@@ -8,12 +8,14 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.utilities.StringHelper;
+import lombok.NoArgsConstructor;
 import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
+@NoArgsConstructor
 public class DestabilizeMarket extends CovertActionIntel {
 	
 	public static final int NUM_LINES = 8;	// must not exceed what is inside strings.json
@@ -97,6 +99,25 @@ public class DestabilizeMarket extends CovertActionIntel {
 		sub.add(new Pair<>("$actionLine", actionName));
 		
 		return sub;
+	}
+
+	@Override
+	public void dialogPrintActionInfo(AgentOrdersDialog dialog) {
+		dialog.getText().addPara(getString("dialogInfoHeaderDestabilizeMarket"), targetFaction.getColor(), market.getName());
+		dialog.addEffectPara(0, 1);
+		super.dialogPrintActionInfo(dialog);
+	}
+
+	@Override
+	public void dialogInitAction(AgentOrdersDialog dialog) {
+		super.dialogInitAction(dialog);
+		actionTextNum = MathUtils.getRandomNumberInRange(1, NUM_LINES);
+		dialog.printActionInfo();
+	}
+
+	@Override
+	public boolean dialogCanActionProceed(AgentOrdersDialog dialog) {
+		return true;
 	}
 
 	@Override

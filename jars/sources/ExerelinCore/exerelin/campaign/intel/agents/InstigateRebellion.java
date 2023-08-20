@@ -3,17 +3,22 @@ package exerelin.campaign.intel.agents;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import lombok.NoArgsConstructor;
+
+import java.awt.*;
 import java.util.Map;
 
+@NoArgsConstructor
 public class InstigateRebellion extends CovertActionIntel {
 	
 	public static final int MAX_STABILITY = 6;
@@ -96,6 +101,44 @@ public class InstigateRebellion extends CovertActionIntel {
 	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
 		String action = getActionString("intelStatus_instigateRebellion", true);
 		info.addPara(action, pad, color, Misc.getHighlightColor(), Math.round(daysRemaining) + "");
+	}
+
+	@Override
+	public void dialogPrintActionInfo(AgentOrdersDialog dialog) {
+		TextPanelAPI text = dialog.getText();
+		Color hl = Misc.getHighlightColor(), neg = Misc.getNegativeHighlightColor();
+
+		text.addPara(getString("dialogInfoHeaderInstigateRebellion"), targetFaction.getColor(), market.getName());
+
+		int stability = (int)market.getStabilityValue(), required = InstigateRebellion.MAX_STABILITY;
+
+		String stabilityStr = getString("dialogInfoRebellionStability");
+		LabelAPI label = text.addPara(stabilityStr, hl, stability + "", required + "");
+		label.setHighlight(stability + "", required + "");
+		label.setHighlightColors(stability > required ? neg : hl, hl);
+
+		String effectStr = getString("dialogInfoEffectRebellion");
+		float strMult = getEffectMultForLevel();
+		text.addPara(effectStr, strMult < 1 ? neg : hl, String.format("%.2f", strMult));
+
+		super.dialogPrintActionInfo(dialog);
+	}
+
+	@Override
+	public void dialogInitAction(AgentOrdersDialog dialog) {
+		super.dialogInitAction(dialog);
+		dialog.printActionInfo();
+	}
+
+	@Override
+	public boolean dialogCanShowAction(AgentOrdersDialog dialog) {
+		return dialog.canConductLocalActions() && RebellionCreator.ENABLE_REBELLIONS && NexUtilsMarket.canBeInvaded(dialog.getAgentMarket(), true);
+	}
+
+	// TODO: tooltip?
+	@Override
+	public boolean dialogCanActionProceed(AgentOrdersDialog dialog) {
+		return market.getStabilityValue() <= InstigateRebellion.MAX_STABILITY;
 	}
 
 	@Override

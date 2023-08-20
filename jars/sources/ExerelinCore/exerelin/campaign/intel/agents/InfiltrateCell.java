@@ -24,11 +24,13 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
+import lombok.NoArgsConstructor;
 
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
+@NoArgsConstructor
 public class InfiltrateCell extends CovertActionIntel {
 
 	public static final float MAX_SLEEPER_TIME_REMAINING = 90f;
@@ -39,11 +41,6 @@ public class InfiltrateCell extends CovertActionIntel {
 			FactionAPI targetFaction, boolean playerInvolved, Map<String, Object> params) {
 		super(agentIntel, market, agentFaction, targetFaction, playerInvolved, params);
 		repResult = NO_EFFECT;
-	}
-	
-	@Override
-	public void init() {
-		super.init();
 	}
 
 	@Override
@@ -243,6 +240,23 @@ public class InfiltrateCell extends CovertActionIntel {
 	public void addCurrentActionBullet(TooltipMakerAPI info, Color color, float pad) {
 		String action = getActionString("intelStatus_infiltrateCell", true);
 		info.addPara(action, pad, color, Misc.getHighlightColor(), Math.round(daysRemaining) + "");
+	}
+
+	@Override
+	public void dialogInitAction(AgentOrdersDialog dialog) {
+		super.dialogInitAction(dialog);
+		dialog.printActionInfo();
+	}
+
+	@Override
+	public boolean dialogCanShowAction(AgentOrdersDialog dialog) {
+		MarketAPI market = dialog.getAgentMarket();
+		if (market == null) return false;
+		if (!market.hasCondition(Conditions.PATHER_CELLS)) return false;
+		MarketConditionAPI cond = market.getCondition(Conditions.PATHER_CELLS);
+		LuddicPathCells cellCond = (LuddicPathCells)(cond.getPlugin());
+		LuddicPathCellsIntel cellIntel = cellCond.getIntel();
+		return cellIntel.getSleeperTimeout() <= InfiltrateCell.MAX_SLEEPER_TIME_REMAINING;
 	}
 
 	@Override

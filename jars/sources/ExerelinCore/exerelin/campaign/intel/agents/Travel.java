@@ -2,19 +2,29 @@ package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
+import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.Map;
+import lombok.NoArgsConstructor;
 
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+@NoArgsConstructor
 public class Travel extends CovertActionIntel {
 	
 	public static final float DAYS_PER_LY = 0.5f;
@@ -40,7 +50,12 @@ public class Travel extends CovertActionIntel {
 	public void init() {
 		getTimeNeeded(true);
 	}
-	
+
+	/**
+	 * Gets the travel time to the current destination.
+	 * @param resetVars If true, reapplies the object variables {@code departTime}, {@code travelTime} and {@code arriveTime}.
+	 * @return
+	 */
 	public float getTimeNeeded(boolean resetVars) {
 		if (market == null) return 0;
 		
@@ -163,7 +178,7 @@ public class Travel extends CovertActionIntel {
 	
 	protected MutableStat getTravelTime(MarketAPI one, MarketAPI two) {
 		MutableStat stat = new MutableStat(0);
-		float time = 0;
+		float time;
 		String distStr = "??";
 		if (one == null || two == null)
 			time = 15;
@@ -245,11 +260,6 @@ public class Travel extends CovertActionIntel {
 	}
 	
 	@Override
-	public String getDefId() {
-		return "travel";
-	}
-	
-	@Override
 	public boolean showSuccessChance() {
 		return false;
 	}
@@ -275,5 +285,153 @@ public class Travel extends CovertActionIntel {
 	@Override
 	public String getIcon() {
 		return "graphics/icons/intel/stars.png";
+	}
+
+	@Override
+	public Set<FactionAPI> dialogGetFactions(AgentOrdersDialog dialog) {
+		Set<FactionAPI> factionsSet = new HashSet<>();
+		Set<FactionAPI> temp = new HashSet<>();
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			if (market.isHidden()) continue;
+			temp.add(market.getFaction());
+		}
+
+		for (FactionAPI faction : temp)	{
+			NexFactionConfig conf = NexConfig.getFactionConfig(faction.getId());
+			if (conf.allowAgentActions)
+				factionsSet.add(faction);
+		}
+
+		return factionsSet;
+	}
+
+	@Override
+	public List<Object> dialogGetTargets(AgentOrdersDialog dialog) {
+		List<Object> targets = new ArrayList<>();
+		Set<FactionAPI> validFactions = new HashSet<>(dialogGetFactions(dialog));
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+		{
+			if (market.isHidden()) continue;
+			if (market == agent.getMarket()) continue;
+			if (!validFactions.contains(market.getFaction())) continue;
+			targets.add(market);
+		}
+		return targets;
+	}
+
+	@Override
+	public void dialogSetTarget(AgentOrdersDialog dialog, Object target) {
+		market = (MarketAPI)target;
+		getTimeNeeded(true);
+		dialog.printActionInfo();
+	}
+
+	@Override
+	public void dialogAutopickTarget(AgentOrdersDialog dialog, List<Object> targets) {
+		if (targets == null) {
+			dialogSetTarget(dialog, null);
+			return;
+		}
+	}
+
+	@Override
+	public void dialogPrintActionInfo(AgentOrdersDialog dialog) {
+		if (market == null) return;
+
+		TextPanelAPI text = dialog.getText();
+		Color hl = Misc.getHighlightColor();
+		Color neg = Misc.getNegativeHighlightColor();
+
+		text.addPara(getString("dialogInfoHeaderTravel"), market.getFaction().getBaseUIColor(),
+				market.getName());
+		String days = String.format("%.0f", this.getTimeNeeded());
+		text.addPara(getString("dialogInfoTimeNeeded"), hl, days);
+			dialog.printStat(getDepartTime(), false);
+			dialog.printStat(getTravelTime(), false);
+			dialog.printStat(getArriveTime(), false);
+		if (getTimeMultForOverMaxAgents() > 1) {
+			text.addPara(getString("dialogInfoTimeNeededOverAgents"), neg, hl, CovertOpsManager.getManager().getAgents().size() + "",
+					CovertOpsManager.getManager().getMaxAgents().getModifiedInt() + "");
+		}
+
+		MutableStat cost = getCostStat();
+		int costInt = cost.getModifiedInt();
+		if (costInt > 0) {
+			String costDGS = Misc.getDGSCredits(costInt);
+			text.addPara(getString("dialogInfoCost"), hasEnoughCredits() ? hl :
+					Misc.getNegativeHighlightColor(), costDGS);
+			dialog.printStat(cost, true);
+		}
+	}
+
+	@Override
+	protected void dialogPopulateMainMenuOptions(AgentOrdersDialog dialog) {
+		String str = getString("dialogOption_target");
+		String target = market != null? market.getName() : StringHelper.getString("none");
+		str = StringHelper.substituteToken(str, "$target", target);
+		dialog.getOptions().addOption(str, AgentOrdersDialog.Menu.TARGET);
+	}
+
+	@Override
+	protected void dialogPopulateTargetOptions(final AgentOrdersDialog dialog) {
+		List<SectorEntityToken> dests = new ArrayList<>();
+		for (Object marketRaw : dialog.getTargets())
+		{
+			MarketAPI market = (MarketAPI)marketRaw;
+			dests.add(market.getPrimaryEntity());
+		}
+		List<IntelInfoPlugin.ArrowData> arrows = getDestinationArrows();
+
+		NexUtilsMarket.pickEntityDestination(dialog.getDialog(), dests,
+				StringHelper.getString("confirm", true), new NexUtilsMarket.CampaignEntityPickerWrapper(){
+					@Override
+					public void reportEntityPicked(SectorEntityToken token) {
+						dialogSetTarget(dialog, token.getMarket());
+						dialog.optionSelected(null, AgentOrdersDialog.Menu.MAIN_MENU);	// to refresh option text
+					}
+
+					@Override
+					public void reportEntityPickCancelled() {}
+
+					@Override
+					public void createInfoText(TooltipMakerAPI info, SectorEntityToken entity)
+					{
+						MarketAPI market = agent.getMarket();
+						Nex_FleetRequest.createInfoTextBasic(info, entity, market != null ? market.getPrimaryEntity() : null);
+					}
+				}, arrows);
+		dialog.optionSelected(null, AgentOrdersDialog.Menu.MAIN_MENU);
+	}
+
+	protected List<IntelInfoPlugin.ArrowData> getDestinationArrows() {
+		List<IntelInfoPlugin.ArrowData> arrows = new ArrayList<>();
+		for (AgentIntel intel : CovertOpsManager.getManager().getAgents()) {
+			arrows.addAll(intel.getArrowData(null));
+		}
+		return arrows;
+	}
+
+	@Override
+	public void dialogInitAction(AgentOrdersDialog dialog) {
+		super.dialogInitAction(dialog);
+		market = null;
+		from = agent.getMarket();
+		dialog.getTargets();
+		dialogPopulateTargetOptions(dialog);
+	}
+
+	@Override
+	public boolean dialogCanShowAction(AgentOrdersDialog dialog) {
+		return true;
+	}
+
+	@Override
+	public boolean dialogCanActionProceed(AgentOrdersDialog dialog) {
+		return market != null;
+	}
+
+	@Override
+	public String getDefId() {
+		return "travel";
 	}
 }

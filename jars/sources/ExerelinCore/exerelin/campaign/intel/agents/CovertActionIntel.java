@@ -1,10 +1,7 @@
 package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -28,7 +25,9 @@ import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
@@ -37,6 +36,11 @@ import java.util.*;
 
 import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 
+/**
+ * Base class for agent/operative actions.
+ * Each individual action (e.g. "raise relations with Hegemony" or "sabotage Spaceport") represents an instance of a child class.
+ */
+@NoArgsConstructor
 public abstract class CovertActionIntel extends BaseIntelPlugin implements StrategicActionDelegate, Cloneable {
 	
 	public static final String[] EVENT_ICONS = new String[]{
@@ -191,6 +195,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		return time;
 	}
 
+	/**
+	 * Gets the multiplier to action time that should be applied if player is over max agents.
+	 * @return
+	 */
 	public float getTimeMultForOverMaxAgents() {
 		int curr = CovertOpsManager.getManager().getAgents().size();
 		int max = CovertOpsManager.getManager().getMaxAgents().getModifiedInt();
@@ -633,10 +641,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 			endAfterDelay();
 		}
 	}
-	
+
 	public float getAlertLevelIncrease() {
 		return getDef().alertLevelIncrease;
 	}
+
+	// =================================================================================================================
+	// GUI methods
 	
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
@@ -940,6 +951,161 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		return EVENT_ICONS[significance];
 	}
 
+	/**
+	 * Does the player have enough credits to execute this action?
+	 */
+	public boolean hasEnoughCredits() {
+		if (getCost() <= 0) return true;
+		return Global.getSector().getPlayerFleet().getCargo().getCredits().get() >= getCost();
+	}
+
+	// =================================================================================================================
+	// Methods related to interaction dialog for issuing orders
+
+
+	/**
+	 * Called when instantiating the agent action by class name. The constructor is *not* called, so any relevant variables must be filled from dialog.
+	 * @param dialog
+	 */
+	public void dialogInitAction(AgentOrdersDialog dialog) {
+		// agent faction should not be commissioning faction if target is also commissioning faction
+		FactionAPI agentFaction = PlayerFactionStore.getPlayerFaction();
+		MarketAPI market = dialog.getAgentMarket();
+		FactionAPI mktFaction = market != null ? market.getFaction() : null;
+		if (agentFaction == mktFaction || mktFaction == Global.getSector().getPlayerFaction())
+			agentFaction = Global.getSector().getPlayerFaction();
+
+		this.agent = dialog.getAgent();
+		this.market = dialog.getAgentMarket();
+		this.agentFaction = agentFaction;
+		this.targetFaction = mktFaction;
+		this.playerInvolved = true;
+		this.params = new HashMap<>();
+
+		this.init();
+	}
+
+	public Set<FactionAPI> dialogGetFactions(AgentOrdersDialog dialog) {
+		return new HashSet<>();
+	}
+
+	/**
+	 * Gives the orders dialog a list of potential targets for this agent action.
+	 * The targets should be of a type relevant to this action (e.g. {@code MarketAPI}s as a {@code Travel} destination).
+	 */
+	public @Nullable List<Object> dialogGetTargets(AgentOrdersDialog dialog) {
+		return null;
+	}
+
+	/**
+	 * Pick a default target, if so desired (usually called on picking a new action type).
+	 */
+	public void dialogAutopickTarget(AgentOrdersDialog dialog, List<Object> targets) {}
+
+	/**
+	 * Called when a target is selected from the dialog. The type of {@code target} and what should be done with it depends on the implementation.
+	 * @param target
+	 */
+	public void dialogSetTarget(AgentOrdersDialog dialog, Object target) {};
+
+	public void dialogSetFaction(AgentOrdersDialog dialog, FactionAPI faction) {
+		thirdFaction = faction;
+		dialog.printActionInfo();
+	}
+
+	public void dialogPopulateOptions(AgentOrdersDialog dialog, AgentOrdersDialog.Menu menu) {
+		switch (menu) {
+			case MAIN_MENU:
+				dialogPopulateMainMenuOptions(dialog);
+				break;
+			case TARGET:
+				dialogPopulateTargetOptions(dialog);
+				break;
+		}
+	}
+
+	protected void dialogPopulateMainMenuOptions(AgentOrdersDialog dialog) {
+		// add whatever options here are needed to configure the action
+	}
+
+	protected void dialogPopulateTargetOptions(AgentOrdersDialog dialog) {
+		// list targets with whatever names are appropriate for the action
+	}
+
+	/**
+	 * Called at end of {@code AgentOrdersDialog.showPaginatedMenu}.
+	 * @param dialog
+	 * @param menu
+	 */
+	protected void dialogPaginatedMenuShown(AgentOrdersDialog dialog, AgentOrdersDialog.Menu menu) {}
+
+	/**
+	 * @param dialog
+	 * @param optionText
+	 * @param optionData
+	 * @return True to consume option selection event.
+	 */
+	public boolean dialogOptionSelected(AgentOrdersDialog dialog, String optionText, Object optionData) {
+		return false;
+	}
+
+	public void dialogPrintActionInfo(AgentOrdersDialog dialog) {
+		Color hl = Misc.getHighlightColor();
+		Color neg = Misc.getNegativeHighlightColor();
+		TextPanelAPI text = dialog.getText();
+
+		if (showSuccessChance()) {
+			MutableStat success = getSuccessChance();
+			float successF = success.getModifiedValue();
+			Color chanceCol = hl;
+			if (successF >= 70f)
+				chanceCol = Misc.getPositiveHighlightColor();
+			else if (successF <= 40f)
+				chanceCol = neg;
+
+			String successStr = String.format("%.0f", successF) + "%";
+			text.addPara(getString("dialogInfoSuccessChance"), chanceCol, successStr);
+			dialog.printStat(success, true);
+		}
+
+		// time and cost
+		String days = String.format("%.0f", getTimeNeeded());
+		text.addPara(getString("dialogInfoTimeNeeded"), hl, days);
+		if (getTimeMultForOverMaxAgents() > 1) {
+			text.addPara(getString("dialogInfoTimeNeededOverAgents"), neg, hl, CovertOpsManager.getManager().getAgents().size() + "",
+					CovertOpsManager.getManager().getMaxAgents().getModifiedInt() + "");
+		}
+
+		MutableStat cost = getCostStat();
+		int costInt = cost.getModifiedInt();
+		if (costInt > 0) {
+			String costDGS = Misc.getDGSCredits(costInt);
+			text.addPara(getString("dialogInfoCost"), hasEnoughCredits() ? hl :
+					Misc.getNegativeHighlightColor(), costDGS);
+			dialog.printStat(cost, true);
+		}
+	}
+
+	/**
+	 * Called by dialog to determine whether the action should be displayed in the menu to pick actions.
+	 * The action intel's data is NOT initialized before calling this, so do not assume any needed variables have been set!
+	 * @param dialog
+	 * @return
+	 */
+	public boolean dialogCanShowAction(AgentOrdersDialog dialog) {
+		return dialog.canConductLocalActions();
+	}
+
+	/**
+	 * Called by dialog to make sure the action has all the information it needs (e.g. a target is specified).
+	 * Other factors may block the dialog confirm option besides this (e.g. if chance is zero).
+	 * @param dialog
+	 * @return
+	 */
+	public boolean dialogCanActionProceed(AgentOrdersDialog dialog) {
+		return true;
+	}
+
 	@Override
 	public float getStrategicActionDaysRemaining() {
 		return daysRemaining;
@@ -970,8 +1136,19 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		
 		return self;
 	}
+
+	/**
+	 * @param dialog
+	 * @param def
+	 * @return
+	 */
+	public static CovertActionIntel instantiateActionForDialog(AgentOrdersDialog dialog, CovertOpsManager.CovertActionDef def)
+	{
+		CovertActionIntel intel = (CovertActionIntel)NexUtils.instantiateClassByName(def.className);
+		return intel;
+	}
 	
-	public static enum StoryPointUse {
+	public enum StoryPointUse {
 		NONE, SUCCESS, DETECTION, BOTH;
 		
 		public boolean preventDetection() {
