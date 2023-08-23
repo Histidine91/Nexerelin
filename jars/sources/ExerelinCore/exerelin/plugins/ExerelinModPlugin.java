@@ -64,6 +64,9 @@ import exerelin.world.*;
 import exerelin.world.scenarios.DerelictEmpireOfficerGeneratorPlugin;
 import exerelin.world.scenarios.ScenarioManager;
 import org.apache.log4j.Logger;
+import org.dark.shaders.light.LightData;
+import org.dark.shaders.util.ShaderLib;
+import org.dark.shaders.util.TextureData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -556,6 +559,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
 
         if (HAVE_LUNALIB) LunaConfigHelper.initLunaConfig();
+
+        if (Global.getSettings().getModManager().isModEnabled("shaderLib") && Global.getSettings().loadJSON("GRAPHICS_OPTIONS.ini").getBoolean("enableShaders")) {
+            ShaderLib.init();
+            TextureData.readTextureDataCSV("data/lights/nex_tex_data.csv");
+            LightData.readLightDataCSV("data/lights/nex_light_data.csv");
+        }
     }
     
     @Override

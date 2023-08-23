@@ -1,0 +1,11 @@
+id,type,frame,magnitude,map,path
+nex_silverlight,ship,,1.5,normal,graphics/exerelin/shaders/nex_silverlight_normal.png
+nex_silverlight,ship,,,material,graphics/exerelin/shaders/nex_silverlight_material.png
+nex_silverlight,ship,,,surface,graphics/exerelin/shaders/nex_silverlight_surface.png
+,,,,,
+nex_alicorn,turret,,1.5,normal,graphics/exerelin/shaders/nex_alicorn_placeholder_turret_normal.png
+nex_alicorn,hardpoint,,1.5,normal,graphics/exerelin/shaders/nex_alicorn_placeholder_hardpoint_normal.png
+nex_alicorn,turret,,,material,graphics/exerelin/shaders/nex_alicorn_placeholder_turret_material.png
+nex_alicorn,hardpoint,,,material,graphics/exerelin/shaders/nex_alicorn_placeholder_hardpoint_material.png
+nex_alicorn,turret,,,surface,graphics/exerelin/shaders/nex_alicorn_placeholder_turret_surface.png
+nex_alicorn,hardpoint,,,surface,graphics/exerelin/shaders/nex_alicorn_placeholder_hardpoint_surface.png

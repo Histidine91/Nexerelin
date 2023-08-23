@@ -95,6 +95,7 @@ These are all the external libraries and referenced mods required to locally bui
 - [Volkov Industrial Conglomerate](https://fractalsoftworks.com/forum/index.php?topic=19603.0)
 - [Crew Replacer](https://fractalsoftworks.com/forum/index.php?topic=24249.0)
 - [LunaLib](https://github.com/Lukas22041/LunaLib/)
+- [GraphicsLib](https://fractalsoftworks.com/forum/index.php?topic=10982)
 - [Project Lombok](https://projectlombok.org/)
 
 ## License ##
