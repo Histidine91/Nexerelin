@@ -5,21 +5,25 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
-import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.invasion.CounterInvasionIntel;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.apache.log4j.Logger;
 
 public class GBUtils {
 	
@@ -33,11 +37,32 @@ public class GBUtils {
 	 */
 	public static float[] estimateDefenderStrength(GroundBattleIntel intel, boolean useHealth) {
 		float[] counts = estimateDefenderCounts(intel, useHealth);
+		float strengthMult = estimateDefenderStrengthMult(intel);
+		log.info("Strength mult estimated at " + strengthMult);
 		return new float[] {
-			counts[0] * GroundUnitDef.getUnitDef(GroundUnitDef.MILITIA).strength,
-			counts[1] * GroundUnitDef.getUnitDef(GroundUnitDef.MARINE).strength,
-			counts[2] * GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).strength,
+			counts[0] * GroundUnitDef.getUnitDef(GroundUnitDef.MILITIA).strength * strengthMult,
+			counts[1] * GroundUnitDef.getUnitDef(GroundUnitDef.MARINE).strength * strengthMult,
+			counts[2] * GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).strength * strengthMult,
 		};
+	}
+
+	/**
+	 * Estimates the attack strength multiplier of defender units using a temporarily created unit.
+	 * @param intel
+	 * @return
+	 */
+	public static float estimateDefenderStrengthMult(GroundBattleIntel intel) {
+		GroundBattleSide defender = intel.getSide(false);
+		GroundUnit temp = defender.createUnit(GroundUnitDef.MARINE, defender.getFaction(), 100);
+		MutableStat str = temp.getAttackStat();
+		StatBonus strBonus = temp.getAttackStatBonus();
+		//log.info(NexUtils.mutableStatToString(str));
+		//log.info(NexUtils.statBonusToString(strBonus, str.getModifiedValue()));
+		float base = temp.getBaseStrength();
+		float fin = temp.getAttackStrength();
+
+		defender.getUnits().remove(temp);
+		return fin/base;
 	}
 	
 	/**
