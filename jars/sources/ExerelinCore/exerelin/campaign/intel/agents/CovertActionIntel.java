@@ -319,10 +319,12 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 			stat.modifyMult("agentLevel", levelMult, StringHelper.getString("nex_agents", "agentLevel", true));
 		
 		// buildings
-		for (Industry ind : market.getIndustries()) {
-			float mult = CovertOpsManager.getIndustryDetectionMult(ind);
-			if (mult != 1)
-				stat.modifyMult(ind.getId(), mult, ind.getNameForModifier());
+		if (market != null) {
+			for (Industry ind : market.getIndustries()) {
+				float mult = CovertOpsManager.getIndustryDetectionMult(ind);
+				if (mult != 1)
+					stat.modifyMult(ind.getId(), mult, ind.getNameForModifier());
+			}
 		}
 		
 		return stat;
@@ -482,7 +484,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 			agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
 			return;
 		}
-		if (!market.isInEconomy() && canAbort()) {
+		if (market != null && !market.isInEconomy() && canAbort()) {
 			abort();
 			if (agent != null) agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
 			return;
