@@ -12,6 +12,7 @@ import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
+import exerelin.utilities.StringHelper;
 
 public class MarketConditionPlugin extends BaseGroundBattlePlugin {
 	
@@ -25,6 +26,10 @@ public class MarketConditionPlugin extends BaseGroundBattlePlugin {
 	
 	protected ConditionDef getDef() {
 		return GBDataManager.getConditionDef(conditionId);
+	}
+
+	public MarketConditionAPI getCondition() {
+		return intel.getMarket().getCondition(conditionId);
 	}
 	
 	public boolean isApplicable() {
@@ -87,6 +92,7 @@ public class MarketConditionPlugin extends BaseGroundBattlePlugin {
 	public void processTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
 		ConditionDef def = getDef();
 		String str = def.desc;
+		str = StringHelper.substituteMarketTokens(str, intel.getMarket());
 		LabelAPI label = tooltip.addPara(str, 0);
 		if (def.highlights != null)
 			label.setHighlight(def.highlights.toArray(new String[0]));

@@ -1,9 +1,7 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.Industry;
-import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.econ.impl.GroundDefenses;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -12,9 +10,12 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBDataManager.IndustryDef;
-import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 import exerelin.campaign.intel.groundbattle.GroundBattleSide;
+import exerelin.utilities.NexUtilsMath;
+
 import java.util.List;
+
+import static exerelin.campaign.intel.groundbattle.GroundBattleIntel.getString;
 
 public class GroundDefensesPlugin extends IndustryForBattlePlugin {
 	
@@ -37,20 +38,7 @@ public class GroundDefensesPlugin extends IndustryForBattlePlugin {
 		
 		return contrib;
 	}
-	
-	/**
-	 * e.g. Bonus of 3 with mult of 2 becomes 1.5
-	 * @param bonus
-	 * @param mult
-	 * @return 
-	 */
-	protected float multiplyBonus(float bonus, float mult) {
-		bonus--;
-		bonus *= mult;
-		bonus++;
-		return bonus;
-	}
-	
+
 	/**
 	 * Should be identical to the method in BaseIndustry.
 	 * @param industry
@@ -101,16 +89,16 @@ public class GroundDefensesPlugin extends IndustryForBattlePlugin {
 		float dropMult = def.enemyDropCostMult, bombardMult = def.enemyBombardmentCostMult, attritionFactor = def.dropAttritionFactor;
 		if (otherSide.getData().containsKey("ability_ew_active")) {
 			float mult = EWAbilityPlugin.GROUND_DEF_EFFECT_MULT;
-			dropMult = multiplyBonus(dropMult, mult);
-			bombardMult = multiplyBonus(bombardMult, mult);
+			dropMult = NexUtilsMath.multiplyBonus(dropMult, mult);
+			bombardMult = NexUtilsMath.multiplyBonus(bombardMult, mult);
 			attritionFactor *= mult;
 		}
 		
 		float shortageMult = getShortageMult();
 		if (shortageMult < 1) {
 			attritionFactor *= shortageMult;
-			dropMult = multiplyBonus(dropMult, shortageMult);
-			bombardMult = multiplyBonus(bombardMult, shortageMult);
+			dropMult = NexUtilsMath.multiplyBonus(dropMult, shortageMult);
+			bombardMult = NexUtilsMath.multiplyBonus(bombardMult, shortageMult);
 		}	
 		
 		otherSide.getDropCostMod().modifyMult(indForBattle.getIndustry().getId(), dropMult, 

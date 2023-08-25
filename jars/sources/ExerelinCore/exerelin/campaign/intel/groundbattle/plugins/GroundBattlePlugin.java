@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
@@ -41,12 +42,26 @@ public interface GroundBattlePlugin extends Comparable<GroundBattlePlugin> {
 	public void reportUnitMoved(GroundUnit unit, IndustryForBattle previousLoc);
 	
 	/**
-	 * Note: Consider modifying the {@code StatBonus} for the relevant {@code GroundBattleSide}, instead.
-	 * @param unit
-	 * @param dmg The incoming damage value.
-	 * @return The new damage value.
+	 * Deprecated, use {@code modifyAttackStat} instead.
 	 */
+	@Deprecated
 	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg);
+
+	/**
+	 * Modifies the unit's "inherent" attack strength. Note: Consider modifying the {@code StatBonus} for the relevant {@code GroundBattleSide}, instead.
+	 * @param unit
+	 * @param attack The unit's attack stat.
+	 * @return The now-modified attack stat, returned if method chaining is desired.
+	 */
+	public MutableStat modifyAttackStat(GroundUnit unit, MutableStat attack);
+
+	/**
+	 * Modifies the unit's attack bonuses from external factors. Note: Consider modifying the {@code StatBonus} for the relevant {@code GroundBattleSide}, instead.
+	 * @param unit
+	 * @param attack The unit's attack bonus.
+	 * 	 * @return The now-modified attack bonus, returned if method chaining is desired.
+	 */
+	public StatBonus modifyAttackStatBonus(GroundUnit unit, StatBonus attack);
 	
 	/**
 	 * Note: Consider modifying the {@code StatBonus} for the relevant {@code GroundBattleSide}, instead.

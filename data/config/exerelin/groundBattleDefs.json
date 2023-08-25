@@ -133,6 +133,14 @@
 			"tags":[],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.FPEDefensePlugin",
 		},
+		
+		"IndEvo_mineFieldCondition":{
+			"desc":"Some mines are still present close to $market and will interfere with deployments and orbital fires.",
+			"highlights":["25%", "25%"],
+			"color":[224,96,48,255],
+			"tags":["preventBombardment", "preventCAS"],
+			"plugin":"exerelin.campaign.intel.groundbattle.plugins.IndEvoMinefieldPlugin",
+		},
 	},
 	
 	"abilities":{

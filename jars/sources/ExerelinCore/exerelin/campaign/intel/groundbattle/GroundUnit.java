@@ -718,7 +718,7 @@ public class GroundUnit {
 		}
 				
 		for (GroundBattlePlugin plugin : intel.getPlugins()) {
-			plugin.modifyDamageDealt(this, stat);
+			plugin.modifyAttackStat(this, stat);
 		}
 		
 		return stat;
@@ -764,14 +764,16 @@ public class GroundUnit {
 			}
 		}
 	}
-	
+
+	/**
+	 * Attack stat bonus from external factors, like the unit's backing fleet.
+	 */
 	public StatBonus getAttackStatBonus() {
 		StatBonus bonus = new StatBonus();
 		
 		// unit from a fleet: apply fleet planetary operations bonuses, if fleet is in range
 		// note: a side effect of the in-range requirement is that the Ground Operations skill stops applying if player is out of range
 		if (fleet != null && isFleetInRange()) {
-			
 			bonus = NexUtils.cloneStatBonus(fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD));
 		}
 		// attacker unit not from a fleet (usually a rebel?)
@@ -816,6 +818,10 @@ public class GroundUnit {
 		else {
 			// generic XP bonus for defender units (assumes 25% XP)
 			injectXPBonus(bonus, GBConstants.DEFENSE_STAT, true);
+		}
+
+		for (GroundBattlePlugin plugin : intel.getPlugins()) {
+			plugin.modifyAttackStatBonus(this, bonus);
 		}
 		
 		return bonus;

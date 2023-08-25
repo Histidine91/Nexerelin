@@ -1,6 +1,6 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
-import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.StatBonus;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
 
@@ -9,10 +9,10 @@ public class MagneticCrustPlugin extends MarketConditionPlugin {
 	public static float DMG_MULT = 0.85f;
 	
 	@Override
-	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
+	public StatBonus modifyAttackStatBonus(GroundUnit unit, StatBonus stat) {
 		if (unit.isAttacker())
-			dmg.modifyMult(conditionId, DMG_MULT, intel.getMarket().getCondition(conditionId).getName());
-		return dmg;
+			stat.modifyMult(conditionId, DMG_MULT, intel.getMarket().getCondition(conditionId).getName());
+		return stat;
 	}
 	
 	@Override

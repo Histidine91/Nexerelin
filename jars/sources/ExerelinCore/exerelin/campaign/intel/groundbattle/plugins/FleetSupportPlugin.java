@@ -184,14 +184,14 @@ public class FleetSupportPlugin extends BaseGroundBattlePlugin {
 	}
 	
 	@Override
-	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
+	public MutableStat modifyAttackStat(GroundUnit unit, MutableStat stat) {
 		boolean estimate = !intel.isResolving();
 		float bonus = getUnitAttackBonus(unit);
 		String key = "modifierGroundSupport" + (estimate ? "Estimate" : "");
 		if (bonus != 0)
-			dmg.modifyFlat("groundSupport", bonus, 
+			stat.modifyFlat("groundSupport", bonus,
 					StringHelper.getString("nex_invasion2", key));
-		return dmg;
+		return stat;
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.StatBonus;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 
@@ -16,13 +17,13 @@ public class FPEDefensePlugin extends MarketConditionPlugin {
 	}
 	
 	@Override
-	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
-		if (unit.isAttacker()) return dmg;
+	public StatBonus modifyAttackStatBonus(GroundUnit unit, StatBonus bonus) {
+		if (unit.isAttacker()) return bonus;
 		if (unit.getLocation() == null || unit.getLocation().heldByAttacker)
-			return dmg;
+			return bonus;
 		
-		dmg.modifyMult(conditionId, ATK_MULT, intel.getMarket().getCondition(conditionId).getName());
-		return dmg;
+		bonus.modifyMult(conditionId, ATK_MULT, intel.getMarket().getCondition(conditionId).getName());
+		return bonus;
 	}
 	
 	@Override

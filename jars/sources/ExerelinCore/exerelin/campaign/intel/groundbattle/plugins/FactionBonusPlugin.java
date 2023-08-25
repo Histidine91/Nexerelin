@@ -44,10 +44,10 @@ public class FactionBonusPlugin extends BaseGroundBattlePlugin {
 	}
 	
 	@Override
-	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
+	public MutableStat modifyAttackStat(GroundUnit unit, MutableStat stat) {
 		FactionBonusSubplugin sub = getSubpluginForFaction(unit.getFaction().getId());
-		if (sub == null) return dmg;
-		return sub.modifyDamageDealt(unit, dmg);
+		if (sub == null) return stat;
+		return sub.modifyDamageDealt(unit, stat);
 	}
 	
 	@Override

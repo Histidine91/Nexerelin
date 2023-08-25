@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
@@ -52,7 +53,17 @@ public abstract class BaseGroundBattlePlugin implements GroundBattlePlugin {
 	public MutableStat modifyDamageDealt(GroundUnit unit, MutableStat dmg) {
 		return dmg;
 	}
-	
+
+	@Override
+	public MutableStat modifyAttackStat(GroundUnit unit, MutableStat dmg) {
+		return dmg;
+	}
+
+	@Override
+	public StatBonus modifyAttackStatBonus(GroundUnit unit, StatBonus attack) {
+		return attack;
+	}
+
 	@Override
 	@Deprecated
 	public float modifyDamageReceived(GroundUnit unit, float dmg) {

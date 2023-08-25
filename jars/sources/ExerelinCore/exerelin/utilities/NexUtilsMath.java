@@ -48,4 +48,17 @@ public class NexUtilsMath {
 	public static float lerp(float x, float y, float alpha) {
 		return (1f - alpha) * x + alpha * y;
 	}
+
+	/**
+	 * e.g. Value of 1.5 with bonusMult of 2 becomes 2
+	 * @param valueWithBonus
+	 * @param bonusMult
+	 * @return
+	 */
+	public static float multiplyBonus(float valueWithBonus, float bonusMult) {
+		valueWithBonus--;
+		valueWithBonus *= bonusMult;
+		valueWithBonus++;
+		return valueWithBonus;
+	}
 }

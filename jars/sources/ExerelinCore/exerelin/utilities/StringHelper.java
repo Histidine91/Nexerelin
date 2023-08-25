@@ -3,17 +3,14 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
+
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StringHelper {
 	public static final String FLEET_ASSIGNMENT_CATEGORY = "exerelin_fleetAssignments";
@@ -192,6 +189,15 @@ public class StringHelper {
 		replacements.put("$The" + ucPrefix + "Faction", Misc.ucFirst(theName));
 		replacements.put("$" + prefix + "Faction", name);
 		replacements.put("$" + ucPrefix + "Faction", Misc.ucFirst(name));
+
+		return substituteTokens(str, replacements);
+	}
+
+	public static String substituteMarketTokens(String str, MarketAPI market)
+	{
+		Map<String, String> replacements = new LinkedHashMap<>();
+		replacements.put("$marketOnOrAt", market.getOnOrAt());
+		replacements.put("$market", market.getName());
 
 		return substituteTokens(str, replacements);
 	}
