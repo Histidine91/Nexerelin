@@ -33,8 +33,8 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithSearch.Mark
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode
 import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator
-import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.EntityLocation
-import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.LocationType
+import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.*
+import com.fs.starfarer.api.impl.campaign.procgen.themes.MiscellaneousThemeGenerator
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BaseSalvageSpecial
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData
@@ -57,6 +57,7 @@ import exerelin.utilities.*
 import lombok.Getter
 import org.apache.log4j.Logger
 import org.lazywizard.lazylib.MathUtils
+import org.lazywizard.lazylib.VectorUtils
 import java.awt.Color
 import kotlin.math.abs
 
@@ -86,9 +87,10 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
     companion object {
         @JvmField var SALVATION_ENABLED = true;
+        @JvmField var DEBUG_MODE = false;
         @JvmField val STAT_MOD_ID = "nex_remSalvation_mod";
 
-        @JvmField val log : Logger = Global.getLogger(ContactIntel::class.java)
+        @JvmField val log : Logger = Global.getLogger(RemnantSalvation::class.java)
         // runcode exerelin.campaign.intel.missions.remnant.RemnantSalvation.Companion.devAddTriggers()
         @JvmStatic fun devAddTriggers() {
             var mission = Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_ref"] as RemnantSalvation
@@ -484,7 +486,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         fp += capBonus - 50
         //if (hiredEndbringer) fp -= 20;  // don't scale to Endbringer's Facet
         fp = fp.coerceAtMost(300f)
-        fp += 140f
+        fp += 120f
 
         var params = FleetParamsV3(target!!.locationInHyperspace, Factions.REMNANTS, 1.5f, FleetTypes.TASK_FORCE,
             fp, // combat
@@ -586,7 +588,11 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         // Transverse jump code adapted from FractureJumpAbility
         // the only way I've found to do what I want reliably is to do actually do the jump from in-system
-        val loc = Misc.getPointAtRadius(planet.location, planet.radius + 200f + fleet.radius)
+        var loc = Misc.getPointAtRadius(planet.location, planet.radius + 200f + fleet.radius)
+        if (DEBUG_MODE) {
+            loc = Misc.getStationFleet(target).location;
+        }
+
         val token = planet.containingLocation.createToken(loc.x, loc.y)
         val dest = JumpDestination(token, null)
         Global.getSector().doHyperspaceTransition(fleet, null, dest)
@@ -940,6 +946,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
                 //fleet.removeFleetMemberWithDestructionFlash(member)
             }
             fleet.memoryWithoutUpdate.set(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT, 0.25f, 20f);
+            //fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true, 2f)  // not needed
+            fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true, 2f)
         }
     }
 
@@ -950,6 +958,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
                 //stats.weaponMalfunctionChance.unmodify(STAT_MOD_ID)
             }
             fleet.memoryWithoutUpdate.unset(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT);
+            //fleet.memoryWithoutUpdate.unset(MemFlags.FLEET_IGNORES_OTHER_FLEETS)
+            fleet.memoryWithoutUpdate.unset(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS)
         }
 
         /*
