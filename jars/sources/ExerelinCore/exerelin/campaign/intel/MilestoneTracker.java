@@ -316,6 +316,7 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 					if (loss.getHullSpec().hasTag(Tags.OMEGA) && loss.getHullSpec().getHullSize().compareTo(HullSize.CRUISER) >= 0) 
 					{
 						awardMilestone("defeatOmega");
+						Global.getSector().getCharacterData().getMemoryWithoutUpdate().set("$nex_defeatedTesseract", true);
 						break;
 					}
 				}
