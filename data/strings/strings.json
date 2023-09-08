@@ -924,6 +924,7 @@
 		"joinedFaction":"Joined $theNewFaction",
 		"leftFaction":"Left $theOldFaction",
 		"numMarkets":"$Faction   $numMarkets market(s), total size $size",
+		"numMarketsClaimed":"$Faction   $numMarkets market(s) claimed, total size $size",
 		"switchedFactions":"Left $theOldFaction for $theNewFaction",
 
 		"relationshipLimit":"Relationship between $faction1 and $faction2 limited to $relationship",
@@ -1688,6 +1689,7 @@
 		"marketDirectoryOptionIndustrySearch":"Search for industry",
 		"marketDirectoryHeaderIndustrySearch":"search(%s)",
 		"marketDirectoryHeaderIndustrySearch2":"%s results(s) found",
+		"marketDirectoryOptionDisputedSearch":"Revanchist claims",
 		"marketDirectoryButtonShow":"show",
 		
 		"intelCaptureTitle":"Market Captured - $market",

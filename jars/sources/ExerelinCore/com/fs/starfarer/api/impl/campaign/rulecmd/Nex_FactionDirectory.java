@@ -8,11 +8,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.PositionAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.ExerelinConstants;
@@ -20,23 +16,13 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.ui.FieldOptionsScreenScript.FactionDirectoryDialog;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.ButtonEntry;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsGUI;
+import exerelin.utilities.*;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 public class Nex_FactionDirectory extends BaseCommandPlugin {
 	
@@ -104,7 +90,6 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			case "print":
 				{
 					String option = memoryMap.get(MemKeys.LOCAL).getString("$option");
-					//if (option == null) throw new IllegalStateException("No $option set");
 					String factionId = option.substring(FACTION_PREFIX_LENGTH);
 					printFactionMarkets(dialog, factionId);
 					return true;
@@ -113,9 +98,16 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			case "printIndustries":
 				{
 					String option = memoryMap.get(MemKeys.LOCAL).getString("$option");
-					//if (option == null) throw new IllegalStateException("No $option set");
 					String industryId = option.substring(INDUSTRY_PREFIX_LENGTH);
 					printMarketsWithIndustry(dialog, industryId);
+					return true;
+				}
+
+			case "printDisputed":
+				{
+					String option = memoryMap.get(MemKeys.LOCAL).getString("$option");
+					String factionId = option.substring(FACTION_PREFIX_LENGTH);
+					printDisputedMarkets(dialog);
 					return true;
 				}
 		}
@@ -163,6 +155,8 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		
 		opts.addOption(StringHelper.getString("exerelin_markets", "marketDirectoryOptionIndustrySearch"), 
 				"nex_factionDirectoryList_indSearch");
+		opts.addOption(StringHelper.getString("exerelin_markets", "marketDirectoryOptionDisputedSearch"),
+				"nex_printDisputedMarkets");
 		
 		Object exitOpt = "exerelinMarketSpecial";
 		if (special)
@@ -294,6 +288,63 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		tt.setParaFontDefault();
 		
 		printMarkets(dialog, markets, width, false);
+	}
+
+	/**
+	 * Prints a formatted list of the markets not under their original owners.
+	 * @param dialog
+	 */
+	public void printDisputedMarkets(InteractionDialogAPI dialog)
+	{
+		float pad = 3;
+
+		// get markets and sort them by distance from player
+		Map<String, List<MarketAPI>> entries = new HashMap<>();
+		List<FactionAPI> affectedFactions = new ArrayList<>();
+
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			String owner = market.getFactionId();
+			String orig = NexUtilsMarket.getOriginalOwner(market);
+			if (orig == null) continue;
+			if (!owner.equals(orig)) {
+				List<MarketAPI> list = entries.get(orig);
+				if (list == null) {
+					list = new ArrayList<>();
+					entries.put(orig, list);
+					affectedFactions.add(Global.getSector().getFaction(orig));
+				}
+				list.add(market);
+			}
+		}
+		Collections.sort(affectedFactions, Nex_FactionDirectoryHelper.NAME_COMPARATOR_PLAYER_FIRST);
+
+		float width = Nex_VisualCustomPanel.PANEL_WIDTH * 4/5;
+		Nex_VisualCustomPanel.createPanel(dialog, true, width, Nex_VisualCustomPanel.PANEL_HEIGHT);
+
+		TooltipMakerAPI tt = Nex_VisualCustomPanel.getTooltip();
+
+		// print each faction and its disputed markets
+		Color hl = Misc.getHighlightColor();
+
+		tt.setParaFontOrbitron();
+		tt.addPara("%s faction(s) have revanchist claims", pad, hl, affectedFactions.size() + "");
+		tt.setParaFontDefault();
+
+		for (FactionAPI faction : affectedFactions) {
+			String str = StringHelper.getString("exerelin_factions", "numMarkets");
+			List<MarketAPI> markets = entries.get(faction.getId());
+			int totalSize = 0;
+			for (MarketAPI market : markets) totalSize += market.getSize();
+
+			TooltipMakerAPI img = tt.beginImageWithText(faction.getLogo(), 40);
+			img.setParaSmallInsignia();
+			LabelAPI label = img.addPara(str, pad);
+			label.setHighlight(Misc.ucFirst(faction.getDisplayName()), markets.size() + "", totalSize + "");
+			label.setHighlightColors(faction.getBaseUIColor(), hl, hl);
+			tt.addImageWithText(pad);
+			printMarkets(dialog, markets, width, false);
+		}
+		if (affectedFactions.isEmpty())	Nex_VisualCustomPanel.addTooltipToPanel();	// if not, printMarkets will do it
 	}
 	
 	/**
