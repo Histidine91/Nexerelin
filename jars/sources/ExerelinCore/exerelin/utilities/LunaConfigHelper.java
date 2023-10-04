@@ -265,6 +265,13 @@ public class LunaConfigHelper implements LunaSettingsListener {
 
         if (tab == null) tab = "";
 
+        Double defaultAsDouble = objectToDouble(defaultVal);
+        if (defaultAsDouble != null) {
+            log.info("Trying default " + defaultAsDouble + " for setting " + var);
+            if (defaultAsDouble < min) min = defaultAsDouble;
+            else if (defaultAsDouble > max) max = defaultAsDouble;
+        }
+
         var = PREFIX + var;
 
         switch (type) {
@@ -303,6 +310,14 @@ public class LunaConfigHelper implements LunaSettingsListener {
     public static void addHeader(String id, String title, String tab) {
         if (tab == null) tab = "";
         LunaSettings.SettingsCreator.addHeader(ExerelinConstants.MOD_ID, id, title, tab);
+    }
+
+    public static Double objectToDouble(Object obj) {
+        if (obj instanceof Double) return (double)obj;
+        if (obj instanceof Float) return (double)(float)obj;
+        if (obj instanceof Integer) return (double)(int)obj;
+        if (obj instanceof Long) return (double)(long)obj;
+        return null;
     }
 
     public static LunaConfigHelper createListener() {
