@@ -71,7 +71,7 @@ open class PersonalConfigIntel : BaseIntelPlugin(), ModPluginEventListener {
         @JvmStatic
         fun playMusic(musicSetId : String) {
             try {
-                Global.getSoundPlayer().playCustomMusic(1, 1, musicSetId, true)
+                Global.getSoundPlayer().playCustomMusic(1, 1, musicSetId, false)
             } catch (ex : NullPointerException) {}
         }
 
