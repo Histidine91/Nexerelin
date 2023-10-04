@@ -61,8 +61,13 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 		addStage(assemble);
 		
 		SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
+		if (raidJump == null) {
+			endImmediately();
+			return;
+		}
 
 		NexTravelStage travel = new NexTravelStage(this, gather, raidJump, false);
+
 		travel.setAbortFP(fp * successMult);
 		addStage(travel);
 		

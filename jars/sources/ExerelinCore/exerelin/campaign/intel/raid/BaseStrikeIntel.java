@@ -45,6 +45,10 @@ public class BaseStrikeIntel extends NexRaidIntel {
 		addStage(assemble);
 		
 		SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
+		if (raidJump == null) {
+			endImmediately();
+			return;
+		}
 
 		NexTravelStage travel = new NexTravelStage(this, gather, raidJump, false);
 		travel.setAbortFP(fp * successMult);

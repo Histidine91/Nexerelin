@@ -65,6 +65,10 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		addStage(assemble);
 		
 		SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
+		if (raidJump == null) {
+			endImmediately();
+			return;
+		}
 
 		NexTravelStage travel = new NexTravelStage(this, gather, raidJump, false);
 		travel.setAbortFP(fp * successMult);

@@ -172,6 +172,7 @@ public class NexUtilsMarket {
 	{
 		if (market.getSize() < minSize) return false;
 		if (market.isHidden()) return false;
+		if (market.getContainingLocation().hasTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER)) return false;
 		FactionAPI marketFaction = market.getFaction();
 		String factionId = marketFaction.getId();
 		NexFactionConfig config = NexConfig.getFactionConfig(factionId);

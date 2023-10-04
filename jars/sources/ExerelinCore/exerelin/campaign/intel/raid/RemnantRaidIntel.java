@@ -57,6 +57,10 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		addStage(assemble);
 		
 		SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
+		if (raidJump == null) {
+			endImmediately();
+			return;
+		}
 
 		RemnantRaidTravelStage travel = new RemnantRaidTravelStage(this, gather, raidJump, false);
 		travel.setAbortFP(fp * successMult);
