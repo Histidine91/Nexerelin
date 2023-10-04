@@ -78,6 +78,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final String MEMORY_KEY_STASHED_CORES = "$nex_stashed_ai_cores";
 	public static final String MEMORY_KEY_STASHED_CORE_ADMIN = "$nex_stashed_ai_core_admin";
 	public static final String MEMORY_KEY_RULER_TEMP_OWNERSHIP = "$nex_ruler_temp_owner";
+	public static final String MEMORY_KEY_RULER_TEMP_OWNERSHIP_ADMINDEX = "$nex_ruler_temp_owner_adminIndex";
 	public static final Set<String> NEEDED_OFFICIALS = new HashSet<>(Arrays.asList(
 			Ranks.POST_ADMINISTRATOR, Ranks.POST_BASE_COMMANDER, 
 			Ranks.POST_STATION_COMMANDER, Ranks.POST_PORTMASTER
@@ -1126,16 +1127,23 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		{
 			SectorManager.addOrRemoveMilitarySubmarket(market, market.getFactionId(), true);
 		}
-		
+
+		// make player the temp owner if faction ruler
 		if (!market.isPlayerOwned() && market.getFaction() == Misc.getCommissionFaction()
 				&& Nex_IsFactionRuler.isRuler(market.getFactionId())
 				&& !market.getMemoryWithoutUpdate().contains(MEMORY_KEY_RULER_TEMP_OWNERSHIP))
 		{
+			PersonAPI admin = market.getAdmin();
+			market.getMemoryWithoutUpdate().set(MEMORY_KEY_RULER_TEMP_OWNERSHIP, admin, 0);
+			CommDirectoryEntryAPI entry = market.getCommDirectory().getEntryForPerson(admin);
+			if (entry != null) {
+				market.getMemoryWithoutUpdate().set(MEMORY_KEY_RULER_TEMP_OWNERSHIP_ADMINDEX, market.getCommDirectory().getEntriesCopy().indexOf(entry), 0);
+			}
 			market.setPlayerOwned(true);
-			market.getMemoryWithoutUpdate().set(MEMORY_KEY_RULER_TEMP_OWNERSHIP, market.getAdmin(), 0);
 		}
 	}
 	
+	// unset player as temporary planet owner in ruler mode
 	@Override
 	public void reportPlayerClosedMarket(MarketAPI market) {
 		if (market.isPlayerOwned())
@@ -1144,8 +1152,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			if (!mem.contains(MEMORY_KEY_RULER_TEMP_OWNERSHIP)) return;
 			
 			PersonAPI admin = (PersonAPI)mem.get(MEMORY_KEY_RULER_TEMP_OWNERSHIP);
-			market.setAdmin(admin);
 			market.setPlayerOwned(false);
+			market.setAdmin(admin);
+			int index = 0;
+			if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_RULER_TEMP_OWNERSHIP_ADMINDEX)) {
+				index = market.getMemoryWithoutUpdate().getInt(MEMORY_KEY_RULER_TEMP_OWNERSHIP_ADMINDEX);
+			}
+			market.getCommDirectory().addPerson(admin, index);
 			mem.unset(MEMORY_KEY_RULER_TEMP_OWNERSHIP);
 		}
 	}
