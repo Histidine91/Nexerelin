@@ -66,7 +66,7 @@ public class NexConfig
     public static float invasionGracePeriod = 90;
     public static float pointsRequiredForInvasionFleet = 27000f;
     public static float baseInvasionPointsPerFaction = 30f;
-    public static float invasionPointsPerPlayerLevel = 1.5f;
+    public static float invasionPointsPerPlayerLevel = 1;
     public static float invasionPointEconomyMult = 0.5f;
     public static float creditLossOnColonyLossMult = 0.5f;
     public static boolean allowNPCSatBomb = true;
@@ -211,7 +211,7 @@ public class NexConfig
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
             pointsRequiredForInvasionFleet = (float)settings.optDouble("pointsRequiredForInvasionFleet", pointsRequiredForInvasionFleet);
             baseInvasionPointsPerFaction = (float)settings.optDouble("baseInvasionPointsPerFaction", baseInvasionPointsPerFaction);
-            invasionPointsPerPlayerLevel = (float)settings.optDouble("invasionPointsPerPlayerLevel ", invasionPointsPerPlayerLevel );
+            invasionPointsPerPlayerLevel = (float)settings.optDouble("invasionPointsPerPlayerLevel", invasionPointsPerPlayerLevel );
             invasionPointEconomyMult = (float)settings.optDouble("invasionPointEconomyMult", invasionPointEconomyMult);
             creditLossOnColonyLossMult = (float)settings.optDouble("creditLossOnColonyLossMult", creditLossOnColonyLossMult);
             allowNPCSatBomb = settings.optBoolean("allowNPCSatBomb", allowNPCSatBomb);

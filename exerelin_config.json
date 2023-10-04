@@ -63,7 +63,7 @@
     "pointsRequiredForInvasionFleet": 27000,    # name is a bit misleading, but anyway bigger number = longer delay between invasion fleets
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 30,
-    "invasionPointsPerPlayerLevel": 1.5,
+    "invasionPointsPerPlayerLevel": 1,
     "invasionPointEconomyMult": 0.5, # multiplier for invasion point gains from economic assets
     "creditLossOnColonyLossMult": 0.4,
     "allowNPCSatBomb": true,	# NPC factions can launch saturation bombardment missions in place of some invasions, raids and vengeance fleets
