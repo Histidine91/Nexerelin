@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.DModManager;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -31,6 +32,16 @@ import static exerelin.campaign.intel.missions.BuyShip.getString;
 public abstract class BuyShipRule {
 	
 	public static final String TAG_NO_BUY = "nex_buy_ship_mission_exclude";
+	public static final List<String> DESIGN_TYPES_NO_BUY = new ArrayList<>();
+
+	static {
+		try {
+			ShipHullSpecAPI spec = Global.getSettings().getHullSpec("sotf_pledge");
+			if (spec != null) DESIGN_TYPES_NO_BUY.add(spec.getManufacturer());
+		} catch (RuntimeException rex) {	// spec doesn't exist and the API isn't smart enough to just return null
+			// do nothing
+		}
+	}
 
 	@Getter	@Setter	protected BuyShip mission;
 
@@ -78,6 +89,9 @@ public abstract class BuyShipRule {
 			return false;
 		}
 		if (member.getVariant().hasTag(TAG_NO_BUY)) {
+			return false;
+		}
+		if (DESIGN_TYPES_NO_BUY.contains(member.getHullSpec().getManufacturer())) {
 			return false;
 		}
 		// todo: maybe Cabal should allow even automated ships?
