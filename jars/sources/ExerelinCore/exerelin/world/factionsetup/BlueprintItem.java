@@ -65,53 +65,6 @@ public class BlueprintItem extends FactionSetupItem {
 		sprite.setNormalBlend();
 		sprite.renderAtCenter(x + w/2, y + h/2);
 		
-		if (tempForRender.getSpec().hasTag("package_bp")) {
-			renderMultiBlueprint(x, y, w, h, alphaMult, glowMult, renderer);
-		}
-		else {
-			tempForRender.render(x, y, w, h, alphaMult, glowMult, renderer);
-		}		
-	}
-	
-	/**
-	 * Workaround for performance issue in {@code MultiBlueprintItemPlugin}. 
-	 * See https://fractalsoftworks.com/forum/index.php?topic=5061.msg377439#msg377439
-	 */
-	public void renderMultiBlueprint(float x, float y, float w, float h, float alphaMult,
-					   float glowMult, SpecialItemRendererAPI renderer) 
-	{
-		SpriteAPI sprite = Global.getSettings().getSprite("blueprint_packages", getSpecialItemData().getId(), true);
-		if (sprite.getTextureId() == 0) return; // no texture for a "holo", so no custom rendering
-		
-		
-		float cx = x + w/2f;
-		float cy = y + h/2f;
-		
-		w = 40;
-		h = 40;
-		
-		float p = 1;
-		float blX = cx - 12f - p;
-		float blY = cy - 22f - p;
-		float tlX = cx - 26f - p;
-		float tlY = cy + 19f + p;
-		float trX = cx + 20f + p;
-		float trY = cy + 24f + p;
-		float brX = cx + 34f + p;
-		float brY = cy - 9f - p;
-		
-		float mult = 1f;
-		
-		sprite.setAlphaMult(alphaMult * mult);
-		sprite.setNormalBlend();
-		sprite.renderWithCorners(blX, blY, tlX, tlY, trX, trY, brX, brY);
-		
-		if (glowMult > 0) {
-			sprite.setAlphaMult(alphaMult * glowMult * 0.5f * mult);
-			sprite.setAdditiveBlend();
-			sprite.renderWithCorners(blX, blY, tlX, tlY, trX, trY, brX, brY);
-		}
-		
-		renderer.renderScanlinesWithCorners(blX, blY, tlX, tlY, trX, trY, brX, brY, alphaMult, false);
+		tempForRender.render(x, y, w, h, alphaMult, glowMult, renderer);
 	}
 }
