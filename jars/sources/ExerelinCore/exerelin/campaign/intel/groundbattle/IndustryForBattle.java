@@ -17,6 +17,8 @@ import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
+import lombok.Getter;
+import lombok.Setter;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
@@ -45,6 +47,7 @@ public class IndustryForBattle {
 	protected IndustryForBattlePlugin plugin;
 	protected List<GroundUnit> units = new LinkedList<>();
 	public boolean heldByAttacker = false;
+	@Getter	@Setter	protected boolean looted = false;
 		
 	protected Vector2f posOnMap;
 	protected transient Vector2f posOnMapGraphical;
@@ -212,6 +215,8 @@ public class IndustryForBattle {
 	public String getNoLootReason() {
 		// check already done before showing the button
 		//if (intel.playerIsAttacker == null) return "[temp] Not in battle";
+
+		if (looted) return GroundBattleIntel.getString("noLootReasonAlreadyLooted");
 		
 		if (heldByAttacker != intel.playerIsAttacker) return GroundBattleIntel.getString("noLootReasonNotHeld");
 		

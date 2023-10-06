@@ -1614,6 +1614,7 @@
 		"ability_ignisPluvia_tooltip4":"The selected Olympus will consume %s CR to conduct this attack.",
 		
 		"noLootReasonNotHeld":"Industry not held",
+		"noLootReasonAlreadyLooted":"Already looted this industry",
 		"noLootReasonOwnMarket":"Can't loot from own market",
 		"noLootReasonStrength":"Player strength must be half of total strength or more (when invasion is not player-initiated)",
 		

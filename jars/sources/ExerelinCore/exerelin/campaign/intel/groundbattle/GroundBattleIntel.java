@@ -1363,6 +1363,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			Global.getSector().getPlayerFleet().getCargo().addSpecial(special, 1);
 			ifb.getIndustry().setSpecialItem(null);
 		}
+		ifb.looted = true;
 		
 		Global.getSoundPlayer().playUISound("ui_cargo_special_military_drop", 1, 1);
 	}
