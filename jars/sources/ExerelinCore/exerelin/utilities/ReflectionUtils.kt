@@ -1,5 +1,6 @@
 package exerelin.utilities
 
+import com.fs.starfarer.api.Global
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
@@ -35,6 +36,24 @@ object ReflectionUtils {
         var field: Any? = null
         try {  field = instanceToGetFrom.javaClass.getField(fieldName) } catch (e: Throwable) {
             try {  field = instanceToGetFrom.javaClass.getDeclaredField(fieldName) } catch (e: Throwable) { }
+        }
+
+        setFieldAccessibleHandle.invoke(field, true)
+        return getFieldHandle.invoke(field, instanceToGetFrom)
+    }
+
+
+    @JvmStatic fun <T> getIncludingSuperclasses(fieldName: String,
+                                            instanceToGetFrom: Any,
+                                            clazz: Class<T>): Any?
+    {
+        var field: Any? = null
+        try {  field = clazz!!.getField(fieldName) } catch (e: Throwable) {
+            try {  field = clazz!!.getDeclaredField(fieldName) } catch (e: Throwable) {}
+        }
+        if (field == null) {
+            if (clazz!!.superclass == null) return null;
+            return getIncludingSuperclasses(fieldName, instanceToGetFrom, clazz!!.superclass)
         }
 
         setFieldAccessibleHandle.invoke(field, true)
