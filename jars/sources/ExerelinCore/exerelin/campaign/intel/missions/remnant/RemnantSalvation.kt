@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.DerelictType
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.*
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
+import com.fs.starfarer.api.impl.campaign.fleets.AutoDespawnScript
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3
 import com.fs.starfarer.api.impl.campaign.ids.*
@@ -353,6 +354,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         if (fleet2 != null) {
             RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet2, true)
+            fleet2?.addScript(AutoDespawnScript(fleet2));
         }
 
         Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_endTimestamp"] = Global.getSector().clock.timestamp
@@ -1267,16 +1269,21 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         reason: CampaignEventListener.FleetDespawnReason?,
         param: Any?
     ) {
+        // fleet 1 gone
         if (fleet == this.fleet1) {
             reportWonBattle1(null, null)
         }
+        // knight fleet gone
         else if (fleet == this.knightFleet) {
             var knight = RemnantQuestUtils.getOrCreateArgent()
             target!!.addPerson(knight)
             target!!.commDirectory.addPerson(knight)
         }
+        // fleet 2 killed, OR did its thing and escaped
         else if (fleet == this.fleet2) {
-            if (reason == CampaignEventListener.FleetDespawnReason.REACHED_DESTINATION && targetPKed) {
+            val reasonIsLose = reason == CampaignEventListener.FleetDespawnReason.REACHED_DESTINATION
+                    || reason == CampaignEventListener.FleetDespawnReason.PLAYER_FAR_AWAY
+            if (reasonIsLose && targetPKed) {
                 failMission(null, null)
             } else reportWonBattle2(null, null)
         }
