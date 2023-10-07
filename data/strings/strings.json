@@ -1871,6 +1871,9 @@
 		"btnHomeworldPickMode1":"core",
 		"btnHomeworldPickMode2":"non-core",
 		
+		"btnHomeworldNeighbors":"Starting neighbors",
+		"btnHomeworldNeighborsTooltip":"Allow picking starting planets in already-inhabited systems in non-random sector? No effect in random sector.",
+		
 		# migrated from rules.csv
 		"optionStartingRelations":"Starting faction relations",
 		"tooltipStartingRelations":"Non-default settings will also disable faction relationship clamping. If random, will randomize diplomacy traits. 'Flatten' sets all relations to zero.",

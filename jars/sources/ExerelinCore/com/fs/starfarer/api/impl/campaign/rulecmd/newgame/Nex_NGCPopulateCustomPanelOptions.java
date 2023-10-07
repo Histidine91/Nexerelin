@@ -411,6 +411,19 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 			buttonEntries.add(radio);
 			plugin.addButton(radio);
 		}
+
+		// homeworld neighbors setting
+		String tooltipStr = getString("btnHomeworldNeighborsTooltip");
+
+		addCheckboxOption(panel, info, getString("btnHomeworldNeighbors"), "nex_homeworldPickNeighbors",
+				data.homeworldAllowNeighbors, "graphics/factions/crest_neutral_traders.png", plugin, new ButtonEntry() {
+					@Override
+					public void onToggle() {
+						data.homeworldAllowNeighbors = button.isChecked();
+					}
+				},
+				createTooltip(tooltipStr, null, null)
+		);
 	}
 	
 	/**

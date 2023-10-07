@@ -911,6 +911,10 @@ public class ExerelinProcGen {
 		
 		if (homeworldOnlyMode) {
 			for (ProcGenEntity candidate : candidates) {
+				if (!ExerelinSetupData.getInstance().homeworldAllowNeighbors && !Global.getSector().getEconomy().getMarkets(candidate.market.getContainingLocation()).isEmpty()) {
+					//log.info("Excluding " + candidate.name + " due to having neighbors");
+					continue;
+				}
 				if (candidate.market.getHazardValue() > 1.75f) continue;
 				homeworld = candidate;
 				break;

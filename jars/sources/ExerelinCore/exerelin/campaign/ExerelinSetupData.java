@@ -5,11 +5,11 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig.StartFleetType;
 import exerelin.utilities.StringHelper;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
 
 /* This class functions as a data structure for Exerelin setup
  */
@@ -42,6 +42,7 @@ public class ExerelinSetupData
 	public StartRelationsMode startRelationsMode = StartRelationsMode.DEFAULT;
 	public boolean applyStartRelationsModeToPirates = false;
 	public HomeworldPickMode homeworldPickMode = HomeworldPickMode.ANY;
+	public boolean homeworldAllowNeighbors = true;
 	
 	public boolean easyMode = false;
 	public boolean hardMode = false;
