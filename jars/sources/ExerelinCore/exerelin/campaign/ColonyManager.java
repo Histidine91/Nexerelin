@@ -48,12 +48,14 @@ import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.missions.ConquestMissionIntel;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import exerelin.world.industry.IndustryClassGen;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -79,6 +81,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final String MEMORY_KEY_STASHED_CORE_ADMIN = "$nex_stashed_ai_core_admin";
 	public static final String MEMORY_KEY_RULER_TEMP_OWNERSHIP = "$nex_ruler_temp_owner";
 	public static final String MEMORY_KEY_RULER_TEMP_OWNERSHIP_ADMINDEX = "$nex_ruler_temp_owner_adminIndex";
+	public static final String MEMORY_KEY_FACTION_SURVEY_BONUS = "$nex_colony_surveyBonus";
 	public static final Set<String> NEEDED_OFFICIALS = new HashSet<>(Arrays.asList(
 			Ranks.POST_ADMINISTRATOR, Ranks.POST_BASE_COMMANDER, 
 			Ranks.POST_STATION_COMMANDER, Ranks.POST_PORTMASTER
@@ -87,6 +90,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final int MIN_CYCLE_FOR_NPC_GROWTH = 207;
 	public static final int MIN_CYCLE_FOR_EXPEDITIONS = 207;
 	public static final float MAX_EXPEDITION_FP = 600;
+	public static final float EXPEDITION_BASE_CHANCE_BEFORE_DATA = 150f;
 	//public static final float AUTONOMOUS_INCOME_MULT = 0.2f;
 	public static final float NPC_FREE_PORT_GROWTH_REDUCTION_MULT = 0.5f;
 	public static final boolean STRATEGIC_AI_BLOCKS_BUILD_ECON_ON_UPSIZE = false;
@@ -756,20 +760,40 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		if (SURVEY_DATA_VALUES.containsKey(commodityId))
 			return SURVEY_DATA_VALUES.get(commodityId);
-		
+
 		return 0;
 	}
-	
-	protected String pickFactionToColonize(Random random) 
-	{
+
+	public WeightedRandomPicker<String> generateColonizeFactionPicker(Random random, boolean useSurveyDataBonus) {
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
 			float chance = NexConfig.getFactionConfig(factionId).colonyExpeditionChance;
 			if (chance <= 0)
 				continue;
+
+			// bonus for having survey data
+			if (useSurveyDataBonus) {
+				float mult = EXPEDITION_BASE_CHANCE_BEFORE_DATA;
+				MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
+				if (mem.contains(MEMORY_KEY_FACTION_SURVEY_BONUS)) {
+					mult += mem.getFloat(MEMORY_KEY_FACTION_SURVEY_BONUS);
+				}
+				mult /= EXPEDITION_BASE_CHANCE_BEFORE_DATA;
+				if (mult < 1) mult = 1;
+
+				chance *= mult;
+
+				//log.info(String.format("Faction %s has colony chance %s, mult %s", factionId, chance, mult));
+			}
+
 			picker.add(factionId, chance);
 		}
-		return picker.pick();
+		return picker;
+	}
+	
+	protected String pickFactionToColonize(Random random, boolean useSurveyDataBonus)
+	{
+		return generateColonizeFactionPicker(random, useSurveyDataBonus).pick();
 	}
 	
 	protected MarketAPI pickColonyExpeditionSource(String factionId, Random random) 
@@ -887,7 +911,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	{
 		Random random = new Random();
 		log.info("Attempting to spawn colony expedition");
-		String factionId = pickFactionToColonize(random);
+		String factionId = pickFactionToColonize(random, true);
 		if (factionId == null) {
 			log.info("Failed to pick faction for expedition");
 			return null;
@@ -926,7 +950,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public boolean generateInstantColony(Random random) 
 	{
 		log.info("Attempting to generate instant colony");
-		String factionId = pickFactionToColonize(random);
+		String factionId = pickFactionToColonize(random, false);
 		if (factionId == null) {
 			//log.info("Failed to pick faction for colony");
 			return false;
@@ -1043,6 +1067,25 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		NexUtilsMarket.addPerson(Global.getSector().getImportantPeople(), 
 					market, rankId, postId, true);
 		postsPresent.add(postId);
+	}
+	
+	public void processSurveyData(String factionId, float value) {
+		MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
+		NexUtils.incrementMemoryValue(mem, MEMORY_KEY_FACTION_SURVEY_BONUS, value);
+		if (ExerelinModPlugin.isNexDev) {
+			log.info(String.format("Adding %s survey data value to faction %s", value, factionId));
+		}
+	}
+
+	/**
+	 * When data is sold to a faction that does not send colony expeditions.
+	 * @param values
+	 */
+	public void processSurveyDataFactionless(List<Float> values, @Nullable Random random) {
+		WeightedRandomPicker<String> picker = generateColonizeFactionPicker(random, false);
+		for (Float val : values) {
+			processSurveyData(picker.pick(), val);
+		}
 	}
 	
 	/**
@@ -1162,23 +1205,40 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			mem.unset(MEMORY_KEY_RULER_TEMP_OWNERSHIP);
 		}
 	}
-	
+
+	// Handle survey data contribution to colony expeditions
 	@Override
 	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
 		if (transaction.getSubmarket().getPlugin().isFreeTransfer())
 			return;
 		
 		float net = 0;
+		List<Float> values = new ArrayList<>();
 		
 		for (CargoStackAPI stack : transaction.getSold().getStacksCopy()) {
-			net += getSurveyDataDaysValue(stack.getCommodityId()) * stack.getSize();
+			float val = getSurveyDataDaysValue(stack.getCommodityId());
+			net += val * stack.getSize();
+			for (int i=0; i<stack.getSize(); i++) values.add(val);
 		}
 		for (CargoStackAPI stack : transaction.getBought().getStacksCopy()) {
-			net -= getSurveyDataDaysValue(stack.getCommodityId()) * stack.getSize();
+			float val = -getSurveyDataDaysValue(stack.getCommodityId());
+			net += val * stack.getSize();
+			for (int i=0; i<stack.getSize(); i++) values.add(val);
 		}
-		if (net != 0)
-			log.info("Colony expedition progress from selling survey data: " + net);
-		
+		if (net == 0) return;
+
+		String factionId = transaction.getSubmarket().getFaction().getId();
+        processSurveyData(factionId, net);
+		/*
+		if (generateColonizeFactionPicker(null, false).getItems().contains(factionId)) {
+			processSurveyData(factionId, net);
+		} else {
+		    // creates weird results on buyback since the factions losing progress won't be the ones who gained it
+			processSurveyDataFactionless(values, new Random());
+		}
+		*/
+
+		log.info("Colony expedition progress from selling survey data: " + net);
 		colonyExpeditionProgress += net;
 	}
 	
@@ -1224,6 +1284,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			if (intel != null) {
 				colonyExpeditionProgress = MathUtils.getRandomNumberInRange(-interval * 0.1f, interval * 0.1f);
 				colonyExpeditionProgress -= numColonies * Global.getSettings().getFloat("nex_expeditionDelayPerExistingColony");
+				intel.getFaction().getMemoryWithoutUpdate().set(MEMORY_KEY_FACTION_SURVEY_BONUS, 0);
 			}
 			else {	// failed to spawn, try again in 10 days
 				colonyExpeditionProgress -= Math.min(NexConfig.colonyExpeditionInterval/2, 10);
