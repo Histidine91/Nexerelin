@@ -191,6 +191,7 @@ public class StartSetupPostTimePass {
 				mem.set("$lpp_missionCompleted", true);
 				mem.set("$lpp_didHookStart", true);
 				mem.set("$didSDBarRaid", true);
+				mem.set("$sdtu_ramDidProposal", true);
 			}
 			
 			// alpha site location intel?
