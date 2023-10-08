@@ -47,7 +47,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	protected float storedRelation;
 	@Getter	@Setter	protected StrategicAction strategicAction;
 	
-	//runcode new exerelin.campaign.intel.CeasefirePromptIntel("luddic_church", false).init();
+	//runcode new exerelin.campaign.intel.diplomacy.CeasefirePromptIntel("luddic_church", false).init();
 	
 	public CeasefirePromptIntel(String factionId, boolean isPeaceTreaty)
 	{
@@ -228,6 +228,10 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	@Override
 	public String getSmallDescriptionTitle() {
 		return getName(false);
+	}
+
+	protected String getName() {
+		return getName(true);
 	}
 	
 	public String getName(boolean withStatus) {
