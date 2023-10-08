@@ -1,9 +1,11 @@
 package exerelin.campaign.ai.action;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.intel.diplomacy.AllianceOfferIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
@@ -16,20 +18,31 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
     @Override
     public boolean generate() {
+        String afid = ai.getFactionId();
         if (alliance != null) {
-            AllianceManager.joinAllianceStatic(ai.getFactionId(), alliance);
+            if (Nex_IsFactionRuler.isRuler(faction)) {
+                AllianceOfferIntel offer = new AllianceOfferIntel(afid, AllianceManager.getFactionAlliance(afid));
+                setDelegate(offer);
+                offer.init();
+                return true;
+            } else {
+                AllianceManager.joinAllianceStatic(ai.getFactionId(), alliance);
+            }
+
         } else {
-            alliance = AllianceManager.createAlliance(ai.getFactionId(), this.faction.getId());
+            if (Nex_IsFactionRuler.isRuler(faction)) {
+                AllianceOfferIntel offer = new AllianceOfferIntel(afid, AllianceManager.getFactionAlliance(afid));
+                setDelegate(offer);
+                offer.init();
+                return true;
+            } else {
+                alliance = AllianceManager.createAlliance(ai.getFactionId(), this.faction.getId());
+            }
         }
         if (alliance == null) return false;
 
         delegate = this;
         return true;
-    }
-
-    @Override
-    public void applyPriorityModifiers() {
-        super.applyPriorityModifiers();
     }
 
     @Override
@@ -43,7 +56,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
         // don't spontaneously ally with player
         // in future, make an explicit offer to player
-        if (faction == Global.getSector().getPlayerFaction()) return false;
+        //if (faction == Global.getSector().getPlayerFaction()) return false;
         /*
         if ((ai.getFaction().isPlayerFaction())) {
             if (!NexConfig.followersDiplomacy) return false;
@@ -67,7 +80,12 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
     @Override
     public String getName() {
-        if (alliance == null) return "Alliance - error";
+        if (alliance == null) {
+            if (delegate != null && delegate instanceof AllianceOfferIntel) {
+                return ((AllianceOfferIntel)delegate).getSmallDescriptionTitle();
+            }
+            return "Alliance - error";
+        }
         return alliance.getName();
     }
 

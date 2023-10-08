@@ -17,6 +17,7 @@ import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.alliances.AllianceVoter.VoteResult;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
+import exerelin.campaign.intel.diplomacy.AllianceOfferIntel;
 import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -453,7 +454,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (otherFactionId.equals(factionId)) continue;
                 if (NexUtilsFaction.isPirateFaction(otherFactionId)) continue;
                 if (INVALID_FACTIONS.contains(otherFactionId)) continue;
-				if (Nex_IsFactionRuler.isRuler(otherFactionId)) continue;
+                //if (Nex_IsFactionRuler.isRuler(otherFactionId)) continue;
                 if (faction.isAtBest(otherFactionId, RepLevel.WELCOMING)) continue;
                 
                 // better relationships are more likely to form alliances
@@ -463,7 +464,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 Alignment bestAlignment = getBestAlignment(factionId, otherFactionId);
                 if (bestAlignment != null)
                 {
-                    createAlliance(factionId, otherFactionId, bestAlignment);
+                    if (Nex_IsFactionRuler.isRuler(otherFactionId)) {
+                        AllianceOfferIntel offer = new AllianceOfferIntel(factionId, AllianceManager.getFactionAlliance(factionId));
+                        offer.init();
+                    }
+                    else createAlliance(factionId, otherFactionId, bestAlignment);
                     return; // only one alliance at a time
                 }
             }

@@ -852,7 +852,11 @@
 		
 		"intelCeasefireTitle":"Ceasefire Offer",
 		"intelPeaceTreatyTitle":"Peace Treaty Offer",
+		"intelAllianceTitle":"Alliance Offer",
 		"intelCeasefireDesc":"$TheFaction $isOrAre offering a $ceasefireOrPeaceTreaty to end the ongoing hostilities. In the absence of further overt hostile actions, this will run for at least $days days and until further diplomatic events occur.",
+		"intelAllianceDescInvite":"$TheFaction has offered us an invitation to their alliance, the $alliance.",
+		"intelAllianceDescJoin":"$TheFaction has requested to join our alliance, the $alliance.",
+		"intelAllianceDescNew":"$TheFaction has invited us to form a new alliance.",
 		"intelCeasefireDescTime":"You have $timeLeft $days to accept or reject the offer.",
 		"intelCeasefireDescResult":"You have $acceptedOrRejected the offer.",
 		"intelCeasefireConfirm":"Confirm?",

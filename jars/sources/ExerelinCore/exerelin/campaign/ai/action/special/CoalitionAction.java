@@ -24,7 +24,7 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
     @Override
     public StrategicAction pickShimmedAction() {
 
-        // First let's see if we have an alliance we want to join
+        // First let's see if we have an alliance we want to join (while not being already in an alliance)
         String enemyId = null;
         if (faction != null) enemyId = faction.getId();
         String factionId = ai.getFactionId();
@@ -37,10 +37,10 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
                 Alliance all = entry.one;
                 float allyScore = entry.two;
                 if (all.canJoin(ai.getFaction())) {
-                    StrategicAction ally = joinAlliance(all);
-                    if (ally != null) {
-                        ally.getPriority().modifyFlat("allyScore", allyScore, StrategicAI.getString("statAllianceScore", true));
-                        return ally;
+                    StrategicAction allyAct = joinAlliance(all);
+                    if (allyAct != null && concern.canTakeAction(allyAct) && allyAct.canUse(concern)) {
+                        allyAct.getPriority().modifyFlat("allyScore", allyScore, StrategicAI.getString("statAllianceScore", true));
+                        return allyAct;
                     }
                 } else {
                     potentialFriends.addAll(all.getMembersCopy());
@@ -55,8 +55,8 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             if (ofid.equals(enemyId)) continue;
 
             if (AllianceManager.getManager().canAlly(factionId, ofid)) {
-                StrategicAction ally = createAlliance(ofid);
-                if (ally != null) return ally;
+                StrategicAction allyAct = createAlliance(ofid);
+                if (allyAct != null && concern.canTakeAction(allyAct) && allyAct.canUse(concern)) return allyAct;
             } else {
                 potentialFriends.add(ofid);
             }
