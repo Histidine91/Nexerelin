@@ -24,12 +24,14 @@ public class SilverlightDashStats extends BaseShipSystemScript {
     public static final float TIMEFLOW_MULT = 2;
     public static final float DAMPER_MULT = 0.5f;
     public static final int MAX_ASPECTS = 7;
-    public static final float SHARD_BURN_TIME = 0.2f;
+    public static final float SHARD_BURN_TIME = 0.75f;
     public static final Color JITTER_COLOR = new Color(168,255,192,55);
     public static final Color JITTER_UNDER_COLOR = new Color(168,255,192,155);
     public static final Color WARP_COLOR = new Color(192,208,255,224);
+    public static final boolean USE_SHARD_EVERYFRAME = false;
 
     protected boolean triedAspectSpawnThisSystemUse;
+    protected boolean registeredPlugin = !USE_SHARD_EVERYFRAME;
 
     protected Set<ShipAPI> aspects = new HashSet<>();
 
@@ -52,8 +54,13 @@ public class SilverlightDashStats extends BaseShipSystemScript {
         applyGfx(stats, state, effectLevel);
 
         if (state == State.ACTIVE) {
+            if (!USE_SHARD_EVERYFRAME) detachShardsIfNeeded((ShipAPI)stats.getEntity());
             processAspectSpawn((ShipAPI)stats.getEntity());
-            detachShardsIfNeeded((ShipAPI)stats.getEntity());
+        }
+
+        if (!registeredPlugin) {
+            registeredPlugin = true;
+            Global.getCombatEngine().addPlugin(new ShardMonitorPlugin((ShipAPI)stats.getEntity()));
         }
     }
 
@@ -100,31 +107,6 @@ public class SilverlightDashStats extends BaseShipSystemScript {
             //engine.spawnExplosion(fighter.getLocation(), fighter.getVelocity(), WARP_COLOR, 60, 2);
         }
         engine.addPlugin(new AspectLauncherPlugin(myWing));
-    }
-
-    public void detachShardsIfNeeded(ShipAPI ship) {
-        if (ship == null) return;
-
-        // launch if main ship or any of the modules are at 40% or higher hard flux
-        boolean wantLaunch = ship.getHardFluxLevel() > 0.4f;
-        if (!wantLaunch) {
-            for (ShipAPI module : ship.getChildModulesCopy()) {
-                if (module.getHardFluxLevel() > 0.4f) {
-                    wantLaunch = true;
-                    break;
-                }
-            }
-        }
-
-        if (wantLaunch) {
-            CombatEngineAPI engine = Global.getCombatEngine();
-            for (ShipAPI module : ship.getChildModulesCopy()) {
-                module.setStationSlot(null);
-                //module.getVelocity().set(ship.getVelocity());   // breaks the travel drive?
-                module.turnOnTravelDrive(SHARD_BURN_TIME);
-                engine.addPlugin(new NoCollidePlugin(module, SHARD_BURN_TIME));
-            }
-        }
     }
 
     /**
@@ -218,6 +200,38 @@ public class SilverlightDashStats extends BaseShipSystemScript {
         return (String.format(str, aspects.size(), MAX_ASPECTS));
     }
 
+    public static boolean detachShardsIfNeeded(ShipAPI ship) {
+        if (!ship.isAlive()) {
+            return true;
+        }
+
+        // launch if main ship or any of the modules are at 40% or higher hard flux
+        // or if significant enemy presence?... meh
+        boolean wantLaunch = ship.getHardFluxLevel() > 0.4f;
+        if (!USE_SHARD_EVERYFRAME) wantLaunch |= ship.areSignificantEnemiesInRange();
+        if (!wantLaunch) {
+            for (ShipAPI module : ship.getChildModulesCopy()) {
+                if (module.getHardFluxLevel() > 0.4f) {
+                    wantLaunch = true;
+                    break;
+                }
+            }
+        }
+
+        if (wantLaunch) {
+            CombatEngineAPI engine = Global.getCombatEngine();
+            for (ShipAPI module : ship.getChildModulesCopy()) {
+                module.setStationSlot(null);
+                //module.getVelocity().set(ship.getVelocity());   // breaks the travel drive?
+                module.turnOnTravelDrive(SHARD_BURN_TIME);
+                engine.addPlugin(new NoCollidePlugin(module, SHARD_BURN_TIME));
+            }
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Handles the GFX and no-collide etc. for the spawned Aspects.
      */
@@ -274,6 +288,22 @@ public class SilverlightDashStats extends BaseShipSystemScript {
                 }
                 ship.setJitter(this, c, jitterLevel, 25, 0f, jitterRangeBonus);
                 ship.setAlphaMult(1f - progress);
+            }
+        }
+    }
+
+    public static class ShardMonitorPlugin extends BaseEveryFrameCombatPlugin {
+
+        protected ShipAPI ship;
+
+        public ShardMonitorPlugin(ShipAPI ship) {
+            this.ship = ship;
+        }
+
+        @Override
+        public void advance(float amount, List<InputEventAPI> events) {
+            if (detachShardsIfNeeded(ship)) {
+                Global.getCombatEngine().removePlugin(this);
             }
         }
     }
