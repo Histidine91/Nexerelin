@@ -1,5 +1,8 @@
 package exerelin.campaign.intel.missions.remnant;
 
+import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener;
+import exerelin.utilities.ReflectionUtils;
+import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
@@ -18,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent;
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantStationFleetManager;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Objectives;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -43,7 +47,7 @@ import java.util.*;
 import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 
 // aka "Showdown"
-public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventListener {
+public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventListener, CurrentLocationChangedListener {
 	
 	public static Logger log = Global.getLogger(RemnantBrawl.class);
 	
@@ -82,12 +86,13 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	
 	protected boolean spawnedStraggler;
 	protected boolean spawnedAttackFleets;
+	protected boolean checkedExtraDefenders2;
 	protected boolean launchedAttack;
 	protected boolean orderedHangAboveSystem;
 	protected boolean knowStagingArea;
 	protected boolean battleInited;
 	protected boolean betrayed;
-	@Deprecated protected boolean sentFalseInfo;	// not currently used
+	protected boolean sentFalseInfo;
 	
 	protected float battleTimer = 0;
 	
@@ -291,6 +296,24 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			break;
 		}
 	}
+
+	protected RemnantStationFleetManager getRemnantStationFleetManager() {
+		LocationAPI stationSys = station.getContainingLocation();
+		for (EveryFrameScript script : stationSys.getScripts()) {
+			if (script instanceof RemnantStationFleetManager) {
+				return (RemnantStationFleetManager)script;
+			}
+		}
+		return null;
+	}
+
+	// damaged nexus has 2-5 patrols of size 6-12 as per RemnantThemeGenerator, intact has 8-13 patrols of size 8-24
+	protected int getNumRemnantPatrols() {
+		RemnantStationFleetManager rsfm = getRemnantStationFleetManager();
+
+		if (rsfm == null) return 0;
+		return (Integer)ReflectionUtils.getIncludingSuperclasses("maxFleets", rsfm, rsfm.getClass());
+	}
 	
 	/**
 	 * Spawns the fleet that player has to follow.
@@ -369,19 +392,32 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		int fp = 120;
 		int hegCount = 2;
 		int allyCount = 1;
+		int patrolCount = getNumRemnantPatrols();
+		float medianPatrolCount = stationIsStrong ? 10.5f : 3.5f;
+		float playerPower = NexUtilsFleet.calculatePowerLevel(Global.getSector().getPlayerFleet());
+
+		log.info(String.format("Remnant patrol count is %s, median is %.1f, player power is %.2f", patrolCount, medianPatrolCount, playerPower));
+
 		if (stationIsStrong) {
 			hegCount = 3;
 			allyCount = 2;
 			fp = 150;
 		}
-			
-		
+
+		float mult = patrolCount/medianPatrolCount;
+		mult = (mult+1)/2;
+		mult *= 2;	// compensate for not using market size mult
+
+		fp = Math.round(fp * mult);
+		fp += playerPower/40f;
 		for (int i=0; i<hegCount; i++) {
 			spawnAttackFleet(Factions.HEGEMONY, fp);
 		}
 		spawnAttackFleet(Factions.LUDDIC_CHURCH, fp);
 		
 		fp = stationIsStrong ? 120 : 90;
+		fp = Math.round(fp * mult);
+		fp += playerPower/60f;
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>(this.genRandom);
 		factionPicker.add(Factions.LUDDIC_CHURCH, 2);
 		factionPicker.add(Factions.HEGEMONY);
@@ -424,6 +460,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		params.officerNumberMult = 1.2f;
 		params.averageSMods = 2;
 		params.maxNumShips = (int)(Global.getSettings().getInt("maxShipsInAIFleet") * 1.2f);
+		params.ignoreMarketFleetSizeMult = true;
 		params.random = this.genRandom;
 		
 		CampaignFleetAPI fleet = spawnFleet(params, stagingPoint);
@@ -459,7 +496,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	 * Spawns some extra defenders (currently just two merc fleets) for the station.
 	 */
 	protected void spawnExtraDefenders() {
-		float fp = 50;
+		float fp = 80;
 		
 		for (int i=0; i<2; i++) {
 			FleetParamsV3 params = new FleetParamsV3(station.getLocationInHyperspace(),
@@ -474,6 +511,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 					3,	// utility
 					0);	// quality mod
 			params.averageSMods = 4;
+			params.ignoreMarketFleetSizeMult = true;
 			params.random = this.genRandom;
 			CampaignFleetAPI fleet = spawnFleet(params, station);
 			fleet.setFaction(Factions.INDEPENDENT, true);	// to set captain factions
@@ -481,6 +519,50 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			fleet.addAssignment(FleetAssignment.ORBIT_AGGRESSIVE, station, 3000);
 			fleet.getMemoryWithoutUpdate().set("$nex_remBrawl_merc", true);
 		}
+	}
+
+	/**
+	 * Spawns an additional fleet around the nexus if the regular ordos are below median size.
+	 */
+	protected void spawnExtraDefenders2() {
+		checkedExtraDefenders2 = true;
+		RemnantStationFleetManager rsfm = getRemnantStationFleetManager();
+		if (rsfm == null) return;
+
+		float fp = 0;
+		int numFleets = 0;
+		List<CampaignFleetAPI> fleets = (List<CampaignFleetAPI>)ReflectionUtils.getIncludingSuperclasses("fleets", rsfm, rsfm.getClass());
+		for (CampaignFleetAPI fleet : fleets) {
+			numFleets++;
+			fp += fleet.getFleetPoints();
+		}
+		float pointsPerFleet = fp/numFleets/8;
+		float medianPoints = stationIsStrong ? (6+12)/2 : (8+24)/2;
+		log.info(String.format("Remnant patrol count is %s, points per fleet is %.1f, median points is %.1f", numFleets, pointsPerFleet, medianPoints));
+		if (numFleets == 0) {
+			//pointsPerFleet = medianPoints;
+			//numFleets = getNumRemnantPatrols();
+			return;
+		}
+
+		float powerDiff = (medianPoints - pointsPerFleet) * numFleets;
+		if (powerDiff <= 15) return;
+
+		FleetParamsV3 params = new FleetParamsV3(station.getLocationInHyperspace(),
+				Factions.REMNANTS,
+				1f,	// quality override
+				FleetTypes.TASK_FORCE,
+				powerDiff, // combat
+				0,	// freighters
+				0,		// tankers
+				0,		// personnel transports
+				0,		// liners
+				3,	// utility
+				0);	// quality mod
+		params.averageSMods = 1;
+		params.random = this.genRandom;
+		CampaignFleetAPI fleet = spawnFleet(params, station);
+		fleet.addAssignment(FleetAssignment.ORBIT_AGGRESSIVE, station, 3000);
 	}
 	
 	protected CampaignFleetAPI spawnFleet(FleetParamsV3 params, SectorEntityToken loc) {
@@ -519,8 +601,13 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			fleet.clearAssignments();
 			boolean sittingOnSystem = currentStage == Stage.SCOUT;
 			int time = sittingOnSystem ? 15 : 45;
-			fleet.addAssignment(betrayed ? FleetAssignment.DELIVER_MARINES : FleetAssignment.ATTACK_LOCATION, 
-					stationToken, time, StringHelper.getFleetAssignmentString("attacking", station.getName()));
+			FleetAssignment assign = FleetAssignment.ATTACK_LOCATION;
+			if (betrayed) assign = FleetAssignment.DELIVER_MARINES;
+			else if (sentFalseInfo) {
+				//assign = FleetAssignment.RAID_SYSTEM;	// too much difference between playing it "properly" and knowing to talk to the Hegemony?
+			}
+
+			fleet.addAssignment(assign, stationToken, time, StringHelper.getFleetAssignmentString("attacking", station.getName()));
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, stationToken, 20,
 					StringHelper.getFleetAssignmentString("attacking", station.getName()));
 			fleet.addAssignment(FleetAssignment.INTERCEPT, station, 20);
@@ -784,8 +871,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		Global.getSector().getListenerManager().removeListener(this);
 		for (final CampaignFleetAPI fleet : createdFleets) {
 			if (!fleet.isAlive()) continue;
-			Misc.giveStandardReturnToSourceAssignments(fleet, true);
+
 			Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_remBrawl", false, 0);
+
 			if (FleetTypes.MERC_ARMADA.equals(NexUtilsFleet.getFleetType(fleet))) {
 				fleet.addScript(new DelayedActionScript(9) {
 					@Override
@@ -794,6 +882,12 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 						fleet.setFaction(Factions.INDEPENDENT, false);
 					}
 				});
+				Misc.giveStandardReturnToSourceAssignments(fleet, true);
+			} else if (Factions.REMNANTS.equals(fleet.getFaction().getId())) {
+				RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(fleet, true);
+			}
+			else {
+				Misc.giveStandardReturnToSourceAssignments(fleet, true);
 			}
 		}
 		if (stationToken != null) stationToken.getContainingLocation().removeEntity(stationToken);
@@ -1027,7 +1121,15 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			checkAttackFleetDefeated(participant);
 		}
 	}
-	
+
+	@Override
+	public void reportCurrentLocationChanged(LocationAPI prev, LocationAPI curr) {
+		if (this.checkedExtraDefenders2) return;
+		if (curr == station.getContainingLocation()) {
+			spawnExtraDefenders2();
+		}
+	}
+
 	protected static class SetStageScript implements Script {
 		
 		public Stage stage;
