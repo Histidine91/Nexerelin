@@ -386,7 +386,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         return results;
     }
 
-    protected float getMarketValue(MarketAPI market) {
+    public static float getMarketValue(MarketAPI market) {
         float value = NexUtilsMarket.getMarketIndustryValue(market);
         for (Industry ind : market.getIndustries()) {
             if (ind.getSpec().hasTag(Industries.TAG_HEAVYINDUSTRY)) {

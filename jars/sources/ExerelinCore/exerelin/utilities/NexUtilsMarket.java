@@ -456,14 +456,25 @@ public class NexUtilsMarket {
 	 * @return True if upgrade was carried out, false if unable to upgrade.
 	 */
 	public static boolean upgradeIndustryIfCan(Industry ind, boolean instant) {
+		if (!canUpgradeIndustry(ind)) return false;
+
+		ind.startUpgrading();
+		if (instant) ind.finishBuildingOrUpgrading();
+		return true;
+	}
+
+	/**
+	 * Checks for whether the industry has an upgrade and its {@code canUpgrade} method returns true.
+	 * @param ind
+	 */
+	public static boolean canUpgradeIndustry(Industry ind) {
 		if (ind == null) return false;
 		if (!ind.canUpgrade()) return false;
 		String upg = ind.getSpec().getUpgrade();
 		if (upg == null) return false;
+
 		// I could add a check for whether the upgrade actually exists here, but we only want to check for things that don't reflect underlying errors
 
-		ind.startUpgrading();
-		if (instant) ind.finishBuildingOrUpgrading();
 		return true;
 	}
 
@@ -483,6 +494,13 @@ public class NexUtilsMarket {
 		ind.getSpec().setUpgrade(prevUpgradeId);
 		if (instant) ind.finishBuildingOrUpgrading();
 		return true;
+	}
+
+	public static Industry getIndustryWithTag(MarketAPI market, String tag) {
+		for (Industry ind : market.getIndustries()) {
+			if (ind.getSpec().hasTag(tag)) return ind;
+		}
+		return null;
 	}
 
 	public static void pickEntityDestination(final InteractionDialogAPI dialog,

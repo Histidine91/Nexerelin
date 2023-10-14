@@ -1,5 +1,6 @@
 package exerelin.campaign.ai.action.industry;
 
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
@@ -82,6 +83,24 @@ public class BuildEconAction extends BuildIndustryAction {
     }
 
     @Override
+    protected float modifyProducerScore(String industryId, MarketAPI market, float score) {
+        if (concern instanceof ImportDependencyConcern) {
+            ImportDependencyConcern idc = (ImportDependencyConcern)concern;
+            Industry temp = market.instantiateIndustry(industryId);
+            if (temp != null && temp.getSupply(idc.getCommodityId()) != null) {
+                int potentialSupply = temp.getSupply(idc.getCommodityId()).getQuantity().getModifiedInt();
+                if (potentialSupply >= idc.getRequired()) {
+                    score *= 5;
+                }
+                else return -1;
+            }
+            else return -1; // should already be checked by getBestProducerForMarket I think
+        }
+
+        return score;
+    }
+
+    @Override
     public void applyPriorityModifiers() {
         super.applyPriorityModifiers();
 
@@ -99,12 +118,14 @@ public class BuildEconAction extends BuildIndustryAction {
         if (!super.canUse(concern)) return false;
 
         // don't bother building a new econ industry if this is an import dependency concern and we're already producing the good
+        /*
         if (concern instanceof ImportDependencyConcern) {
             String commodityId = ((HasCommodityTarget)concern).getCommodityIds().get(0);
             int existingProduction = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
             if (existingProduction > 0)
                 return false;
         }
+         */
 
         return concern instanceof HasCommodityTarget || concern instanceof HasIndustryToBuild;
     }

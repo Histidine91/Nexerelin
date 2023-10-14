@@ -1042,12 +1042,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			float pointsRequired = NexConfig.pointsRequiredForInvasionFleet;
 			boolean canSpawn = counter > pointsRequired;
 			if (FleetPoolManager.USE_POOL) {
-				canSpawn = counter > pointsRequired * 2f;	// so it doesn't drain the pool completely following an invasion
+				canSpawn = counter > pointsRequired * 2f;	// higher requirement so it doesn't drain the fleet pool completely following an invasion
 				float fleetPool = FleetPoolManager.getManager().getCurrentPool(factionId);
 				canSpawn = canSpawn && fleetPool > BASE_INVASION_SIZE;
 			}
-			if (StrategicAI.getAI(factionId) != null) canSpawn = false;
-
+			if (StrategicAI.getAI(factionId) != null) {
+				//canSpawn = false;
+				canSpawn &= counter > pointsRequired * 2f;
+			}
 			
 			if (!canSpawn)
 			{

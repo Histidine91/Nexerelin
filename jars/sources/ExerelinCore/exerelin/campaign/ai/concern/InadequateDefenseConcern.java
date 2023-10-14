@@ -31,7 +31,7 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
             float value = getMarketValue(market);
             float sd = getSpaceDefenseValue(market);
             float gd = getGroundDefenseValue(market);
-            if (sd/size >= SAIConstants.SPACE_DEF_THRESHOLD && gd/size >= SAIConstants.GROUND_DEF_THRESHOLD) return false;
+            //if (sd/size >= SAIConstants.SPACE_DEF_THRESHOLD && gd/size >= SAIConstants.GROUND_DEF_THRESHOLD) return false;
 
             float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR * 2;
             if (valueMod < SAIConstants.MIN_MARKET_VALUE_PRIORITY_TO_CARE) continue;

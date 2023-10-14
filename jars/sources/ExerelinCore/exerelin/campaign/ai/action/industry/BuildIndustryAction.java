@@ -137,6 +137,8 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
             IndustryClassGen gen = NexMarketBuilder.getIndustryClassesByIndustryId().get(producerId);
             if (!gen.canApply(entity)) continue;
             float score = gen.getWeight(entity);
+            score = modifyProducerScore(producerId, market, score);
+
             if (score <= 0) continue;
 
             if (score > bestScore) {
@@ -147,6 +149,10 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
 
         if (best == null) return null;
         return new Pair<>(best, bestScore);
+    }
+
+    protected float modifyProducerScore(String industryId, MarketAPI market, float score) {
+        return score;
     }
 
     protected boolean doesMarketHaveConditions(MarketAPI market, List<String> conditions) {

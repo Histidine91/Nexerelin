@@ -27,8 +27,8 @@
 			"name":"Inadequate Defenses",
 			"desc":"$market (size $size) is a highly valuable target, yet poorly defended for its value. We should strengthen its defenses.",
 			"classPath":"exerelin.campaign.ai.concern.InadequateDefenseConcern",
-			"tags":["military", "economy", "market", "trait_paranoid"],
-			"enabled":false,	# until we implement actions for this
+			"tags":["military", "economy", "market", "trait_paranoid", "canBuildDefense"],
+			"enabled":true,
 			"module":MILITARY
 		},
 		"pirateActivity":{
@@ -236,6 +236,13 @@
 			"antiRepetition":50,
 			"idForAntiRepetition":"buildEcon",
 			"tags":["economy", "canBuildHeavyIndustry"],
+		},
+		"buildDefense":{
+			"name":"Build (Defense)",
+			"classPath":"exerelin.campaign.ai.action.industry.BuildDefenseAction",
+			"cooldown":60,
+			"antiRepetition":50,
+			"tags":["economy", "military", "canBuildDefense"],
 		},
 		
 		"coalition":{
