@@ -1,0 +1,5 @@
+rem_lostSci.png
+	by Smashicons, free for personal and commercial use with attribution
+	https://www.flaticon.com/free-icon/cabinets_5764229
+
+other images are made from base game or mod assets, free to use within those bounds (e.g. Fractal Softworks content should not be used outside Starsector without permission)
