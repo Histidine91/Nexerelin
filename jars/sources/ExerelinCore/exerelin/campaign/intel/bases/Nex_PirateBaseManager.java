@@ -25,6 +25,34 @@ public class Nex_PirateBaseManager extends PirateBaseManager {
 		return super.pickSystemForPirateBase();
 	}
 
+	// same as vanilla except create our own pirate base intel
+	@Override
+	protected EveryFrameScript createEvent() {
+		if (numSpawnChecksToSkip > 0) {
+			numSpawnChecksToSkip--;
+			return null;
+		}
+
+		if (random.nextFloat() < CHECK_PROB) return null;
+
+		StarSystemAPI system = pickSystemForPirateBase();
+		if (system == null) return null;
+
+		//PirateBaseIntel intel = new PirateBaseIntel(system, Factions.PIRATES, PirateBaseTier.TIER_5_3MODULE);
+		//PirateBaseIntel intel = new PirateBaseIntel(system, Factions.PIRATES, PirateBaseTier.TIER_3_2MODULE);
+		PirateBaseIntel.PirateBaseTier tier = pickTier();
+
+		//tier = PirateBaseTier.TIER_5_3MODULE;
+
+		String factionId = pickPirateFaction();
+		if (factionId == null) return null;
+
+		PirateBaseIntel intel = new NexPirateBaseIntel(system, factionId, tier);
+		if (intel.isDone()) intel = null;
+
+		return intel;
+	}
+
 	/**
 	 * Replaces the vanilla pirate base manager with the Nex one, with proper handling for Pather cells.
 	 * Call when adding Nex to an existing save.
