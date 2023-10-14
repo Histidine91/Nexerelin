@@ -49,6 +49,7 @@ import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.campaign.intel.specialforces.SpecialForcesAssignmentAI;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
 import exerelin.campaign.submarkets.*;
+import exerelin.debug.DebugIntel;
 
 public class XStreamConfig {
 	
@@ -194,6 +195,7 @@ public class XStreamConfig {
 		x.alias("NexBuyColIntl", BuyColonyIntel.class);
 		x.alias("NexNavBuoy", Nex_NavBuoyEntityPlugin.class);
 		x.alias("NexSensArr", Nex_SensorArrayEntityPlugin.class);
+		x.alias("FlPoolRec", DebugIntel.FleetPoolRecord.class);
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);
@@ -269,5 +271,9 @@ public class XStreamConfig {
 		// ExerelinReputationAdjustmentResult
 		x.aliasAttribute(ExerelinReputationAdjustmentResult.class, "wasHostile", "hstl1");
 		x.aliasAttribute(ExerelinReputationAdjustmentResult.class, "isHostile", "hstl2");
+
+		// FleetPoolRecord
+		x.aliasAttribute(DebugIntel.FleetPoolRecord.class, "timestamp", "ts");
+		x.aliasAttribute(DebugIntel.FleetPoolRecord.class, "days", "d");
 	}
 }

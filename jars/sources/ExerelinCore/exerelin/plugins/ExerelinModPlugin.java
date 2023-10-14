@@ -690,6 +690,10 @@ public class ExerelinModPlugin extends BaseModPlugin
             }
         }
 
+        if (isNexDev) {
+            new DebugIntel().init();
+        }
+
         for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
         {
             x.onNewGameAfterTimePass();

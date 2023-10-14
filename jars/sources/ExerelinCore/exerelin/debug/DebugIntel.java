@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityMarketDataAPI;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
@@ -23,6 +24,8 @@ import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.ai.concern.RetaliationConcernV2;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
@@ -33,10 +36,12 @@ import java.util.List;
 import java.util.*;
 
 @Log4j
-public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener {
+public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener, EconomyTickListener {
 		
 	public static final float MARGIN = 40;
 	public static final String DATA_KEY = "nex_debugIntel";
+
+	protected List<FleetPoolRecord> records = new ArrayList<>();
 	
 	public DebugIntel init() {
 		Global.getSector().getIntelManager().addIntel(this);
@@ -348,5 +353,38 @@ public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener {
 	@Override
 	public void reportActionCancelled(StrategicAI ai, StrategicAction action) {
 
+	}
+
+	@Override
+	public void reportEconomyTick(int iterIndex) {
+		logFleetData();
+	}
+
+	@Override
+	public void reportEconomyMonthEnd() {
+
+	}
+
+	protected void logFleetData() {
+		int days = Math.round(NexUtils.getTrueDaysSinceStart());
+		FleetPoolRecord record = new FleetPoolRecord(Global.getSector().getClock().getTimestamp(), days);
+		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
+			if (FleetPoolManager.USE_POOL) record.fp.put(factionId, FleetPoolManager.getManager().getCurrentPool(factionId));
+			record.ip.put(factionId, InvasionFleetManager.getManager().getSpawnCounter(factionId));
+		}
+		records.add(record);
+	}
+
+
+	public class FleetPoolRecord {
+		public long timestamp;
+		public int days;
+		public Map<String, Float> fp = new HashMap<>();
+		public Map<String, Float> ip = new HashMap<>();
+
+		public FleetPoolRecord(long timestamp, int days) {
+			this.timestamp = timestamp;
+			this.days = days;
+		}
 	}
 }
