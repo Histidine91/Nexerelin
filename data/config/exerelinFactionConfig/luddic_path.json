@@ -9,7 +9,7 @@
 
     "difficultyString":"hard",
 	
-	"factionConditionSubplugin":"exerelin.campaign.econ.faction.OutlawFCSubplugin",
+	#"factionConditionSubplugin":"exerelin.campaign.econ.faction.OutlawFCSubplugin",
     
     "marketSpawnWeight":0.5,
 
