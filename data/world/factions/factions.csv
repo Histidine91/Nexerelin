@@ -1,5 +1,5 @@
 faction
 #data/world/factions/player_npc.faction
-#data/world/factions/abandoned.faction
 #data/world/factions/rebel.faction
 data/world/factions/nex_derelict.faction
+data/world/factions/nex_temp.faction

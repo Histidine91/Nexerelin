@@ -15,6 +15,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.DModManager;
+import com.fs.starfarer.api.impl.campaign.fleets.DefaultFleetInflaterParams;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -22,6 +23,8 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.AllianceManager;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
 import exerelin.campaign.intel.merc.MercFleetGenPlugin;
 import exerelin.plugins.ExerelinModPlugin;
@@ -164,6 +167,7 @@ public class NexUtilsFleet
 	 * For converting to FP: a challenging fight should have an FP count of 1/4th this method's return value, or less.
 	 * Further reductions should be applied for enemy fleets with S-mods, AI cores, etc.
 	 * @param fleet
+	 * @param includeMercs If false, exclude ships with Nex's merc buff ID (so mercs won't be scaled against).
 	 * @return
 	 */
 	public static int calculatePowerLevel(CampaignFleetAPI fleet, boolean includeMercs) {
@@ -341,5 +345,92 @@ public class NexUtilsFleet
 				return (RouteFleetAssignmentAI)script;
 		}
 		return null;
+	}
+
+	/**
+	 * Wrapper for Nex's calls to FleetFactoryV3.createFleet. I can stuff whatever behavior I like in here when it comes up.
+	 * @param params
+	 * @return
+	 */
+	public static CampaignFleetAPI nexCreateFleet(FleetParamsV3 params) {
+		return createAllianceMergedFleet(Global.getSector().getFaction(params.factionId), params);
+	}
+
+	public static CampaignFleetAPI createAllianceMergedFleet(FactionAPI primary, FleetParamsV3 params) {
+		if (primary == null) {
+			log.info("Faction not found");
+			return FleetFactoryV3.createFleet(params);
+		}
+		Alliance all = AllianceManager.getFactionAlliance(primary.getId());
+		if (all == null) {
+			log.info("No alliance found");
+			return FleetFactoryV3.createFleet(params);
+		}
+
+		FactionAPI temp = Global.getSector().getFaction("nex_temp");
+		for (String memberId : all.getMembersCopy()) {
+			FactionAPI member = Global.getSector().getFaction(memberId);
+			addKnownEquipmentToFaction(member, temp);
+		}
+		if (params.doctrineOverride == null) params.doctrineOverride = primary.getDoctrine();
+		if (params.random == null) params.random = new Random();
+
+		params.factionId = temp.getId();
+		boolean wantedOfficers = params.withOfficers;
+		params.withOfficers = false;	// do this later to make sure it gets the correct portraits and names
+
+		// needed so the blended faction has ships and weapons
+		if (params.modeOverride == null || params.modeOverride == FactionAPI.ShipPickMode.IMPORTED) {
+			params.modeOverride = FactionAPI.ShipPickMode.PRIORITY_THEN_ALL;
+		}
+
+		CampaignFleetAPI fleet = FleetFactoryV3.createFleet(params);
+		fleet.setFaction(primary.getId(), true);
+		((DefaultFleetInflaterParams)(fleet.getInflater().getParams())).factionId = primary.getId();
+
+		// add the officers now
+		params.factionId = primary.getId();
+		if (wantedOfficers) FleetFactoryV3.addCommanderAndOfficersV2(fleet, params, params.random);
+
+		// rename ships and set max CR for officers
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
+			member.setShipName(primary.pickRandomShipName());
+		}
+		fleet.forceSync();
+
+		clearFactionKnownEquipment(temp);
+		//log.info("Fleet generation completed, fp " + fleet.getFleetPoints());
+
+		return fleet;
+	}
+
+	protected static void addKnownEquipmentToFaction(FactionAPI source, FactionAPI dest) {
+		for (String id : source.getKnownShips()) {
+			dest.addKnownShip(id, false);
+			//dest.addUseWhenImportingShip(id);
+		}
+		for (String id : source.getKnownFighters()) dest.addKnownFighter(id, false);
+		for (String id : source.getKnownWeapons()) dest.addKnownWeapon(id, false);
+		//for (String id : source.getKnownHullMods()) dest.getKnownHullMods().add(id);	// probably not needed
+
+		for (String id : source.getPriorityShips()) dest.getPriorityShips().add(id);
+		for (String id : source.getPriorityFighters()) dest.getPriorityFighters().add(id);
+		for (String id : source.getPriorityWeapons()) dest.getPriorityWeapons().add(id);
+
+		//log.info("Faction " + dest.getDisplayName() + " has " + dest.getPriorityShips() + " priority ships");
+
+		dest.getHullFrequency().putAll(source.getHullFrequency());
+	}
+
+	protected static void clearFactionKnownEquipment(FactionAPI faction) {
+		for (String id : faction.getKnownShips()) faction.removeUseWhenImportingShip(id);
+
+		faction.getKnownShips().clear();
+		faction.getKnownWeapons().clear();
+		faction.getKnownFighters().clear();
+		faction.getPriorityShips().clear();
+		faction.getPriorityWeapons().clear();
+		faction.getPriorityFighters().clear();
 	}
 }
