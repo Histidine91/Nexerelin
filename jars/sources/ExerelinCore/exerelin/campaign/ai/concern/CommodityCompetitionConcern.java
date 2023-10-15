@@ -47,20 +47,28 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
         //Map<String, Integer> trueImports = new HashMap<>();
         //Map<String, Integer> production = EconomyInfoHelper.getInstance().getCommoditiesProducedByFaction(ai.getFaction().getId());
 
+
         List<EconomyInfoHelper.ProducerEntry> competitors = helper.getCompetingProducers(factionId, 6, true);
         WeightedRandomPicker<EconomyInfoHelper.ProducerEntry> picker1 = new WeightedRandomPicker<>();
 
+        // first get a list of all ProducerEntries among our competitors, each PE comprising a market and commodity ID
         for (EconomyInfoHelper.ProducerEntry pe : competitors) {
+            //Global.getLogger(this.getClass()).info(String.format("Checking competition %s by %s", pe.commodityId, pe.factionId));
             NexFactionConfig conf = NexConfig.getFactionConfig(pe.factionId);
-            if (!conf.playableFaction || conf.pirateFaction) continue;
+            if (!conf.playableFaction || conf.pirateFaction) {
+                continue;
+            }
             if (alreadyConcerned.contains(pe.factionId)) continue;
             if (alreadyConcerned.contains(pe.commodityId)) continue;
+            //Global.getLogger(this.getClass()).info(String.format("Competition passed checks %s by %s", pe.commodityId, pe.factionId));
             picker1.add(pe, pe.output);
         }
 
         EconomyInfoHelper.ProducerEntry pePicked = picker1.pick();
         if (pePicked == null) return false;
 
+        // picked a random commodity that we have competitors on
+        // now get all factions that produce that commodity and consider them potential competitors
         commodityId = pePicked.commodityId;
         int ourShare = helper.getMarketShare(ai.getFaction(), commodityId);
 
@@ -68,9 +76,15 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
 
         WeightedRandomPicker<Pair<FactionAPI, Integer>> picker2 = new WeightedRandomPicker<>();
         for (Pair<FactionAPI, Integer> competitorEntry : competitors2) {
+            String compFacId = competitorEntry.one.getId();
+            NexFactionConfig conf = NexConfig.getFactionConfig(compFacId);
+            if (!conf.playableFaction || conf.pirateFaction) continue;
+            if (alreadyConcerned.contains(compFacId)) continue;
+
             int share = competitorEntry.two;
             if (share < ourShare/2) continue;
             if (share < SAIConstants.MIN_COMPETITOR_SHARE) continue;
+
             picker2.add(competitorEntry, share);
         }
 
