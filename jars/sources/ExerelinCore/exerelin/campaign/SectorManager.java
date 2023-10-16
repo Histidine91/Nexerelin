@@ -530,7 +530,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                    new RemnantRaidFleetInteractionConfigGen());
         }
     }
-    
+
+    // runcode exerelin.campaign.SectorManager.getManager().recheckLiveFactions()
     // regularly refresh live factions
     // since we don't have listeners for decivilization etc.
     // well now we do, but since markets might up and vanish in other ways, do it anyway
@@ -538,6 +539,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         Set<String> newLive = new HashSet<>();
         Set<String> oldLive = new HashSet<>(liveFactionIds);
+        presentFactionIds.clear();
         Map<String, MarketAPI> factionMarkets = new HashMap<>();    // stores one market for each faction, for intel
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
@@ -1441,7 +1443,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             DiplomacyManager.getManager().removeDiplomacyProfile(factionId);
         }
     }
-    
+
+    // runcode Console.showMessage(exerelin.campaign.SectorManager.getLiveFactionIdsCopy())
     public static ArrayList<String> getLiveFactionIdsCopy()
     {
         return new ArrayList<>(getManager().liveFactionIds);
