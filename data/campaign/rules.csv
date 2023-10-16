@@ -4327,12 +4327,13 @@ FireAll PopulateOptions","""Welcome... oh, it's the debtor.""
 
 $HeOrShe folds $hisOrHer arms. ""No service till you pay off your debt.""",,
 nex_mercRepOptions,PopulateOptions,"$nex_isAIMRep score:10
-$player.nex_seenAIMIntro",Nex_MercHire setMemoryValues,,"nex_mercViewHires:View mercs for hire
+$player.nex_seenAIMIntro","Nex_MercHire setMemoryValues
+FireAll Nex_MercRepOptionsCheck",,"nex_mercViewHires:View mercs for hire
 nex_mercViewHelp:Inquire about AIM's terms and conditions
 nex_mercPatrolPackage:Request an anti-piracy patrol package",
 nex_mercRepOptionsFirstTime,PopulateOptions,"$nex_isAIMRep score:10
 !$player.nex_seenAIMIntro",,,"nex_mercIntro1:""What do you do?""",
-nex_mercRepOptionsDebt,PopulateOptions,"$nex_isAIMRep score:10
+nex_mercRepOptionsDebt,Nex_MercRepOptionsCheck,"$nex_isAIMRep score:10
 $player.nex_mercsUnpaid > 0","SetEnabled nex_mercViewHires false
 SetEnabled nex_mercViewHelp false
 Nex_MercHire initDebt
@@ -4340,14 +4341,14 @@ AddTextSmall ""You owe $nex_mercDebtStr credits. You have $player.creditsStr cre
 SetTextHighlightColors h $nex_mercDebtColor
 Highlight $nex_mercDebtStr $player.creditsStr
 Nex_AddOptionConfirmation nex_mercPayDebt ""Confirm payment?"" ""Yes"" ""No""",,nex_mercPayDebt:Pay your debt,
-nex_mercRepOptionsAlreadyHavePatrol,PopulateOptions,"$nex_isAIMRep score:10
+nex_mercRepOptionsAlreadyHavePatrol,Nex_MercRepOptionsCheck,"$nex_isAIMRep score:10
 Nex_MercHire havePatrol score:5","SetEnabled nex_mercPatrolPackage false
 SetTooltip nex_mercPatrolPackage ""You have already contracted for the patrol package.""",,,
-nex_mercRepOptionsPatrolCooldown,PopulateOptions,"$nex_isAIMRep score:10
+nex_mercRepOptionsPatrolCooldown,Nex_MercRepOptionsCheck,"$nex_isAIMRep score:10
 $global.nex_HAmercPackage_onCooldown score:3","SetEnabled nex_mercPatrolPackage false
 SetTooltip nex_mercPatrolPackage ""You cannot purchase the patrol package again for $nex_HAmercPackage_cooldownDays more day(s).""
 SetTooltipHighlights nex_mercPatrolPackage $nex_HAmercPackage_cooldownDays",,,
-nex_mercRepOptionsNoHA,PopulateOptions,"$nex_isAIMRep score:10
+nex_mercRepOptionsNoHA,Nex_MercRepOptionsCheck,"$nex_isAIMRep score:10
 !Nex_MercHire haveHA","SetEnabled nex_mercPatrolPackage false
 SetTooltip nex_mercPatrolPackage ""Only relevant once you have colonies with hostile activity.""",,,
 nex_mercIntro1,DialogOptionSelected,$option == nex_mercIntro1,$player.nex_seenAIMIntro = true,"""Well, I handle all customer service inquiries. I put clients in touch with the mercs they need, and..."" $HeOrShe trails off. ""Oh, you meant our organization.""
@@ -4408,7 +4409,8 @@ AddTextSmall "" - Acceptance of an employment offer is entirely at the discretio
 Highlight ""experience level"" ""relationship with the relevant faction(s)""
 AddTextSmall "" - Ships that come with an officer may not have their officer changed. The employer may place their own officers on other ships at their discretion.""
 AddTextSmall "" - When the company is returned to AIM, if the value of the remaining ships is less than their value at the time of contract signing (due to losses, battle damage, or any other cause), the employer will pay 80% of the difference.""
-Highlight 80%","""Sure thing. Let me send it over...""
+Highlight 80%
+FireAll Nex_MercRepOptionsCheck","""Sure thing. Let me send it over...""
 
 You examine the document on your screen. It's got a lot of legalese, but the key points are as follows:","nex_mercViewHires:View mercs for hire
 nex_mercPatrolPackage:Request an anti-piracy patrol package
