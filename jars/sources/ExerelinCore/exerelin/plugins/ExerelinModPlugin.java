@@ -480,6 +480,10 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         Global.getSector().getListenerManager().addListener(PersonalConfigIntel.get(), true);
 
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+            ColonyManager.getManager().checkFactionMarketCondition(market);
+        }
+
         // call listeners; should be done last
         for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
         {

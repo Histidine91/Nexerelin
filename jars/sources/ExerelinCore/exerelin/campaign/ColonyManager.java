@@ -1495,6 +1495,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		else restoreCores(market);
 	}
 
+	public void checkFactionMarketCondition(MarketAPI market) {
+		MarketConditionAPI cond = market.getCondition(FactionConditionPlugin.CONDITION_ID);
+		if (cond != null) {
+			((FactionConditionPlugin)cond.getPlugin()).checkForRegen();
+		}
+	}
+
 	@Override
 	public void reportEconomyTick(int iterIndex) {
 		if (TutorialMissionIntel.isTutorialInProgress()) 
@@ -1611,10 +1618,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		coreStashCheck(market, oldOwner, newOwner);
 		
-		MarketConditionAPI cond = market.getCondition(FactionConditionPlugin.CONDITION_ID);
-		if (cond != null) {
-			((FactionConditionPlugin)cond.getPlugin()).checkForRegen();
-		}
+		checkFactionMarketCondition(market);
 		
 		// Turn "derelict officers" into normal ones
 		if (oldOwner.getId().equals("nex_derelict")) 
