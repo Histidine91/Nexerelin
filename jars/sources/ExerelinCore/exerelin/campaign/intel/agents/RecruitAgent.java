@@ -172,7 +172,7 @@ public class RecruitAgent extends CovertActionIntel {
 		if (!opts.hasOption(def)) return;
 
 		int minRecruitLevel = RecruitAgent.MIN_LEVEL;
-		if (agent.level < minRecruitLevel) {
+		if (dialog.getAgent().level < minRecruitLevel) {
 			opts.setEnabled(def, false);
 			String tooltip = String.format(getString("dialogTooltipRecruitTooLowLevel"), minRecruitLevel);
 			opts.setTooltip(def, tooltip);

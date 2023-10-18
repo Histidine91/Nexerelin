@@ -204,8 +204,19 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 				populateMainMenuOptions();
 				return;
 		}
-		if (action != null) action.dialogPopulateOptions(this, lastSelectedMenu);
+
 		showPaginatedMenu();
+
+		if (lastSelectedMenu == Menu.ACTION_TYPE) {
+			for (CovertActionDef def : CovertOpsManager.actionDefs) {
+				CovertActionIntel tempAction = CovertActionIntel.instantiateActionForDialog(this, def);
+				if (tempAction == null) {
+					continue;
+				}
+				tempAction.dialogPaginatedMenuShown(this, lastSelectedMenu);
+			}
+		}
+		else if (action != null) action.dialogPopulateOptions(this, lastSelectedMenu);
 	}
 	
 	protected void addActionOption(String actionId) {
