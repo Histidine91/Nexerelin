@@ -14,16 +14,16 @@ public class SAIConstants {
     public static float MARKET_VALUE_DIVISOR = 40;
     public static float MIN_COMPETITOR_SHARE = 10;
 
-    public static float STRENGTH_MULT_FOR_CONCERN = 1.2f;
+    public static float STRENGTH_MULT_FOR_CONCERN = 1f;
 
     /**
-     * For things like the vulnerable faction concern.
+     * For things like the vulnerable faction concern. Try not to be wildly lower than MIN_CONCERN_PRIORITY_TO_ACT to avoid it sitting unattended indefinitely.
      */
-    public static float MIN_FACTION_PRIORITY_TO_CARE = 50;
+    public static float MIN_FACTION_PRIORITY_TO_CARE = 60;
     /**
-     * For things like the inadequate defense concern.
+     * For things like the inadequate defense concern. Try not to be wildly lower than MIN_CONCERN_PRIORITY_TO_ACT to avoid it sitting unattended indefinitely.
      */
-    public static float MIN_MARKET_VALUE_PRIORITY_TO_CARE = 50;
+    public static float MIN_MARKET_VALUE_PRIORITY_TO_CARE = 60;
 
     public static float MAX_ALIGNMENT_MODIFIER_FOR_PRIORITY = 0.25f;
     public static float TRAIT_POSITIVE_MULT = 1.3f;

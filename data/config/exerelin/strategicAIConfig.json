@@ -135,16 +135,16 @@
 		"invasion":{
 			"name":"Invasion",
 			"classPath":"exerelin.campaign.ai.action.fleet.InvasionAction",
-			"cooldown":60,			# how long after action completion before a new action can be taken for the concern; default 30
+			"cooldown":45,			# how long after action completion before a new action can be taken for the concern; default 30
 			"antiRepetition":30,	# reduction in action priority if recently used elsewhere, decays over time; default 25
-			"chance":0.8,			# if the roll fails, skip the action before even checking its priority
+			"chance":0.85,			# if the roll fails, skip the action before even checking its priority
 			# wartime actions can only be used when at war
-			"tags":["military", "market", "canInvade", "unfriendly", "aggressive", "wartime"],
+			"tags":["military", "market", "canInvade", "unfriendly", "aggressive", "wartime", "useIfSurplusShips"],
 		},
 		"raid":{
 			"name":"Raid",
 			"classPath":"exerelin.campaign.ai.action.fleet.RaidAction",
-			"tags":["military", "market", "canRaid", "unfriendly", "aggressive", "wartime"],
+			"tags":["military", "market", "canRaid", "unfriendly", "aggressive", "wartime", "useIfSurplusShips"],
 		},
 		"pirateRaid":{
 			"name":"Pirate Raid",
@@ -162,8 +162,8 @@
 		"diplomacyPositive":{
 			"name":"Diplomatic Action (Positive)",
 			"classPath":"exerelin.campaign.ai.action.DiplomacyAction",
-			"antiRepetition":35,
-			"cooldown":60,	# longer since it's instant action
+			"antiRepetition":40,
+			"cooldown":75,	# longer since it's instant action and we don't want factions influencing relations too readily
 			"tags":["diplomacy", "canDiplomacy", "friendly"],
 		},
 		"diplomacyNegative":{
@@ -194,12 +194,14 @@
 			"name":"Raise Relations",
 			"classPath":"exerelin.campaign.ai.action.covert.RaiseRelationsAction",
 			"antiRepetition":35,
+			"cooldown":45, # don't want factions influencing relations too readily
 			"tags":["diplomacy", "covert", "canDiplomacy", "diplomacy_positive", "friendly"],
 		},
 		"agentLowerRelations":{
 			"name":"Lower Relations",
 			"classPath":"exerelin.campaign.ai.action.covert.LowerRelationsAction",
 			"antiRepetition":35,
+			"cooldown":45,
 			"tags":["diplomacy", "covert", "canLowerRelations", "diplomacy_negative", "unfriendly"],
 		},
 		"agentDestroyCommodityStocks":{

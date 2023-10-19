@@ -18,6 +18,7 @@ import java.util.Set;
 public class InadequateDefenseConcern extends MarketRelatedConcern {
 
     public static final int MAX_MARKETS_FOR_PICKER = 4;
+    public static final float PRIORITY_MULT = 1.5f;
 
     @Override
     public boolean generate() {
@@ -31,7 +32,7 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
             float value = getMarketValue(market);
             float sd = getSpaceDefenseValue(market);
             float gd = getGroundDefenseValue(market);
-            //if (sd/size >= SAIConstants.SPACE_DEF_THRESHOLD && gd/size >= SAIConstants.GROUND_DEF_THRESHOLD) return false;
+            if (sd/size >= SAIConstants.SPACE_DEF_THRESHOLD && gd/size >= SAIConstants.GROUND_DEF_THRESHOLD) return false;
 
             float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR * 2;
             if (valueMod < SAIConstants.MIN_MARKET_VALUE_PRIORITY_TO_CARE) continue;
@@ -64,16 +65,18 @@ public class InadequateDefenseConcern extends MarketRelatedConcern {
         float value = getMarketValue(market);
         float sd = getSpaceDefenseValue(market);
         float gd = getGroundDefenseValue(market);
+
         if (sd/size >= SAIConstants.SPACE_DEF_THRESHOLD && gd/size >= SAIConstants.GROUND_DEF_THRESHOLD) {
             end();
             return;
         }
-        float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR;
+
+        float valueMod = value/(sd*2 + gd)/SAIConstants.MARKET_VALUE_DIVISOR * 2;
         if (valueMod < SAIConstants.MIN_MARKET_VALUE_PRIORITY_TO_CARE) {
             end();
             return;
         }
-        priority.modifyFlat("defenseAdjustedValue", valueMod * 2,
+        priority.modifyFlat("defenseAdjustedValue", valueMod * PRIORITY_MULT,
                 StrategicAI.getString("statDefenseAdjustedValue", true));
 
         float fromRaids = getPriorityFromRaids(market);

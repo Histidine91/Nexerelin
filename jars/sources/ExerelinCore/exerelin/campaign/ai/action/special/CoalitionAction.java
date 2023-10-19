@@ -16,6 +16,7 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsFaction;
 
 import java.util.*;
 
@@ -53,6 +54,7 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             if (potentialFriends.contains(ofid)) continue;
             if (ofid.equals(ai.getFactionId())) continue;
             if (ofid.equals(enemyId)) continue;
+            if (NexUtilsFaction.isPirateFaction(ofid) != NexUtilsFaction.isPirateFaction(ai.getFactionId())) continue;
 
             if (AllianceManager.getManager().canAlly(factionId, ofid)) {
                 StrategicAction allyAct = createAlliance(ofid);

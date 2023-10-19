@@ -2526,6 +2526,7 @@
 		"statValue":"value",
 		"statDefenseAdjustedValue":"value/defense",
 		"statImportVolume":"import volume",
+		"statDomesticProduction":"in-faction production",
 		"statCommodityType":"commodity type",
 		"statFactionPower":"faction power",
 		"statCompetingShare":"competitor's market share",

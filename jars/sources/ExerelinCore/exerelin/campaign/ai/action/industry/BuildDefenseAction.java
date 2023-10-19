@@ -23,9 +23,16 @@ import static exerelin.campaign.ColonyManager.QueuedIndustry;
 public class BuildDefenseAction extends BuildIndustryAction {
 
     @Override
+    public boolean generate() {
+        boolean result = super.generate();
+        //if (!result) Global.getLogger(this.getClass()).info("Build defense action generation failed");
+        return result;
+    }
+
+    @Override
     protected boolean buildOrUpgrade() {
         boolean exists = market.hasIndustry(industryId);
-        ColonyManager.getManager().queueIndustry(market, id, exists ? QueuedIndustry.QueueType.UPGRADE : QueuedIndustry.QueueType.NEW);
+        ColonyManager.getManager().queueIndustry(market, industryId, exists ? QueuedIndustry.QueueType.UPGRADE : QueuedIndustry.QueueType.NEW);
         ColonyManager.getManager().processNPCConstruction(market);
 
         return true;

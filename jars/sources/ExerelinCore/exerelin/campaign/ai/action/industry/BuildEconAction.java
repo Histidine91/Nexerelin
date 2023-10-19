@@ -86,13 +86,20 @@ public class BuildEconAction extends BuildIndustryAction {
     protected float modifyProducerScore(String industryId, MarketAPI market, float score) {
         if (concern instanceof ImportDependencyConcern) {
             ImportDependencyConcern idc = (ImportDependencyConcern)concern;
+            String commodityId = idc.getCommodityId();
             Industry temp = market.instantiateIndustry(industryId);
-            if (temp != null && temp.getSupply(idc.getCommodityId()) != null) {
+            if (temp != null && temp.getSupply(commodityId) != null) {
                 int potentialSupply = temp.getSupply(idc.getCommodityId()).getQuantity().getModifiedInt();
                 if (potentialSupply >= idc.getRequired()) {
                     score *= 5;
                 }
-                else return -1;
+                else {
+                    // already have higher in-faction supply than we'll get here?
+                    int existingProduction = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
+                    if (existingProduction >= potentialSupply) {
+                        return -1;
+                    }
+                }
             }
             else return -1; // should already be checked by getBestProducerForMarket I think
         }

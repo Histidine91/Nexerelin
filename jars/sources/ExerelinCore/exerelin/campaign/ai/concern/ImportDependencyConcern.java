@@ -9,6 +9,8 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.ai.SAIUtils;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.fleet.OffensiveFleetAction;
@@ -54,6 +56,7 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
             if (alreadyConcerned.contains(commodityId)) continue;
 
             int rawImport = imports.get(commodityId);
+            // don't bother making a concern if imports are less than 4 units (modified by the commodity's output modifier)
             if (rawImport < 4 + EconomyInfoHelper.getCommodityOutputModifier(commodityId))
                 continue;
             Integer prod = production.get(commodityId);
@@ -70,9 +73,24 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
         commodityId = picker.pick();
         if (commodityId != null) {
             required = Math.round(picker.getWeight(commodityId));
+            float thisProd = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
+
             float prio = required * 10;
+            float prioMinus = thisProd * 5;
+            if (MULTIPLIERS.containsKey(commodityId)) {
+                float mult = MULTIPLIERS.get(commodityId);
+                prio *= mult;
+                prioMinus *= mult;
+            }
             priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
+            priority.modifyFlat("domesticProduction", -prioMinus, StrategicAI.getString("statDomesticProduction", true));
+
             reapplyPriorityModifiers();
+
+            // import dependency concerns tend to get pretty cluttery, so don't even bother unless we're likely to do something about it
+            if (priority.getModifiedValue() < SAIConstants.MIN_CONCERN_PRIORITY_TO_ACT)
+                return false;
+
             return true;
         }
 
@@ -131,9 +149,23 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
 
         required = imports;
         float prio = required * 10;
-        if (MULTIPLIERS.containsKey(commodityId)) prio *= MULTIPLIERS.get(commodityId);
+        float prioMinus = production * 5;
+        if (MULTIPLIERS.containsKey(commodityId)) {
+            float mult = MULTIPLIERS.get(commodityId);
+            prio *= mult;
+            prioMinus *= mult;
+        }
         priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
-        super.update();
+        priority.modifyFlat("domesticProduction", -prioMinus, StrategicAI.getString("statDomesticProduction", true));
+        reapplyPriorityModifiers();
+
+        // import dependency concerns tend to get pretty cluttery, so don't even bother unless we're likely to do something about it
+        if (priority.getModifiedValue() < SAIConstants.MIN_CONCERN_PRIORITY_TO_ACT) {
+            end();
+            return;
+        }
+
+        SAIUtils.reportConcernUpdated(ai, this);
     }
 
     @Override

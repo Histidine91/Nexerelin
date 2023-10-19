@@ -70,6 +70,8 @@ public class ExecutiveAIModule extends StrategicAIModule {
     public void actOnConcerns() {
         currentConcerns.clear();
 
+        if (ai.getFaction().isPlayerFaction()) return;
+
         int actionsTakenThisMeeting = 0;
         List<StrategicConcern> concerns = new ArrayList<>(ai.getExistingConcerns());
         Collections.sort(concerns, new Comparator<StrategicConcern>() {
