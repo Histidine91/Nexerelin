@@ -67,6 +67,17 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
     }
 
     @Override
+    public void modifyActionPriority(StrategicAction action) {
+        // attack attack attack (while agent actions should be possible but get a penalty)
+        if (action.getDef().hasTag("military")) {
+            action.getPriority().modifyMult("combat", 1.25f, Misc.ucFirst(StrategicAI.getString("statConcernType")));
+        }
+        else if (action.getDef().hasTag("covert")) {
+            action.getPriority().modifyMult("noncombat", 0.8f, Misc.ucFirst(StrategicAI.getString("statBadAction")));
+        }
+    }
+
+    @Override
     public List<FactionAPI> getFactions() {
         List<FactionAPI> factions = new ArrayList<>();
         for (String factionId : hostileFactions) {
@@ -106,4 +117,32 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
             priority.modifyFlat("priorityFromTime", priorityFromTime, StrategicAI.getString("statPriorityOverTime", true));
         }
     }
+
+    /*
+    @Override
+    public List<Industry> getTargetIndustries() {
+        List<Industry> results = new ArrayList<>();
+        Set<String> candidates = new HashSet<>(getTargetIndustryIds());
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+            String factionId = market.getFactionId();
+            if (!ai.getFaction().isHostileTo(factionId)) continue;
+            if (CovertOpsManager.DISALLOWED_FACTIONS.contains(factionId)) continue;
+            for (Industry ind : market.getIndustries()) {
+                if (candidates.contains(ind.getId())) results.add(ind);
+            }
+        }
+        return results;
+    }
+
+    @Override
+    public List<String> getTargetIndustryIds() {
+        List<String> results = new ArrayList<>();
+        for (IndustrySpecAPI spec : Global.getSettings().getAllIndustrySpecs()) {
+            if (spec.hasTag(Industries.TAG_SPACEPORT) || spec.hasTag(Industries.TAG_HEAVYINDUSTRY) || spec.hasTag(Industries.TAG_GROUNDDEFENSES)) {
+                results.add(spec.getId());
+            }
+        }
+        return results;
+    }
+     */
 }

@@ -28,6 +28,7 @@ public class PirateRaidAction extends RaidAction {
         boolean success = super.generate();
         if (success) {
             OffensiveFleetIntel intel = (OffensiveFleetIntel) delegate;
+            intel.setProxyForFaction(ai.getFaction());
         }
         return success;
     }
@@ -78,7 +79,13 @@ public class PirateRaidAction extends RaidAction {
     public FleetPoolManager.RequisitionParams getFleetPoolRequisitionParams() {
         FleetPoolManager.RequisitionParams rp = new FleetPoolManager.RequisitionParams();
         rp.factionId = ai.getFactionId();   // faction taking the action pays the fleet pool cost, rather than our proxies
+        rp.amountMult = 0.67f;
         return rp;
+    }
+
+    @Override
+    public float getSizeMult() {
+        return 1.5f;
     }
 
     @Override

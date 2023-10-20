@@ -173,8 +173,10 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 	protected List<MarketAPI> getTargets() {
 		boolean pirateInvasions = NexConfig.allowPirateInvasions;
 		List<MarketAPI> targets = new ArrayList<>();
+		NexRaidIntel raid = getNexRaidIntel();
 		for (MarketAPI market : Misc.getMarketsInLocation(system)) {
 			if (!market.getFaction().isHostileTo(intel.getFaction())) continue;
+			if (raid.getProxyForFaction() != null && !raid.getProxyForFaction().isHostileTo(market.getFaction())) continue;
 			if (!pirateInvasions && !(intel instanceof RemnantRaidIntel)
 					&& NexUtilsFaction.isPirateFaction(market.getFactionId())) 
 				continue;

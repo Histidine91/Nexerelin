@@ -15,11 +15,6 @@ public class DiplomacyAction extends BaseStrategicAction {
     public static final float DIPLOMACY_GLOBAL_COOLDOWN = 3;
     public static final String MEM_KEY_GLOBAL_COOLDOWN = "$nex_diplomacy_cooldown";
 
-    public DiplomacyIntel getIntel() {
-        if (delegate instanceof  DiplomacyIntel) return (DiplomacyIntel)delegate;
-        return null;
-    }
-
     @Override
     public boolean generate() {
         boolean canPositive = concern.getDef().hasTag("diplomacy_positive");
@@ -105,13 +100,15 @@ public class DiplomacyAction extends BaseStrategicAction {
     public void postGenerate() {
         super.postGenerate();
         // used to be in generate() directly but putting it here makes some stuff technically cleaner
-        end(StrategicActionDelegate.ActionStatus.SUCCESS);
-        Global.getSector().getMemoryWithoutUpdate().set(MEM_KEY_GLOBAL_COOLDOWN, true, DIPLOMACY_GLOBAL_COOLDOWN);
+        if (delegate instanceof DiplomacyIntel) {
+            end(StrategicActionDelegate.ActionStatus.SUCCESS);
+            Global.getSector().getMemoryWithoutUpdate().set(MEM_KEY_GLOBAL_COOLDOWN, true, DIPLOMACY_GLOBAL_COOLDOWN);
+        }
     }
 
     @Override
     public String getName() {
-        if (getIntel() != null) return getIntel().getSmallDescriptionTitle();
+        if (delegate != null) return delegate.getStrategicActionName();
         return getDef().id;
     }
 

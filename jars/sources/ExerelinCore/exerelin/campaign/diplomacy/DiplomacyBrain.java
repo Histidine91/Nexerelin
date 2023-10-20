@@ -646,7 +646,10 @@ public class DiplomacyBrain {
 				continue;
 
 			IntelInfoPlugin intel = tryMakePeace(enemyId, ourWeariness);
-			if (intel != null) return intel;
+			if (intel != null) {
+				updateEnemiesAndCeasefires(0);
+				return intel;
+			}
 			tries--;
 			if (tries <= 0) break;
 		}

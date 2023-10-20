@@ -26,7 +26,9 @@ public class ExecutiveAIModule extends StrategicAIModule {
         StrategicAction forId = action;
         StrategicDefManager.StrategicActionDef def = forId.getDef();
         String id = def.idForAntiRepetition != null ? def.idForAntiRepetition : def.id;
-        NexUtils.modifyMapEntry(recentActionsForAntiRepetition, id, def.antiRepetition);
+        float antiRepetitionMult = 1;
+        if (action.getConcern() != null) antiRepetitionMult = action.getConcern().getDef().antiRepetitionMult;
+        NexUtils.modifyMapEntry(recentActionsForAntiRepetition, id, def.antiRepetition * antiRepetitionMult);
     }
 
     public float getAntiRepetitionValue(String actionDefId) {

@@ -85,7 +85,9 @@ public class RetaliationConcernV2 extends BaseStrategicConcern {
         Collections.sort(raidsSorted, VALUE_COMPARATOR);
 
         topRaid = raidsSorted.get(0).one;
-        market = topRaid.origin;
+        if (topRaid.origin.getFaction().isHostileTo(ai.getFaction())) {
+            market = topRaid.origin;
+        }
         faction = topRaid.attacker;
         float adjustedImpact = raidsSorted.get(0).two;
         log.info("Selected raid record: " + topRaid.name + ", " + adjustedImpact);

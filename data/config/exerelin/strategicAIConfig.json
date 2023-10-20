@@ -50,7 +50,9 @@
 			"name":"General Warfare",
 			"desc":"We are at war with %s faction(s) and should take action against our enemies.",
 			"classPath":"exerelin.campaign.ai.concern.GeneralWarfareConcern",
-			"tags":["military", "wantCauseHarm", "canSatBomb"],
+			"cooldownMult":0.5,	# actions have halved cooldown for this concern
+			"antiRepetitionMult":0.5,	# actions generate half the anti-repetition points for this concern
+			"tags":["military", "wantCauseHarm", "canSatBomb", "canSabotageIndustry"],
 			"module":MILITARY
 		},
 		
@@ -196,6 +198,7 @@
 			"antiRepetition":35,
 			"cooldown":45, # don't want factions influencing relations too readily
 			"tags":["diplomacy", "covert", "canDiplomacy", "diplomacy_positive", "friendly"],
+			"idForAntiRepetition":"agentDiplo",
 		},
 		"agentLowerRelations":{
 			"name":"Lower Relations",
@@ -203,17 +206,20 @@
 			"antiRepetition":35,
 			"cooldown":45,
 			"tags":["diplomacy", "covert", "canLowerRelations", "diplomacy_negative", "unfriendly"],
+			"idForAntiRepetition":"agentDiplo",
 		},
 		"agentDestroyCommodityStocks":{
 			"name":"Destroy Commodity Stocks",
 			"classPath":"exerelin.campaign.ai.action.covert.DestroyCommodityStocksAction",
 			"tags":["covert", "canDestroyCommodity", "aggressive", "unfriendly"],
+			"idForAntiRepetition":"agentGeneric",
 		},
 		"agentSabotageIndustry":{
 			"name":"Sabotage Industry",
 			"classPath":"exerelin.campaign.ai.action.covert.SabotageIndustryAction",
 			"antiRepetition":30,
 			"tags":["covert", "canSabotageIndustry", "aggressive", "unfriendly"],
+			"idForAntiRepetition":"agentGeneric",
 		},
 		"agentInstigateRebellion":{
 			"name":"Instigate Rebellion",
@@ -221,6 +227,7 @@
 			"antiRepetition":35,
 			"chance":0.6,
 			"tags":["military", "covert", "canInvade", "aggressive", "unfriendly"],
+			"idForAntiRepetition":"agentGeneric",
 		},
 		
 		"buildEcon":{

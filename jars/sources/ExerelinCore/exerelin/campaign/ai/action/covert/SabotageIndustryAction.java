@@ -93,6 +93,10 @@ public class SabotageIndustryAction extends CovertAction {
         // else, ask CovertOpsManager to find something for us
         Industry ind = CovertOpsManager.getManager().pickMilitarySabotageTarget(ai.getFaction());
         if (ind != null) return ind;
+
+        // I was gonna stop here if this is a General Warfare concern, so it only picks military targets
+        // but mehhh
+
         EconomyInfoHelper.ProducerEntry prod = CovertOpsManager.getManager().pickEconomicSabotageTarget(ai.getFaction());
         if (prod != null) {
             Map<String, Object> targetData = CovertOpsManager.getManager().pickSabotageIndustryTargetFromProducerEntry(prod);

@@ -77,11 +77,7 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
 
             float prio = required * 10;
             float prioMinus = thisProd * 5;
-            if (MULTIPLIERS.containsKey(commodityId)) {
-                float mult = MULTIPLIERS.get(commodityId);
-                prio *= mult;
-                prioMinus *= mult;
-            }
+
             priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
             priority.modifyFlat("domesticProduction", -prioMinus, StrategicAI.getString("statDomesticProduction", true));
 
@@ -150,11 +146,7 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
         required = imports;
         float prio = required * 10;
         float prioMinus = production * 5;
-        if (MULTIPLIERS.containsKey(commodityId)) {
-            float mult = MULTIPLIERS.get(commodityId);
-            prio *= mult;
-            prioMinus *= mult;
-        }
+
         priority.modifyFlat("importVolume", prio, StrategicAI.getString("statImportVolume", true));
         priority.modifyFlat("domesticProduction", -prioMinus, StrategicAI.getString("statDomesticProduction", true));
         reapplyPriorityModifiers();

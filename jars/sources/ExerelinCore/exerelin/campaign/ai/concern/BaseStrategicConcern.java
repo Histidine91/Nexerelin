@@ -283,7 +283,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
         }
 
         if (newStatus == StrategicActionDelegate.ActionStatus.SUCCESS || newStatus == StrategicActionDelegate.ActionStatus.FAILURE) {
-            actionCooldown += action.getDef().cooldown;
+            actionCooldown += action.getDef().cooldown * this.getDef().cooldownMult;
             update();
         }
         else if (newStatus == StrategicActionDelegate.ActionStatus.CANCELLED) {

@@ -45,7 +45,7 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
 
 
         OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(origin, target,
-                type, 1, getFleetPoolRequisitionParams());
+                type, getSizeMult(), getFleetPoolRequisitionParams());
         if (intel != null)
         {
             InvasionFleetManager.getManager().modifySpawnCounterV2(ai.getFactionId(), -InvasionFleetManager.getInvasionPointCost(intel));
@@ -69,6 +69,10 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
     public MarketAPI pickOriginMarket(MarketAPI target) {
         return InvasionFleetManager.getManager().getSourceMarketForFleet(ai.getFaction(), target.getLocationInHyperspace(),
                 Global.getSector().getEconomy().getMarketsCopy());
+    }
+
+    public float getSizeMult() {
+        return 1;
     }
 
     @Override

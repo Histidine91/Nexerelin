@@ -40,6 +40,8 @@ public class StrategicDefManager {
                 def.module = ModuleType.valueOf(defJSON.getString("module"));
                 def.noAutoGenerate = defJSON.optBoolean("noAutoGenerate", false);
                 def.enabled = defJSON.optBoolean("enabled", true);
+                def.cooldownMult = (float)defJSON.optDouble("cooldownMult", 1);
+                def.antiRepetitionMult = (float)defJSON.optDouble("antiRepetitionMult", 1);
                 List<String> tags = NexUtils.JSONArrayToArrayList(defJSON.getJSONArray("tags"));
                 def.tags.addAll(tags);
 
@@ -108,6 +110,8 @@ public class StrategicDefManager {
         public ModuleType module;
         public boolean noAutoGenerate;
         public boolean enabled;
+        public float cooldownMult;
+        public float antiRepetitionMult;
         public Set<String> tags = new HashSet<>();
 
         public StrategicConcernDef(String id) {

@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -26,6 +27,8 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
 
     public static final int MAX_SIMULTANEOUS_CONCERNS = 1;
     public static final int MAX_SIMULTANEOUS_CONCERNS_MONOPOLIST = 3;
+
+    public static final Set<String> IGNORE_COMMODITIES = new HashSet<>(Arrays.asList(Commodities.ORE));
 
     @Getter protected String commodityId;
     @Getter protected int competitorShare;
@@ -58,6 +61,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
             if (!conf.playableFaction || conf.pirateFaction) {
                 continue;
             }
+            if (IGNORE_COMMODITIES.contains(pe.commodityId)) continue;
             if (alreadyConcerned.contains(pe.factionId)) continue;
             if (alreadyConcerned.contains(pe.commodityId)) continue;
             //Global.getLogger(this.getClass()).info(String.format("Competition passed checks %s by %s", pe.commodityId, pe.factionId));

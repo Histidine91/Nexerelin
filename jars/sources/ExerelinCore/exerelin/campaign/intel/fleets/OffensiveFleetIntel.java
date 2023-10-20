@@ -58,6 +58,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	@Getter protected MarketAPI from;
 	@Getter protected MarketAPI target;
 	@Getter protected FactionAPI targetFaction;
+	@Getter @Setter protected FactionAPI proxyForFaction;
 	@Getter @Setter protected OffensiveOutcome outcome;
 	@Getter protected boolean isRespawn = false;
 	protected boolean intelQueuedOrAdded;
