@@ -101,6 +101,7 @@ public class SupplyRebellion extends HubMissionWithBarEvent {
 
         List<FactionAPI> otherFactions = new ArrayList<>();
         for (String ofid : SectorManager.getLiveFactionIdsCopy()) {
+            if (ofid.equals(factionId)) continue;
             FactionAPI otherFaction = Global.getSector().getFaction(ofid);
             if (otherFaction.isPlayerFaction()) continue;
             if (otherFaction.isAtWorst(factionId, RepLevel.SUSPICIOUS)) continue;
