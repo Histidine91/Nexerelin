@@ -10,3 +10,4 @@
 *.xcf
 *.svg
 *.iml
+.run/Run Starsector.run.xml
