@@ -35,9 +35,20 @@ object CharacterBackgroundLoader {
             spec.order = order
             spec.iconPath = iconPath
             spec.pluginPath = pluginPath
+            spec.modName = filterModPath(row.getString("fs_rowSource"))
 
             specs.add(spec)
         }
+    }
+
+    //From Console Commands by LazyWizard
+    private fun filterModPath(fullPath: String): String? {
+        var modPath = fullPath.replace("/", "\\")
+        modPath = modPath.substring(modPath.lastIndexOf("\\mods\\"))
+        modPath = modPath.substring(0, modPath.indexOf('\\', 6)) + "\\"
+        modPath = modPath.replace("\\mods\\", "")
+        modPath = modPath.replace("\\", "")
+        return modPath
     }
 
 }

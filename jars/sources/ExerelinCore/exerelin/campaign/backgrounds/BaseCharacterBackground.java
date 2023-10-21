@@ -29,9 +29,7 @@ public abstract class BaseCharacterBackground {
 
     public abstract boolean shouldShowInSelection(FactionSpecAPI factionSpec, NexFactionConfig factionConfig);
 
-    public boolean canTooltipBeExpanded() {
-        return false;
-    }
+
 
     public void addTooltipForSelection(TooltipMakerAPI tooltip, FactionSpecAPI factionSpec, NexFactionConfig factionConfig, Boolean expanded) {
        addBaseTooltip(tooltip, factionSpec, factionConfig);

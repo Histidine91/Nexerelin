@@ -19,12 +19,6 @@ public class HeavyDebtBackground extends BaseCharacterBackground {
         new HeavyDeptObligation();
     }
 
-
-    @Override
-    public boolean canTooltipBeExpanded() {
-        return true;
-    }
-
     @Override
     public void addTooltipForSelection(TooltipMakerAPI tooltip, FactionSpecAPI factionSpec, NexFactionConfig factionConfig, Boolean expanded) {
         super.addTooltipForSelection(tooltip, factionSpec, factionConfig, expanded);

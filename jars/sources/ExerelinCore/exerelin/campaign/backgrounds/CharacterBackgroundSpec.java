@@ -9,6 +9,7 @@ public class CharacterBackgroundSpec {
     public String iconPath;
     public float order;
     public String pluginPath;
+    public String modName;
 
 
 }
