@@ -61,7 +61,7 @@ public class NexWarSimScript {
             if (sf.getFaction() != faction) continue;
 
             if (sf.getRouteAI().getCurrentTask() == null) continue;
-            if (sf.getRouteAI().getCurrentTask().system != loc) continue;
+            if (sf.getRouteAI().getCurrentTask().getSystem() != loc) continue;
 
             if (fleet != null) {
                 report.addEntry(new FactionStrengthReportEntry(fleet));

@@ -1,11 +1,7 @@
 package exerelin.campaign.intel.specialforces;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -35,15 +31,12 @@ import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.util.*;
 
 /**
  * Strategic level AI for special forces fleets. Handles perhaps everything to do with the managed route.
@@ -1001,6 +994,12 @@ public class SpecialForcesRouteAI {
 		public void setMarket(MarketAPI market) {
 			this.market = market;
 			this.entity = market.getPrimaryEntity();
+		}
+
+		public StarSystemAPI getSystem() {
+			if (system != null) return system;
+			if (market != null) return market.getStarSystem();
+			return null;
 		}
 		
 		public SpecialForcesTask clone() throws CloneNotSupportedException {
