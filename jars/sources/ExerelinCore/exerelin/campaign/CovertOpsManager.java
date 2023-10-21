@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
+import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -608,8 +609,13 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			
 			for (Industry ind : off.getTarget().getIndustries()) {
 				String id = ind.getId();
-				if (ind.getSpec().hasTag(Industries.TAG_GROUNDDEFENSES) || id.equals(Industries.PATROLHQ)
-						|| id.equals(Industries.MILITARYBASE) || id.equals(Industries.HIGHCOMMAND))
+				IndustrySpecAPI spec = ind.getSpec();
+				if (spec.hasTag(Industries.TAG_GROUNDDEFENSES)
+						//|| id.equals(Industries.PATROLHQ)
+						|| spec.hasTag(Industries.TAG_MILITARY)
+						|| spec.hasTag(Industries.TAG_COMMAND)
+						//|| spec.hasTag(Industries.TAG_SPACEPORT)
+				)
 					picker.add(ind, weight);
 			}
 		}
