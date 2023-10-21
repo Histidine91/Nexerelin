@@ -87,7 +87,6 @@ public class SpacerStart extends CustomStart {
 				if (!ExerelinSetupData.getInstance().spacerObligation) {
 					new Nex_SpacerObligation();
 				}
-					
 			}
 		});
 		

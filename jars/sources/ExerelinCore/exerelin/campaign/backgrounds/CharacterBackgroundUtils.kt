@@ -6,7 +6,8 @@ object CharacterBackgroundUtils {
 
     @JvmStatic
     fun isBackgroundActive(id: String) : Boolean {
-        return getCurrentBackgroundSpec()!!.id == id
+        var spec: CharacterBackgroundSpec = getCurrentBackgroundSpec() ?: return false
+        return spec.id == id
     }
 
     @JvmStatic
@@ -18,7 +19,13 @@ object CharacterBackgroundUtils {
 
     @JvmStatic
     fun getPluginForSpec(spec: CharacterBackgroundSpec): BaseCharacterBackground? {
-        return Global.getSettings().scriptClassLoader.loadClass(spec.pluginPath).newInstance() as BaseCharacterBackground?
+        try {
+            var plugin = Global.getSettings().scriptClassLoader.loadClass(spec.pluginPath).newInstance() as BaseCharacterBackground
+            plugin.spec = spec
+            return plugin
+        } catch (e: Throwable) {
+            return null
+        }
     }
 
 }

@@ -13,15 +13,14 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator
 import com.fs.starfarer.api.util.Misc
 import exerelin.campaign.backgrounds.BaseCharacterBackground
+import exerelin.campaign.backgrounds.CharacterBackgroundIntel
 import exerelin.campaign.backgrounds.CharacterBackgroundLoader
-import exerelin.campaign.backgrounds.PirateCharacterBackground
-import exerelin.campaign.backgrounds.StandardCharacterBackground
 import exerelin.utilities.NexConfig
 import exerelin.utilities.ui.NexLunaCheckbox
 import exerelin.utilities.ui.NexLunaElement
 import org.lwjgl.input.Keyboard
 
-class New_NGCBackgroundSelection : BaseCommandPlugin() {
+class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
 
     lateinit var optionPanel: OptionPanelAPI
     lateinit var textPanel: TextPanelAPI
@@ -44,6 +43,7 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
         optionPanel.clearOptions()
         textPanel.addPara("Choose your Background", Misc.getBasePlayerColor(), Misc.getBasePlayerColor())
         textPanel.addPara("A background can determine an assortment of different things, be that starting cargo, skills or future interactions with other characters. You can also choose to begin as a nobody who has yet to make their name known.")
+        textPanel.addPara("Hover over a background to get more information.")
 
         optionPanel.addOption("Done", "nex_NGCDone")
         optionPanel.setShortcut("nex_NGCDone", Keyboard.KEY_RETURN, false, false, false, false)
@@ -70,8 +70,8 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
         for (background in backgrounds.sortedBy { it.order }) {
             element.addSpacer(20f)
 
-            var title = background.title
-            var description = background.shortDescription
+            var title = background.getTitle(factionSpec, factionConfig)
+            var description = background.getShortDescription(factionSpec, factionConfig)
             var imagePath = background.getIcon(factionSpec, factionConfig)
 
             var subelement = NexLunaElement(element, width - 50, 50f).apply {
@@ -80,6 +80,9 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
             }
 
             var checkbox = NexLunaCheckbox(first, subelement.innerElement, 20f, 20f)
+            if (first) {
+                selectedPlugin = background
+            }
             first = false
             checkboxes.put(subelement, checkbox)
 
@@ -103,22 +106,20 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
             }
 
 
-            if (background.hasSelectionTooltip()) {
-                element.addTooltipTo(object  : TooltipCreator {
-                    override fun isTooltipExpandable(tooltipParam: Any?): Boolean {
-                        return false
-                    }
+            element.addTooltipTo(object  : TooltipCreator {
+                override fun isTooltipExpandable(tooltipParam: Any?): Boolean {
+                    return background.canTooltipBeExpanded()
+                }
 
-                    override fun getTooltipWidth(tooltipParam: Any?): Float {
-                        return 450f
-                    }
+                override fun getTooltipWidth(tooltipParam: Any?): Float {
+                    return 450f
+                }
 
-                    override fun createTooltip(tooltip: TooltipMakerAPI?, expanded: Boolean, tooltipParam: Any?) {
-                        background.addTooltipForSelection(tooltip, factionSpec, factionConfig)
-                    }
+                override fun createTooltip(tooltip: TooltipMakerAPI?, expanded: Boolean, tooltipParam: Any?) {
+                    background.addTooltipForSelection(tooltip, factionSpec, factionConfig, expanded)
+                }
 
-                },subelement.elementPanel, TooltipMakerAPI.TooltipLocation.BELOW)
-            }
+            },subelement.elementPanel, TooltipMakerAPI.TooltipLocation.BELOW)
         }
 
         for ((element, checkbox) in checkboxes) {
@@ -151,6 +152,9 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
             var plugin = selectedPlugin
             plugin!!.executeAfterGameCreation(factionSpec, factionConfig)
             Global.getSector().memoryWithoutUpdate.set("\$nex_selected_background", plugin.spec.id)
+
+            var intel = CharacterBackgroundIntel(factionId)
+            Global.getSector().intelManager.addIntel(intel)
         }
 
         return true

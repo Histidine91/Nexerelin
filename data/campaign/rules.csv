@@ -250,7 +250,7 @@ Nex_IsNull $nex_lastSelectedFleetType","NGCClearStartingGear
 Nex_NGCCustomStart unset
 FireBest Nex_NGCCustomStartMenu",,,
 ,,,,,,
-nex_NGCSelectBackground,NewGameBackgroundSelection,,New_NGCBackgroundSelection,,,
+nex_NGCSelectBackground,NewGameBackgroundSelection,,Nex_NGCBackgroundSelection,,,
 ,,,,,,
 nex_NGCDoneOption,NewGameOptionSelected,$option == nex_NGCDone,"Nex_NGCFinalize
 NGCDone",,,

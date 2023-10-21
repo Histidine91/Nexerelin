@@ -19,6 +19,7 @@ object CharacterBackgroundLoader {
             if (id.startsWith("#") || id == "") continue
             val title = row.getString("name")
             val shortDescription = row.getString("shortDescription")
+            val longDescription = row.getString("longDescription")
             val order = row.getDouble("order").toFloat()
             val iconPath = row.getString("iconPath")
             val pluginPath = row.getString("plugin")
@@ -30,6 +31,7 @@ object CharacterBackgroundLoader {
             spec.id = id
             spec.title = title
             spec.shortDescription = shortDescription
+            spec.longDescription = longDescription
             spec.order = order
             spec.iconPath = iconPath
             spec.pluginPath = pluginPath
