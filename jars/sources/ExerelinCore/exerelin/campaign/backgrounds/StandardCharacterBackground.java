@@ -13,7 +13,7 @@ public class StandardCharacterBackground extends BaseCharacterBackground {
 
     @Override
     public String getShortDescription() {
-        return "Begin without any existing story to your name and shape your own right from the start.";
+        return "Begin without an existing story to your name and shape your own right from the start.";
     }
 
     @Override
@@ -22,8 +22,8 @@ public class StandardCharacterBackground extends BaseCharacterBackground {
     }
 
     @Override
-    public int getOrder() {
-        return -100;
+    public float getOrder() {
+        return -100f;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class StandardCharacterBackground extends BaseCharacterBackground {
     }
 
     @Override
-    public void executeAfterGameCreation(TooltipMakerAPI tooltip, FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+    public void executeAfterGameCreation(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
 
     }
 }

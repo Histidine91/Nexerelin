@@ -9,12 +9,11 @@ import com.fs.starfarer.api.campaign.rules.MemKeys
 import com.fs.starfarer.api.campaign.rules.MemoryAPI
 import com.fs.starfarer.api.characters.CharacterCreationData
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin
-import com.fs.starfarer.api.ui.BaseTooltipCreator
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator
 import com.fs.starfarer.api.util.Misc
-import exerelin.campaign.backgrounds.AIWarEngineerCharacterBackground
 import exerelin.campaign.backgrounds.BaseCharacterBackground
+import exerelin.campaign.backgrounds.CharacterBackgroundLoader
 import exerelin.campaign.backgrounds.PirateCharacterBackground
 import exerelin.campaign.backgrounds.StandardCharacterBackground
 import exerelin.utilities.NexConfig
@@ -27,6 +26,8 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
     lateinit var optionPanel: OptionPanelAPI
     lateinit var textPanel: TextPanelAPI
     lateinit var visualPanel: VisualPanelAPI
+
+    var selectedPlugin: BaseCharacterBackground? = null
 
     override fun execute(ruleId: String?, dialog: InteractionDialogAPI, params: MutableList<Misc.Token>?, memoryMap: MutableMap<String, MemoryAPI>): Boolean {
 
@@ -54,9 +55,14 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
         var element = panel.createUIElement(width, height, true)
 
         var backgrounds = ArrayList<BaseCharacterBackground>()
-        backgrounds.add(StandardCharacterBackground())
-        backgrounds.add(PirateCharacterBackground())
-        backgrounds.add(AIWarEngineerCharacterBackground())
+        for (spec in CharacterBackgroundLoader.specs) {
+            var plugin = Global.getSettings().scriptClassLoader.loadClass(spec.pluginPath).newInstance()
+
+            if (plugin is BaseCharacterBackground) {
+                plugin.spec = spec
+                backgrounds.add(plugin)
+            }
+        }
 
         var first = true
         var checkboxes = HashMap<NexLunaElement, NexLunaCheckbox>()
@@ -89,6 +95,11 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
 
             subelement.onClick {
                 checkbox.value = true
+                selectedPlugin = background
+            }
+
+            checkbox.onClick {
+                selectedPlugin = background
             }
 
 
@@ -99,7 +110,7 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
                     }
 
                     override fun getTooltipWidth(tooltipParam: Any?): Float {
-                        return 400f
+                        return 450f
                     }
 
                     override fun createTooltip(tooltip: TooltipMakerAPI?, expanded: Boolean, tooltipParam: Any?) {
@@ -108,7 +119,6 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
 
                 },subelement.elementPanel, TooltipMakerAPI.TooltipLocation.BELOW)
             }
-
         }
 
         for ((element, checkbox) in checkboxes) {
@@ -136,6 +146,12 @@ class New_NGCBackgroundSelection : BaseCommandPlugin() {
 
 
         panel.addUIElement(element)
+
+        data.addScript {
+            var plugin = selectedPlugin
+            plugin!!.executeAfterGameCreation(factionSpec, factionConfig)
+            Global.getSector().memoryWithoutUpdate.set("\$nex_selected_background", plugin.spec.id)
+        }
 
         return true
     }

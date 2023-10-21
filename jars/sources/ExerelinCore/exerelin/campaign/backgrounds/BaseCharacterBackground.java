@@ -6,13 +6,23 @@ import exerelin.utilities.NexFactionConfig;
 
 public abstract class BaseCharacterBackground {
 
-    public abstract String getTitle();
+    public CharacterBackgroundSpec spec;
 
-    public abstract String getShortDescription();
+    public String getTitle() {
+        return spec.title;
+    }
 
-    public abstract String getIcon(FactionSpecAPI factionSpec, NexFactionConfig factionConfig);
+    public String getShortDescription() {
+        return spec.shortDescription;
+    }
 
-    public abstract int getOrder();
+    public  String getIcon(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+        return spec.iconPath;
+    }
+
+    public float getOrder() {
+        return spec.order;
+    }
 
     public abstract boolean shouldShowInSelection(FactionSpecAPI factionSpec, NexFactionConfig factionConfig);
 
@@ -29,7 +39,7 @@ public abstract class BaseCharacterBackground {
 
     }
 
-    public void executeAfterGameCreation(TooltipMakerAPI tooltip, FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+    public void executeAfterGameCreation(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
 
     }
 }

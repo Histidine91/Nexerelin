@@ -1,0 +1,4 @@
+id,name,shortDescription,order,iconPath,plugin
+nex_none,Unknown,Begin without an existing story to your name and shape your own right from the start.,-10000,graphics/factions/crest_player_flag.png,exerelin.campaign.backgrounds.StandardCharacterBackground
+nex_famous_pirate,Famous Pirate,Begin as a once-been pirate with fame to their name. Some shudder just from hearing your name.,10,graphics/factions/crest_pirates.png,exerelin.campaign.backgrounds.PirateCharacterBackground
+,,,,,
