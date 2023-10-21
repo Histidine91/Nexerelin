@@ -2,7 +2,6 @@ package exerelin.campaign.backgrounds.scripts;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.tutorial.SpacerObligation;
-import exerelin.campaign.customstart.Nex_SpacerObligation;
 
 public class HeavyDeptObligation extends SpacerObligation {
 

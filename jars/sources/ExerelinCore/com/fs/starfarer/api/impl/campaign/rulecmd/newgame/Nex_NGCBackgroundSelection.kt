@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator
 import com.fs.starfarer.api.util.Misc
+import exerelin.campaign.ExerelinSetupData
 import exerelin.campaign.backgrounds.BaseCharacterBackground
 import exerelin.campaign.backgrounds.CharacterBackgroundIntel
 import exerelin.campaign.backgrounds.CharacterBackgroundLoader
@@ -99,10 +100,12 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
             subelement.onClick {
                 checkbox.value = true
                 selectedPlugin = background
+                ExerelinSetupData.getInstance().backgroundId = background.spec.id
             }
 
             checkbox.onClick {
                 selectedPlugin = background
+                ExerelinSetupData.getInstance().backgroundId = background.spec.id
             }
 
 
