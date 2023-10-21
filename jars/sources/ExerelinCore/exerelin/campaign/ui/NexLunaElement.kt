@@ -1,4 +1,4 @@
-package exerelin.utilities.ui
+package exerelin.campaign.ui
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin

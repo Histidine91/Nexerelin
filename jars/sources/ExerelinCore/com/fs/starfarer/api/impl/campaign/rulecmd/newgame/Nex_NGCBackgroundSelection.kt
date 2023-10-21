@@ -16,9 +16,10 @@ import exerelin.campaign.ExerelinSetupData
 import exerelin.campaign.backgrounds.BaseCharacterBackground
 import exerelin.campaign.backgrounds.CharacterBackgroundIntel
 import exerelin.campaign.backgrounds.CharacterBackgroundLoader
+import exerelin.campaign.backgrounds.UnknownCharacterBackground
 import exerelin.utilities.NexConfig
-import exerelin.utilities.ui.NexLunaCheckbox
-import exerelin.utilities.ui.NexLunaElement
+import exerelin.campaign.ui.NexLunaCheckbox
+import exerelin.campaign.ui.NexLunaElement
 import org.lwjgl.input.Keyboard
 
 class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
@@ -69,7 +70,12 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
         var checkboxes = HashMap<NexLunaElement, NexLunaCheckbox>()
         element.addPara("", 0f).position.inTL(10f, 0f)
         for (background in backgrounds.sortedBy { it.order }) {
-            element.addSpacer(20f)
+            if (first) {
+                element.addSpacer(10f)
+            }
+            else {
+                element.addSpacer(20f)
+            }
 
             var title = background.getTitle(factionSpec, factionConfig)
             var description = background.getShortDescription(factionSpec, factionConfig)
@@ -79,6 +85,7 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
                 renderBackground = false
                 renderBorder = false
             }
+            subelement.innerElement.addSpacer(10f)
 
             var checkbox = NexLunaCheckbox(first, subelement.innerElement, 20f, 20f)
             if (first) {

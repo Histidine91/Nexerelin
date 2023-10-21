@@ -1,8 +1,7 @@
-package exerelin.utilities.ui
+package exerelin.campaign.ui
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.ui.TooltipMakerAPI
-import org.lazywizard.lazylib.MathUtils
 
 class NexLunaCheckbox(var value: Boolean, tooltip: TooltipMakerAPI, width: Float, height: Float) : NexLunaElement(tooltip, width, height) {
 

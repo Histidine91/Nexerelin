@@ -3,7 +3,7 @@ package exerelin.campaign.backgrounds.scripts;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.tutorial.SpacerObligation;
 
-public class HeavyDeptObligation extends SpacerObligation {
+public class HeavyDebtObligation extends SpacerObligation {
 
     public static int DEBT_BASE = 10000;
     public static int DEBT_PER_LEVEL = 5000;
