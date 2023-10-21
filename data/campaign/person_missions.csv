@@ -9,10 +9,10 @@ nex_supReb,,,"military, underworld",,,,,,WELCOMING,,HIGH,,,,graphics/exerelin/ic
 ,,,,,,,,,,,,,,,,
 # Remnant story missions,,,,,,,,,,,,,,,,
 nex_remM1,,,,,"priority, non_repeatable",,,,,,,,,,graphics/icons/cargo/ai_core_beta.png,exerelin.campaign.intel.missions.remnant.RemnantM1
-nex_remLostSci,nex_dissonant,,,,"priority, non_repeatable",,,,WELCOMING,,,,,,graphics/exerelin/icons/missions/rem_lostSci.png,exerelin.campaign.intel.missions.remnant.RemnantLostScientist
+nex_remLostSci,nex_dissonant,,,,"priority, non_repeatable",,,,WELCOMING,,,,,nex_remSalvation,graphics/exerelin/icons/missions/rem_lostSci.png,exerelin.campaign.intel.missions.remnant.RemnantLostScientist
 nex_remFragments,nex_dissonant,,,,"priority, non_repeatable",,,,WELCOMING,,,,,,graphics/exerelin/icons/missions/rem_fragments.png,exerelin.campaign.intel.missions.remnant.RemnantFragments
 nex_remBrawl,nex_dissonant,,,,"priority, non_repeatable",,,,FRIENDLY,,,"nex_remFragments, nex_remLostSci",,,graphics/exerelin/icons/missions/rem_brawl.png,exerelin.campaign.intel.missions.remnant.RemnantBrawl
-nex_remSalvation,nex_dissonant,,,,"priority, non_repeatable",,,,COOPERATIVE,,,,"nex_remFragments, nex_remLostSci, nex_remBrawl",,graphics/exerelin/icons/missions/rem_salvation.png,exerelin.campaign.intel.missions.remnant.RemnantSalvation
+nex_remSalvation,nex_dissonant,,,,"priority, non_repeatable",,,,COOPERATIVE,,,nex_remBrawl,,,graphics/exerelin/icons/missions/rem_salvation.png,exerelin.campaign.intel.missions.remnant.RemnantSalvation
 ,,,,,,,,,,,,,,,,
 # generic Remnant missions,,,,,,,,,,,,,,,,
 # note: most Rem missions are just vanilla ones ,with Remnant tag added in modPlugin onApplicationLoad,,,,,,,,,,,,,,,

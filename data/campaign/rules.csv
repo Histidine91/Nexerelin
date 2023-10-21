@@ -2631,26 +2631,31 @@ $global.nex_remLostSci_ref != null
 !$nex_remLostSci_accessDenied
 Call $global.nex_remLostSci_ref updateData",,,1:nex_remLostSci_stationKingConvoStart:Ask about travel to $nex_remLostSci_planet,
 nex_remLostSci_stationKingConvoStart,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoStart
-!$askedAboutVisit","Highlight $nex_remLostSci_bribeStr $player.creditsStr
-FireAll Nex_RemLostSci_StationKingConvoOpts
+!$askedAboutVisit","FireAll Nex_RemLostSci_StationKingConvoOpts
+Highlight $nex_remLostSci_bribeStr $player.creditsStr
 $askedAboutVisit = true","""Ah, yes, that little dirtball. Well, we've got a problem here, because this here's mah turf and I can't just let anyone waltz in here. Now, if you were to pay an entry fee... say $nex_remLostSci_bribeStr credits... it'd be a different story.""
 
 You have $player.creditsStr credits.",,
 nex_remLostSci_stationKingConvoStartRepeat,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoStart
-$askedAboutVisit","Highlight $nex_remLostSci_bribeStr $player.creditsStr
-FireAll Nex_RemLostSci_StationKingConvoOpts
+$askedAboutVisit","FireAll Nex_RemLostSci_StationKingConvoOpts
+Highlight $nex_remLostSci_bribeStr $player.creditsStr
 $askedAboutVisit = true","""Well, made up your mind yet? I'm not gonna be here all day, y'know. $nex_remLostSci_bribeStr credits, it was.""
 
 You have $player.creditsStr credits.",,
 nex_remLostSci_stationKingConvoStartRepeatCheap,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoStart
 $askedAboutVisit
-$nex_remLostSci_loweredFee","Highlight $nex_remLostSci_bribeSmallStr $player.creditsStr
-FireAll Nex_RemLostSci_StationKingConvoOpts","""So how about it, friend? $nex_remLostSci_bribeSmallStr credits, and we'll all be happy together!""
+$nex_remLostSci_loweredFee","
+FireAll Nex_RemLostSci_StationKingConvoOpts
+Highlight $nex_remLostSci_bribeSmallStr $player.creditsStr","""So how about it, friend? $nex_remLostSci_bribeSmallStr credits, and we'll all be happy together!""
 
 You have $player.creditsStr credits.",,
 nex_remLostSci_stationKingConvoOptPay,Nex_RemLostSci_StationKingConvoOpts,,,,"1:nex_remLostSci_stationKingConvoPay:Pay the ""entry fee""",
 nex_remLostSci_stationKingConvoOptPirateComm,Nex_RemLostSci_StationKingConvoOpts,"$player.fcm_faction == pirates
 !$nex_remLostSci_loweredFee",,,2:nex_remLostSci_stationKingConvoPirateComm:Say you're a pirate like $himOrHer,
+nex_remLostSci_stationKingConvoOptPayNotEnough,Nex_RemLostSci_StationKingConvoOpts,$player.credits < $nex_remLostSci_bribe,SetEnabled nex_remLostSci_stationKingConvoPay false,,,
+nex_remLostSci_stationKingConvoOptPirateCommNotEnough,Nex_RemLostSci_StationKingConvoOpts,"$player.fcm_faction == pirates
+!$nex_remLostSci_loweredFee
+$player.credits < $nex_remLostSci_bribeSmall",SetEnabled nex_remLostSci_stationKingConvoPay false,,,
 nex_remLostSci_stationKingConvoOptKanta,Nex_RemLostSci_StationKingConvoOpts,$player.kantaProtection,,,3:nex_remLostSci_stationKingConvoKanta:Say that you are under the protection of Warlord Kanta,
 nex_remLostSci_stationKingConvoOptKantaLie,Nex_RemLostSci_StationKingConvoOpts,!$player.kantaProtection,,,3:nex_remLostSci_stationKingConvoKanta:Say that you are under the protection of Warlord Kanta (lie),
 nex_remLostSci_stationKingConvoOptThreaten,Nex_RemLostSci_StationKingConvoOpts,,,,4:nex_remLostSci_stationKingConvoThreaten:Threaten $himOrHer with your superior fleet,
@@ -2882,6 +2887,7 @@ nex_remLostSci_returnTowering3HavePaper,DialogOptionSelected,$option == nex_remL
 nex_remLostSci_returnTowering4Midnight:""Midnight requested this paper and I will give it to her.""
 #nex_remLostSci_returnTowering4Refuse:Refuse",
 nex_remLostSci_returnTowering3NoPaper,DialogOptionSelected,$option == nex_remLostSci_returnTowering3NoPaper,"Call $global.nex_remLostSci_ref setReward1
+AddStoryPoints 1
 Call $global.nex_remLostSci_ref completeMission","""unfortunate. i will notify midnight that her pet has failed its simple task. perhaps it has not been trained enough.""
 
 The comm image winks out. A moment later, your comm chimes with receipt of the promised partial payment.
@@ -2891,6 +2897,7 @@ nex_remLostSci_returnTowering3NoPaperLie,DialogOptionSelected,$option == nex_rem
 $option = nex_remLostSci_returnTowering3NoPaper
 FireBest DialogOptionSelected",,,
 nex_remLostSci_returnTowering4Submit,DialogOptionSelected,$option == nex_remLostSci_returnTowering4Submit,"Call $global.nex_remLostSci_ref setReward2
+AddStoryPoints 1
 Call $global.nex_remLostSci_ref completeMission","You load the the chip and transmit its contents to $personLastName's flagship. $HisOrHer avatar goes fuzzy as $heOrShe considers the document for 9.7 seconds.
 
 ""as expected from a human, a merely serviceable effort. considerably behind omega's state of the art, and there are at least three errors in it. nevertheless, there is an interesting avenue explored here.
@@ -2931,12 +2938,14 @@ nex_remLostSci_returnMidnight3NoPaperLie:""I could not find it."" (lie)",
 nex_remLostSci_returnMidnight3OptsNoPaper,Nex_RemLostSci_PaperConvoOpts,"$id == nex_dissonant
 $player.nex_remLostSci_destroyedPaper",,,"nex_remLostSci_returnMidnight3NoPaper:""I do not have it.""",
 nex_remLostSci_returnMidnight3HavePaper,DialogOptionSelected,$option == nex_remLostSci_returnMidnight3HavePaper,"Call $global.nex_remLostSci_ref setReward2
+AddStoryPoints 1
 Call $global.nex_remLostSci_ref completeMission","$personName starts reviewing the document within milliseconds of your transmission.
 
 ""Several errors found. Predicted effects from paper's calculation extrapolated, also significantly lower than what omega can accomplish. Nevertheless, been helpful this has.
 
 ""Done well, $playerName. Your well-earned payment, here is.""",nex_remLostSci_end:Continue,
 nex_remLostSci_returnMidnight3NoPaper,DialogOptionSelected,$option == nex_remLostSci_returnMidnight3NoPaper,"Call $global.nex_remLostSci_ref setReward1
+AddStoryPoints 1
 Call $global.nex_remLostSci_ref completeMission","""Regrettable, $playerName. Nevertheless, here is the partial payment, promised as.""",nex_remLostSci_end:Continue,
 nex_remLostSci_returnMidnight3NoPaperLie,DialogOptionSelected,$option == nex_remLostSci_returnMidnight3NoPaperLie,"$player.ethosLiar++
 $option = nex_remLostSci_returnMidnight3NoPaper
@@ -3105,9 +3114,9 @@ nex_remSalvation_missionText2,DialogOptionSelected,$option == nex_remSalvation_m
 $personFirstName's avatar is torn by static for an instant. Shock, perhaps. It seems that such a rift within the AI Remnants should not be possible... and yet it has clearly happened. Perhaps this is precisely why you are being brought on board.
 
 ""For friend $playerFirstName urgent task, truth of this incident uncover. Selfkind cannot in human space investigate, but $playerFirstName can. To $nex_remSalvation_baseName go, with League authorities speak. Find whatever evidence exists, find perpetrator of this act. Self will in meantime work amongst selfkind.""","nex_remSalvation_missionText3:""And then?""",
-nex_remSalvation_missionText3,DialogOptionSelected,$option == nex_remSalvation_missionText3,,"""Then traitor to selfkind and omega we destroy.""","nex_remFragments_accept:Accept
+nex_remSalvation_missionText3,DialogOptionSelected,$option == nex_remSalvation_missionText3,,"""Then traitor to selfkind and omega we destroy.""","nex_remSalvation_accept:Accept
 contact_decline:Decline",
-nex_remSalvation_accept,DialogOptionSelected,$option == nex_remFragments_accept,"Call $mHub accept $missionId
+nex_remSalvation_accept,DialogOptionSelected,$option == nex_remSalvation_accept,"Call $mHub accept $missionId
 Call $mHub returnToList","""Thank you, $playerName. This deed self and selfkind will remember."" 
 
 $personFirstName transmits to you some identifying documents and a message personally vouching for you. Being identified as an associate of the Remnants could, under the circumstances, have fatal consequences... but it could also be the only way you'll get League Intelligence or anyone else in the know to talk to you.",,
