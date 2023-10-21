@@ -111,7 +111,7 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
 
             element.addTooltipTo(object  : TooltipCreator {
                 override fun isTooltipExpandable(tooltipParam: Any?): Boolean {
-                    return true
+                    return background.spec.id != "nex_none"
                 }
 
                 override fun getTooltipWidth(tooltipParam: Any?): Float {
@@ -121,7 +121,7 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
                 override fun createTooltip(tooltip: TooltipMakerAPI?, expanded: Boolean, tooltipParam: Any?) {
                     background.addTooltipForSelection(tooltip, factionSpec, factionConfig, expanded)
 
-                    if (expanded) {
+                    if (expanded && background.spec.id != "nex_none") {
                         tooltip!!.addSpacer(10f)
                         tooltip.addPara("Added by ${background.spec.modName}", 0f, Misc.getTextColor(), Misc.getHighlightColor(), "${background.spec.modName}")
                     }
