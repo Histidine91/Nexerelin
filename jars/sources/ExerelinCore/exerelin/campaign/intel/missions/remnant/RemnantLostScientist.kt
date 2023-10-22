@@ -47,23 +47,24 @@ import java.util.*
 open class RemnantLostScientist : HubMissionWithBarEvent() {
 
     companion object {
-        const val REWARD = 30000;
-        const val REWARD2 = 30000;
-        @JvmField val log : Logger = Global.getLogger(RemnantLostScientist::class.java)
+        const val REWARD = 45000;
+        const val REWARD2 = 45000;
+        @JvmField
+        val log: Logger = Global.getLogger(RemnantLostScientist::class.java)
     }
 
     enum class Stage {
         GO_TO_ACADEMY, GO_TO_PLANET, RETURN, COMPLETED, FAILED
     }
 
-    var academy : SectorEntityToken? = null
-    var planet : PlanetAPI? = null
-    var scientist : PersonAPI = RemnantQuestUtils.getOrCreateLostScientist()
-    var pirateBase : PirateBaseIntel? = null
+    var academy: SectorEntityToken? = null
+    var planet: PlanetAPI? = null
+    var scientist: PersonAPI = RemnantQuestUtils.getOrCreateLostScientist()
+    var pirateBase: PirateBaseIntel? = null
     var bribe = MathUtils.getRandomNumberInRange(10, 12) * 1000
     var bribeSmall = 2000
     var wantCheckOutFleet = false
-    var toweringFleet : CampaignFleetAPI? = null
+    var toweringFleet: CampaignFleetAPI? = null
 
     /*
      store in player or global memory:
@@ -100,7 +101,7 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
             Tags.THEME_HIDDEN
         )
         preferSystemUnexplored()
-        preferSystemWithinRangeOf(academy!!.locationInHyperspace, 15f, 35f)
+        preferSystemWithinRangeOf(academy!!.locationInHyperspace, 15f, 25f)
         requirePlanetConditions(ReqMode.ANY, Conditions.DECIVILIZED)
         requirePlanetUnpopulated()
         preferPlanetConditions(ReqMode.ANY, Conditions.HABITABLE)
@@ -157,14 +158,14 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         setupTriggersOnAccept()
     }
 
-    fun findAcademy() : SectorEntityToken {
+    fun findAcademy(): SectorEntityToken {
         return if (SectorManager.getManager().isCorvusMode) MiscAcademyFleetCreator.getAcademy() else
             Global.getSector().memoryWithoutUpdate["\$nex_randomSector_galatiaAcademy"] as SectorEntityToken
     }
 
     protected fun setupPirateBaseAndFleet() {
         // first see if there's already a pirate base around the planet that we can use
-        for (info in Global.getSector().intelManager.getIntel(PirateBaseIntel :: class.java)) {
+        for (info in Global.getSector().intelManager.getIntel(PirateBaseIntel::class.java)) {
             val pbi = info as PirateBaseIntel
             if (pbi.isEnding || pbi.isEnded) continue;
             if (pbi.entity?.orbit?.focus == planet) {
@@ -174,31 +175,44 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         }
 
         if (pirateBase == null) {
-            pirateBase = NexPirateBaseIntel(planet!!.starSystem, Factions.PIRATES, PirateBaseIntel.PirateBaseTier.TIER_3_2MODULE)
+            pirateBase =
+                NexPirateBaseIntel(planet!!.starSystem, Factions.PIRATES, PirateBaseIntel.PirateBaseTier.TIER_3_2MODULE)
             Nex_PirateBaseManager.getInstance().addActive(pirateBase)
         }
 
         if (pirateBase == null) return;
 
         var orbitRadius = BaseThemeGenerator.getOrbitalRadius(planet)
-        pirateBase!!.entity.setCircularOrbitPointingDown(planet, genRandom.nextFloat() * 360, orbitRadius,
-            NexUtilsAstro.getOrbitalPeriod(planet, orbitRadius))
+        pirateBase!!.entity.setCircularOrbitPointingDown(
+            planet, genRandom.nextFloat() * 360, orbitRadius,
+            NexUtilsAstro.getOrbitalPeriod(planet, orbitRadius)
+        )
 
         pirateBase!!.market.memoryWithoutUpdate.set("\$nex_remLostSci_pirateBase", true)
 
         //makeImportant(pirateBase!!.market, "\$nex_lostSci_pirateBase", Stage.GO_TO_PLANET)
 
-        var params = FleetParamsV3(pirateBase!!.market, FleetTypes.PATROL_MEDIUM,
-            20f, // combat
+        var params = FleetParamsV3(
+            pirateBase!!.market, FleetTypes.PATROL_MEDIUM,
+            35f, // combat
             0f, 0f, 0f, 0f, 2f,  // freighter, tanker, transport, liner, utility
-            -.1f
+            0f
         )
         params.ignoreMarketFleetSizeMult = true
         val pirateFleet = FleetFactoryV3.createFleet(params)
         pirateFleet.memoryWithoutUpdate.set(MemFlags.MEMORY_KEY_PIRATE, true)
         pirateFleet.memoryWithoutUpdate.set("\$nex_remLostSci_piratePatrol", true)
-        pirateFleet.memoryWithoutUpdate.set("\$nex_remLostSci_piratePatrol", true)
-        //pirateFleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true)
+        Misc.setFlagWithReason(pirateFleet.memoryWithoutUpdate, MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE,
+            "nex_remLostSci_dontFear",true, -1f
+        )
+        /*
+        Misc.setFlagWithReason(pirateFleet.memoryWithoutUpdate, MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE,
+            "nex_remLostSci_dontFear",true, -1f
+        )
+        Misc.setFlagWithReason(pirateFleet.memoryWithoutUpdate, MemFlags.MEMORY_KEY_MAKE_ALLOW_DISENGAGE,
+            "nex_remLostSci_dontFear",true, -1f
+        )
+        */
         planet!!.containingLocation.addEntity(pirateFleet);
         pirateFleet.setCircularOrbit(pirateBase!!.entity, 0f, 100f, 1f)
         pirateFleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, pirateBase!!.entity, 99999f)
@@ -207,7 +221,8 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
     protected fun setupTowering() {
         val fp = 80f;
         val system = planet!!.starSystem
-        var params = FleetParamsV3(planet!!.locationInHyperspace, Factions.REMNANTS, 1.2f, FleetTypes.TASK_FORCE,
+        var params = FleetParamsV3(
+            planet!!.locationInHyperspace, Factions.REMNANTS, 1.2f, FleetTypes.TASK_FORCE,
             fp, // combat
             0f, 0f, 0f, 0f, 0f,  // freighter, tanker, transport, liner, utility
             0f
@@ -250,6 +265,7 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         val player = Global.getSector().playerFleet
         val dist = player.getMaxSensorRangeToDetect(fleet)
         dist.coerceAtLeast(1000f)
+        dist.coerceAtMost(3000f)
         system.addEntity(fleet)
 
         var pos: Vector2f
@@ -263,6 +279,7 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
 
         val token = system.createToken(fleet.location)
         fleet.addAssignment(FleetAssignment.HOLD, token, 999999f)
+        fleet.setCircularOrbit(token, 0f, 1f, 99999f)
         fleet.abilities[Abilities.GO_DARK]?.activate();
 
         fleet.addEventListener(RemnantLostScientistToweringListener(this))
@@ -272,7 +289,8 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         val loc = LocData(token, false);
         val debris = spawnDebrisField(DEBRIS_MEDIUM, DEBRIS_AVERAGE, loc)
         if (wantCheckOutFleet) makeImportant(debris, "\$nex_remLostSci_investigate", Stage.RETURN)
-        debris.isDiscoverable = false
+        //debris.isDiscoverable = false
+        debris.sensorProfile = 5000f;
 
         // dead ships
         spawnShipGraveyard(Factions.LIONS_GUARD, 2, 3, loc);
@@ -291,23 +309,42 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         market.containingLocation.addScript(MilitaryResponseScript(params))
 
         var fleets: List<CampaignFleetAPI> = market.containingLocation.fleets
-        for (other:CampaignFleetAPI? in fleets)
-        {
+        for (other: CampaignFleetAPI? in fleets) {
             if (other?.faction == market.faction) {
                 val mem: MemoryAPI = other!!.memoryWithoutUpdate
                 Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, "raidAlarm", true, 10f)
                 Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, "raidAlarm", true, 10f)
                 Misc.setFlagWithReason(mem, MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE_ONE_BATTLE_ONLY, "raidAlarm", true, 10f)
+                Misc.setFlagWithReason(
+                    other.memoryWithoutUpdate,
+                    MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE,
+                    "nex_remLostSci_dontFear",
+                    false,
+                    -1f
+                )
+                Misc.setFlagWithReason(
+                    other.memoryWithoutUpdate,
+                    MemFlags.MEMORY_KEY_MAKE_ALLOW_DISENGAGE,
+                    "nex_remLostSci_dontFear",
+                    false,
+                    -1f
+                )
+                //other.memoryWithoutUpdate.unset(MemFlags.FLEET_IGNORES_OTHER_FLEETS);
                 //other.addAssignmentAtStart(FleetAssignment.INTERCEPT, Global.getSector().playerFleet, 10f, null, null)
             }
         }
         //log.info("Mil response triggered")
     }
 
-    protected fun generateSpacer() : PersonAPI {
-        return OfficerManagerEvent.createOfficer(Global.getSector().getFaction(Factions.INDEPENDENT), 2, OfficerManagerEvent.SkillPickPreference.ANY, genRandom)
+    protected fun generateSpacer(): PersonAPI {
+        return OfficerManagerEvent.createOfficer(
+            Global.getSector().getFaction(Factions.INDEPENDENT),
+            2,
+            OfficerManagerEvent.SkillPickPreference.ANY,
+            genRandom
+        )
     }
-    
+
     protected fun sendToweringHome() {
         if (toweringFleet != null) {
             RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(toweringFleet, true);
@@ -328,11 +365,14 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         set("\$nex_remLostSci_stage", getCurrentStage())
         set("\$nex_remLostSci_bribe", bribe)
         set("\$nex_remLostSci_bribeSmall", bribeSmall)
-        set("\$nex_remLostSci_bribeStr", Misc.getDGSCredits(bribe.toFloat()))
-        set("\$nex_remLostSci_bribeSmallStr", Misc.getDGSCredits(bribeSmall.toFloat()))
+        set("\$nex_remLostSci_bribeStr", Misc.getWithDGS(bribe.toFloat()))
+        set("\$nex_remLostSci_bribeSmallStr", Misc.getWithDGS(bribeSmall.toFloat()))
         set("\$nex_remLostSci_hasSKDeal", pirateBase?.playerHasDealWithBaseCommander())
-        set("\$nex_remLostSci_playerDP", Global.getSector().playerFleet.fleetData.membersListCopy.filter{!it.isCivilian}
-            .sumOf { it -> it.deploymentPointsCost.toDouble() }.toInt())
+        set(
+            "\$nex_remLostSci_playerDP",
+            Global.getSector().playerFleet.fleetData.membersListCopy.filter { !it.isCivilian }
+                .sumOf { it -> it.deploymentPointsCost.toDouble() }.toInt()
+        )
         set("\$nex_remLostSci_reward1", REWARD)
         set("\$nex_remLostSci_reward1Str", Misc.getDGSCredits(REWARD.toFloat()))
         set("\$nex_remLostSci_reward2", REWARD2)
@@ -349,7 +389,7 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
     ): Boolean {
         when (action) {
             "beginSpacerConvo" -> {
-                val person : PersonAPI = generateSpacer()
+                val person: PersonAPI = generateSpacer()
                 dialog.interactionTarget.activePerson = person
                 (dialog.plugin as RuleBasedDialog).notifyActivePersonChanged()
                 dialog.visualPanel.showPersonInfo(person, true, false)
@@ -387,10 +427,14 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
             }
             "setReward1" -> {
                 setCreditReward(REWARD)
+                setRepPersonChangesMedium()
+                setRepFactionChangesLow()
                 return true
             }
             "setReward2" -> {
                 setCreditReward(REWARD + REWARD2)
+                setRepPersonChangesHigh()
+                setRepFactionChangesMedium()
                 return true
             }
             "cancelInvestigate" -> {
@@ -407,12 +451,24 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         val opad = 10f
 
         if (currentStage == Stage.GO_TO_ACADEMY) {
-            var label = info.addPara(RemnantQuestUtils.getString("lostScientist_goToAcademyDesc"), opad, hl, academy!!.name, scientist.nameString)
+            var label = info.addPara(
+                RemnantQuestUtils.getString("lostScientist_goToAcademyDesc"),
+                opad,
+                hl,
+                academy!!.name,
+                scientist.nameString
+            )
             label.setHighlightColors(academy!!.faction.baseUIColor, hl)
         } else if (currentStage == Stage.GO_TO_PLANET) {
-            var label = info.addPara(RemnantQuestUtils.getString("lostScientist_goToPlanetDesc"), opad, hl,
-                planet!!.name, planet!!.containingLocation.nameWithLowercaseTypeShort, scientist.nameString)
-            label.setHighlightColors(planet!!.market.textColorForFactionOrPlanet, planet!!.starSystem?.star?.lightColor ?: hl, hl)
+            var label = info.addPara(
+                RemnantQuestUtils.getString("lostScientist_goToPlanetDesc"), opad, hl,
+                planet!!.name, planet!!.containingLocation.nameWithLowercaseTypeShort, scientist.nameString
+            )
+            label.setHighlightColors(
+                planet!!.market.textColorForFactionOrPlanet,
+                planet!!.starSystem?.star?.lightColor ?: hl,
+                hl
+            )
         } else if (currentStage == Stage.RETURN) {
             if (this.wantCheckOutFleet) {
                 info.addPara(
@@ -441,21 +497,40 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         //info.addPara("[debug] Current stage: " + currentStage, tc, pad);
         when (currentStage) {
             Stage.GO_TO_ACADEMY -> {
-                info.addPara(RemnantQuestUtils.getString("lostScientist_goToAcademyNextStep"), pad, tc, academy!!.faction.baseUIColor, academy!!.name)
+                info.addPara(
+                    RemnantQuestUtils.getString("lostScientist_goToAcademyNextStep"),
+                    pad,
+                    tc,
+                    academy!!.faction.baseUIColor,
+                    academy!!.name
+                )
                 return true
             }
             Stage.GO_TO_PLANET -> {
-                val label = info.addPara(RemnantQuestUtils.getString("lostScientist_goToPlanetNextStep"),
-                    pad, tc, hl, planet!!.name, planet!!.containingLocation.nameWithNoType)
-                label.setHighlightColors(planet!!.market.textColorForFactionOrPlanet, planet!!.starSystem?.star?.lightColor ?: hl)
+                val label = info.addPara(
+                    RemnantQuestUtils.getString("lostScientist_goToPlanetNextStep"),
+                    pad, tc, hl, planet!!.name, planet!!.containingLocation.nameWithNoType
+                )
+                label.setHighlightColors(
+                    planet!!.market.textColorForFactionOrPlanet,
+                    planet!!.starSystem?.star?.lightColor ?: hl
+                )
                 return true
             }
             Stage.RETURN -> {
                 if (this.wantCheckOutFleet) {
-                    info.addPara(RemnantQuestUtils.getString("lostScientist_checkFleetNextStep"),
-                        pad, tc, planet!!.starSystem?.star?.lightColor ?: hl, planet!!.containingLocation.nameWithNoType)
+                    info.addPara(
+                        RemnantQuestUtils.getString("lostScientist_checkFleetNextStep"),
+                        pad, tc, planet!!.starSystem?.star?.lightColor ?: hl, planet!!.containingLocation.nameWithNoType
+                    )
                 } else {
-                    info.addPara(getReturnTextShort(person.market), pad, tc, person.market.textColorForFactionOrPlanet, person.market.name)
+                    info.addPara(
+                        getReturnTextShort(person.market),
+                        pad,
+                        tc,
+                        person.market.textColorForFactionOrPlanet,
+                        person.market.name
+                    )
                 }
                 return true
             }
@@ -469,13 +544,19 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
 
     class RemnantLostScientistToweringListener(var mission: RemnantLostScientist) : FleetEventListener {
 
-        override fun reportFleetDespawnedToListener(fleet: CampaignFleetAPI?, reason: CampaignEventListener.FleetDespawnReason?, param: Any?)
-        {
+        override fun reportFleetDespawnedToListener(
+            fleet: CampaignFleetAPI?,
+            reason: CampaignEventListener.FleetDespawnReason?,
+            param: Any?
+        ) {
 
         }
 
-        override fun reportBattleOccurred(fleet: CampaignFleetAPI?, primaryWinner: CampaignFleetAPI?, battle: BattleAPI?)
-        {
+        override fun reportBattleOccurred(
+            fleet: CampaignFleetAPI?,
+            primaryWinner: CampaignFleetAPI?,
+            battle: BattleAPI?
+        ) {
             if (battle?.isPlayerInvolved == true && battle?.playerSide != battle?.getSideFor(fleet)) {
                 mission.setCurrentStage(Stage.FAILED, Global.getSector().campaignUI.currentInteractionDialog, null)
             }
