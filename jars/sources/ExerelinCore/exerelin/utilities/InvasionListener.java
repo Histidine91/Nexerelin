@@ -9,6 +9,9 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.TempData
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import java.util.List;
 
+/**
+ * Except for {@code reportMarketTransfered}, these are only used for legacy invasions.
+ */
 public interface InvasionListener {
 	void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, 
 			TempDataInvasion actionData, CargoAPI cargo);

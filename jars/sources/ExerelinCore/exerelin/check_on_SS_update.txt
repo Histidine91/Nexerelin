@@ -17,11 +17,9 @@ Partial list.
 - Colony manager: getFreePortGrowthBonus()
 - Everything that uses Industries.TAG_UNRAIDABLE
 - Objective entity plugins
+- CreateFleetPlugin if I make one
 
 0.96 notes:
-
-0.95 notes:
-- SSP_BattleCreationPluginImpl looks RIP, it can't access needed variables from the data class
 
 Do on future SS release:
 - Use "player colonized" and deciv listeners
@@ -30,6 +28,5 @@ Do on future SS release:
 			- Just use it to run the live faction check
 		- We do have a pre-deciv checker that works
 	- Player colonized listener applications:
-		- Faction setup nag script? mehhh
-
-- Nex_BlueprintSwap: Remove starting "$" from POINTS_KEY (it's now a persistent data key, not a memory key)
+		- Faction setup nag script
+	- But on the other hand the periodic check we already have works fine, don't fix what ain't broke

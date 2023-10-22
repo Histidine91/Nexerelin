@@ -353,7 +353,12 @@ public class RaiseRelations extends CovertActionIntel {
 	public String getDefId() {
 		return "raiseRelations";
 	}
-	
+
+	@Override
+	public String getStrategicActionName() {
+		return super.getStrategicActionName() + ": " + this.targetFaction;
+	}
+
 	public static void applyMemoryCooldown(FactionAPI faction) {
 		faction.getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, MODIFY_RELATIONS_COOLDOWN);
 	}

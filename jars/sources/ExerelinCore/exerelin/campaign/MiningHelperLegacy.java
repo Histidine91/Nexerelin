@@ -1079,13 +1079,12 @@ public class MiningHelperLegacy {
 				playerFleet.getMaxSensorRangeToDetect(fleet) * MathUtils.getRandomNumberInRange(1.25f, 1.6f),
 				NexUtilsAstro.getRandomAngle());
 		fleet.setLocation(pos.x, pos.y);
+		loc.addEntity(fleet);
 		
 		fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, playerFleet, 0.5f);	// make it get a little closer
 		fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 15,
 				StringHelper.getFleetAssignmentString("intercepting", targetName));
 		Misc.giveStandardReturnToSourceAssignments(fleet, false);
-		fleet.setLocation(pos.getX(), pos.getY());
-		loc.addEntity(fleet);
 		
 		return fleet;
 	}

@@ -30,6 +30,7 @@ import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 import lombok.extern.log4j.Log4j;
+import org.lazywizard.console.Console;
 
 import java.awt.*;
 import java.util.List;
@@ -54,6 +55,8 @@ public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener, 
 	public static DebugIntel getIntel() {
 		return (DebugIntel)Global.getSector().getPersistentData().get(DATA_KEY);
 	}
+
+	public static void end() { getIntel().endImmediately(); }
 	
 	// runcode exerelin.debug.DebugIntel.createIntel();
 	public static DebugIntel createIntel() {
@@ -62,7 +65,6 @@ public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener, 
 		}
 		DebugIntel intel = new DebugIntel();
 		intel.init();
-		Global.getSector().getPersistentData().put(DATA_KEY, intel);
 		return intel;
 	}
 		
@@ -261,7 +263,7 @@ public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener, 
 		
 		TooltipMakerAPI tableHolder = panel.createUIElement(width, 600, true);
 		
-		//createCommodityProfitTable(tableHolder, width, 10);
+		createCommodityProfitTable(tableHolder, width, 10);
 		try {
 			printRetaliationEntries(tableHolder, width, 10);
 		} catch (Exception ex) {
@@ -342,7 +344,7 @@ public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener, 
 
 	@Override
 	public void reportActionPriorityUpdated(StrategicAI ai, StrategicAction action) {
-		action.getPriority().modifyFlat("debug", 1, "Listener debug (priority update)");
+		//action.getPriority().modifyFlat("debug", 1, "Listener debug (priority update)");
 	}
 
 	@Override
@@ -375,6 +377,34 @@ public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener, 
 		records.add(record);
 	}
 
+	// runcode exerelin.debug.DebugIntel.getIntel().dumpFleetData(false); exerelin.debug.DebugIntel.getIntel().dumpFleetData(true);
+	public void dumpFleetData(boolean fleetPoints) {
+		List<String> header = new ArrayList<>(SectorManager.getLiveFactionIdsCopy());
+		String headerStr = StringHelper.writeStringCollection(header, false, true);
+		headerStr = "days," + headerStr;
+		headerStr = headerStr.replace(", ", ",");
+
+		String filename = "dump_" + (fleetPoints ? "fleetPoints" : "invPoints");
+		try {
+			StringBuilder sb = new StringBuilder();
+			sb.append(headerStr);
+			for (int i=0; i<records.size(); i++) {
+				sb.append("\r\n");
+				FleetPoolRecord thisRow = records.get(i);
+				sb.append(thisRow.days);
+
+				for (String factionId : header) {
+					Float score = fleetPoints ? thisRow.fp.get(factionId) : thisRow.ip.get(factionId);
+					if (score != null) sb.append("," + score);
+					else sb.append(",");
+				}
+			}
+			Global.getSettings().writeTextFileToCommon(filename, sb.toString());
+		} catch (Exception ex) {
+			Console.showMessage("Failed to write " + filename);
+			log.info("Failed to write " + filename, ex);
+		}
+	}
 
 	public class FleetPoolRecord {
 		public long timestamp;
