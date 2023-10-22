@@ -486,6 +486,10 @@ public class NexUtilsMarket {
 	 */
 	public static boolean upgradeIndustryToTarget(Industry ind, String upgradeId, boolean force, boolean instant) {
 		if (ind == null) return false;
+		if (upgradeId == null) {
+			log.error("upgradeIndustryToTarget called with null upgradeId");
+			return false;
+		}
 		if (!ind.canUpgrade() && !force) return false;
 
 		String prevUpgradeId = ind.getSpec().getUpgrade();
