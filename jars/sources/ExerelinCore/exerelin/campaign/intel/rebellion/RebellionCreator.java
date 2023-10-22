@@ -9,6 +9,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
@@ -16,9 +17,10 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsMarket;
-import java.util.List;
 import org.lazywizard.console.Console;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.util.List;
 
 /**
  * Periodically starts rebellions on suitably restive planets.
@@ -100,6 +102,7 @@ public class RebellionCreator implements EveryFrameScript {
 		{
 			if (candidate.equals(Factions.PLAYER)) continue;
 			if (candidate.equals(market.getFactionId())) continue;
+			if (AllianceManager.areFactionsAllied(market.getFactionId(), candidate)) continue;
 			
 			float weight = 1;
 			if (faction.isAtBest(candidate, RepLevel.VENGEFUL))
