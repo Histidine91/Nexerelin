@@ -62,6 +62,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final String MANAGER_MAP_KEY = "exerelin_invasionFleetManager";
 	public static final String MEM_KEY_FACTION_TARGET_COOLDOWN = "$nex_recentlyTargetedMilitary";
 	public static final String MEMORY_KEY_POINTS_LAST_TICK = "$nex_invasionPointsLastTick";
+	public static final String MEMORY_KEY_BASE_POINTS_LAST_TICK = "$nex_invasionPointsLastTickBase";
 	
 	public static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
 	public static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
@@ -78,6 +79,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final int MAX_SIMULTANEOUS_EVENTS_PER_SYSTEM = 3;
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
+	public static final float POINTS_MAX_MULT = 180;	// half a year of points
 	public static final float PATROL_ESTIMATION_MULT = 0.7f;
 	public static final float DEFENCE_ESTIMATION_MULT = 0.75f;
 	public static final float STATION_OFFICER_STRENGTH_MULT = 0.25f;
@@ -93,6 +95,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float PIRATE_RAGE_THRESHOLD = 125;
 	public static final int ATTACK_PLAYER_COOLDOWN = 60;
 	public static final boolean PREFER_MILITARY_FOR_ORIGIN = false;
+	public static final boolean USE_HOSTILE_TO_ALL_HANDLING = true;
 	
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.08f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
@@ -990,7 +993,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, allowPirates, false, false);
 			if (enemies.isEmpty()) continue;
 			
-			if (NexUtilsFaction.isFactionHostileToAll(factionId))
+			if (USE_HOSTILE_TO_ALL_HANDLING && NexUtilsFaction.isFactionHostileToAll(factionId))
 			{
 				float numWars = enemies.size();
 				numWars = (float)Math.sqrt(numWars);
@@ -1001,7 +1004,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				for (String enemyId : enemies)
 				{
 					if (EXCEPTION_LIST.contains(factionId)) continue;
-					if (NexUtilsFaction.isFactionHostileToAll(enemyId))
+					if (USE_HOSTILE_TO_ALL_HANDLING && NexUtilsFaction.isFactionHostileToAll(enemyId))
 					{
 						float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, 
 								allowPirates, true, false).size();
@@ -1017,43 +1020,51 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				}
 				if (mult > 1) mult = 1;
 			}
+			if (mult < 0.25f) mult = 0.25f;
 			
 			// increment invasion counter for faction
 			
-			// safety (faction can be live without markets if its last market decivilizes)
+			// safety (faction can be live without markets if its last market decivilizes, until the next live faction ID update notices it)
 			if (!pointsPerFaction.containsKey(factionId))
 				pointsPerFaction.put(factionId, 0f);
 			
-			float counter = getSpawnCounter(factionId);
+			float currCounter = getSpawnCounter(factionId);
 			float increment = pointsPerFaction.get(factionId);
 			if (!faction.isPlayerFaction() || NexConfig.followersInvasions) {
 				increment += NexConfig.baseInvasionPointsPerFaction;
 				increment += NexConfig.invasionPointsPerPlayerLevel * playerLevel;
 			}
-			
-			increment *= mult;
+
 			increment *= config.invasionPointMult;
+			float baseIncrement = increment;
+			faction.getMemoryWithoutUpdate().set(MEMORY_KEY_BASE_POINTS_LAST_TICK, baseIncrement, 3);
+
+			increment *= mult;
 			increment *= ongoingMod;
 			
-			counter += increment;
+			currCounter += increment;
+
+			float max = getMaxInvasionPoints(faction);
+			if (currCounter > max) currCounter = max;
+
 			//log.info(String.format("Adding %s invasion points for %s", increment, factionId));
 			faction.getMemoryWithoutUpdate().set(MEMORY_KEY_POINTS_LAST_TICK, increment, 3);
 			
 			float pointsRequired = NexConfig.pointsRequiredForInvasionFleet;
-			boolean canSpawn = counter > pointsRequired;
+			boolean canSpawn = currCounter > pointsRequired;
 			if (FleetPoolManager.USE_POOL) {
-				canSpawn = counter > pointsRequired * 2f;	// higher requirement so it doesn't drain the fleet pool completely following an invasion
+				canSpawn = currCounter > pointsRequired * 2f;	// higher requirement so it doesn't drain the fleet pool completely following an invasion
 				float fleetPool = FleetPoolManager.getManager().getCurrentPool(factionId);
 				canSpawn = canSpawn && fleetPool > BASE_INVASION_SIZE;
 			}
 			if (StrategicAI.getAI(factionId) != null) {
 				//canSpawn = false;
-				canSpawn &= counter > pointsRequired * 2f;
+				canSpawn &= currCounter > pointsRequired * 2f;
 			}
 			
 			if (!canSpawn)
 			{
-				spawnCounter.put(factionId, counter);
+				spawnCounter.put(factionId, currCounter);
 				//if (counter > pointsRequired/2 && oldCounter < pointsRequired/2)
 				//	generateInvasionOrRaidFleet(faction, null, true);	 // launch a raid
 			}
@@ -1066,10 +1077,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 						shouldRaid ? EventType.RAID : EventType.INVASION, new RequisitionParams());
 				if (intel != null)
 				{
-					counter -= getInvasionPointCost(intel);
+					currCounter -= getInvasionPointCost(intel);
 					if (shouldRaid) lifetimeRaids++;
 					else lifetimeInvasions++;
-					spawnCounter.put(factionId, counter);
+					spawnCounter.put(factionId, currCounter);
 				}
 				nextIsRaid.put(factionId, !shouldRaid);
 			}
@@ -1257,6 +1268,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	public static float getPointsLastTick(FactionAPI faction) {
 		return faction.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_POINTS_LAST_TICK);
+	}
+
+	public static float getBasePointsLastTick(FactionAPI faction) {
+		return faction.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_BASE_POINTS_LAST_TICK);
+	}
+
+	public static float getMaxInvasionPoints(FactionAPI faction) {
+		return Math.max(getBasePointsLastTick(faction) * POINTS_MAX_MULT, NexConfig.pointsRequiredForInvasionFleet);
 	}
 	
 	/**

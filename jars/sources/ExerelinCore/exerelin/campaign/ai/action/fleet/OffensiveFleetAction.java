@@ -79,10 +79,12 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
     public void applyPriorityModifiers() {
         super.applyPriorityModifiers();
 
-        if (FleetPoolManager.USE_POOL) {
+        String aifid = ai.getFactionId();
 
-            float curPool = FleetPoolManager.getManager().getCurrentPool(ai.getFactionId());
-            float max = FleetPoolManager.getManager().getMaxPool(ai.getFactionId());
+        // modify priority based on fleet pool/invasion points available
+        if (FleetPoolManager.USE_POOL) {
+            float curPool = FleetPoolManager.getManager().getCurrentPool(aifid);
+            float max = FleetPoolManager.getManager().getMaxPool(aifid);
             if (max < 1) max = 1;
 
             float ratio = Math.min(curPool/max, 1.25f);
@@ -92,6 +94,15 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
             if (ratio > 0.75f) proportion = Math.max(proportion, 1);
 
             priority.modifyMult("fleetPool", proportion, StrategicAI.getString("statFleetPool", true));
+        } else {
+            float invPoints = InvasionFleetManager.getManager().getSpawnCounter(aifid);
+            float baseline = NexConfig.pointsRequiredForInvasionFleet;
+
+            float mult = invPoints/baseline * 0.5f + 0.5f;
+            if (mult < 0.5f) mult = 0.5f;
+            else if (mult > 1.5f) mult = 1.5f;
+            priority.modifyMult("invPoints", mult, StrategicAI.getString("statFleetPool", true));
+
         }
     }
 

@@ -54,7 +54,14 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener,
             tooltip.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "");
             nextPad = pad;
         }
-        tooltip.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, (int) InvasionFleetManager.getManager().getSpawnCounter(factionId) + "");
+        {
+            float points = InvasionFleetManager.getManager().getSpawnCounter(factionId);
+            float pointsMax = InvasionFleetManager.getMaxInvasionPoints(ai.getFaction());
+            String pointsStr = Misc.getWithDGS(points);
+            String pointsMaxStr = Misc.getWithDGS(pointsMax);
+            tooltip.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, pointsStr, pointsMaxStr);
+        }
+
         super.generateReport(tooltip, holder, width);
     }
 

@@ -316,6 +316,8 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(Tags.INTEL_MILITARY);
+		if (NexConfig.enableStrategicAI)
+			tags.add(StringHelper.getString("exerelin_misc", "intelTagStrategicAI"));
 		tags.add(DiplomacyProfileIntel.getString("intelTag"));
 		return tags;
 	}	

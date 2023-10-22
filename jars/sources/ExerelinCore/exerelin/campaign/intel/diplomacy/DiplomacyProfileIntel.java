@@ -16,11 +16,14 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitDef;
+import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.*;
 import exerelin.utilities.NexFactionConfig.Morality;
 import lombok.extern.log4j.Log4j;
@@ -156,6 +159,26 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		alignmentLabel.setHighlightColors(highlightColors.toArray(new Color[]{}));
 		
 		return alignmentLabel;
+	}
+
+	protected void addFleetPoolAndInvasionPoints(TooltipMakerAPI tooltip, float pad) {
+		Color hl = Misc.getHighlightColor();
+		String factionId = faction.getId();
+
+		float nextPad = pad;
+		if (FleetPoolManager.USE_POOL) {
+			float pool = FleetPoolManager.getManager().getCurrentPool(factionId);
+			float poolMax = FleetPoolManager.getManager().getMaxPool(factionId);
+			tooltip.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "");
+			nextPad = 3;
+		}
+		{
+			float points = InvasionFleetManager.getManager().getSpawnCounter(factionId);
+			float pointsMax = InvasionFleetManager.getMaxInvasionPoints(faction);
+			String pointsStr = Misc.getWithDGS(points);
+			String pointsMaxStr = Misc.getWithDGS(pointsMax);
+			tooltip.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, pointsStr, pointsMaxStr);
+		}
 	}
 	
 	protected void addDispositionInfo(TooltipMakerAPI tooltip, float pad) {
@@ -532,6 +555,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		
 		// important notes for player
 		addDispositionInfo(outer, opad);
+		addFleetPoolAndInvasionPoints(outer, opad);
 		addWarWearinessInfo(outer, opad);
 		
 		// disposition table
