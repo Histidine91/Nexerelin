@@ -310,8 +310,11 @@ public class AllianceVoter {
 		FactionAPI us = Global.getSector().getFaction(factionId);
 		NexFactionConfig usConf = NexConfig.getFactionConfig(factionId);
 		
-		// already at war
+		// already at war/peace
 		if (isWar && us.isHostileTo(otherFactionId)) {
+			return Vote.YES;
+		}
+		else if (!isWar && !us.isHostileTo(otherFactionId)) {
 			return Vote.YES;
 		}
 		
