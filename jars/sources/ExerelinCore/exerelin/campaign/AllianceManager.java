@@ -45,6 +45,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final float MERGE_CHANCE_MULT = 0.3f;
     protected static final List<String> INVALID_FACTIONS = Arrays.asList(new String[] {"templars", Factions.INDEPENDENT});
     public static final float HOSTILE_THRESHOLD = -RepLevel.HOSTILE.getMin();
+    public static final boolean USE_ALLIANCE_FLEET_MIXING = false;
     
     protected static Map<Alignment, List<String>> allianceNamesByAlignment = new HashMap<>();
     protected static Map<Alignment, List<String>> alliancePrefixesByAlignment = new HashMap<>();

@@ -357,6 +357,10 @@ public class NexUtilsFleet
 	}
 
 	public static CampaignFleetAPI createAllianceMergedFleet(FactionAPI primary, FleetParamsV3 params) {
+		if (!AllianceManager.USE_ALLIANCE_FLEET_MIXING) {
+			return FleetFactoryV3.createFleet(params);
+		}
+
 		if (primary == null) {
 			log.info("Faction not found");
 			return FleetFactoryV3.createFleet(params);
