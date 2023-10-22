@@ -480,15 +480,23 @@ public class NexMarketBuilder
 				|| market.hasIndustry("tiandong_merchq");
 				//|| market.hasIndustry("prv_rb_pirate_2")
 				//|| market.hasIndustry("prv_rb_pirate_3");
+		boolean havePatrol = market.hasIndustry(Industries.PATROLHQ);
+		//|| market.hasIndustry("prv_rb_pirate_1");
+
+		boolean wantBase = !haveBase && marketSize >= sizeForBase && Misc.getNumIndustries(market) < Misc.getMaxIndustries(market);
+		if (entity.isHQ && market.getFaction().isPlayerFaction()) wantBase = false;	// don't add base for player homeworld at start
 		
-		if (!haveBase && marketSize >= sizeForBase && Misc.getNumIndustries(market) < Misc.getMaxIndustries(market))
+		if (wantBase)
 		{
 			float roll = (random.nextFloat() + random.nextFloat())*0.5f;
 			float req = MILITARY_BASE_CHANCE;
 			if (isPirate) req = MILITARY_BASE_CHANCE_PIRATE;
 			if (roll > req)
 			{
-				if (instant) addIndustry(market, Industries.MILITARYBASE, instant);
+				if (instant) {
+					if (havePatrol) NexUtilsMarket.upgradeIndustryIfCan(market.getIndustry(Industries.PATROLHQ), true);
+					else addIndustry(market, Industries.MILITARYBASE, true);
+				}
 				else {
 					colMan.queueIndustry(market, Industries.PATROLHQ, QueueType.NEW);
 					colMan.queueIndustry(market, Industries.PATROLHQ, QueueType.UPGRADE);
@@ -504,8 +512,6 @@ public class NexMarketBuilder
 			sizeForPatrol = 4;
 		
 		// add patrol HQ if needed
-		boolean havePatrol = market.hasIndustry(Industries.PATROLHQ);
-				//|| market.hasIndustry("prv_rb_pirate_1");
 		
 		if (!haveBase && !havePatrol && marketSize >= sizeForPatrol)
 		{
