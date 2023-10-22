@@ -21,6 +21,7 @@
 			"cost":20,
 			"params": {	# tries upgrading first, if the industry doesn't exist then it adds
 				"upgrade":"patrolhq",
+				"upgradeTo":"militarybase",
 				"add":"militarybase",
 			},
 			"className":"exerelin.world.factionsetup.AddOrUpgradeIndustry",
