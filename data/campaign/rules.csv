@@ -4941,3 +4941,12 @@ SetTextHighlights ""\""Stars, I can't... I'm sorry, $playerFirstName. When I thi
 
 A ripple of distortion runs over the display. ""I'm glad I don't need to sleep, because I don't think I'd be able to for a long time.""",,
 #END Misc. dialog,,,,,,
+,,,,,,
+#Debt Background,,,,,,
+nex_DebtBackgroundKanta0,DialogOptionSelected,"Nex_HasBackground nex_unpaid_debt score:10000
+$option == kpLeaveProt","$option = kpLeaveProt
+FireAll DialogOptionSelected",,,
+nex_DebtBackgroundKanta1,DialogOptionSelected,"Nex_HasBackground nex_unpaid_debt score:1000
+$option == kpLeaveProt",Nex_DebtBackgroundKantaCMD recreateOptions,,,
+nex_DebtBackgroundKanta2,DialogOptionSelected,$option == nex_BGDebtKanta2,Nex_DebtBackgroundKantaCMD continueConversation,,,
+#END Debt Background,,,,,,

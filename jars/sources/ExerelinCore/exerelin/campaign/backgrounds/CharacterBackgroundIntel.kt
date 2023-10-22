@@ -3,6 +3,7 @@ package exerelin.campaign.backgrounds
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.FactionSpecAPI
 import com.fs.starfarer.api.campaign.SectorEntityToken
+import com.fs.starfarer.api.campaign.StarSystemAPI
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin
 import com.fs.starfarer.api.ui.SectorMapAPI
@@ -11,6 +12,8 @@ import exerelin.utilities.NexConfig
 import exerelin.utilities.NexFactionConfig
 
 class CharacterBackgroundIntel(var factionId: String) : BaseIntelPlugin() {
+
+    var location: StarSystemAPI? = null
 
     fun getSpec() : CharacterBackgroundSpec? {
         return CharacterBackgroundUtils.getCurrentBackgroundSpec()
@@ -62,5 +65,8 @@ class CharacterBackgroundIntel(var factionId: String) : BaseIntelPlugin() {
         return tags
     }
 
+    override fun getMapLocation(map: SectorMapAPI?): SectorEntityToken? {
+        return location?.hyperspaceAnchor
+    }
 
 }
