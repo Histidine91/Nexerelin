@@ -158,7 +158,7 @@ class Nex_DebtBackgroundKantaCMD : BaseCommandPlugin() {
         }
 
         override fun getBonusXPFraction(): Float {
-            return 1f
+            return 0f
         }
 
         override fun getTextPanel(): TextPanelAPI {
