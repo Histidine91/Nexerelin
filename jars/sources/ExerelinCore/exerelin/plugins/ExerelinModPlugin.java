@@ -38,6 +38,7 @@ import exerelin.campaign.*;
 import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.ai.MilitaryInfoHelper;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.backgrounds.CharacterBackgroundLoader;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.*;
 import exerelin.campaign.fleets.*;
@@ -552,6 +553,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         //MilitaryCustomBounty.CREATORS.clear();    // for debugging
         MilitaryCustomBounty.CREATORS.add(new Nex_CBHegInspector());
+
+        CharacterBackgroundLoader.load();
 
         // fix Academy transport fleets in random sector
         for (MiscFleetCreatorPlugin creator : MiscFleetRouteManager.CREATORS) {

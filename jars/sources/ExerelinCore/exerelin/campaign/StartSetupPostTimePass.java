@@ -233,7 +233,7 @@ public class StartSetupPostTimePass {
 		}
 		
 		// Spacer obligation
-		if (ExerelinSetupData.getInstance().spacerObligation) {
+		if (ExerelinSetupData.getInstance().spacerObligation && !ExerelinSetupData.getInstance().backgroundId.equals("nex_unpaid_debt")) {
 			new Nex_SpacerObligation();
 		}
 

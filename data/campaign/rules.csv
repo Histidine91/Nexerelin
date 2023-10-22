@@ -218,29 +218,29 @@ $nex_lastSelectedFleetType == CUSTOM",Nex_NGCCustomStartFleet,,,
 nex_NGCNormalStart,NewGameOptionSelected,$option == nex_NGCStartEnsign,"NGCAddCredits 20000
 NGCAddCharacterPoints 1
 NGCSetNumStartingOfficers 0
-SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+FireBest NewGameBackgroundSelection",,,
 nex_NGCStartLieutenant,NewGameOptionSelected,$option == nex_NGCStartLieutenant,"NGCAddCredits 75000
 NGCAddCharacterPoints 1
 Nex_NGCAddLevel 3
 NGCSetNumStartingOfficers 1
-SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+FireBest NewGameBackgroundSelection",,,
 nex_NGCStartCommander,NewGameOptionSelected,$option == nex_NGCStartCommander,"NGCAddCredits 250000
 NGCAddCharacterPoints 1
 Nex_NGCAddLevel 6
 NGCSetNumStartingOfficers 2
-SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+FireBest NewGameBackgroundSelection",,,
 nex_NGCStartAgent,NewGameOptionSelected,$option == nex_NGCStartAgent,"NGCAddCredits 20000
 NGCAddCharacterPoints 1
 NGCSetNumStartingOfficers 0
-SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+FireBest NewGameBackgroundSelection",,,
 nex_NGCStartSpecialAgent,NewGameOptionSelected,$option == nex_NGCStartSpecialAgent,"NGCAddCredits 75000
 NGCAddCharacterPoints 1
 Nex_NGCAddLevel 3
 NGCSetNumStartingOfficers 0
-SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+FireBest NewGameBackgroundSelection",,,
 nex_NGCStartCustomResources,NewGameOptionSelected,$option == nex_NGCCustomResourcesStart,"Nex_NGCStartResources save
 NGCAddCharacterPoints 1
-SetShortcut nex_NGCDone RETURN",,,
+FireBest NewGameBackgroundSelection",,,
 nex_NGCStartBack,NewGameOptionSelected,$option == nex_NGCStartBack,"NGCClearStartingGear
 unset $nex_lastSelectedFleetType
 FireAll ExerelinNGCStep3",,,
@@ -249,6 +249,9 @@ $nex_customStart != null
 Nex_IsNull $nex_lastSelectedFleetType","NGCClearStartingGear
 Nex_NGCCustomStart unset
 FireBest Nex_NGCCustomStartMenu",,,
+,,,,,,
+nex_NGCSelectBackground,NewGameBackgroundSelection,,Nex_NGCBackgroundSelection,,,
+,,,,,,
 nex_NGCDoneOption,NewGameOptionSelected,$option == nex_NGCDone,"Nex_NGCFinalize
 NGCDone",,,
 #END NGC options,,,,,,
@@ -2226,8 +2229,8 @@ $nex_remFragments_seenFirstDialog
 !$nex_remFragments_canSalvage",ShowImageVisual space_wreckage,"Your $shipOrFleet approaches the mothership.
 
 You don't have time to salvage it right now. Defeat the incoming fleet first.",defaultLeave:Leave,
-nex_remFragments_stationDescLP,Nex_RemFragments_StationText1,$player.nex_remFragments_foundLPSurvivor ,,"Your Pather informant seems to have exaggerated the resilience of the ""demon"" somewhat. The tattered hulk seems to have been thoroughly disarmed, its weapon mounts blown apart, half its compartments open to space. The engines glow on thermals with residual heat.",,
-nex_remFragments_stationDescNoLP,Nex_RemFragments_StationText1,!$player.nex_remFragments_foundLPSurvivor ,,"The hulk is silent, weapon ports burned away, great rents torn in seemingly every exposed surface. It sits silent, utterly defenseless. The engines glow on thermals with residual heat.",,
+nex_remFragments_stationDescLP,Nex_RemFragments_StationText1,$player.nex_remFragments_foundLPSurvivor,,"Your Pather informant seems to have exaggerated the resilience of the ""demon"" somewhat. The tattered hulk seems to have been thoroughly disarmed, its weapon mounts blown apart, half its compartments open to space. The engines glow on thermals with residual heat.",,
+nex_remFragments_stationDescNoLP,Nex_RemFragments_StationText1,!$player.nex_remFragments_foundLPSurvivor,,"The hulk is silent, weapon ports burned away, great rents torn in seemingly every exposed surface. It sits silent, utterly defenseless. The engines glow on thermals with residual heat.",,
 nex_remFragments_stationDescCommon,Nex_RemFragments_StationText1,,,"Nevertheless, your sensors still pick up a working fusion reactor at the ship's core, along with a faint looping radio transmission.",,
 nex_remFragments_engineerConvo1,DialogOptionSelected,$option == nex_remFragments_engineerConvo1,ShowPersonVisual true,"Your comms officer manages to open a link to whoever it is inside. A few moments later, a fuzzy image of a dishevelled, cringing figure fills the display volume.
 
@@ -4953,3 +4956,12 @@ SetTextHighlights ""\""Stars, I can't... I'm sorry, $playerFirstName. When I thi
 
 A ripple of distortion runs over the display. ""I'm glad I don't need to sleep, because I don't think I'd be able to for a long time.""",,
 #END Misc. dialog,,,,,,
+,,,,,,
+#Debt Background,,,,,,
+nex_DebtBackgroundKanta0,DialogOptionSelected,"Nex_HasBackground nex_unpaid_debt score:10000
+$option == kpLeaveProt","$option = kpLeaveProt
+FireAll DialogOptionSelected",,,
+nex_DebtBackgroundKanta1,DialogOptionSelected,"Nex_HasBackground nex_unpaid_debt score:1000
+$option == kpLeaveProt",Nex_DebtBackgroundKantaCMD recreateOptions,,,
+nex_DebtBackgroundKanta2,DialogOptionSelected,$option == nex_BGDebtKanta2,Nex_DebtBackgroundKantaCMD continueConversation,,,
+#END Debt Background,,,,,,
