@@ -29,13 +29,13 @@
 		{"file":"sounds/nexerelin/sfx_interface/explosion_chained.ogg","pitch":1.2,"volume":0.8},
 	],
 	"nex_sfx_gb_victory":[
-		{"file":"sounds/nexerelin/sfx_interface/groundbattle/victory.ogg","pitch":1.1,"volume":0.25},
+		{"file":"sounds/nexerelin/sfx_interface/groundbattle/victory.ogg","pitch":1.1,"volume":0.22},
 	],
 	"nex_sfx_gb_defeat":[
-		{"file":"sounds/nexerelin/sfx_interface/groundbattle/defeat.ogg","pitch":1,"volume":0.5},
+		{"file":"sounds/nexerelin/sfx_interface/groundbattle/defeat.ogg","pitch":1,"volume":0.4},
 	],
 	"nex_sfx_gb_draw":[
-		{"file":"sounds/nexerelin/sfx_interface/groundbattle/draw.ogg","pitch":1,"volume":0.5},
+		{"file":"sounds/nexerelin/sfx_interface/groundbattle/draw.ogg","pitch":1,"volume":0.4},
 	],
 	
 	"nex_sfx_explosion":[
