@@ -269,7 +269,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             new AcademyStoryVictoryScript().init();
 
         if (isNexDev) {
-            DebugIntel.createIntel();
+            //DebugIntel.createIntel();
         }
     }
     

@@ -62,10 +62,6 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             if (ofid.equals(Factions.PLAYER) && commId != null) continue;   // don't interact with player while they have a commission
             if (NexUtilsFaction.isPirateFaction(ofid) != NexUtilsFaction.isPirateFaction(ourId)) continue;
 
-            if (ofid.equals(Factions.PLAYER)) {
-                log.info("Checking alliance prospects with " + ofid);
-            }
-
             boolean canAlly;
             if (ourCurrAlliance != null) canAlly = ourCurrAlliance.canJoin(Global.getSector().getFaction(ofid));
             else canAlly = AllianceManager.getManager().canAlly(ourId, ofid);

@@ -407,6 +407,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		float mult = patrolCount/medianPatrolCount;
 		mult = (mult+1)/2;
 		mult *= 2;	// compensate for not using market size mult
+		log.info("Size multiplier for attack fleets based on defender strength: mult");
 
 		fp = Math.round(fp * mult);
 		fp += playerPower/40f;
@@ -548,6 +549,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		float powerDiff = (medianPoints - pointsPerFleet) * numFleets;
 		if (powerDiff <= 15) return;
 
+		log.info("Spawning Remnant task force of strength " + powerDiff + " as compensation");
 		FleetParamsV3 params = new FleetParamsV3(station.getLocationInHyperspace(),
 				Factions.REMNANTS,
 				1f,	// quality override
@@ -1142,7 +1144,6 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		
 		@Override
 		public void run() {
-			log.info("Wololo running set stage script");
 			mission.setCurrentStage(stage, null, null);
 		}
 	}
