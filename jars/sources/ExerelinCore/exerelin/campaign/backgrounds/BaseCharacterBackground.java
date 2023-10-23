@@ -19,7 +19,11 @@ public abstract class BaseCharacterBackground {
         return spec.shortDescription;
     }
 
-    public  String getIcon(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+    public String getLongDescription(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+        return spec.longDescription;
+    }
+
+    public String getIcon(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
         return spec.iconPath;
     }
 
@@ -49,12 +53,12 @@ public abstract class BaseCharacterBackground {
         float pad = 10f;
 
         TooltipMakerAPI imageTooltip = tooltip.beginImageWithText(spec.iconPath, 40f);
-        imageTooltip.addPara(spec.title, 0f, hc, hc);
-        imageTooltip.addPara(spec.shortDescription, 0f, tc, tc);
+        imageTooltip.addPara(getTitle(factionSpec, factionConfig), 0f, hc, hc);
+        imageTooltip.addPara(getShortDescription(factionSpec, factionConfig), 0f, tc, tc);
         tooltip.addImageWithText(0f);
 
         tooltip.addSpacer(pad);
 
-        tooltip.addPara(spec.longDescription, 0f);
+        tooltip.addPara(getLongDescription(factionSpec, factionConfig), 0f);
     }
 }
