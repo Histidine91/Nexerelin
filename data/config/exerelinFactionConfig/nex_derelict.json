@@ -3,6 +3,7 @@
     "corvusCompatible":false,
     "dropPrisoners":false,
     "noRandomizeRelations":true,
+    "noSyncRelations":true,
     "allowAgentActions":false,
     "allowPrisonerActions":false,
     "hostileToAll":1,
