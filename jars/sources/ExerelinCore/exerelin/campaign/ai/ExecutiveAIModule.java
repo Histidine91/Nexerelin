@@ -76,12 +76,7 @@ public class ExecutiveAIModule extends StrategicAIModule {
 
         int actionsTakenThisMeeting = 0;
         List<StrategicConcern> concerns = new ArrayList<>(ai.getExistingConcerns());
-        Collections.sort(concerns, new Comparator<StrategicConcern>() {
-            @Override
-            public int compare(StrategicConcern o1, StrategicConcern o2) {
-                return Float.compare(o2.getPriorityFloat(), o1.getPriorityFloat());
-            }
-        });
+        Collections.sort(concerns);
 
         // count ongoing actions
         int numOngoingActions = 0;

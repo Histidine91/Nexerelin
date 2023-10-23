@@ -26,6 +26,7 @@ import exerelin.utilities.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.List;
@@ -406,6 +407,11 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public int compareTo(@NotNull StrategicConcern o) {
+        return Float.compare(o.getPriorityFloat(), this.getPriorityFloat());
     }
 
     public static List<String> getRelevantLiveFactionIds() {

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public interface StrategicConcern {
+public interface StrategicConcern extends Comparable<StrategicConcern> {
 
     StrategicAI getAI();
     void setAI(StrategicAI ai, StrategicAIModule module);

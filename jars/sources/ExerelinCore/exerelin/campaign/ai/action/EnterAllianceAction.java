@@ -1,7 +1,9 @@
 package exerelin.campaign.ai.action;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
@@ -16,21 +18,28 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
     @Getter @Setter protected Alliance alliance;
 
+    /*
+        note: when joining an existing alliance, 'faction' will be the AI faction
+        when creating new alliance, 'faction' will be our proposed new ally
+        there's currently no invite-to-existing alliance, but we'll have to support it eventually
+     */
+
     @Override
     public boolean generate() {
         String afid = ai.getFactionId();
+        boolean isPlayerControlled = faction != null && Nex_IsFactionRuler.isRuler(faction);
         if (alliance != null) {
-            if (Nex_IsFactionRuler.isRuler(faction)) {
+            if (isPlayerControlled) {
                 AllianceOfferIntel offer = new AllianceOfferIntel(afid, AllianceManager.getFactionAlliance(afid));
                 setDelegate(offer);
                 offer.init();
                 return true;
             } else {
-                AllianceManager.joinAllianceStatic(ai.getFactionId(), alliance);
+                AllianceManager.joinAllianceStatic(faction.getId(), alliance);
             }
 
         } else {
-            if (Nex_IsFactionRuler.isRuler(faction)) {
+            if (isPlayerControlled) {
                 AllianceOfferIntel offer = new AllianceOfferIntel(afid, AllianceManager.getFactionAlliance(afid));
                 setDelegate(offer);
                 offer.init();
@@ -54,24 +63,22 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
         if (Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_GLOBAL_COOLDOWN))
             return false;
 
-        // don't spontaneously ally with player
-        // in future, make an explicit offer to player
-        //if (faction == Global.getSector().getPlayerFaction()) return false;
-        /*
-        if ((ai.getFaction().isPlayerFaction())) {
-            if (!NexConfig.followersDiplomacy) return false;
-            if (Misc.getCommissionFaction() != null) return false;
-        }
-        */
-
         if (NexUtilsFaction.isPirateFaction(ai.getFactionId())) return false;
 
         if (alliance != null) {
-            if (!alliance.canJoin(ai.getFaction())) return false;
+            // check if the not currently allied faction can actually join the alliance
+            if (alliance.getMembersCopy().contains(ai.getFactionId()) && !alliance.canJoin(faction)) return false;
+            if (alliance.getMembersCopy().contains(faction) && !alliance.canJoin(ai.getFaction())) return false;
         }
         else if (faction != null) {
+            if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
             if (!AllianceManager.getManager().canAlly(ai.getFactionId(), faction.getId())) return false;
             if (NexUtilsFaction.isPirateFaction(faction.getId())) return false;
+
+            FactionAPI comm = Misc.getCommissionFaction();
+            if (faction.isPlayerFaction() && comm != null) return false;    // don't deal with player while commissioned
+            boolean playerRuled = Nex_IsFactionRuler.isRuler(faction);
+            if (playerRuled && faction.getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN)) return false;
         }
 
         if (NexUtils.getTrueDaysSinceStart() < NexConfig.allianceGracePeriod) return false;

@@ -466,6 +466,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (bestAlignment != null)
                 {
                     if (Nex_IsFactionRuler.isRuler(otherFactionId)) {
+                        if (faction.getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN)) continue;
+
                         AllianceOfferIntel offer = new AllianceOfferIntel(factionId, AllianceManager.getFactionAlliance(factionId));
                         offer.init();
                     }

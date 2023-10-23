@@ -356,7 +356,7 @@ public class RaiseRelations extends CovertActionIntel {
 
 	@Override
 	public String getStrategicActionName() {
-		return super.getStrategicActionName() + ": " + this.targetFaction;
+		return super.getStrategicActionName() + ": " + this.targetFaction.getDisplayName();
 	}
 
 	public static void applyMemoryCooldown(FactionAPI faction) {

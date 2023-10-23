@@ -235,6 +235,6 @@ public abstract class BaseStrategicAction implements StrategicAction {
 
     @Override
     public int compareTo(StrategicAction other) {
-        return Float.compare(this.getPriorityFloat(), other.getPriorityFloat());
+        return Float.compare(other.getPriorityFloat(), this.getPriorityFloat());
     }
 }

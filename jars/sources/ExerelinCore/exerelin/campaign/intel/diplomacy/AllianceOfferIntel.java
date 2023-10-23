@@ -31,6 +31,8 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	public static final Object EXPIRED_UPDATE = new Object();
 	public static final String BUTTON_ACCEPT = "Accept";
 	public static final String BUTTON_REJECT = "Reject";
+	public static final float COOLDOWN = 120;
+	public static final String MEM_KEY_COOLDOWN = "$nex_allianceOffer_cooldown";
 
 	protected String factionId;
 	protected int state = 0;	// 0 = pending, 1 = accepted, -1 = rejected
@@ -39,7 +41,6 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	@Getter protected Alliance alliance;
 
 	//runcode new exerelin.campaign.intel.diplomacy.AllianceOfferIntel("luddic_church", null).init();
-	// TODO: cooldown to avoid spamming offers after rejection
 	public AllianceOfferIntel(String offeringFactionId, Alliance alliance)
 	{
 		this.factionId = offeringFactionId;
@@ -50,6 +51,8 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		this.setImportant(true);
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
+
+		PlayerFactionStore.getPlayerFaction().getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN);
 	}
 	
 	@Override

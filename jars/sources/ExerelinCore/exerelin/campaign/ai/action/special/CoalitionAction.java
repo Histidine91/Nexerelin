@@ -1,6 +1,8 @@
 package exerelin.campaign.ai.action.special;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
@@ -17,9 +19,11 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
+import lombok.extern.log4j.Log4j;
 
 import java.util.*;
 
+@Log4j
 public class CoalitionAction extends BaseStrategicAction implements ShimAction {
 
     @Override
@@ -31,8 +35,9 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
         String factionId = ai.getFactionId();
 
         Set<String> potentialFriends = new LinkedHashSet<>();
+        Alliance ourCurrAlliance = AllianceManager.getFactionAlliance(ai.getFactionId());
 
-        if (AllianceManager.getFactionAlliance(ai.getFactionId()) == null) {
+        if (ourCurrAlliance == null) {
             List<Pair<Alliance, Float>> alliances = getEligibleAlliances(enemyId);
             for (Pair<Alliance, Float> entry : alliances) {
                 Alliance all = entry.one;
@@ -54,11 +59,17 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             if (potentialFriends.contains(ofid)) continue;
             if (ofid.equals(ai.getFactionId())) continue;
             if (ofid.equals(enemyId)) continue;
+
+            String commId = Misc.getCommissionFactionId();
+            if (ofid.equals(Factions.PLAYER) && commId != null) continue;   // don't interact with player while they have a commission
             if (NexUtilsFaction.isPirateFaction(ofid) != NexUtilsFaction.isPirateFaction(ai.getFactionId())) continue;
 
+            // note: canAlly returns false if either party is already in an alliance; invitations to alliance and mergers will need a separate TODO
             if (AllianceManager.getManager().canAlly(factionId, ofid)) {
                 StrategicAction allyAct = createAlliance(ofid);
-                if (allyAct != null && concern.canTakeAction(allyAct) && allyAct.canUse(concern)) return allyAct;
+                if (allyAct != null && concern.canTakeAction(allyAct) && allyAct.canUse(concern)) {
+                    return allyAct;
+                }
             } else {
                 potentialFriends.add(ofid);
             }
@@ -98,7 +109,10 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             List<StrategicAction> actions = temp.getUsableActions();
             for (StrategicAction action : actions) {
                 float prio = action.getPriorityFloat();
-                if (SAIConstants.DEBUG_LOGGING && ExerelinModPlugin.isNexDev) Global.getLogger(this.getClass()).info(String.format("  Shimmed action %s has priority %s", action.getName(), NexUtils.mutableStatToString(action.getPriority())));
+                if (SAIConstants.DEBUG_LOGGING && ExerelinModPlugin.isNexDev) {
+                    Global.getLogger(this.getClass()).info(String.format("  Shimmed action %s has priority %s", action.getName(),
+                            NexUtils.mutableStatToString(action.getPriority())));
+                }
                 if (prio > bestPrio) {
                     bestPrio = prio;
                     bestAction = action;
