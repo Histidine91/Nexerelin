@@ -234,7 +234,7 @@ public class Alliance
 	}
 
 	public boolean canJoin(FactionAPI faction) {
-		if (isAlignmentCompatible(faction.getId())) return false;
+		if (!isAlignmentCompatible(faction.getId())) return false;
 		float relationship = getAverageRelationshipWithFaction(faction.getId());
 		if (relationship < AllianceManager.MIN_RELATIONSHIP_TO_JOIN) {
 			return false;

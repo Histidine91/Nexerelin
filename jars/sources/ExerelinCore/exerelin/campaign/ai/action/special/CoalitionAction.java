@@ -6,7 +6,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.StrategicDefManager;
 import exerelin.campaign.ai.action.BaseStrategicAction;
@@ -15,7 +14,6 @@ import exerelin.campaign.ai.action.ShimAction;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
@@ -28,22 +26,21 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
 
     @Override
     public StrategicAction pickShimmedAction() {
-
-        // First let's see if we have an alliance we want to join (while not being already in an alliance)
         String enemyId = null;
         if (faction != null) enemyId = faction.getId();
-        String factionId = ai.getFactionId();
+        String ourId = ai.getFactionId();
 
         Set<String> potentialFriends = new LinkedHashSet<>();
         Alliance ourCurrAlliance = AllianceManager.getFactionAlliance(ai.getFactionId());
 
+        // First let's see if we have an alliance we want to join (while not being already in an alliance)
         if (ourCurrAlliance == null) {
             List<Pair<Alliance, Float>> alliances = getEligibleAlliances(enemyId);
             for (Pair<Alliance, Float> entry : alliances) {
                 Alliance all = entry.one;
                 float allyScore = entry.two;
                 if (all.canJoin(ai.getFaction())) {
-                    StrategicAction allyAct = joinAlliance(all);
+                    StrategicAction allyAct = joinAlliance(ourId, all);
                     if (allyAct != null && concern.canTakeAction(allyAct) && allyAct.canUse(concern)) {
                         allyAct.getPriority().modifyFlat("allyScore", allyScore, StrategicAI.getString("statAllianceScore", true));
                         return allyAct;
@@ -56,17 +53,27 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
 
         // see if we can form an alliance with anyone not currently allied
         for (String ofid : SectorManager.getLiveFactionIdsCopy()) {
-            if (potentialFriends.contains(ofid)) continue;
-            if (ofid.equals(ai.getFactionId())) continue;
+            if (potentialFriends.contains(ofid)) continue;  // these people are already known to be in an alliance, save them for later
+            if (ofid.equals(ourId)) continue;
             if (ofid.equals(enemyId)) continue;
+            if (ourCurrAlliance != null && AllianceManager.getFactionAlliance(ofid) != null) continue;  // alliance mergers not yet supported
 
             String commId = Misc.getCommissionFactionId();
             if (ofid.equals(Factions.PLAYER) && commId != null) continue;   // don't interact with player while they have a commission
-            if (NexUtilsFaction.isPirateFaction(ofid) != NexUtilsFaction.isPirateFaction(ai.getFactionId())) continue;
+            if (NexUtilsFaction.isPirateFaction(ofid) != NexUtilsFaction.isPirateFaction(ourId)) continue;
 
-            // note: canAlly returns false if either party is already in an alliance; invitations to alliance and mergers will need a separate TODO
-            if (AllianceManager.getManager().canAlly(factionId, ofid)) {
-                StrategicAction allyAct = createAlliance(ofid);
+            if (ofid.equals(Factions.PLAYER)) {
+                log.info("Checking alliance prospects with " + ofid);
+            }
+
+            boolean canAlly;
+            if (ourCurrAlliance != null) canAlly = ourCurrAlliance.canJoin(Global.getSector().getFaction(ofid));
+            else canAlly = AllianceManager.getManager().canAlly(ourId, ofid);
+
+
+            // try inviting this faction to our alliance if we have one, or forming a new one if we don't
+            if (canAlly) {
+                StrategicAction allyAct = ourCurrAlliance == null ? createAlliance(ofid) : joinAlliance(ofid, ourCurrAlliance);
                 if (allyAct != null && concern.canTakeAction(allyAct) && allyAct.canUse(concern)) {
                     return allyAct;
                 }
@@ -75,15 +82,16 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             }
         }
 
-        // let's just diplo with one of them
+        // no alliance possible, let's just diplo with one of them
         return pickDiplomacyAction(potentialFriends);
     }
 
-    protected StrategicAction joinAlliance(Alliance all) {
+    protected StrategicAction joinAlliance(String candidateId, Alliance all) {
         if (!NexConfig.enableAlliances) return null;
         EnterAllianceAction act = (EnterAllianceAction)StrategicDefManager.instantiateAction(StrategicDefManager.getActionDef("enterAlliance"));
         act.initForConcern(concern);
         act.setAlliance(all);
+        act.setFaction(Global.getSector().getFaction(candidateId));
         act.setDelegate(act);
         return act;
     }
@@ -109,10 +117,6 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             List<StrategicAction> actions = temp.getUsableActions();
             for (StrategicAction action : actions) {
                 float prio = action.getPriorityFloat();
-                if (SAIConstants.DEBUG_LOGGING && ExerelinModPlugin.isNexDev) {
-                    Global.getLogger(this.getClass()).info(String.format("  Shimmed action %s has priority %s", action.getName(),
-                            NexUtils.mutableStatToString(action.getPriority())));
-                }
                 if (prio > bestPrio) {
                     bestPrio = prio;
                     bestAction = action;
@@ -152,7 +156,7 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
     @Override
     public void applyPriorityModifiers() {
         super.applyPriorityModifiers();
-        //priority.modifyFlat("temp", 400, "lololol");
+        priority.modifyFlat("temp", 400, "lololol");
     }
 
     @Override

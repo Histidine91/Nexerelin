@@ -16,12 +16,14 @@ import lombok.Setter;
 
 public class EnterAllianceAction extends DiplomacyAction implements StrategicActionDelegate {
 
+    public static final boolean ALLIANCE_DEBUGGING = false;
+
     @Getter @Setter protected Alliance alliance;
 
     /*
-        note: when joining an existing alliance, 'faction' will be the AI faction
+        note: when applying to join an existing alliance, 'faction' will be the AI faction
+        when inviting other faction to our alliance, 'faction' will be the invitee (not us)
         when creating new alliance, 'faction' will be our proposed new ally
-        there's currently no invite-to-existing alliance, but we'll have to support it eventually
      */
 
     @Override
@@ -30,7 +32,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
         boolean isPlayerControlled = faction != null && Nex_IsFactionRuler.isRuler(faction);
         if (alliance != null) {
             if (isPlayerControlled) {
-                AllianceOfferIntel offer = new AllianceOfferIntel(afid, AllianceManager.getFactionAlliance(afid));
+                AllianceOfferIntel offer = new AllianceOfferIntel(afid, alliance);
                 setDelegate(offer);
                 offer.init();
                 return true;
@@ -60,7 +62,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
         if (!NexConfig.enableAlliances) return false;
         if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
 
-        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_GLOBAL_COOLDOWN))
+        if (!ALLIANCE_DEBUGGING && Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_GLOBAL_COOLDOWN))
             return false;
 
         if (NexUtilsFaction.isPirateFaction(ai.getFactionId())) return false;
@@ -81,16 +83,16 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
             if (playerRuled && faction.getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN)) return false;
         }
 
-        if (NexUtils.getTrueDaysSinceStart() < NexConfig.allianceGracePeriod) return false;
+        if (!ALLIANCE_DEBUGGING && NexUtils.getTrueDaysSinceStart() < NexConfig.allianceGracePeriod) return false;
         return concern.getDef().hasTag("canAlly") || concern.getDef().hasTag("canCoalition");
     }
 
     @Override
     public String getName() {
+        if (delegate != null && delegate instanceof AllianceOfferIntel) {
+            return ((AllianceOfferIntel)delegate).getSmallDescriptionTitle();
+        }
         if (alliance == null) {
-            if (delegate != null && delegate instanceof AllianceOfferIntel) {
-                return ((AllianceOfferIntel)delegate).getSmallDescriptionTitle();
-            }
             return "Alliance - error";
         }
         return alliance.getName();
@@ -98,6 +100,9 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
     @Override
     public String getIcon() {
+        if (delegate != null && delegate instanceof AllianceOfferIntel) {
+            return ((AllianceOfferIntel)delegate).getIcon();
+        }
         if (alliance != null && alliance.getIntel() != null) return alliance.getIntel().getIcon();
         return Global.getSettings().getSpriteName("intel", "alliance");
     }

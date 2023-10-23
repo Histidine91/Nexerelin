@@ -18,6 +18,7 @@ import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
@@ -38,10 +39,10 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	protected int state = 0;	// 0 = pending, 1 = accepted, -1 = rejected
 	protected float daysRemaining = MathUtils.getRandomNumberInRange(20, 30);
 	@Getter	@Setter	protected StrategicAction strategicAction;
-	@Getter protected Alliance alliance;
+	@Nullable @Getter protected Alliance alliance;
 
 	//runcode new exerelin.campaign.intel.diplomacy.AllianceOfferIntel("luddic_church", null).init();
-	public AllianceOfferIntel(String offeringFactionId, Alliance alliance)
+	public AllianceOfferIntel(String offeringFactionId, @Nullable Alliance alliance)
 	{
 		this.factionId = offeringFactionId;
 		this.alliance = alliance;
