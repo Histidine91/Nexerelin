@@ -70,12 +70,14 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
         var checkboxes = HashMap<NexLunaElement, NexLunaCheckbox>()
         element.addPara("", 0f).position.inTL(10f, 0f)
         for (background in backgrounds.sortedBy { it.order }) {
+            if (!background.shouldShowInSelection(factionSpec, factionConfig)) continue
             if (first) {
                 element.addSpacer(10f)
             }
             else {
                 element.addSpacer(20f)
             }
+
 
             var title = background.getTitle(factionSpec, factionConfig)
             var description = background.getShortDescription(factionSpec, factionConfig)
