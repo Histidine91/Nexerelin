@@ -233,7 +233,8 @@ public class StartSetupPostTimePass {
 		}
 		
 		// Spacer obligation
-		if (ExerelinSetupData.getInstance().spacerObligation && !ExerelinSetupData.getInstance().backgroundId.equals("nex_unpaid_debt")) {
+		String backgroundID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background");
+		if (ExerelinSetupData.getInstance().spacerObligation && (backgroundID == null || !backgroundID.equals("nex_unpaid_debt"))) {
 			new Nex_SpacerObligation();
 		}
 

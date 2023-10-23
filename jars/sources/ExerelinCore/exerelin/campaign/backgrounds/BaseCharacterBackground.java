@@ -34,7 +34,6 @@ public abstract class BaseCharacterBackground {
     public abstract boolean shouldShowInSelection(FactionSpecAPI factionSpec, NexFactionConfig factionConfig);
 
 
-
     public void addTooltipForSelection(TooltipMakerAPI tooltip, FactionSpecAPI factionSpec, NexFactionConfig factionConfig, Boolean expanded) {
        addBaseTooltip(tooltip, factionSpec, factionConfig);
     }
@@ -43,7 +42,20 @@ public abstract class BaseCharacterBackground {
         addBaseTooltip(tooltip, factionSpec, factionConfig);
     }
 
-    public void executeAfterGameCreation(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+
+    public void onNewGame(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+
+    }
+
+    public void onNewGameAfterEconomyLoad(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+
+    }
+
+    public void onNewGameAfterTimePass(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+
+    }
+
+    public void onNewGameAfterProcGen(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
 
     }
 

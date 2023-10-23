@@ -38,7 +38,10 @@ import exerelin.campaign.*;
 import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
 import exerelin.campaign.ai.MilitaryInfoHelper;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.backgrounds.BaseCharacterBackground;
+import exerelin.campaign.backgrounds.CharacterBackgroundIntel;
 import exerelin.campaign.backgrounds.CharacterBackgroundLoader;
+import exerelin.campaign.backgrounds.CharacterBackgroundUtils;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.*;
 import exerelin.campaign.fleets.*;
@@ -582,6 +585,24 @@ public class ExerelinModPlugin extends BaseModPlugin
         //ExerelinSetupData.resetInstance();
         //ExerelinCheck.checkModCompatability();
         addScriptsAndEventsIfNeeded();
+
+        ExerelinSetupData data = ExerelinSetupData.getInstance();
+        if (data.backgroundId != null && data.selectedFactionForBackground != null) {
+            String backgroundID = data.backgroundId;
+            String factionID = data.selectedFactionForBackground;
+
+            Global.getSector().getMemoryWithoutUpdate().set("$nex_selected_background", backgroundID);
+            Global.getSector().getMemoryWithoutUpdate().set("$nex_selected_background_faction", factionID);
+
+            CharacterBackgroundIntel intel = new CharacterBackgroundIntel(factionID);
+            Global.getSector().getIntelManager().addIntel(intel);
+
+            BaseCharacterBackground background = CharacterBackgroundUtils.getBackgroundPluginByID(backgroundID);
+            background.onNewGame(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID));
+
+            data.backgroundId = null;
+            data.selectedFactionForBackground = null;
+        }
     }
     
     @Override
@@ -615,6 +636,13 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (ModPluginEventListener x : Global.getSector().getListenerManager().getListeners(ModPluginEventListener.class))
         {
             x.onNewGameAfterProcGen();
+        }
+
+        String backgroundID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background");
+        String factionID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background_faction");
+        if (backgroundID != null && factionID != null) {
+            BaseCharacterBackground background = CharacterBackgroundUtils.getBackgroundPluginByID(backgroundID);
+            background.onNewGameAfterProcGen(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID));
         }
     }
     
@@ -669,6 +697,13 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             x.onNewGameAfterEconomyLoad();
         }
+
+        String backgroundID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background");
+        String factionID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background_faction");
+        if (backgroundID != null && factionID != null) {
+            BaseCharacterBackground background = CharacterBackgroundUtils.getBackgroundPluginByID(backgroundID);
+            background.onNewGameAfterEconomyLoad(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID));
+        }
     }
     
     @Override
@@ -705,6 +740,17 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             x.onNewGameAfterTimePass();
         }
+
+        String backgroundID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background");
+        String factionID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background_faction");
+        if (backgroundID != null && factionID != null) {
+            BaseCharacterBackground background = CharacterBackgroundUtils.getBackgroundPluginByID(backgroundID);
+            background.onNewGameAfterTimePass(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID));
+        }
+    }
+
+    public void setupBackground() {
+
     }
     
     @Override
