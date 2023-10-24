@@ -1,6 +1,7 @@
 package exerelin.campaign.backgrounds;
 
 import com.fs.starfarer.api.campaign.FactionSpecAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexFactionConfig;
@@ -33,6 +34,10 @@ public abstract class BaseCharacterBackground {
 
     public abstract boolean shouldShowInSelection(FactionSpecAPI factionSpec, NexFactionConfig factionConfig);
 
+    /**Spawns the player at whatever entity is returned if not null. Is called after onNewGameAfterEconomyLoad, before onNewGameAfterEconomyLoad.*/
+    public SectorEntityToken getSpawnLocationOverwrite(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+        return null;
+    }
 
     public void addTooltipForSelection(TooltipMakerAPI tooltip, FactionSpecAPI factionSpec, NexFactionConfig factionConfig, Boolean expanded) {
        addBaseTooltip(tooltip, factionSpec, factionConfig);
@@ -43,7 +48,12 @@ public abstract class BaseCharacterBackground {
     }
 
 
+
     public void onNewGame(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+
+    }
+
+    public void onNewGameAfterProcGen(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
 
     }
 
@@ -55,9 +65,7 @@ public abstract class BaseCharacterBackground {
 
     }
 
-    public void onNewGameAfterProcGen(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
 
-    }
 
     protected void addBaseTooltip(TooltipMakerAPI tooltip, FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
         Color hc = Misc.getHighlightColor();

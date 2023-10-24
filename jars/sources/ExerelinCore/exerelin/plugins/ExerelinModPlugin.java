@@ -708,6 +708,16 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onNewGameAfterTimePass() {
+
+        String backgroundID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background");
+        String factionID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background_faction");
+        if (backgroundID != null && factionID != null) {
+            BaseCharacterBackground background = CharacterBackgroundUtils.getBackgroundPluginByID(backgroundID);
+            Global.getSector().getMemoryWithoutUpdate().set("$nex_spawnlocation_background_overwrite",
+                    background.getSpawnLocationOverwrite(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID)));
+
+        }
+
         log.info("New game after time pass; " + isNewGame);
         ScenarioManager.afterTimePass(Global.getSector());
         StartSetupPostTimePass.execute();
@@ -741,8 +751,6 @@ public class ExerelinModPlugin extends BaseModPlugin
             x.onNewGameAfterTimePass();
         }
 
-        String backgroundID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background");
-        String factionID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background_faction");
         if (backgroundID != null && factionID != null) {
             BaseCharacterBackground background = CharacterBackgroundUtils.getBackgroundPluginByID(backgroundID);
             background.onNewGameAfterTimePass(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID));

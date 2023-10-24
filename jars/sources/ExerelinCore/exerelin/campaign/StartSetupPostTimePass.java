@@ -399,9 +399,14 @@ public class StartSetupPostTimePass {
 		}
 		
 		SectorEntityToken entity = null;
+
 		
 		MemoryAPI mem = Global.getSector().getMemoryWithoutUpdate();
-		if (mem.contains("$nex_startLocation")) {
+
+		if (mem.get("$nex_spawnlocation_background_overwrite") != null) {
+			entity = mem.getEntity("$nex_spawnlocation_background_overwrite");
+		}
+		else if (mem.contains("$nex_startLocation")) {
 			if (mem.get("$nex_startLocation") != null) {
 				entity = Global.getSector().getEntityById(mem.getString("$nex_startLocation"));
 			}
