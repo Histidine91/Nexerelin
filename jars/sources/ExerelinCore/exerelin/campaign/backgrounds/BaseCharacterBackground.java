@@ -32,7 +32,9 @@ public abstract class BaseCharacterBackground {
         return spec.order;
     }
 
-    public abstract boolean shouldShowInSelection(FactionSpecAPI factionSpec, NexFactionConfig factionConfig);
+    public boolean shouldShowInSelection(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+        return true;
+    }
 
     /**Spawns the player at whatever entity is returned if not null. Is called after onNewGameAfterEconomyLoad, before onNewGameAfterEconomyLoad.*/
     public SectorEntityToken getSpawnLocationOverwrite(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
