@@ -345,8 +345,7 @@ public class RaiseRelations extends CovertActionIntel {
 	@Override
 	public void dialogInitAction(AgentOrdersDialog dialog) {
 		super.dialogInitAction(dialog);
-		thirdFaction = this.agentFaction;
-		dialog.getFactions();
+		dialogSetFaction(dialog, agentFaction);
 	}
 
 	@Override
