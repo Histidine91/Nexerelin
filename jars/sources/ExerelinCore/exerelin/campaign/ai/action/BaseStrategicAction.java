@@ -127,6 +127,27 @@ public abstract class BaseStrategicAction implements StrategicAction {
             status = currStatus;
             concern.notifyActionUpdate(this, status);
         }
+
+        if (shouldAbort()) {
+            abort();
+            return;
+        }
+    }
+
+    protected boolean shouldAbort() {
+        FactionAPI faction = this.faction;
+        if (faction == null || faction == ai.getFaction()) return false;
+
+        int currRep = ai.getFaction().getRelationshipLevel(faction).ordinal();
+        int maxRep = getMaxRelToTarget(faction).ordinal();
+        int minRep = getMinRelToTarget(faction).ordinal();
+
+        if (currRep > maxRep)
+            return true;
+        if (currRep < minRep)
+            return true;
+
+        return false;
     }
 
     @Override
