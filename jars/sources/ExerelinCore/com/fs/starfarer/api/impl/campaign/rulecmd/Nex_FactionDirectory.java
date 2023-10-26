@@ -335,6 +335,9 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			List<MarketAPI> markets = entries.get(faction.getId());
 			int totalSize = 0;
 			for (MarketAPI market : markets) totalSize += market.getSize();
+			str = StringHelper.substituteToken(str, "$Faction", Misc.ucFirst(faction.getDisplayName()));
+			str = StringHelper.substituteToken(str, "$numMarkets", markets.size() + "");
+			str = StringHelper.substituteToken(str, "$size", totalSize + "");
 
 			TooltipMakerAPI img = tt.beginImageWithText(faction.getLogo(), 40);
 			img.setParaSmallInsignia();
