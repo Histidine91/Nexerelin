@@ -358,6 +358,11 @@ public class LowerRelations extends CovertActionIntel {
 	}
 
 	@Override
+	public String getStrategicActionName() {
+		return super.getStrategicActionName() + ": " + this.targetFaction.getDisplayName() + " | " + this.thirdFaction.getDisplayName();
+	}
+
+	@Override
 	public String getDefId() {
 		return "lowerRelations";
 	}

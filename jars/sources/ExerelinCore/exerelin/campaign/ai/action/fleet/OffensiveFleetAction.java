@@ -101,7 +101,7 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
             float mult = invPoints/baseline * 0.5f + 0.5f;
             if (mult < 0.5f) mult = 0.5f;
             else if (mult > 1.5f) mult = 1.5f;
-            priority.modifyMult("invPoints", mult, StrategicAI.getString("statFleetPool", true));
+            priority.modifyMult("invPoints", mult, StrategicAI.getString("statInvPoints", true));
 
         }
     }

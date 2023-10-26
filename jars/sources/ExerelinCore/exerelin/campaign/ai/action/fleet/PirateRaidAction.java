@@ -76,6 +76,11 @@ public class PirateRaidAction extends RaidAction {
     }
 
     @Override
+    public MarketAPI pickTargetMarket() {
+        return super.pickTargetMarket();
+    }
+
+    @Override
     public FleetPoolManager.RequisitionParams getFleetPoolRequisitionParams() {
         FleetPoolManager.RequisitionParams rp = new FleetPoolManager.RequisitionParams();
         rp.factionId = ai.getFactionId();   // faction taking the action pays the fleet pool cost, rather than our proxies

@@ -52,7 +52,7 @@
 			"classPath":"exerelin.campaign.ai.concern.GeneralWarfareConcern",
 			"cooldownMult":0.5,	# actions have halved cooldown for this concern
 			"antiRepetitionMult":0.5,	# actions generate half the anti-repetition points for this concern
-			"tags":["military", "wantCauseHarm", "canSatBomb", "canSabotageIndustry"],
+			"tags":["military", "wantCauseHarm", "canSatBomb", "canSabotageIndustry", "canDestabilize", "canRebel"],
 			"module":MILITARY
 		},
 		

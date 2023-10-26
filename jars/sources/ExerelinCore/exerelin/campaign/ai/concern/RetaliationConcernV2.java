@@ -31,6 +31,8 @@ import static exerelin.campaign.ai.MilitaryAIModule.RaidRecord;
 @Log4j
 public class RetaliationConcernV2 extends BaseStrategicConcern {
 
+    public static final float RETALIATION_PRIO_MULT = 15;
+
     @Getter protected RaidRecord topRaid;
 
     @Override
@@ -91,7 +93,7 @@ public class RetaliationConcernV2 extends BaseStrategicConcern {
         faction = topRaid.attacker;
         float adjustedImpact = raidsSorted.get(0).two;
         log.info("Selected raid record: " + topRaid.name + ", " + adjustedImpact);
-        priority.modifyFlat("rageValue", (adjustedImpact + totalImpact)*20, StrategicAI.getString("statRaidAnger", true));
+        priority.modifyFlat("rageValue", (adjustedImpact + totalImpact)*RETALIATION_PRIO_MULT, StrategicAI.getString("statRaidAnger", true));
     }
 
     @Override
