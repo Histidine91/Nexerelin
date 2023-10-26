@@ -28,7 +28,7 @@ public class SilverlightDashStats extends BaseShipSystemScript {
     public static final Color JITTER_COLOR = new Color(168,255,192,55);
     public static final Color JITTER_UNDER_COLOR = new Color(168,255,192,155);
     public static final Color WARP_COLOR = new Color(192,208,255,224);
-    public static final boolean USE_SHARD_EVERYFRAME = false;
+    public static final boolean USE_SHARD_EVERYFRAME = true;
 
     protected boolean triedAspectSpawnThisSystemUse;
     protected boolean registeredPlugin = !USE_SHARD_EVERYFRAME;
@@ -54,7 +54,7 @@ public class SilverlightDashStats extends BaseShipSystemScript {
         applyGfx(stats, state, effectLevel);
 
         if (state == State.ACTIVE) {
-            if (!USE_SHARD_EVERYFRAME) detachShardsIfNeeded((ShipAPI)stats.getEntity());
+            if (!USE_SHARD_EVERYFRAME) detachShardsIfNeeded((ShipAPI)stats.getEntity(), true);
             processAspectSpawn((ShipAPI)stats.getEntity());
         }
 
@@ -200,15 +200,17 @@ public class SilverlightDashStats extends BaseShipSystemScript {
         return (String.format(str, aspects.size(), MAX_ASPECTS));
     }
 
-    public static boolean detachShardsIfNeeded(ShipAPI ship) {
+    public static boolean detachShardsIfNeeded(ShipAPI ship, boolean fromSystemUse) {
         if (!ship.isAlive()) {
             return true;
         }
 
         // launch if main ship or any of the modules are at 40% or higher hard flux
-        // or if significant enemy presence?... meh
+        // or if significant enemy presence?
         boolean wantLaunch = ship.getHardFluxLevel() > 0.4f;
-        if (!USE_SHARD_EVERYFRAME) wantLaunch |= ship.areSignificantEnemiesInRange();
+        if (!USE_SHARD_EVERYFRAME || fromSystemUse) {
+            wantLaunch |= ship.areSignificantEnemiesInRange();
+        }
         if (!wantLaunch) {
             for (ShipAPI module : ship.getChildModulesCopy()) {
                 if (module.getHardFluxLevel() > 0.4f) {
@@ -302,7 +304,7 @@ public class SilverlightDashStats extends BaseShipSystemScript {
 
         @Override
         public void advance(float amount, List<InputEventAPI> events) {
-            if (detachShardsIfNeeded(ship)) {
+            if (detachShardsIfNeeded(ship, false)) {
                 Global.getCombatEngine().removePlugin(this);
             }
         }
