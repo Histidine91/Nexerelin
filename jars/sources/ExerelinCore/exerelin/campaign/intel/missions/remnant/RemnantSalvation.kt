@@ -401,11 +401,16 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     protected fun setupFleet1Station() : SectorEntityToken {
         //log.info("Running station setup")
         val loc = this.generateLocation(null, EntityLocationType.ORBITING_PLANET_OR_STAR, null, remnantSystem)
-        val stationDefId = if (Global.getSettings().modManager.isModEnabled("IndEvo")) "IndEvo_arsenalStation" else "station_mining_remnant"
+        val stationDefId = when {
+            Global.getSettings().modManager.isModEnabled("IndEvo") -> "IndEvo_arsenalStation"
+            //Global.getSettings().modManager.isModEnabled("assortment_of_things") -> "rat_refurbishment_station"   // can't be salvaged without special tagging
+            else -> "station_mining_remnant"
+        }
+
         var station = remnantSystem!!.addCustomEntity("nex_remSalvation_fleet1_station", null, stationDefId, Factions.REMNANTS)
         station.isDiscoverable = true
         station.orbit = loc?.orbit?.makeCopy()
-        station.setSensorProfile(null)
+        station.setSensorProfile(2500f)
         //log.info(String.format("Wololo, orbit period %s, target %s", station.orbit.orbitalPeriod, station.orbit.focus.name))
         return station
     }
@@ -602,8 +607,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         // chase player if player is near target, else chase the knight fleet
         var player = Global.getSector().playerFleet
-        if (planet.containingLocation == player.containingLocation && Misc.getDistance(player, planet) <= 500) {
+        if (planet.containingLocation == player.containingLocation && Misc.getDistance(player, planet) <= 800) {
             fleet.addAssignment(FleetAssignment.INTERCEPT, player, 2f)
+            knightFleet?.addAssignmentAtStart(FleetAssignment.ORBIT_PASSIVE, player, 0.5f, null)   // so NexFIDPI will pull it in
         }
         else if (knightFleet != null && knightFleet!!.isAlive) {
             fleet.addAssignment(FleetAssignment.INTERCEPT, knightFleet, 2f)
@@ -820,6 +826,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     }
 
     protected fun beginLeadsStage(dialog: InteractionDialogAPI, memoryMap: Map<String, MemoryAPI>) {
+        setArroyoImportantIfAvailable();
         setCurrentStage(Stage.INVESTIGATE_LEADS, dialog, memoryMap)
     }
 
@@ -863,6 +870,10 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             else directory.setHidden(false)
         }
         makeImportant(arroyo, "\$nex_remSalvation_arroyo_imp", Stage.INVESTIGATE_LEADS)
+    }
+
+    protected fun setArroyoImportantIfAvailable() {
+        makeImportant(Global.getSector().importantPeople.getPerson(People.ARROYO) ?: return, "\$nex_remSalvation_arroyo_imp", Stage.INVESTIGATE_LEADS)
     }
 
     protected fun metArroyoBefore(): Boolean {
