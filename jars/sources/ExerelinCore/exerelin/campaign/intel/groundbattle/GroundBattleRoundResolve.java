@@ -407,7 +407,7 @@ public class GroundBattleRoundResolve {
 	}
 
 	public void disruptIndustryFromCombat(IndustryForBattle ifb) {
-		if (ifb.getPlugin().getDef().hasTag("nobombard") || ifb.getPlugin().getDef().hasTag("resistBombard"))
+		if (ifb.getPlugin().getDef().hasTag("noBombard") || ifb.getPlugin().getDef().hasTag("resistBombard"))
 			return;
 
 		Pair<Float, Float> entry = localDamageDealt.get(ifb);
