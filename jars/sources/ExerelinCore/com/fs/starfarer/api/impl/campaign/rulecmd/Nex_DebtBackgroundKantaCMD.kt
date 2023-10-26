@@ -13,7 +13,9 @@ import com.fs.starfarer.api.impl.campaign.shared.SharedData
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
 import exerelin.campaign.backgrounds.CharacterBackgroundIntel
+import exerelin.campaign.backgrounds.CharacterBackgroundUtils
 import exerelin.campaign.backgrounds.scripts.HeavyDebtObligation
+import exerelin.utilities.StringHelper
 import java.util.*
 
 class Nex_DebtBackgroundKantaCMD : BaseCommandPlugin() {
@@ -26,11 +28,11 @@ class Nex_DebtBackgroundKantaCMD : BaseCommandPlugin() {
         val arg = params[0].getString(memoryMap)
         if (arg == "recreateOptions") {
             optionPanel.clearOptions()
-            optionPanel.addOption("Discuss matters related to your debt", "nex_BGDebtKanta2")
-            optionPanel.addOption("Leave", "kpLeaveProt2")
+            optionPanel.addOption(CharacterBackgroundUtils.getString("bgDebt_dialogOpt_discussDebt"), "nex_BGDebtKanta2")
+            optionPanel.addOption(StringHelper.getString("leave", true), "kpLeaveProt2")
             dialog.makeStoryOption("nex_BGDebtKanta2", 1, 1f, Sounds.STORY_POINT_SPEND)
             optionPanel.addOptionConfirmation("nex_BGDebtKanta2", DebtBackgroundStoryDelegate(textPanel))
-            optionPanel.setTooltip("nex_BGDebtKanta2", "This option may have effects related to your backstory")
+            optionPanel.setTooltip("nex_BGDebtKanta2", CharacterBackgroundUtils.getString("bgDebt_dialogOpt_discussDebtTooltip"))
         }
 
         if (arg == "continueConversation") {
@@ -41,15 +43,18 @@ class Nex_DebtBackgroundKantaCMD : BaseCommandPlugin() {
 
             Global.getSector().memoryWithoutUpdate.set("\$nex_debtBackgroundTarget", fleet)
 
-            textPanel.addPara("Discuss matters related to your debt", Misc.getStoryOptionColor(), Misc.getStoryOptionColor())
+            textPanel.addPara(CharacterBackgroundUtils.getString("bgDebt_dialogOpt_discussDebt"), Misc.getStoryOptionColor(), Misc.getStoryOptionColor())
 
-            textPanel.addPara("Before leaving, you mention the name of the collector of your debt, and before you can continue Kanta interupts you.")
+            textPanel.addPara(CharacterBackgroundUtils.getString("bgDebt_dialog_discussDebt1"))
 
-            textPanel.addPara("\"Ah, ${commander.himOrHer}. ${commander.heOrShe.uppercase()} has been a small thorn in Kantas eyes. Whatever your matter is, i think we would both benefit from having ${commander.himOrHer} out of them.\"")
+            textPanel.addPara(String.format(CharacterBackgroundUtils.getString("bgDebt_dialog_discussDebt2"),
+                commander.himOrHer, commander.heOrShe.uppercase(), commander.himOrHer))
 
-            textPanel.addPara("\"May Cydonia guide you towards this wretched marauder\", she says giving an intense look at him.")
+            textPanel.addPara(CharacterBackgroundUtils.getString("bgDebt_dialog_discussDebt3"))
 
-            textPanel.addPara("Backstory Updated", Misc.getStoryOptionColor(), Misc.getStoryOptionColor())
+            textPanel.setFontSmallInsignia()
+            textPanel.addPara(CharacterBackgroundUtils.getString("bgDebt_dialog_discussDebt4"), Misc.getStoryOptionColor(), Misc.getStoryOptionColor())
+            textPanel.setFontInsignia()
 
             var intel = Global.getSector().intelManager.getIntel(CharacterBackgroundIntel::class.java).first() as CharacterBackgroundIntel
             intel.location = fleet.starSystem
@@ -103,8 +108,10 @@ class Nex_DebtBackgroundKantaCMD : BaseCommandPlugin() {
         fleet.memoryWithoutUpdate[MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS] = true
         fleet.memoryWithoutUpdate[MemFlags.FLEET_IGNORES_OTHER_FLEETS] = true
 
-        fleet.name = "Debt Collectors Fleet"
+        fleet.name = CharacterBackgroundUtils.getString("bgDebt_fleetName")
         fleet.addEventListener(DebtCollectorFleetListener())
+
+        Misc.makeImportant(fleet, "nex_debtBackgroundTarget")
 
         return fleet
 
@@ -124,7 +131,7 @@ class Nex_DebtBackgroundKantaCMD : BaseCommandPlugin() {
         fun endObligation() {
             Global.getSector().memoryWithoutUpdate.set("\$nex_defeatedDebtBackgroundTarget", true)
             Global.getSector().listenerManager.removeListenerOfClass(HeavyDebtObligation::class.java)
-            Global.getSector().campaignUI.addMessage("You defeated the fleet holding the collector of your debt. Payment is now permanently paused.")
+            Global.getSector().campaignUI.addMessage(CharacterBackgroundUtils.getString("bgDebt_msg_win"))
 
             val report = SharedData.getData().currentReport
 
@@ -133,7 +140,7 @@ class Nex_DebtBackgroundKantaCMD : BaseCommandPlugin() {
 
             val stipendNode: FDNode = report.getNode(fleetNode, "SpacerObligation")
             stipendNode.upkeep = debt.toFloat()
-            stipendNode.name = "An obligation from your past"
+            stipendNode.name = CharacterBackgroundUtils.getString("bgDebt_reportNode_name")
             stipendNode.icon = Global.getSettings().getSpriteName("income_report", "generic_expense")
 
         }
@@ -142,7 +149,7 @@ class Nex_DebtBackgroundKantaCMD : BaseCommandPlugin() {
 
     class DebtBackgroundStoryDelegate(var panel: TextPanelAPI) : StoryPointActionDelegate {
         override fun getTitle(): String {
-            return "Discuss matters relating to your debt"
+            return CharacterBackgroundUtils.getString("bgDebt_dialogOpt_discussDebt")
         }
 
         override fun withDescription(): Boolean {
@@ -154,7 +161,7 @@ class Nex_DebtBackgroundKantaCMD : BaseCommandPlugin() {
         }
 
         override fun createDescription(info: TooltipMakerAPI?) {
-            info!!.addPara("This option may have effects related to your backstory", 0f)
+            info!!.addPara(CharacterBackgroundUtils.getString("bgDebt_dialogOpt_discussDebtTooltip"), 0f)
         }
 
         override fun getBonusXPFraction(): Float {

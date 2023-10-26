@@ -30,7 +30,7 @@ public class HeavyDebtBackground extends BaseCharacterBackground {
 
         if (expanded) {
             tooltip.addSpacer(10f);
-            tooltip.addPara("The formula for debt calculation is: (" + base + " + (" + perLevel + " * level)) * " + mult, 0f, Misc.getTextColor(), Misc.getHighlightColor(),
+            tooltip.addPara(CharacterBackgroundUtils.getString("bgDebt_selectionTooltipFormula"), 0f, Misc.getTextColor(), Misc.getHighlightColor(),
                     "" + base, "" + perLevel, "level","" + mult);
         }
     }
@@ -44,7 +44,7 @@ public class HeavyDebtBackground extends BaseCharacterBackground {
 
         if (defeated != null) {
             tooltip.addSpacer(10f);
-            tooltip.addPara("The collector of your debt is no more, and without him, you don't have to worry about him using his material in case of missed payment.", 0f, Misc.getTextColor(), Misc.getNegativeHighlightColor());
+            tooltip.addPara(CharacterBackgroundUtils.getString("bgDebt_intelDescEnded"), 0f, Misc.getNegativeHighlightColor());
             return;
         }
 
@@ -52,18 +52,20 @@ public class HeavyDebtBackground extends BaseCharacterBackground {
 
         if (fleet == null) {
             tooltip.addSpacer(10f);
-            tooltip.addPara("You currently have to pay back " + debt + " credits every month.", 0f, Misc.getTextColor(), Misc.getNegativeHighlightColor(), "" + debt);
+            tooltip.addPara(CharacterBackgroundUtils.getString("bgDebt_intelDesc"), 0f, Misc.getNegativeHighlightColor(), "" + debt);
         }
         if (fleet != null) {
             if (fleet.isAlive() && !fleet.isDespawning()) {
                 tooltip.addSpacer(10f);
-                tooltip.addPara("You currently have to pay back " + debt + " credits every month.", 0f, Misc.getTextColor(), Misc.getNegativeHighlightColor(), "" + debt);
+                tooltip.addPara(CharacterBackgroundUtils.getString("bgDebt_intelDesc"), 0f, Misc.getNegativeHighlightColor(), "" + debt);
 
                 tooltip.addSpacer(10f);
 
-                tooltip.addPara("With Kantas help, you discovered the location of your debt collectors fleet. " +
-                        "They are currently standing still within the " + fleet.getContainingLocation().getNameWithNoType() + " starsystem.", 0f);
+                tooltip.addPara(CharacterBackgroundUtils.getString("bgDebt_intelDescFleet"), 0f,
+                        Misc.getHighlightColor(), fleet.getContainingLocation().getNameWithNoType());
             }
         }
     }
+
+
 }

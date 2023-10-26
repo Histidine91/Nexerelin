@@ -1,6 +1,7 @@
 package exerelin.campaign.backgrounds
 
 import com.fs.starfarer.api.Global
+import exerelin.utilities.StringHelper
 
 object CharacterBackgroundUtils {
 
@@ -28,4 +29,13 @@ object CharacterBackgroundUtils {
         }
     }
 
+    @JvmStatic
+    fun getString(id: String): String {
+        return getString(id, false)
+    }
+
+    @JvmStatic
+    fun getString(id: String, ucFirst: Boolean): String {
+        return StringHelper.getString("nex_backgrounds", id, ucFirst)
+    }
 }

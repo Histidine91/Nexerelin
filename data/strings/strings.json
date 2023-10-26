@@ -570,6 +570,27 @@
 		"descConnectionsTooLow":"You do not have sufficient connections with $faction officials to stall out this kind of an operation.",
 	},
 	
+	"nex_backgrounds":{
+		"intelTitle":"Background: %s",
+		"intelDescNoBackground":"You have no known background.",
+		
+		"bgDebt_intelDesc":"You currently have to pay back %s credits every month.",
+		"bgDebt_intelDescEnded":"The collector of your debt is no more, and without him, you don't have to worry about him using his material in case of missed payment.",
+		"bgDebt_intelDescFleet":"With Kanta's help, you discovered the location of your debt collector's fleet. They are currently standing still within the %s star system.",
+		"bgDebt_selectionTooltipFormula":"The formula for debt calculation is: (%s + (%s * %s)) * %s",
+		
+		"bgDebt_dialogOpt_discussDebt":"Discuss matters related to your debt",
+		"bgDebt_dialogOpt_discussDebtTooltip":"This option may have effects related to your backstory.",
+		"bgDebt_dialog_discussDebt1":"Before leaving, you mention the name of the collector of your debt, and before you can continue Kanta interupts you.",
+		"bgDebt_dialog_discussDebt2":"\"Ah, %s. %s has been a small thorn in Kanta's eyes. Whatever your matter is, i think we would both benefit from having %s out of them.",
+		"bgDebt_dialog_discussDebt3":"\"May Cydonia guide you towards this wretched marauder,\" she says giving an intense look at him.",
+		"bgDebt_dialog_discussDebt4":"Backstory Updated",
+		
+		"bgDebt_fleetName":"Debt Collector's Fleet",
+		"bgDebt_msg_win":"You defeated the fleet holding the collector of your debt. Payment is now permanently paused.",
+		"bgDebt_reportNode_name":"An obligation from your past",
+	},
+	
 	"nex_baseStrike":{
 		"strike":"strike mission",
 		"theStrike":"the strike mission",

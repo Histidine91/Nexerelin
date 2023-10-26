@@ -2,14 +2,13 @@ package exerelin.campaign.backgrounds
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.FactionSpecAPI
-import com.fs.starfarer.api.campaign.SectorEntityToken
 import com.fs.starfarer.api.campaign.StarSystemAPI
-import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin
 import com.fs.starfarer.api.ui.SectorMapAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import exerelin.utilities.NexConfig
 import exerelin.utilities.NexFactionConfig
+import exerelin.utilities.StringHelper
 
 class CharacterBackgroundIntel(var factionId: String) : BaseIntelPlugin() {
 
@@ -37,8 +36,8 @@ class CharacterBackgroundIntel(var factionId: String) : BaseIntelPlugin() {
     }
 
     override fun getName(): String? {
-        var name = getPlugin()?.getTitle(getFactionSpec(), getFactionConfig()) ?: "Unknown"
-        return "Background: $name"
+        var name = getPlugin()?.getTitle(getFactionSpec(), getFactionConfig()) ?: StringHelper.getString("unknown", true)
+        return String.format(StringHelper.getString("nex_backgrounds", "intelTitle"), name);
     }
 
     override fun createSmallDescription(info: TooltipMakerAPI, width: Float, height: Float) {
@@ -46,7 +45,7 @@ class CharacterBackgroundIntel(var factionId: String) : BaseIntelPlugin() {
         var plugin = getPlugin()
 
         if (plugin == null) {
-            info.addPara("You have no known background", 0f)
+            info.addPara(StringHelper.getString("nex_backgrounds", "intelDescNoBackground"), 0f)
             return
         }
 
@@ -61,12 +60,9 @@ class CharacterBackgroundIntel(var factionId: String) : BaseIntelPlugin() {
 
     override fun getIntelTags(map: SectorMapAPI?): Set<String>? {
         val tags: MutableSet<String> = LinkedHashSet()
-        tags.add("Personal")
+        tags.add(StringHelper.getString("exerelin_misc", "intelTagPersonal"))
         return tags
     }
 
-    override fun getMapLocation(map: SectorMapAPI?): SectorEntityToken? {
-        return location?.hyperspaceAnchor
-    }
 
 }
