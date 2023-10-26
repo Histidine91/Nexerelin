@@ -309,6 +309,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 
     public void joinAlliance(String factionId, Alliance alliance)
     {
+        log.info(String.format("Faction %s joining alliance %s", factionId, alliance.getName()));
+
         // sync faction relationships
         SectorAPI sector = Global.getSector();
         FactionAPI faction = sector.getFaction(factionId);
@@ -466,12 +468,16 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (bestAlignment != null)
                 {
                     if (Nex_IsFactionRuler.isRuler(otherFactionId)) {
-                        if (faction.getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN)) continue;
+                        if (Global.getSector().getFaction(otherFactionId).getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN))
+                            continue;
 
                         AllianceOfferIntel offer = new AllianceOfferIntel(factionId, null);
                         offer.init();
                     }
-                    else createAlliance(factionId, otherFactionId, bestAlignment);
+                    else {
+                        log.info(String.format("Creating alliance between %s and %s", factionId, otherFactionId));
+                        createAlliance(factionId, otherFactionId, bestAlignment);
+                    }
                     return; // only one alliance at a time
                 }
             }
