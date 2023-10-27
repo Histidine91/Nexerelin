@@ -233,7 +233,8 @@ public class StartSetupPostTimePass {
 		}
 		
 		// Spacer obligation
-		if (ExerelinSetupData.getInstance().spacerObligation && !ExerelinSetupData.getInstance().backgroundId.equals("nex_unpaid_debt")) {
+		String backgroundID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background");
+		if (ExerelinSetupData.getInstance().spacerObligation && (backgroundID == null || !backgroundID.equals("nex_unpaid_debt"))) {
 			new Nex_SpacerObligation();
 		}
 
@@ -398,9 +399,14 @@ public class StartSetupPostTimePass {
 		}
 		
 		SectorEntityToken entity = null;
+
 		
 		MemoryAPI mem = Global.getSector().getMemoryWithoutUpdate();
-		if (mem.contains("$nex_startLocation")) {
+
+		if (mem.get("$nex_spawnlocation_background_overwrite") != null) {
+			entity = mem.getEntity("$nex_spawnlocation_background_overwrite");
+		}
+		else if (mem.contains("$nex_startLocation")) {
 			if (mem.get("$nex_startLocation") != null) {
 				entity = Global.getSector().getEntityById(mem.getString("$nex_startLocation"));
 			}

@@ -3,9 +3,11 @@ package exerelin.campaign.backgrounds;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionSpecAPI;
+import com.fs.starfarer.api.impl.campaign.tutorial.SpacerObligation;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.backgrounds.scripts.HeavyDebtObligation;
+import exerelin.campaign.customstart.Nex_SpacerObligation;
 import exerelin.utilities.NexFactionConfig;
 
 public class HeavyDebtBackground extends BaseCharacterBackground {
@@ -15,8 +17,9 @@ public class HeavyDebtBackground extends BaseCharacterBackground {
         return true;
     }
 
+
     @Override
-    public void executeAfterGameCreation(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+    public void onNewGameAfterEconomyLoad(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
         new HeavyDebtObligation();
     }
 

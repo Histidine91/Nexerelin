@@ -15,9 +15,4 @@ public class UnknownCharacterBackground extends BaseCharacterBackground {
         return true;
     }
 
-
-    @Override
-    public void executeAfterGameCreation(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
-
-    }
 }

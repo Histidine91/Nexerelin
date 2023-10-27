@@ -1,6 +1,7 @@
 package exerelin.campaign.backgrounds;
 
 import com.fs.starfarer.api.campaign.FactionSpecAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexFactionConfig;
@@ -19,7 +20,11 @@ public abstract class BaseCharacterBackground {
         return spec.shortDescription;
     }
 
-    public  String getIcon(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+    public String getLongDescription(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+        return spec.longDescription;
+    }
+
+    public String getIcon(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
         return spec.iconPath;
     }
 
@@ -27,9 +32,14 @@ public abstract class BaseCharacterBackground {
         return spec.order;
     }
 
-    public abstract boolean shouldShowInSelection(FactionSpecAPI factionSpec, NexFactionConfig factionConfig);
+    public boolean shouldShowInSelection(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+        return true;
+    }
 
-
+    /**Spawns the player at whatever entity is returned if not null. Is called after onNewGameAfterEconomyLoad, before onNewGameAfterEconomyLoad.*/
+    public SectorEntityToken getSpawnLocationOverwrite(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+        return null;
+    }
 
     public void addTooltipForSelection(TooltipMakerAPI tooltip, FactionSpecAPI factionSpec, NexFactionConfig factionConfig, Boolean expanded) {
        addBaseTooltip(tooltip, factionSpec, factionConfig);
@@ -39,9 +49,25 @@ public abstract class BaseCharacterBackground {
         addBaseTooltip(tooltip, factionSpec, factionConfig);
     }
 
-    public void executeAfterGameCreation(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+
+
+    public void onNewGame(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
 
     }
+
+    public void onNewGameAfterProcGen(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+
+    }
+
+    public void onNewGameAfterEconomyLoad(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+
+    }
+
+    public void onNewGameAfterTimePass(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+
+    }
+
+
 
     protected void addBaseTooltip(TooltipMakerAPI tooltip, FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
         Color hc = Misc.getHighlightColor();
@@ -49,12 +75,12 @@ public abstract class BaseCharacterBackground {
         float pad = 10f;
 
         TooltipMakerAPI imageTooltip = tooltip.beginImageWithText(spec.iconPath, 40f);
-        imageTooltip.addPara(spec.title, 0f, hc, hc);
-        imageTooltip.addPara(spec.shortDescription, 0f, tc, tc);
+        imageTooltip.addPara(getTitle(factionSpec, factionConfig), 0f, hc, hc);
+        imageTooltip.addPara(getShortDescription(factionSpec, factionConfig), 0f, tc, tc);
         tooltip.addImageWithText(0f);
 
         tooltip.addSpacer(pad);
 
-        tooltip.addPara(spec.longDescription, 0f);
+        tooltip.addPara(getLongDescription(factionSpec, factionConfig), 0f);
     }
 }

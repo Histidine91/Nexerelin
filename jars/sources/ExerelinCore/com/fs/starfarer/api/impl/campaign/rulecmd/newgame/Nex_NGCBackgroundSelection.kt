@@ -28,7 +28,6 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
     lateinit var textPanel: TextPanelAPI
     lateinit var visualPanel: VisualPanelAPI
 
-    var selectedPlugin: BaseCharacterBackground? = null
 
     override fun execute(ruleId: String?, dialog: InteractionDialogAPI, params: MutableList<Misc.Token>?, memoryMap: MutableMap<String, MemoryAPI>): Boolean {
 
@@ -36,18 +35,30 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
         this.visualPanel = dialog.visualPanel
         this.textPanel = dialog.textPanel
 
+        var arg = params!!.get(0).getString(memoryMap)
+
+        if (arg == "confirmSelection") {
+            var backgroundID = memoryMap.get(MemKeys.LOCAL)!!.getString("\$nex_selected_background")
+            var factionID  = memoryMap.get(MemKeys.LOCAL)!!.getString("\$nex_selected_faction_for_background")
+            ExerelinSetupData.getInstance().backgroundId = backgroundID
+            ExerelinSetupData.getInstance().selectedFactionForBackground = factionID
+        }
+
         val data = memoryMap.get(MemKeys.LOCAL)!!.get("\$characterData") as CharacterCreationData
+
+        if (arg != "selectBackground") return false
 
         val factionId = memoryMap.get(MemKeys.LOCAL)!!.get("\$playerFaction") as String
         var factionSpec = Global.getSettings().getFactionSpec(factionId)
         val factionConfig = NexConfig.getFactionConfig(factionId)
+        memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_faction_for_background", factionId)
 
         optionPanel.clearOptions()
         textPanel.addPara("Choose your Background", Misc.getBasePlayerColor(), Misc.getBasePlayerColor())
         textPanel.addPara("A background can determine an assortment of different things, be that starting cargo, skills or future interactions with other characters. You can also choose to begin as a nobody who has yet to make their name known.")
         textPanel.addPara("Hover over a background to get more information.")
 
-        optionPanel.addOption("Done", "nex_NGCDone")
+        optionPanel.addOption("Done", "nex_NGCDoneWithBackground")
         optionPanel.setShortcut("nex_NGCDone", Keyboard.KEY_RETURN, false, false, false, false)
 
         var width = 600f
@@ -70,12 +81,14 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
         var checkboxes = HashMap<NexLunaElement, NexLunaCheckbox>()
         element.addPara("", 0f).position.inTL(10f, 0f)
         for (background in backgrounds.sortedBy { it.order }) {
+            if (!background.shouldShowInSelection(factionSpec, factionConfig)) continue
             if (first) {
                 element.addSpacer(10f)
             }
             else {
                 element.addSpacer(20f)
             }
+
 
             var title = background.getTitle(factionSpec, factionConfig)
             var description = background.getShortDescription(factionSpec, factionConfig)
@@ -89,7 +102,7 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
 
             var checkbox = NexLunaCheckbox(first, subelement.innerElement, 20f, 20f)
             if (first) {
-                selectedPlugin = background
+                memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_background", background.spec.id)
             }
             first = false
             checkboxes.put(subelement, checkbox)
@@ -106,13 +119,11 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
 
             subelement.onClick {
                 checkbox.value = true
-                selectedPlugin = background
-                ExerelinSetupData.getInstance().backgroundId = background.spec.id
+                memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_background", background.spec.id)
             }
 
             checkbox.onClick {
-                selectedPlugin = background
-                ExerelinSetupData.getInstance().backgroundId = background.spec.id
+                memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_background", background.spec.id)
             }
 
 
@@ -163,14 +174,14 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
 
         panel.addUIElement(element)
 
-        data.addScript {
+       /* data.addScript {
             var plugin = selectedPlugin
             plugin!!.executeAfterGameCreation(factionSpec, factionConfig)
             Global.getSector().memoryWithoutUpdate.set("\$nex_selected_background", plugin.spec.id)
 
             var intel = CharacterBackgroundIntel(factionId)
             Global.getSector().intelManager.addIntel(intel)
-        }
+        }*/
 
         return true
     }
