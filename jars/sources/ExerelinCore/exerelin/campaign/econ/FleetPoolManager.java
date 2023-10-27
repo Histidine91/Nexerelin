@@ -24,7 +24,7 @@ import java.util.Map;
 @Log4j
 public class FleetPoolManager extends ResourcePoolManager {
 
-	public static final boolean USE_POOL = true;
+	public static final boolean USE_POOL = false;
 
 	public static FleetPoolManager getManager() {
 		return (FleetPoolManager) Global.getSector().getPersistentData().get("nex_fleetPoolManager");
