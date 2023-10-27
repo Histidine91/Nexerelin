@@ -390,6 +390,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 			// counter-invasions draw on the same points needed for invasions, but at half the normal rate
 			float cost = InvasionFleetManager.getInvasionPointCost(intel);
 			cost *= INVASION_POINT_COST_MULTIPLIER;
+			intel.setInvPointsSpent((int)cost);
 			InvasionFleetManager.getManager().modifySpawnCounterV2(revengeFactionId, -cost);
 		}
 		
@@ -418,6 +419,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 				// counter-invasions draw on the same points needed for invasions, but at half the normal rate
 				float cost = InvasionFleetManager.getInvasionPointCost(intel);
 				cost *= INVASION_POINT_COST_MULTIPLIER;
+				intel.setInvPointsSpent((int)cost);
 				InvasionFleetManager.getManager().modifySpawnCounterV2(factionId, -cost);
 				log.info("Dispatching retaliatiory sat bomb fleet");
 			}

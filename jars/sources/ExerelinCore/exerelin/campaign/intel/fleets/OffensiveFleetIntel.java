@@ -27,6 +27,8 @@ import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.battle.NexWarSimScript;
+import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.econ.GroundPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
@@ -36,8 +38,8 @@ import lombok.Setter;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 import static exerelin.campaign.battle.NexWarSimScript.*;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
@@ -65,6 +67,9 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected boolean outcomeUpdateSent;
 	@Getter protected boolean playerSpawned;	// was this fleet spawned by player fleet request?
 	@Getter @Setter protected int playerFee;
+	@Getter @Setter protected int invPointsSpent;
+	@Getter @Setter protected int fleetPoolPointsSpent;
+	@Getter @Setter protected int groundPoolPointsSpent;
 	@Getter protected float fp;
 	@Getter protected float baseFP;
 	protected float orgDur;
@@ -303,6 +308,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 	@Override
 	protected void notifyEnding() {
+		refundInvasionAndFleetPoints();
 		refundPlayerFeeIfNeeded();
 	}
 
@@ -534,6 +540,25 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		tags.add(getFaction().getId());
 		tags.add(target.getFactionId());
 		return tags;
+	}
+
+	protected void refundInvasionAndFleetPoints() {
+		// 0 = organize; 1 = assemble; 2 = travel, 3 = action
+		if (outcome != null && !outcome.isCancelled()) return;
+
+		float refundMult = 0;
+		if (currentStage <= 1) refundMult = 1;
+		else if (currentStage == 2) refundMult = 0.67f;
+		else if (currentStage == 3) refundMult = 0.33f;
+
+		try {
+			String fid = proxyForFaction != null ? proxyForFaction.getId() : faction.getId();
+			InvasionFleetManager.getManager().modifySpawnCounterV2(fid, invPointsSpent);
+			FleetPoolManager.getManager().modifyPool(fid, fleetPoolPointsSpent);
+			GroundPoolManager.getManager().modifyPool(fid, groundPoolPointsSpent);
+		} catch (NullPointerException npe) {
+			// do nothing
+		}
 	}
 
 	protected void refundPlayerFeeIfNeeded() {

@@ -43,6 +43,7 @@ import exerelin.utilities.*;
 import exerelin.world.ExerelinNewGameSetup;
 import lombok.Getter;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -495,13 +496,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	/**
 	 * Modifies the invasion spawn counter AND the shared fleet pool.<br/>
-	 * Deprecated, should modify each separately (using {@code modifySpawnCounterV2} and
+	 * Will eventually be deprecated, should modify each separately (using {@code modifySpawnCounterV2} and
 	 * {@code FleetPoolManager.getManager().modifyPool}.
 	 * @param factionId
 	 * @param amount
 	 * @deprecated
 	 */
-	@Deprecated
 	public void modifySpawnCounter(String factionId, float amount) {
 		NexUtils.modifyMapEntry(spawnCounter, factionId, amount);
 		FleetPoolManager.getManager().modifyPool(factionId, amount * ResourcePoolManager.FLEET_POOL_MULT);
@@ -757,7 +757,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 * @param rp Parameters for drawing from fleet pool (set to null if pool should not be touched).
 	 * @return The invasion/raid fleet intel, if one was created
 	 */
-	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, FactionAPI targetFaction, 
+	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, @Nullable FactionAPI targetFaction,
 			EventType type, float sizeMult, RequisitionParams rp)
 	{
 		SectorAPI sector = Global.getSector();
@@ -824,49 +824,48 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			organizeTime *= 1.25f;
 		
 		target.getFaction().getMemoryWithoutUpdate().set(MEM_KEY_FACTION_TARGET_COOLDOWN, true, ATTACK_PLAYER_COOLDOWN);
+		OffensiveFleetIntel intel = null;
 		
 		// okay, assemble battlegroup
 		switch (type) {
 			case RESPAWN:
 			{
 				log.info("Spawning respawn fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
-				RespawnInvasionIntel intel = new RespawnInvasionIntel(faction, origin, target, fp, organizeTime);
-				intel.init();
-				activeIntel.add(intel);
-				return intel;
+				intel = new RespawnInvasionIntel(faction, origin, target, fp, organizeTime);
+				break;
 			}
 			case INVASION:
 			{
 				log.info("Spawning invasion fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
-				InvasionIntel intel = new InvasionIntel(faction, origin, target, fp, organizeTime);
-				intel.init();
-				activeIntel.add(intel);
-				return intel;
+				intel = new InvasionIntel(faction, origin, target, fp, organizeTime);
+				break;
 			}
 			case RAID:
 			{
 				log.info("Spawning raid fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
-				NexRaidIntel intel = new NexRaidIntel(faction, origin, target, fp, organizeTime);
-				intel.init();
-				activeIntel.add(intel);
-				return intel;
+				intel = new NexRaidIntel(faction, origin, target, fp, organizeTime);
+				break;
 			}
 			case BASE_STRIKE:
 			{
 				log.info("Spawning base strike fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
-				BaseStrikeIntel intel = new BaseStrikeIntel(faction, origin, target, fp, organizeTime);
-				intel.init();
-				return intel;
+				intel = new BaseStrikeIntel(faction, origin, target, fp, organizeTime);
+				break;
 			}
 			case SAT_BOMB:
 			{
 				log.info("Spawning saturation bombardment fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
-				SatBombIntel intel = new SatBombIntel(faction, origin, target, fp, organizeTime);
-				intel.init();
-				activeIntel.add(intel);
-				return intel;
+				intel = new SatBombIntel(faction, origin, target, fp, organizeTime);
+				break;
 			}
 		}
+		if (intel != null) {
+			intel.init();
+			if (rp != null) intel.setFleetPoolPointsSpent((int)rp.amountDrawn);
+			if (type != EventType.BASE_STRIKE) activeIntel.add(intel);
+			return intel;
+		}
+
 		return null;
 	}
 	

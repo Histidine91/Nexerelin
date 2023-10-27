@@ -106,6 +106,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 	public float drawFromPool(String factionId, RequisitionParams params) {
 		if (!isEnabled()) {
 			modifyPool(factionId, -params.amount);	// we don't care about the pool, but modify it anyway for debugging
+			params.amountDrawn = params.amount;
 			return params.amount;
 		}
 		
@@ -123,6 +124,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 		// have enough
 		if (available >= wantedBase) {
 			modifyPool(factionId, -wantedBase);
+			params.amountDrawn = wantedBase;
 			return params.amount;
 		}
 		
@@ -137,6 +139,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 		log.info(String.format("Faction %s supplying %.1f points, deducting %.1f points", factionId, returnAmount, totalToDraw));
 		
 		modifyPool(factionId, -totalToDraw);
+		params.amountDrawn = totalToDraw;
 		return returnAmount;
 	}
 	
@@ -383,6 +386,11 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 		 * Not read directly by FPM; instead, whoever is submitting the request should read this value and act appropriately.
 		 */
 		public String factionId;
+
+		/**
+		 * How many points were actually deducted from pool.
+		 */
+		public float amountDrawn;
 		
 		public RequisitionParams() {}
 		
