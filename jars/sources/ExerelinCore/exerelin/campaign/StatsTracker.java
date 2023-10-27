@@ -1,14 +1,8 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignClockAPI;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CargoAPI.CargoItemQuantity;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
@@ -22,15 +16,10 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.util.*;
 
 /**
  *  Tracks lifetime stats: kills, losses, planets captured, etc.
@@ -116,9 +105,12 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     public int getOrphansMade() {
         return orphansMade;
     }
-    
+
+    /**
+     * @return The set of dead officers (not a copy, changes to the returned set will be reflected in the rest of the mod).
+     */
     public Set<DeadOfficerEntry> getDeadOfficers() {
-        return new HashSet<>(deadOfficers);
+        return deadOfficers;
     }
     
     public List<DeadOfficerEntry> getDeadOfficersSorted() {
@@ -164,11 +156,12 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         orphansMade += crew * numAvgKids;
     }
     
-    public void addDeadOfficer(OfficerDataAPI officer, FleetMemberAPI member)
+    public DeadOfficerEntry addDeadOfficer(OfficerDataAPI officer, FleetMemberAPI member)
     {
         if (deadOfficers == null) deadOfficers = new HashSet<>();    // reverse compat
         DeadOfficerEntry entry = new DeadOfficerEntry(officer, member);
         deadOfficers.add(entry);
+        return entry;
     }
     
     public void removeDeadOfficer(OfficerDataAPI officer)
