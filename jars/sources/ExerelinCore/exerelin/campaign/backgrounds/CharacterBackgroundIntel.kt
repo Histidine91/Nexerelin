@@ -2,6 +2,7 @@ package exerelin.campaign.backgrounds
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.FactionSpecAPI
+import com.fs.starfarer.api.campaign.SectorEntityToken
 import com.fs.starfarer.api.campaign.StarSystemAPI
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin
 import com.fs.starfarer.api.ui.SectorMapAPI
@@ -64,5 +65,7 @@ class CharacterBackgroundIntel(var factionId: String) : BaseIntelPlugin() {
         return tags
     }
 
-
+    override fun getMapLocation(map: SectorMapAPI?): SectorEntityToken? {
+        return location?.hyperspaceAnchor
+    }
 }
