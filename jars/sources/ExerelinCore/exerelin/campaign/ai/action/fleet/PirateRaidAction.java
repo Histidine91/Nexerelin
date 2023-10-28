@@ -77,7 +77,21 @@ public class PirateRaidAction extends RaidAction {
 
     @Override
     public MarketAPI pickTargetMarket() {
-        return super.pickTargetMarket();
+        if (concern.getMarket() != null) return concern.getMarket();
+        MarketAPI target = null;
+        int tries = 0;
+        do {
+            tries++;
+            MarketAPI candidate = InvasionFleetManager.getManager().getTargetMarketForFleet(ai.getFaction(), faction, null,
+                    getPotentialTargets(), getEventType());
+            if (candidate == null) return null;
+
+            if (!proxy.isHostileTo(candidate.getFactionId())) {
+                continue;
+            }
+            target = candidate;
+        } while (tries < 10 && target == null);
+        return target;
     }
 
     @Override
