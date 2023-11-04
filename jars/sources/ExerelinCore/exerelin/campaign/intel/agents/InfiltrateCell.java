@@ -137,6 +137,7 @@ public class InfiltrateCell extends CovertActionIntel {
 		*/
 		// don't kill cell, disrupt instead
 		boolean alreadyDisrupted = cellIntel.getSleeperTimeout() > MAX_SLEEPER_TIME_REMAINING;
+		boolean nonDisruptedSleeper = cellIntel.isSleeper() && cellIntel.getSleeperTimeout() <= 0;
 		cellIntel.makeSleeper(disruptDur * 2);
 		cellIntel.sendUpdateIfPlayerHasIntel(LuddicPathCellsIntel.UPDATE_DISRUPTED, false);
 		ListenerUtil.reportCellDisrupted(cellIntel);
@@ -145,6 +146,7 @@ public class InfiltrateCell extends CovertActionIntel {
 			int perCell = Global.getSettings().getInt("HA_patherBasePerActiveCell");
 
 			int points = -1 * perCell;
+			//if (nonDisruptedSleeper) points /= 2;	// halve points if it was a sleeper cell; don't feel like actually making the distinction
 			HACellInfiltratedFactor factor = new HACellInfiltratedFactor(points);
 			HostileActivityEventIntel.get().addFactor(factor);
 		}

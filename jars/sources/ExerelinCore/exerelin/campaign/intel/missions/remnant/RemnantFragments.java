@@ -50,7 +50,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 	public static final int MAX_SHARDS = 6;
 	public static final float MOTHERSHIP_ORBIT_DIST = 12000;
 	
-	public static enum Stage {
+	public enum Stage {
 		GO_TO_SYSTEM,
 		FOLLOW_MOTHERSHIP,
 		BATTLE,
@@ -63,7 +63,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 	protected StarSystemAPI system;
 	protected SectorEntityToken point1, point2;
 	protected SectorEntityToken mothership;
-	protected SectorEntityToken derelictShip;
+	//protected SectorEntityToken derelictShip;
 	protected CampaignFleetAPI attacker;
 	protected CampaignFleetAPI ally;	
 	

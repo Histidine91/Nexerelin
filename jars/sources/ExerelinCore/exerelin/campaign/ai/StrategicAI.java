@@ -35,10 +35,15 @@ public class StrategicAI extends BaseIntelPlugin {
 	/*
 		How the AI works:
 			Each strategy AI has an economic module, military module, diplomacy module, and executive module.
-			Update interval is a month long.
+			Update interval is around a month long.
+
 			Every update ("strategy meeting"), the econ, mil and diplo modules search for "concerns" (issues of note facing the faction),
 			and check if previously generated concerns are still relevant.
-			The executive module then picks two of the most important concerns and attempts to generates an "action" for each.
+
+			The executive module then picks two of the concerns with the highest priority value, and considers some possible actions for each.
+			It executes the highest priority action it can find for the concern (if there isn't one, the concern is skipped).
+
+			Priority of concerns depends on the specifics of the situation, the faction's traits and relations, whether that action has been used recently, etc.
 
 		Examples of concerns: revanchist claim on a planet, commodity competition from another faction, desire to butter up another faction, etc.
 		Examples of actions: diplomatic actions, invasions, raids, agent sabotage

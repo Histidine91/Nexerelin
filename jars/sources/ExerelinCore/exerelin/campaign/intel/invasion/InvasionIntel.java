@@ -586,6 +586,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 				);
 		
 		params.maxNumShips = Math.round(Global.getSettings().getMaxShipsInFleet() * 1.2f);
+		//params.averageSMods = 1;	// once we adjust autoresolve strength?
 		
 		// we don't need the variability involved in this
 		if (!useMarketFleetSizeMult)
