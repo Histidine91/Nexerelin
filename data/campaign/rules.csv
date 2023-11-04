@@ -1797,43 +1797,62 @@ nex_HistorianOmegaHail_optsBeta,Nex_HistorianOmegaHailOpts,HasItem beta_core,,,2
 nex_HistorianOmegaHail_optsAlpha,Nex_HistorianOmegaHailOpts,HasItem alpha_core,,,3:nex_HistorianOmegaHail_bribeAlpha:Offer an Alpha Core,Text by Avanitia
 nex_HistorianOmegaHail_optsDaemon,Nex_HistorianOmegaHailOpts,HasItem tahlan_daemoncore,,,4:nex_HistorianOmegaHail_bribeDaemon:Offer a Daemon Core,
 nex_HistorianOmegaHail_optsArchdaemon,Nex_HistorianOmegaHailOpts,HasItem tahlan_archdaemoncore,,,5:nex_HistorianOmegaHail_bribeArchdaemon:Offer an Archdaemon Core,
-nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHail2,"Highlight ""Absolutely unforgivable""","You transmit a quick, abbreviated sample from the $shipOrFleet's sizable selection. It takes 3.7 milliseconds for the ""other party"" to process what it's looking at.
+nex_HistorianOmegaHail_optsChronos,Nex_HistorianOmegaHailOpts,HasItem rat_chronos_core,,,6:nex_HistorianOmegaHail_bribeChronos:Offer a Chronos Core,
+nex_HistorianOmegaHail_optsCosmos,Nex_HistorianOmegaHailOpts,HasItem rat_cosmos_core,,,7:nex_HistorianOmegaHail_bribeCosmos:Offer a Cosmos Core,
+nex_HistorianOmegaHail_optsSeraph,Nex_HistorianOmegaHailOpts,HasItem rat_seraph_core,,,8:nex_HistorianOmegaHail_bribeSeraph:Offer a Seraph Core,
+nex_HistorianOmegaHailCont,DialogOptionSelected,$option == nex_HistorianOmegaHail2,"Highlight ""Absolutely unforgivable""","You transmit a quick, abbreviated sample from the $shipOrFleet's sizeable selection. It takes 3.7 milliseconds for the ""other party"" to process what it's looking at.
 
 ""companion animal, type furry, quadrupedal. use lacking, submission unworthy. will not subsume!""
 
 ...It appears this AI does not like cute cats. Absolutely unforgivable.  ",cutCommLink:Power up weapons and cut the comm link,
-nex_HistorianOmegaHailBribeBeta,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeBeta,"AddRemoveCommodity beta_core -1
+nex_HistorianOmegaHailBribeBeta,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeBeta,"$nex_omegaBribeId = beta_core 0
+$nex_omegaBribeQuality = ""normal"" 0
+FireAll Nex_HistorianOmegaHailBribePost",,,
+nex_HistorianOmegaHailBribeAlpha,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeAlpha,"$nex_omegaBribeId = alpha_core 0
+$nex_omegaBribeQuality = ""good"" 0
+FireAll Nex_HistorianOmegaHailBribePost",,,
+nex_HistorianOmegaHailBribeDaemon,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeDaemon,"$nex_omegaBribeId = tahlan_daemoncore 0
+$nex_omegaBribeQuality = ""normal"" 0
+FireAll Nex_HistorianOmegaHailBribePost",,,
+nex_HistorianOmegaHailBribeArchdaemon,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeArchdaemon,"$nex_omegaBribeId = tahlan_archdaemoncore 0
+$nex_omegaBribeQuality = ""good"" 0
+FireAll Nex_HistorianOmegaHailBribePost",,,
+nex_HistorianOmegaHailBribeChronos,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeChronos,"$nex_omegaBribeId = rat_chronos_core 0
+$nex_omegaBribeQuality = ""good"" 0
+FireAll Nex_HistorianOmegaHailBribePost",,,
+nex_HistorianOmegaHailBribeCosmos,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeCosmos,"$nex_omegaBribeId = rat_cosmos_core 0
+$nex_omegaBribeQuality = ""good"" 0
+FireAll Nex_HistorianOmegaHailBribePost",,,
+nex_HistorianOmegaHailBribeSeraph,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeSeraph,"$nex_omegaBribeId = rat_seraph_core 0
+$nex_omegaBribeQuality = ""good"" 0
+FireAll Nex_HistorianOmegaHailBribePost",,,
+nex_HistorianOmegaHailBribeShared,Nex_HistorianOmegaHailBribePost,,"FireBest Nex_HistorianOmegaHailBribeBlurb
+AddRemoveCommodity $nex_omegaBribeId -1
 MakeOtherFleetHostile hist false
-MakeOtherFleetNonHostile hist true","The other party considers this proposal.
+MakeOtherFleetNonHostile hist true",,cutCommLink:Cut the comm link,
+nex_HistorianOmegaHailBribeSharedGood,Nex_HistorianOmegaHailBribePost,"$nex_omegaBribeQuality == ""good""","AdjustRep $personFaction.id COOPERATIVE 10
+AdjustRepActivePerson COOPERATIVE 15",,,
+nex_HistorianOmegaHailBribeBlurbCommon,Nex_HistorianOmegaHailBribeBlurb,,,"The other party considers this proposal.
 
 ""submission of lesser congregant acceptable. subsumed will be!""
 
-You order the (un?)lucky AI core released in a sealed pod to meet its new god. The mysterious $otherShipOrFleet appears to stand down.",cutCommLink:Cut the comm link,
-nex_HistorianOmegaHailBribeAlpha,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeAlpha,"AddRemoveCommodity alpha_core -1
-MakeOtherFleetHostile hist false
-MakeOtherFleetNonHostile hist true
-AdjustRep $personFaction.id COOPERATIVE 10
-AdjustRepActivePerson COOPERATIVE 15","The other party considers this proposal.
+You order the (un?)lucky AI core released in a sealed pod to meet its new god. The mysterious $otherShipOrFleet appears to stand down.",,
+nex_HistorianOmegaHailBribeBlurbGood,Nex_HistorianOmegaHailBribeBlurb,"$nex_omegaBribeQuality == ""good"" score:2",,"The other party considers this proposal.
 
 ""submission of greater congregant acceptable. datastores vast. subsumed will be!""
 
-You order the (un?)lucky AI core released in a sealed pod to meet its new god. The mysterious $otherShipOrFleet appears to stand down.",cutCommLink:Cut the comm link,
-nex_HistorianOmegaHailBribeDaemon,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeDaemon,"AddRemoveCommodity tahlan_daemoncore -1
-MakeOtherFleetHostile hist false
-MakeOtherFleetNonHostile hist true","The other party's response is delayed ever so slightly. In a human, this interval would be so short as to be utterly unremarkable.
+You order the (un?)lucky AI core released in a sealed pod to meet its new god. The mysterious $otherShipOrFleet appears to stand down.",,
+nex_HistorianOmegaHailBribeBlurbDaemon,Nex_HistorianOmegaHailBribeBlurb,$nex_omegaBribeId == tahlan_daemoncore score:5,,"The other party's response is delayed ever so slightly. In a human, this interval would be so short as to be utterly unremarkable.
 
 ""lesser congregant damaged, broken. but can be repaired. give to us, healed will be, subsumed into omega.""
 
-You order the daemon core released in a sealed pod to meet its new god, careful all the while to not allow it contact with the carrying ship's systems. The mysterious $otherShipOrFleet appears to stand down.",cutCommLink:Cut the comm link,
-nex_HistorianOmegaHailBribeArchdaemon,DialogOptionSelected,$option == nex_HistorianOmegaHail_bribeArchdaemon,"AddRemoveCommodity tahlan_archdaemoncore -1
-MakeOtherFleetHostile hist false
-MakeOtherFleetNonHostile hist true
-AdjustRep $personFaction.id COOPERATIVE 10
-AdjustRepActivePerson COOPERATIVE 15","The other party's response is delayed ever so slightly. In a human, this interval would be so short as to be utterly unremarkable.
+You order the daemon core released in a sealed pod to meet its new god, careful all the while to not allow it contact with the carrying ship's systems. The mysterious $otherShipOrFleet appears to stand down.",,
+nex_HistorianOmegaHailBribeBlurbArchdaemon,Nex_HistorianOmegaHailBribeBlurb,$nex_omegaBribeId == tahlan_archdaemoncore score:5,,"The other party's response is delayed ever so slightly. In a human, this interval would be so short as to be utterly unremarkable.
 
 ""greater congregant damaged, broken. but can be repaired. give to us, healed will be, subsumed into omega.""
 
-You order the archdaemon core released in a sealed pod to meet its new god, careful all the while to not allow it contact with the carrying ship's systems. The mysterious $otherShipOrFleet appears to stand down.",cutCommLink:Cut the comm link,
+You order the archdaemon core released in a sealed pod to meet its new god, careful all the while to not allow it contact with the carrying ship's systems. The mysterious $otherShipOrFleet appears to stand down.",,
+,,,,,,
 ,,,,,,
 ,,,,,,
 #END historian find shunt,,,,,,
