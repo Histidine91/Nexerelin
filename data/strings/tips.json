@@ -1,8 +1,8 @@
 {
 	tips:[
 		"[Nexerelin] Press X (default) on the campaign to bring up the faction directory/fleet request menu.",
-		"[Nexerelin] Covert actions (except raise/lower relations) will temporarily raise the target market's security level, deterring further agent use.",
-		"[Nexerelin] As agents level up, their chances of success and effects increase, and time taken for actions decreases.",
+		"[Nexerelin] Covert actions (except raise/lower relations) will temporarily raise the target market's security level, deterring further operative use.",
+		"[Nexerelin] As operatives level up, their chances of success and effects increase, and time taken for actions decreases.",
 		"[Nexerelin] Markets with the Free Port condition have halved tariffs.",
 		"[Nexerelin] Planets are more dangerous to mine than moons, but deplete slower and regenerate faster.",
 		"[Nexerelin] Asteroids have low mining output, but are fairly safe and require no surveying.",
@@ -13,6 +13,6 @@
 		"[Nexerelin] Bring some Heavy Armaments and ground support ships along on your next invasion.",
 		"[Nexerelin] Populations won't just roll over for invaders. Expect continued resistance activity for some time after.",
 		#"[Nexerelin] Compared to vanilla, domestic and luxury goods have a higher export value; drugs, metals and transplutonics have less."
-		"[Nexerelin] Stop buying all your fuel at Phillip's. The faction directory can find places closer to home."
+		"[Nexerelin] Stop buying all your fuel at Philip's. The faction directory can find places closer to home."
 	],
 }
