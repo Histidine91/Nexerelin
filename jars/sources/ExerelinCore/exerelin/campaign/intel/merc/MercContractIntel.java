@@ -65,7 +65,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	
 	protected Object readResolve() {
 		if (stored == null) stored = new HashMap<>();
-		MercFleetGenPlugin.createPlugin(this);
+		fleetPlugin = MercFleetGenPlugin.createPlugin(this);
 		return this;
 	}
 	
