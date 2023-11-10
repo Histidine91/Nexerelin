@@ -2,6 +2,7 @@ package exerelin.campaign.customstart;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
@@ -94,6 +95,7 @@ public class CustomStartDefs {
 	public static void loadCustomStart(String id, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
 		CustomStartDef def = defsByID.get(id);
 		CustomStart start = (CustomStart) NexUtils.instantiateClassByName(def.className);
+		memoryMap.get(MemKeys.LOCAL).set("$playerFaction", def.factionId, 0);
 		start.execute(dialog, memoryMap);
 	}
 	

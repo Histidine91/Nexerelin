@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.VisualPanelAPI
 import com.fs.starfarer.api.campaign.rules.MemKeys
 import com.fs.starfarer.api.campaign.rules.MemoryAPI
 import com.fs.starfarer.api.characters.CharacterCreationData
+import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator
@@ -48,7 +49,7 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
 
         if (arg != "selectBackground") return false
 
-        val factionId = memoryMap.get(MemKeys.LOCAL)!!.get("\$playerFaction") as String
+        val factionId = memoryMap[MemKeys.LOCAL]!!.getString("\$playerFaction") ?: Factions.PLAYER
         var factionSpec = Global.getSettings().getFactionSpec(factionId)
         val factionConfig = NexConfig.getFactionConfig(factionId)
         memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_faction_for_background", factionId)
