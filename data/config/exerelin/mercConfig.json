@@ -225,6 +225,7 @@
 					"voice":"pather",
 					"firstName":"Siôn",
 					"lastName":"Ohio",
+					"gender":"m",
 					#"aiCoreId":"beta_core",	# since personality display is stuck on 'fearless' unless I add a new AI core officer plugin
 					"portrait":"graphics/portraits/portrait_luddic08.png",
 					"personality":"aggressive",
@@ -349,7 +350,8 @@
 				{
 					"firstName":"Platinum",
 					"lastName":"Terminal",
-					"level":10,
+					"gender":"m",
+					"level":11,
 					"rankId":"spaceCaptain",
 					"aiCoreId":"omega_core",
 					"persistentId":"nex_endbringer",
