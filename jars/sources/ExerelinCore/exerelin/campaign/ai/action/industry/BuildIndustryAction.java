@@ -175,6 +175,8 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
         float bestScore = 0;
 
         for (MarketAPI market : markets) {
+            if (market.isPlayerOwned() && !market.getFaction().isPlayerFaction()) continue;
+
             ProcGenEntity entity = ExerelinProcGen.createEntityData(market.getPrimaryEntity());
             // first check local industry limit
             if (willExceedMaxIndustries(market, producerId)) continue;
@@ -228,6 +230,9 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
 
     @Override
     public boolean canUse(StrategicConcern concern) {
+        MarketAPI market = concern.getMarket();
+        if (market != null && market.isPlayerOwned() && !market.getFaction().isPlayerFaction()) return false;
+
         return !ai.getFaction().isPlayerFaction();
     }
 
