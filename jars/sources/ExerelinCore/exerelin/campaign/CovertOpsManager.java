@@ -732,8 +732,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		{
 			FactionAPI targetFaction = null, thirdFaction = null;
 			int factionCount = 0;
+			MarketAPI market;
 
-			// don't pick a target faction for Instigate Rebellion, just iterate over all valid targets
+
 			if (!actionType.equals(CovertActionType.INSTIGATE_REBELLION)) {
 				WeightedRandomPicker<FactionAPI> targetFactionPicker = generateTargetFactionPicker(actionType, agentFaction, factions);
 				factionCount = targetFactionPicker.getItems().size();
@@ -751,9 +752,18 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 				}
 
 				log.info("\tTarget faction: " + targetFaction.getDisplayName());
+				market = pickTargetMarket(agentFaction, targetFaction, actionType, random);
+			}
+			// don't pick a target faction for Instigate Rebellion, just iterate over all valid targets
+			else {
+				List<MarketAPI> validTargets = new ArrayList<>();
+				for (MarketAPI candidate : Global.getSector().getEconomy().getMarketsCopy()) {
+					if (factions != null && !factions.contains(candidate.getFaction())) continue;
+					validTargets.add(candidate);
+				}
+				market = pickTargetMarket(agentFaction, null, actionType, validTargets, random);
 			}
 
-			MarketAPI market = pickTargetMarket(agentFaction, targetFaction, actionType, random);
 			if (market == null) {
 				log.warn("\tFailed to find target market");
 			}
