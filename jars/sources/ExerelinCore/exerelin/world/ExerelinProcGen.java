@@ -541,6 +541,8 @@ public class ExerelinProcGen {
 			}
 				
 			if (planet.getId().equals("ancyra")) continue;
+
+			if (planet.hasTag(Tags.NOT_RANDOM_MISSION_TARGET)) continue;
 			
 			if (planet.isGasGiant()){
 				// gas giants are of interest even though we won't populate them directly
