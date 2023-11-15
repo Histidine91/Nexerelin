@@ -139,7 +139,6 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	@Override
 	public void dialogSetTarget(AgentOrdersDialog dialog, Object target) {
 		this.commodityId = (String)target;
-		dialog.printActionInfo();
 	}
 	
 	@Override
@@ -170,24 +169,26 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 		String target = commodityId != null? StringHelper.getCommodityName(commodityId) : StringHelper.getString("none");
 		str = StringHelper.substituteToken(str, "$target", target);
 		dialog.getOptions().addOption(str, AgentOrdersDialog.Menu.TARGET);
-		if (dialog.getTargets().isEmpty()) {
+		if (dialog.getCachedTargets().isEmpty()) {
 			dialog.getOptions().setEnabled(AgentOrdersDialog.Menu.TARGET, false);
 		}
 	}
 
 	@Override
 	protected void dialogPopulateTargetOptions(final AgentOrdersDialog dialog) {
-		for (Object commod : dialog.getTargets()) {
+		for (Object commod : dialog.getCachedTargets()) {
 			String commodityId = (String)commod;
 			String name = StringHelper.getCommodityName(commodityId);
 			dialog.optionsList.add(new Pair<String, Object>(name, commodityId));
 		}
+		dialog.showPaginatedMenu();
 	}
 
 	@Override
 	public void dialogInitAction(AgentOrdersDialog dialog) {
 		super.dialogInitAction(dialog);
 		dialog.getTargets();
+		dialog.printActionInfo();
 	}
 
 	@Override

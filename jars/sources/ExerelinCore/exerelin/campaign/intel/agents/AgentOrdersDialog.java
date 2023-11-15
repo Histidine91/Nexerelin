@@ -49,8 +49,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	@Getter protected MarketAPI agentMarket;
 	@Getter protected CovertActionIntel action;
 	@Getter protected boolean isQueue;
-	@Getter protected List<FactionAPI> factions = new ArrayList<>();
-	@Getter protected List<Object> targets = new ArrayList<>();
+	protected List<FactionAPI> factions = new ArrayList<>();
+	protected List<Object> targets = new ArrayList<>();
 	@Getter protected Object target;
 
 	public enum Menu
@@ -77,7 +77,15 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		this.ui = ui;
 		this.isQueue = isQueue;
 	}
-	
+
+	protected List<FactionAPI> getCachedFactions() {
+		return factions;
+	}
+
+	protected List<Object> getCachedTargets() {
+		return targets;
+	}
+
 	/**
 	 * Gets a list of possible target factions.
 	 * @return
@@ -97,7 +105,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 		
 		return factions;
 	}
-	
+
+	// TODO disambiguate this shit
 	protected List<Object> getTargets() {
 		List<Object> targets = action.dialogGetTargets(this);
 		//log.info("Generating targets for action def " + action.getDefId());
@@ -164,8 +173,8 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 			return;	// don't remake action unnecessarily
 		}
 		// Allow to printActionInfo for the desired action if the player want to select a new action_type
-		this.factions = null;
-		this.targets = null;
+		this.factions = new ArrayList<>();
+		this.targets = new ArrayList<>();
 		this.target = null;
 
 		action = CovertActionIntel.instantiateActionForDialog(this, def);

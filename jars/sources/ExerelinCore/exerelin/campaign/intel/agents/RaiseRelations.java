@@ -323,7 +323,7 @@ public class RaiseRelations extends CovertActionIntel {
 		str = StringHelper.substituteToken(str, "$faction", thirdFaction != null ?
 				thirdFaction.getDisplayName() : StringHelper.getString("none"));
 		dialog.getOptions().addOption(str, AgentOrdersDialog.Menu.FACTION);
-		if (dialog.getFactions().isEmpty()) {
+		if (dialog.getCachedFactions().isEmpty()) {
 			dialog.getOptions().setEnabled(AgentOrdersDialog.Menu.FACTION, false);
 		}
 	}
@@ -345,7 +345,7 @@ public class RaiseRelations extends CovertActionIntel {
 	@Override
 	public void dialogInitAction(AgentOrdersDialog dialog) {
 		super.dialogInitAction(dialog);
-		dialogSetFaction(dialog, agentFaction);
+		dialog.getFactions();
 	}
 
 	@Override

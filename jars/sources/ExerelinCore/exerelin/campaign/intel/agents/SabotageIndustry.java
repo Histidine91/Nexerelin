@@ -172,7 +172,7 @@ public class SabotageIndustry extends CovertActionIntel {
 	@Override
 	protected void dialogPopulateTargetOptions(final AgentOrdersDialog dialog) {
 		List<Industry> industries = new ArrayList<>();
-		for (Object obj : dialog.getTargets())
+		for (Object obj : dialog.getCachedTargets())
 			industries.add((Industry)obj);
 
 		dialog.getDialog().showIndustryPicker(getString("dialogIndustryPickerHeader"),

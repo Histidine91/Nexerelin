@@ -375,7 +375,7 @@ public class Travel extends CovertActionIntel {
 	@Override
 	protected void dialogPopulateTargetOptions(final AgentOrdersDialog dialog) {
 		List<SectorEntityToken> dests = new ArrayList<>();
-		for (Object marketRaw : dialog.getTargets())
+		for (Object marketRaw : dialog.getCachedTargets())
 		{
 			MarketAPI market = (MarketAPI)marketRaw;
 			dests.add(market.getPrimaryEntity());

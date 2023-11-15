@@ -536,7 +536,7 @@ public class ProcureShip extends CovertActionIntel {
 	protected void dialogPopulateTargetOptions(final AgentOrdersDialog dialog) {
 		dialog.addBackOption();	// fallback in case player closes menu by pressing Escape
 		List<FleetMemberAPI> ships = new ArrayList<>();
-		for (Object obj : dialog.getTargets()) {
+		for (Object obj : dialog.getCachedTargets()) {
 			ships.add((FleetMemberAPI)obj);
 		}
 

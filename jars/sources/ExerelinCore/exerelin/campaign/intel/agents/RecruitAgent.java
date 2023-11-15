@@ -157,11 +157,12 @@ public class RecruitAgent extends CovertActionIntel {
 
 	@Override
 	protected void dialogPopulateTargetOptions(final AgentOrdersDialog dialog) {
-		for (Object spec : dialog.getTargets()) {
+		for (Object spec : dialog.getCachedTargets()) {
 			Specialization spec2 = (Specialization)spec;
 			String name = spec2.getName();
 			dialog.getOptionsList().add(new Pair<String, Object>(name, spec2));
 		}
+		dialog.showPaginatedMenu();
 	}
 
 	@Override
@@ -202,6 +203,11 @@ public class RecruitAgent extends CovertActionIntel {
 	@Override
 	public boolean dialogCanActionProceed(AgentOrdersDialog dialog) {
 		return specialization != null;
+	}
+
+	@Override
+	public boolean showSuccessChance() {
+		return false;
 	}
 
 	@Override
