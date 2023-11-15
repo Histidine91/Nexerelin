@@ -144,6 +144,7 @@ public class NexConfig
     public static int nexIntelQueued = 0;
     public static boolean queuedNexMissions = false;
     public static boolean enableStrategicAI = true;
+    public static boolean showStrategicAI = true;
 	public static boolean enableVictory = true;
     
     public static float baseTariffMult = 0.6f;
@@ -301,6 +302,7 @@ public class NexConfig
             nexIntelQueued = settings.optInt("nexIntelQueued", nexIntelQueued);
             queuedNexMissions = settings.optBoolean("queuedNexMissions", queuedNexMissions);
             enableStrategicAI = settings.optBoolean("enableStrategicAI", enableStrategicAI);
+            showStrategicAI = settings.optBoolean("showStrategicAI", showStrategicAI);
             enableVictory = settings.optBoolean("enableVictory", enableVictory);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));

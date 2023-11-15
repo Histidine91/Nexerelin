@@ -2525,6 +2525,8 @@
 	},
 	
 	"nex_strategicAI":{
+		"intelTitle":"Strategic AI",
+		
 		"intelBulletUpdate":"Strategy meeting",
 		"intelBulletUpdateAdd":"%s new concern(s): %s",
 		"intelBulletUpdateRemove":"%s concern(s) removed: %s",
@@ -3069,6 +3071,8 @@
 		
 		"name_enableStrategicAI":"Enable strategic AI",
 		"tooltip_enableStrategicAI":"Toggles the new experimental strategic AI for NPC factions. This setting takes effect on [game load], adding AIs to applicable factions if enabled and purging any AIs if disabled.",
+		"name_showStrategicAI":"Show strategic AI",
+		"tooltip_showStrategicAI":"If false, AI for other factions will not be shown in intel screen.",
 		"name_enableVictory":"Enable victory",
 		"tooltip_enableVictory":"If off, prevents the victory event from occuring even if conditions are met (except for story-based or other scripted victories).",
 		"name_hardModeColonyGrowthMult":"Starfarer mode colony growth mult",
