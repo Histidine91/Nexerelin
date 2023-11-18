@@ -12,7 +12,6 @@ import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.DModManager;
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
-import static com.fs.starfarer.api.impl.campaign.FleetEncounterContext.prepareShipForRecovery;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
@@ -22,12 +21,8 @@ import exerelin.campaign.StatsTracker;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMath;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+
+import java.util.*;
 
 public class NexFleetEncounterContext extends FleetEncounterContext {
 
@@ -256,12 +251,13 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			float recoverableChance;
 			float crewLossMult = member.getStats().getCrewLossMult().getModifiedValue();
 			float baseEscapeChance = Global.getSettings().getFloat("nex_officerBaseEscapeChance");
+			float baseSurviveChance = Global.getSettings().getFloat("nex_officerSurviveChance");
 			if (result.getDestroyed().contains(member)) {
 				escapeChance = NexUtilsMath.lerp(baseEscapeChance, 1f, 1f - crewLossMult);
-				recoverableChance = 0f;
+				recoverableChance = NexUtilsMath.lerp(0, baseSurviveChance, 1f - crewLossMult);
 			} else {
 				escapeChance = NexUtilsMath.lerp(baseEscapeChance, 1f, 1f - crewLossMult);
-				recoverableChance = Global.getSettings().getFloat("nex_officerSurviveChance");
+				recoverableChance = NexUtilsMath.lerp(baseSurviveChance, 1f, 1f - crewLossMult);
 			}
 
 			boolean isPlayer;

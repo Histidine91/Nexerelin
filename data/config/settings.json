@@ -88,7 +88,8 @@
 	"nex_brawlMode_randomFactionGearChance":0,	# 0.6
 	
 	"nex_officerBaseEscapeChance":0.5,	# modified by crew loss mult
-	"nex_officerSurviveChance":0.75,	# only if officer does not escape and ship is disabled rather than destroyed
+	"nex_officerSurviveChance":0.75,	# modified by crew loss mult; survive chance is the base value only if officer does not escape and ship is disabled rather than destroyed
+										# if the ship is lost, survival chance starts at zero and reaches this number when crew loss mult is zero
 	
 	"nex_insuranceFraudCheck":true,		# legacy insurance only
 	
