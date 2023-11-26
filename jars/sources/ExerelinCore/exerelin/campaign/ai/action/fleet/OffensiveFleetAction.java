@@ -10,6 +10,7 @@ import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.NexUtilsMath;
 import lombok.extern.log4j.Log4j;
 
@@ -63,7 +64,19 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
     }
 
     public MarketAPI pickTargetMarket() {
-        if (concern.getMarket() != null) return concern.getMarket();
+        MarketAPI market = concern.getMarket();
+
+        // check if the market specified by concern is hostile (it may not be, e.g. retaliation concern sometimes targets markets that have already been taken)
+        boolean blockedByNonHostile = false;
+        if (market != null) {
+            if (ai.getFaction() == market.getFaction()) blockedByNonHostile = false;
+            else if (ai.getFaction().getRelationshipLevel(market.getFaction()).ordinal() > getMaxRelToTarget(market.getFaction()).ordinal())
+                blockedByNonHostile = true;
+        }
+
+        if (market != null && !blockedByNonHostile && NexUtilsMarket.shouldTargetForInvasions(market, 0)) {
+            return market;
+        }
         return InvasionFleetManager.getManager().getTargetMarketForFleet(ai.getFaction(), faction, null,
                 getPotentialTargets(), getEventType());
     }
