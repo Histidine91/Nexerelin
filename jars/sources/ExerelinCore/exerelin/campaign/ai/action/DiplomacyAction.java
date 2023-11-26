@@ -132,6 +132,13 @@ public class DiplomacyAction extends BaseStrategicAction {
         if (concern.getDef().hasTag("diplomacy_negative") && !this.getDef().hasTag("unfriendly"))
             return false;
 
+        // don't pick fights while war weariness high
+        if (this.getDef().hasTag("canDeclareWar")) {
+            float ourWeariness = DiplomacyManager.getWarWeariness(ai.getFactionId(), true);
+            if (ourWeariness > DiplomacyBrain.MAX_WEARINESS_FOR_WAR)
+                return false;
+        }
+
         if ((ai.getFaction().isPlayerFaction() || faction == Global.getSector().getPlayerFaction())) {
             if (!NexConfig.followersDiplomacy) return false;
             if (Misc.getCommissionFaction() != null) return false;
