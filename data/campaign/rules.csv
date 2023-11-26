@@ -3324,9 +3324,8 @@ $personLastName acknowledges this with the rise of one perfectly groomed eyebrow
 nex_remSalvation_arroyo1,DialogOptionSelected,$option == nex_remSalvation_arroyo1,ShowPersonVisual true,"""So,"" $heOrShe says as you take a seat opposite him, ""why do you think I can help you?""
 
 You start to sketch out your encounter on $nex_remSalvation_baseOnOrAt $nex_remSalvation_baseName, but $personLastName waves you off. ""I do view the news, captain. I already know the public details, and the ones that aren't I don't need or want to know. What I meant was, why are you coming to me with a League affair?""","nex_remSalvation_arroyo2:""Tri-Tachyon made the Remnants. You might know something about them.""",
-nex_remSalvation_arroyo2,DialogOptionSelected,"$option == nex_remSalvation_arroyo2
-",,"$HeOrShe shrugs. ""You have a TriPad. Even if half of the stuff you'll find on the AI Wars is Hegemony propaganda.""","nex_remSalvation_arroyo3:""I want the stuff that's not in the TriPad.""",
-nex_remSalvation_arroyo3,DialogOptionSelected,$option == nex_remSalvation_arroyo3,,"$personLastName sighs histronically. ""What do you want, $playerLastName, an in-person retelling of the First AI War?""
+nex_remSalvation_arroyo2,DialogOptionSelected,$option == nex_remSalvation_arroyo2,,"$HeOrShe shrugs. ""You have a TriPad. Even if half of the stuff you'll find on the AI Wars is Hegemony propaganda.""","nex_remSalvation_arroyo3:""I want the stuff that's not in the TriPad.""",
+nex_remSalvation_arroyo3,DialogOptionSelected,$option == nex_remSalvation_arroyo3,,"$personLastName sighs histrionically ""What do you want, $playerLastName, an in-person retelling of the First AI War?""
 
 Before he can get carried away complaining, you remind him that Midnight is personally interested in the matter. You point out the astropolitical implications of renewed Remnant activity in the Sector, over a century after they were supposedly eliminated. Implications that could fall on the Tri-Tachyon Corporation, and which the Hegemony — which won the two previous AI Wars, you note — might be very interested in.
 

@@ -706,8 +706,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return unit;
 	}
 	
-	// TODO: create non-player, non-garrison unit
-	
 	/**
 	 * Creates units for player based on available marines and heavy armaments.<br/>
 	 * Attempts to create the minimum number of units that will hold 100% of 
@@ -886,7 +884,6 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		xp = Math.min(xp, total/2);
 		
 		// apply the XP
-		// TODO: log this		
 		float fleetXP = (inFleet/total) * xp;
 		if (fleetXP > 0) {
 			log.info("Adding " + fleetXP + " XP for " + inFleet + " marines in fleet");

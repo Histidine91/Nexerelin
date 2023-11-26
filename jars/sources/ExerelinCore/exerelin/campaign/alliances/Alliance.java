@@ -270,6 +270,10 @@ public class Alliance
 		return new AllianceIntel(one, two, this.uuId, this.name);
 	}
 	
+	public String toString() {
+		return this.name + " " + this.members;
+	}
+	
 	public enum Alignment {
 		CORPORATE(new Color(32, 178, 170)),	// Light Sea Green
 		TECHNOCRATIC(Color.CYAN),

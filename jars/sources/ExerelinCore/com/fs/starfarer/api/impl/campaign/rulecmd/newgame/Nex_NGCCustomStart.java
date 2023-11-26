@@ -2,9 +2,6 @@ package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -16,13 +13,11 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.customstart.CustomStartDefs;
 import exerelin.campaign.customstart.CustomStartDefs.CustomStartDef;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 
 public class Nex_NGCCustomStart extends PaginatedOptions {
