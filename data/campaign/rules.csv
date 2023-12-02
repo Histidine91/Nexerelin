@@ -1620,6 +1620,9 @@ The $faction fleet shuts down comms and powers up combat systems.",,
 tOffCargoScan,DialogOptionSelected,$option == tOff_scan_continue,"AddText ""After a brief wait, the $faction $otherFleetName transmits the scan results.""
 Nex_CargoScan
 FireBest TOffScanResult",,,
+cargoScanStart,DialogOptionSelected,$option == cargoScan_comply,"AddText ""After a brief wait, the $faction $otherFleetName transmits the scan results.""
+Nex_CargoScan
+FireBest CargoScanResult",,,
 sal_printDefaultDefenders,TriggerAutomatedDefenses,,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, new energy signatures are detected near the $shortName.",,
 sal_printDebrisDefenders,TriggerAutomatedDefenses,$customType == debris_field_shared,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, new energy signatures are detected near a larger pieces of debris.",,
 sal_triggerProbeDefenders,TriggerAutomatedDefenses,$customType == derelict_probe,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, several energy signatures are detected coming online inside the probe's hold.",,
