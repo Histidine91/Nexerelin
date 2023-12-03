@@ -2808,6 +2808,7 @@
 		"salvation_investigateLeadsDesc":"Agent $agentName has given you two potential leads to follow.",
 		"salvation_investigateLeadsDesc1":"Go to the %s and see if you can find the fleet that attacked the base.",
 		"salvation_investigateLeadsDesc2":"A senior %s executive might be able to help. If you don't know anyone like that, Midnight could put you in touch.",
+		"salvation_investigateLeadsDesc2Known":"A senior %s executive might be able to help. Try %s on %s.",
 		"salvation_returnDesc":"Return to %s and report what you have learned.",
 		"salvation_defendPlanetDesc":"Go to %s and help defend it from Towering's attack. Move quickly.",
 		"salvation_defendPlanetDescPKed":"%s has been destroyed, but Towering is still in sight. Destroy him.",
