@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel.AntiInspectionOrders;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -27,6 +28,7 @@ import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.intel.diplomacy.CeasefirePromptIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
@@ -635,7 +637,7 @@ public class DiplomacyBrain {
 		}
 		
 		// list everyone we're currently trying to invade/raid/etc., don't bother making peace with them
-		Set<RaidIntel> raids = getRaidsToCheckWhenCeasefiring();
+		Set<BaseIntelPlugin> offensives = getOffensivesToCheckWhenCeasefiring();
 		
 		int tries = 3;
 		FACTION: for (String enemyId : enemiesLocal)
@@ -647,9 +649,9 @@ public class DiplomacyBrain {
 			if (enemyId.equals(Factions.PLAYER) && Misc.getCommissionFaction() != null)
 				continue;
 
-			for (RaidIntel raid : raids) {
-				if (this.shouldRaidBlockCeasefire(raid, enemyId)) {
-					log.info("  Blocking peace with " + enemyId + " due to ongoing raid");
+			for (BaseIntelPlugin off : offensives) {
+				if (this.shouldOffensiveBlockCeasefire(off, enemyId)) {
+					log.info("  Blocking peace with " + enemyId + " due to ongoing offensive");
 					continue FACTION;
 				}
 			}
@@ -666,51 +668,74 @@ public class DiplomacyBrain {
 		return null;
 	}
 
-	public Set<RaidIntel> getRaidsToCheckWhenCeasefiring() {
-		Set<RaidIntel> raids = new LinkedHashSet<>();
+	public Set<BaseIntelPlugin> getOffensivesToCheckWhenCeasefiring() {
+		Set<BaseIntelPlugin> raids = new LinkedHashSet<>();
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(OffensiveFleetIntel.class)) {
 			OffensiveFleetIntel ofi = (OffensiveFleetIntel)intel;
-			if (!shouldCheckRaidForBlockCeasefire(ofi)) continue;
+			if (!shouldCheckOffensiveForBlockCeasefire(ofi)) continue;
 			raids.add(ofi);
 		}
 
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(HegemonyInspectionIntel.class)) {
 			HegemonyInspectionIntel hii = (HegemonyInspectionIntel)intel;
-			if (!shouldCheckRaidForBlockCeasefire(hii)) continue;
+			if (!shouldCheckOffensiveForBlockCeasefire(hii)) continue;
 			raids.add(hii);
 		}
+
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(GroundBattleIntel.class)) {
+			GroundBattleIntel gbi = (GroundBattleIntel)intel;
+			if (!shouldCheckOffensiveForBlockCeasefire(gbi)) continue;
+			raids.add(gbi);
+		}
+
 		return raids;
 	}
 
-	protected boolean shouldCheckRaidForBlockCeasefire(RaidIntel raid) {
-		if (raid.isEnding() || raid.isEnded()) return false;
-		if (raid.getCurrentStage() == 0) return false;
+	protected boolean shouldCheckOffensiveForBlockCeasefire(BaseIntelPlugin intel) {
+		if (intel.isEnding() || intel.isEnded()) return false;
+		if (intel instanceof RaidIntel) {
+			//RaidIntel raid = (RaidIntel) intel;
+			//if (raid.getCurrentStage() == 0) return false;
+		}
 
-		if (raid instanceof OffensiveFleetIntel) {
-			OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
+		if (intel instanceof OffensiveFleetIntel) {
+			OffensiveFleetIntel ofi = (OffensiveFleetIntel)intel;
 			if (ofi.getOutcome() != null) return false;
 			if (!ofi.isAbortIfNonHostile()) return false;
 		}
-		if (raid instanceof HegemonyInspectionIntel) {
-			HegemonyInspectionIntel hii = (HegemonyInspectionIntel)raid;
+		if (intel instanceof HegemonyInspectionIntel) {
+			HegemonyInspectionIntel hii = (HegemonyInspectionIntel)intel;
 			if (hii.getOrders() != AntiInspectionOrders.RESIST) return false;
+		}
+		if (intel instanceof GroundBattleIntel) {
+			GroundBattleIntel gbi = (GroundBattleIntel)intel;
+			if (gbi.getOutcome() != null) return false;
 		}
 
 		return true;
 	}
 
-	protected boolean shouldRaidBlockCeasefire(RaidIntel raid, String factionIdForPotentialPeace) {
+	protected boolean shouldOffensiveBlockCeasefire(BaseIntelPlugin intel, String factionIdForPotentialPeace) {
 		String target = null;
-		String source = raid.getFaction().getId();
+		String source = null;
+		if (intel instanceof RaidIntel) {
+			RaidIntel raid = (RaidIntel) intel;
+			source = raid.getFaction().getId();
+		}
+		else if (intel instanceof GroundBattleIntel) {
+			GroundBattleIntel gbi = (GroundBattleIntel)intel;
+			source = gbi.getSide(true).getFaction().getId();
+		}
+
 		String cfid = Misc.getCommissionFactionId();
 
-		log.info("  Checking raid " + raid.getName());
+		//log.info("  Checking offensive intel " + intel.getSmallDescriptionTitle());
 
-		if (raid instanceof OffensiveFleetIntel) {
-			OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
+		if (intel instanceof OffensiveFleetIntel) {
+			OffensiveFleetIntel ofi = (OffensiveFleetIntel)intel;
 			target = ofi.getTarget() != null ? ofi.getTarget().getFactionId() : null;
 		}
-		if (raid instanceof HegemonyInspectionIntel) {
+		if (intel instanceof HegemonyInspectionIntel) {
 			target = Factions.PLAYER;
 		}
 
