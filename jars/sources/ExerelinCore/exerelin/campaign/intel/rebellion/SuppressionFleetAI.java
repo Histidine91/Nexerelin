@@ -53,8 +53,9 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 	
 	@Override
 	protected void onFleetDefeat() {
-		super.onFleetDefeat();
+		//log.info("Suppression fleet defeated");
 		data.intel.suppressionFleetDefeated(data);
+		super.onFleetDefeat();
 	}
 	
 	@Override

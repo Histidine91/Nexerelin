@@ -93,11 +93,11 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	protected MarketAPI suppressionFleetSource = null;
 	protected boolean suppressionFleetWarning = false;
 	protected Boolean suppressionFleetSuccess = null;
-	protected Long suppressionFleetTimestamp;
+	protected Long suppressionFleetTimestamp;	// note: not updated automatically when lastUpdateTimestamp is updated by sendUpdate()
 	
 	protected Industry lastIndustryDisrupted;
 	protected float disruptTime;
-	protected Long disruptionTimestamp;
+	protected Long disruptionTimestamp;	// note: not updated automatically when lastUpdateTimestamp is updated by sendUpdate()
 	
 	protected float intensity = 0;
 	protected float commodityFactor = 0;
@@ -718,6 +718,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			suppressionFleetSuccess = false;
 			suppressionFleet = null;
 			suppressionFleetSource = null;
+			suppressionFleetTimestamp = Global.getSector().getClock().getTimestamp();
 			sendUpdate(UpdateParam.FLEET_DEFEATED);
 			// morale boost
 			rebelStrength *= 1.2f;
