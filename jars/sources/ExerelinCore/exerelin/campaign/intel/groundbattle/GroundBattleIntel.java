@@ -367,6 +367,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			}
 			list.add(ifb.getPlugin());
 		}
+		for (GroundUnit unit : getAllUnits()) {
+			list.add(unit.getPlugin());
+		}
 		
 		return list;
 	}

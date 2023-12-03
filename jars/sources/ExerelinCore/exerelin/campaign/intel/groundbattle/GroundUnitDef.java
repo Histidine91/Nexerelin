@@ -26,6 +26,7 @@ public class GroundUnitDef implements Comparable<GroundUnitDef> {
     public String id;
     public String name;
     public GroundUnit.ForceType type;
+    public String pluginClass;
     public boolean playerCanCreate;
     public float strength;
     public float unitSizeMult;
@@ -69,6 +70,7 @@ public class GroundUnitDef implements Comparable<GroundUnitDef> {
         if (sprite != null) return sprite;
         return GroundBattleIntel.getCommoditySprite(getCommodityIdForIcon());
     }
+
 
     @Override
     public int compareTo(@NotNull GroundUnitDef other) {

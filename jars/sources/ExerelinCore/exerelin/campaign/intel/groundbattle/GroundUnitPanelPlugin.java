@@ -8,17 +8,17 @@ import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import org.lwjgl.opengl.GL11;
 
 public class GroundUnitPanelPlugin extends FramedCustomPanelPlugin {
-	
+
 	protected FactionAPI faction;
-	protected String sprite;
+	protected GroundUnit unit;
 	protected String logo;
 	
-	public GroundUnitPanelPlugin(FactionAPI faction, String sprite, String logo) 
+	public GroundUnitPanelPlugin(FactionAPI faction, GroundUnit unit, String logo)
 	{
 		super(0.25f, faction.getBaseUIColor(), true);
-		
+
 		this.faction = faction;
-		this.sprite = sprite;
+		this.unit = unit;
 		this.logo = logo;
 	}
 
@@ -46,8 +46,8 @@ public class GroundUnitPanelPlugin extends FramedCustomPanelPlugin {
 		SpriteAPI sprite;		
 		float sizeMult = pos.getHeight()/GroundUnit.PANEL_HEIGHT;
 		
-		if (this.sprite != null) {
-			sprite = Global.getSettings().getSprite(this.sprite);
+		if (unit != null && unit.getBackgroundIcon() != null) {
+			sprite = Global.getSettings().getSprite(unit.getBackgroundIcon());
 			sprite.setAlphaMult(alphaMult * 0.3f);
 			sprite.setSize(sprite.getWidth() * sizeMult, sprite.getHeight() * sizeMult);
 			//GL11.glScalef(0.5f, 0.5f, 1);

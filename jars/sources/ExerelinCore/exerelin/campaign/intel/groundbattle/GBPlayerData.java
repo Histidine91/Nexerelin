@@ -28,7 +28,7 @@ public class GBPlayerData {
 	public int suppliesUsed;
 	public int fuelUsed;
 	protected List<GroundUnit> units = new LinkedList<>();	
-	protected PersonnelAtEntity xpTracker;
+	@Getter protected PersonnelAtEntity xpTracker;
 	protected CargoAPI loot;
 	protected ReputationAdjustmentResult andradaRepChange;
 	protected Float andradaRepAfter;

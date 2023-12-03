@@ -2,6 +2,7 @@ package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.intel.groundbattle.plugins.GroundUnitPlugin;
 import exerelin.utilities.NexUtils;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -141,6 +142,7 @@ public class GBDataManager {
 				GroundUnitDef def = new GroundUnitDef(id, name, type);
 				def.playerCanCreate = jsonUnitEntry.optBoolean("playerCanCreate", false);
 				def.strength = (float)jsonUnitEntry.optDouble("strength", 1);
+				def.pluginClass = jsonUnitEntry.optString("pluginClass", GroundUnitPlugin.class.getName());
 				def.unitSizeMult = (float)jsonUnitEntry.optDouble("unitSizeMult", 1);
 				def.dropCostMult = (float)jsonUnitEntry.optDouble("dropCostMult", 1);
 				def.offensiveStrMult = (float)jsonUnitEntry.optDouble("offensiveStrMult", 1);

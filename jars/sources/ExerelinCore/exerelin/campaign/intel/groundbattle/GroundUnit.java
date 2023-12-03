@@ -4,14 +4,12 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
-import com.fs.starfarer.api.combat.MutableStat.StatMod;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelData;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelRank;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
@@ -21,17 +19,15 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.groundbattle.plugins.GroundBattlePlugin;
-import exerelin.campaign.intel.specialforces.namer.PlanetNamer;
+import exerelin.campaign.intel.groundbattle.plugins.GroundUnitPlugin;
 import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,16 +54,16 @@ public class GroundUnit {
 	public final String id = Misc.genUID();
 	@Getter protected String unitDefId;
 	protected transient GroundUnitDef unitDef;
-	protected int index;
-	protected GroundBattleIntel intel;
+	@Getter protected int index;
+	@Getter protected GroundBattleIntel intel;
 	@Getter @Setter	protected String name;
 	@Getter @Setter	protected FactionAPI faction;
 	@Getter @Setter protected CampaignFleetAPI fleet;
 	protected RouteData route;
 	protected boolean isPlayer;
 	@Getter protected boolean isAttacker;
-	@Deprecated
-	protected ForceType type;
+	@Deprecated protected ForceType type;
+	@Getter protected GroundUnitPlugin plugin;
 	
 	@Deprecated protected int personnel;
 	@Deprecated protected int heavyArms;
@@ -89,6 +85,7 @@ public class GroundUnit {
 		this.intel = intel;
 		this.type = type;
 		this.index = index;
+		plugin = GroundUnitPlugin.initPlugin(this);
 		name = generateName();
 		if (num > 0) setSize(num, false);
 	}
@@ -99,6 +96,7 @@ public class GroundUnit {
 		this.unitDef = getUnitDef();
 		this.type = unitDef.type;
 		this.index = index;
+		plugin = GroundUnitPlugin.initPlugin(this);
 		name = generateName();
 		if (num > 0) setSize(num, false);
 	}
@@ -132,6 +130,10 @@ public class GroundUnit {
 			equipmentMap = new HashMap<>();
 			equipmentMap.put(Commodities.HAND_WEAPONS, heavyArms);
 		}
+		if (plugin == null) {
+			plugin = GroundUnitPlugin.initPlugin(this);
+		}
+
 		return this;
 	}
 
@@ -149,13 +151,7 @@ public class GroundUnit {
 	}
 	
 	public float setStartingMorale() {
-		float morale = GBConstants.BASE_MORALE;
-		if (isPlayer) {
-			float xp = intel.playerData.xpTracker.data.getXPLevel();
-			morale += xp * GBConstants.XP_MORALE_BONUS;
-		}
-		
-		return morale;
+		return plugin.setStartingMorale();
 	}
 
 	/**
@@ -261,20 +257,7 @@ public class GroundUnit {
 	}
 	
 	public String generateName() {
-		String name = Misc.ucFirst(intel.unitSize.getName());
-		int num = index + 1;
-		switch (intel.unitSize) {
-			case PLATOON:
-			case COMPANY:
-				int alphabetIndex = this.index % 26;
-				return GBDataManager.NATO_ALPHABET.get(alphabetIndex) + " " + name;
-			case BATTALION:
-				return num + PlanetNamer.getSuffix(num) + " " + name;
-			case REGIMENT:
-				return Global.getSettings().getRoman(num) + " " + name;
-			default:
-				return name + " " + num;
-		}
+		return plugin.generateName();
 	}
 
 	public boolean isDeployed() {
@@ -662,66 +645,12 @@ public class GroundUnit {
 		return Math.round(cost);
 	}
 	
-	protected void modifyAttackStatWithDesc(MutableStat stat, String id, float mult) 
-	{
-		String desc = getString("unitCard_tooltip_atkbreakdown_" + id);
-		stat.modifyMult(id, mult, desc);
-	}
-	
 	/**
 	 * Partial attack stat, before fleet/market bonuses are applied.
 	 * @return
 	 */
 	public MutableStat getAttackStat() {
-		MutableStat stat = new MutableStat(0);
-		
-		if (isAttackPrevented()) {
-			stat.modifyMult("disabled", 0, getString("unitCard_tooltip_atkbreakdown_disabled"));
-			return stat;
-		}
-		
-		float baseStr = getBaseStrength();
-		stat.modifyFlat("base", baseStr, getString("unitCard_tooltip_atkbreakdown_base"));
-		
-		IndustryForBattle ifb = location;
-		
-		if (ifb != null) 
-		{
-			if (ifb.heldByAttacker == isAttacker) {
-				// apply strength modifiers to defense instead, not attack
-				/*
-				float industryMult = ifb.getPlugin().getStrengthMult();
-				if (industryMult != 1) {
-					stat.modifyMult("industry", industryMult, ifb.ind.getCurrentName());
-				}
-				*/
-			}
-		}
-		if (unitDef.offensiveStrMult != 1) {	// heavy unit bonus on offensive
-			boolean offensiveBonus = ifb == null && this.isAttacker;
-			offensiveBonus |= ifb != null && ifb.heldByAttacker != isAttacker;
-			if (offensiveBonus) {
-				modifyAttackStatWithDesc(stat, "heavy_offensive", unitDef.offensiveStrMult);
-			}
-		}
-		
-		if (intel.isCramped() && unitDef.crampedStrMult != 1) {
-			modifyAttackStatWithDesc(stat, "heavy_cramped", unitDef.crampedStrMult);
-		}
-		
-		float moraleMult = NexUtilsMath.lerp(1 - GBConstants.MORALE_ATTACK_MOD, 
-				1 + GBConstants.MORALE_ATTACK_MOD, morale);
-		modifyAttackStatWithDesc(stat, "morale", moraleMult);
-				
-		if (isReorganizing()) {
-			modifyAttackStatWithDesc(stat, "reorganizing", GBConstants.REORGANIZING_DMG_MULT);
-		}
-				
-		for (GroundBattlePlugin plugin : intel.getPlugins()) {
-			plugin.modifyAttackStat(this, stat);
-		}
-		
-		return stat;
+		return plugin.getAttackStat();
 	}
 	
 	/**
@@ -769,100 +698,15 @@ public class GroundUnit {
 	 * Attack stat bonus from external factors, like the unit's backing fleet.
 	 */
 	public StatBonus getAttackStatBonus() {
-		StatBonus bonus = new StatBonus();
-		
-		// unit from a fleet: apply fleet planetary operations bonuses, if fleet is in range
-		// note: a side effect of the in-range requirement is that the Ground Operations skill stops applying if player is out of range
-		if (fleet != null && isFleetInRange()) {
-			bonus = NexUtils.cloneStatBonus(fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD));
-		}
-		// attacker unit not from a fleet (usually a rebel?)
-		// do nothing
-		else if (isAttacker) {
-			
-		}
-		// defender unit not from a fleet
-		else {
-			// start by applying vanilla-type ground defense stat bonuses
-			bonus = NexUtils.cloneStatBonus(intel.market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD));
-			
-			// purge all flat bonuses
-			bonus.getFlatBonuses().clear();
-			// purge all mult and percent bonuses that come from an industry
-			for (StatMod mod : new ArrayList<>(bonus.getMultBonuses().values())) 
-			{
-				if (mod.getSource().startsWith("ind_")) {
-					bonus.unmodifyMult(mod.getSource());
-				}
-			}
-			for (StatMod mod : new ArrayList<>(bonus.getPercentBonuses().values())) 
-			{
-				if (mod.getSource().startsWith("ind_")) {
-					bonus.unmodifyPercent(mod.getSource());
-				}
-			}
-		}
-		
-		// apply XP bonuses
-		if (isPlayer) {
-			substituteLocalXPBonus(bonus, true);
-		}
-		else if (isAttacker) {
-			// generic XP bonus for non-player attacker units (assumes 50% XP), except rebels which use the defender bonus
-			if (unitDef.hasTag(GBConstants.TAG_REBEL)) {
-				injectXPBonus(bonus, GBConstants.DEFENSE_STAT, true);
-			} else {
-				injectXPBonus(bonus, GBConstants.OFFENSE_STAT, true);
-			}
-		} 
-		else {
-			// generic XP bonus for defender units (assumes 25% XP)
-			injectXPBonus(bonus, GBConstants.DEFENSE_STAT, true);
-		}
-
-		for (GroundBattlePlugin plugin : intel.getPlugins()) {
-			plugin.modifyAttackStatBonus(this, bonus);
-		}
-		
-		return bonus;
+		return plugin.getAttackStatBonus();
 	}
 	
 	public float getAttackStrength() {
-		if (isAttackPrevented()) return 0;
-		
-		MutableStat stat = getAttackStat();
-		
-		float output = stat.getModifiedValue();
-		
-		StatBonus bonus = getAttackStatBonus();
-		if (bonus != null) {
-			output = bonus.computeEffective(output);
-		}
-		
-		output = intel.getSide(isAttacker).damageDealtMod.computeEffective(output);
-		
-		return output;
+		return plugin.getAttackStrength();
 	}
 	
 	public float getAdjustedMoraleDamageTaken(float dmg) {
-		float mult = 1;
-		if (isPlayer) {
-			//mult -= GBConstants.MORALE_DAM_XP_REDUCTION_MULT * PlayerFleetPersonnelTracker.getInstance().getMarineData().getXPLevel();
-		}
-		if (!isAttacker) {
-			dmg = intel.getMarket().getStats().getDynamic().getMod(GBConstants.STAT_MARKET_MORALE_DAMAGE).computeEffective(dmg);
-		}
-		
-		mult /= type.moraleMult;
-		dmg = intel.getSide(isAttacker).moraleDamTakenMod.computeEffective(dmg);
-		dmg *= mult;
-		
-		if (!isAttacker) dmg *= GBConstants.DEFENDER_MORALE_DMG_MULT;
-		
-		for (GroundBattlePlugin plugin : intel.getPlugins()) {
-			dmg = plugin.modifyMoraleDamageReceived(this, dmg);
-		}		
-		return dmg;
+		return plugin.getAdjustedMoraleDamageTaken(dmg);
 	}
 	
 	/**
@@ -870,58 +714,15 @@ public class GroundUnit {
 	 * @return
 	 */
 	public MutableStat getDefenseStat() {
-		MutableStat stat = new MutableStat(0);
-		if (location != null && isAttacker == location.heldByAttacker)
-			stat.modifyMult(location.getIndustry().getId(), 1/location.getPlugin().getStrengthMult(),
-					location.getIndustry().getCurrentName());
-
-		if (unitDef.damageTakenMult != 1) {
-			stat.modifyMult("unitDefMult", unitDef.damageTakenMult,
-					getString("unitCard_tooltip_defbreakdown_defMult"));
-		}
-				
-		for (GroundBattlePlugin plugin : intel.getPlugins()) {
-			stat = plugin.modifyDamageReceived(this, stat);
-		}
-		return stat;
+		return plugin.getDefenseStat();
 	} 
 	
 	public StatBonus getDefenseStatBonus() {
-		StatBonus bonus = new StatBonus();
-		if (fleet != null && isFleetInRange()) {
-			bonus.applyMods(fleet.getStats().getDynamic().getStat(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT));	
-		}
-		if (isPlayer) {
-			substituteLocalXPBonus(bonus, false);
-		}
-		else if (isAttacker) {
-			if (unitDef.hasTag(GBConstants.TAG_REBEL)) {
-				injectXPBonus(bonus, GBConstants.DEFENSE_STAT, false);
-			}
-			else if (!isPlayer) {
-				injectXPBonus(bonus, GBConstants.OFFENSE_STAT, false);
-			}
-		}
-		else {
-			injectXPBonus(bonus, GBConstants.DEFENSE_STAT, false);
-		}		
-		
-		return bonus;
+		return plugin.getDefenseStatBonus();
 	}
 	
 	public float getAdjustedDamageTaken(float dmg) {
-		MutableStat stat = getDefenseStat();
-		stat.setBaseValue(dmg);
-		
-		dmg = stat.getModifiedValue();
-		
-		StatBonus bonus = getDefenseStatBonus();
-		if (bonus != null) {
-			dmg = bonus.computeEffective(stat.getModifiedValue());
-		}
-		
-		dmg = intel.getSide(isAttacker).damageTakenMod.computeEffective(dmg);
-		return dmg;
+		return plugin.getAdjustedDamageTaken(dmg);
 	}
 	
 	public int getSize() {
@@ -1011,7 +812,7 @@ public class GroundUnit {
 		
 		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH * sizeMult, 
 				PANEL_HEIGHT * sizeMult, 
-				new GroundUnitPanelPlugin(faction, commoditySprite, crest));
+				new GroundUnitPanelPlugin(faction, this, crest));
 		TooltipMakerAPI title = card.createUIElement(PANEL_WIDTH * sizeMult, 
 				TITLE_HEIGHT * sizeMult, false);
 		if (forDialog) title.setParaSmallInsignia();
@@ -1146,6 +947,10 @@ public class GroundUnit {
 			imgWithText.addPara("%s " + GroundBattleIntel.getCommodityName(commodityId), 0, hl, count + "");
 			tooltip.addImageWithText(0);
 		}
+	}
+
+	public String getBackgroundIcon() {
+		return plugin.getBackgroundIcon();
 	}
 	
 	public TooltipCreator createTooltip(final String id) {
