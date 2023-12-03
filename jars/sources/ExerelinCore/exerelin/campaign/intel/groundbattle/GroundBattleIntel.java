@@ -1723,9 +1723,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		Set<String> commodities = new LinkedHashSet<>();
 		commodities.add(Commodities.SUPPLIES);
 		commodities.add(Commodities.FUEL);
-		commodities.addAll(CrewReplacerUtils.getAllCommodityIdsForJob(GBConstants.CREW_REPLACER_JOB_MARINES, Commodities.MARINES));
-		commodities.addAll(CrewReplacerUtils.getAllCommodityIdsForJob(GBConstants.CREW_REPLACER_JOB_HEAVYARMS, Commodities.HAND_WEAPONS));
-		commodities.addAll(CrewReplacerUtils.getAllCommodityIdsForJob(GBConstants.CREW_REPLACER_JOB_TANKCREW, Commodities.MARINES));
+		for (GroundUnitDef def : GroundUnitDef.UNIT_DEFS) {
+			if (!def.playerCanCreate) continue;
+			if (!def.shouldShow()) continue;
+			if (def.personnel != null) commodities.addAll(CrewReplacerUtils.getAllCommodityIdsForJob(def.personnel.crewReplacerJobId, def.personnel.commodityId));
+			if (def.equipment != null) commodities.addAll(CrewReplacerUtils.getAllCommodityIdsForJob(def.equipment.crewReplacerJobId, def.equipment.commodityId));
+		}
 
 		int numRows = (int)Math.ceil(commodities.size()/(float)numPerRow);
 

@@ -143,6 +143,7 @@ public class GBDataManager {
 				def.playerCanCreate = jsonUnitEntry.optBoolean("playerCanCreate", false);
 				def.strength = (float)jsonUnitEntry.optDouble("strength", 1);
 				def.pluginClass = jsonUnitEntry.optString("pluginClass", GroundUnitPlugin.class.getName());
+				def.playerMemKeyToShow = jsonUnitEntry.optString("playerMemKeyToShow", null);
 				def.unitSizeMult = (float)jsonUnitEntry.optDouble("unitSizeMult", 1);
 				def.dropCostMult = (float)jsonUnitEntry.optDouble("dropCostMult", 1);
 				def.offensiveStrMult = (float)jsonUnitEntry.optDouble("offensiveStrMult", 1);

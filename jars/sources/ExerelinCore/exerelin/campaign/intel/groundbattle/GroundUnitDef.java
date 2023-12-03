@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.groundbattle;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ public class GroundUnitDef implements Comparable<GroundUnitDef> {
     public String name;
     public GroundUnit.ForceType type;
     public String pluginClass;
+    public String playerMemKeyToShow;
     public boolean playerCanCreate;
     public float strength;
     public float unitSizeMult;
@@ -71,6 +73,10 @@ public class GroundUnitDef implements Comparable<GroundUnitDef> {
         return GroundBattleIntel.getCommoditySprite(getCommodityIdForIcon());
     }
 
+    public boolean shouldShow() {
+        if (playerMemKeyToShow == null) return true;
+        return Global.getSector().getCharacterData().getMemoryWithoutUpdate().getBoolean(playerMemKeyToShow);
+    }
 
     @Override
     public int compareTo(@NotNull GroundUnitDef other) {

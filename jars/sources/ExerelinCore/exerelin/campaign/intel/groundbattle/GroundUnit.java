@@ -779,6 +779,7 @@ public class GroundUnit {
 		int numButtons = 0;
 		for (GroundUnitDef def : GroundUnitDef.UNIT_DEFS) {
 			if (!def.playerCanCreate) continue;
+			if (!def.shouldShow()) continue;
 			ButtonAPI newUnit = buttonHolder.addButton(String.format(getString("btnNewUnit"), def.name, size.getName()),
 					def, btnWidth, 24, numButtons > 0 ? pad : 0);
 			int minSize = size.getMinSizeForType(def);

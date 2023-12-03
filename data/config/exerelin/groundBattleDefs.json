@@ -201,8 +201,10 @@
 		"marine":{
 			"name":"marine",
 			"type":"MARINE",	# legacy setting, may remove later; for now it's mandatory though
-			#"sprite":"optional/path_to/sprite.png",	# used in background of unit card; not automatically loaded so specify it in settings.json if needed
 			"playerCanCreate":true,
+			#"sprite":"optional/path_to/sprite.png",	# used in background of unit card; not automatically loaded so specify it in settings.json if needed
+			#"plugin":"package.plugin.ClassName",
+			#"playerMemKeyToShow":"$myMemKey",	# if non-null, button to create this unit will not appear in ground battle UI unless key is set to true in player MemoryAPI
 			"strength":1,
 			"personnel":{
 				"commodityId":"marines",
@@ -270,6 +272,7 @@
 		#	"name":"lobster",
 		#	"type":"MARINE",
 		#	"playerCanCreate":false,
+		#	"playerMemKeyToShow":"$nex_canCreateLobsterTroops",
 		#	"strength":1,
 		#	"personnel":{
 		#		"commodityId":"lobster",
