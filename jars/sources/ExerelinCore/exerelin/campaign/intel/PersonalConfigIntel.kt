@@ -16,6 +16,7 @@ import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel
 import exerelin.campaign.ui.CustomPanelPluginWithInput
 import exerelin.campaign.ui.FramedCustomPanelPlugin
 import exerelin.campaign.ui.MusicPickerDialogDelegate
+import exerelin.campaign.ui.VictoryScreenScript
 import exerelin.campaign.ui.VictoryScreenScript.VictoryDialog
 import exerelin.utilities.ModPluginEventListener
 import exerelin.utilities.NexConfig
@@ -232,11 +233,14 @@ open class PersonalConfigIntel : BaseIntelPlugin(), ModPluginEventListener {
         tooltip.addRow(tc, VictoryDialog.getString("statsFpLost"), bad,
             Misc.getWithDGS(track.fpLost))
         // officer deaths
-        if (NexConfig.officerDeaths) tooltip.addRow(tc, VictoryDialog.getString("statsOfficersLost"), bad,
+        if (VictoryScreenScript.haveOfficerDeaths()) tooltip.addRow(tc, VictoryDialog.getString("statsOfficersLost"), bad,
             track.numOfficersLost.toString())
         // orphans made
         tooltip.addRow(tc, VictoryDialog.getString("statsOrphansMade"), h,
             Misc.getWithDGS(track.orphansMade.toFloat()))
+        // planets surveyed
+        tooltip.addRow(tc, VictoryDialog.getString("statsPlanetsSurveyed"), h,
+            Misc.getWithDGS(track.planetsSurveyed.toFloat()))
         // markets captured
         tooltip.addRow(tc, VictoryDialog.getString("statsMarketsCaptured"), h,
             track.marketsCaptured.toString())

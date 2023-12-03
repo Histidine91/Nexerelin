@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CargoAPI.CargoItemQuantity;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
+import com.fs.starfarer.api.campaign.listeners.SurveyPlanetListener;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
@@ -24,7 +25,7 @@ import java.util.*;
 /**
  *  Tracks lifetime stats: kills, losses, planets captured, etc.
  */
-public class StatsTracker extends BaseCampaignEventListener implements ColonyPlayerHostileActListener {
+public class StatsTracker extends BaseCampaignEventListener implements ColonyPlayerHostileActListener, SurveyPlanetListener {
     protected static final String TRACKER_MAP_KEY = "exerelin_statsTracker";
     public static Logger log = Global.getLogger(StatsTracker.class);
     
@@ -33,7 +34,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     }));
     
     protected static StatsTracker tracker;
-    
+
     protected int shipsKilled = 0;
     protected int shipsLost = 0;
     protected float fpKilled = 0;
@@ -47,13 +48,14 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     protected int agentActions = 0;
     @Deprecated protected int slavesSold = 0;
     protected int orphansMade = 0;  // hee hee
+    protected int planetsSurveyed;
     
     protected Set<DeadOfficerEntry> deadOfficers = new HashSet<>();
     
     public StatsTracker() {
         super(true);
     }
-    
+
     public int getShipsKilled() {
         return shipsKilled;
     }
@@ -61,11 +63,11 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     public int getShipsLost() {
         return shipsLost;
     }
-    
+
     public float getFpKilled() {
         return fpKilled;
     }
-    
+
     public float getFpLost() {
         return fpLost;
     }
@@ -73,19 +75,19 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     public int getMarketsCaptured() {
         return marketsCaptured;
     }
-    
+
     public int getMarketsRaided() {
         return marketsRaided;
     }
-    
+
     public int getMarketsTacBombarded() {
         return marketsTacBombarded;
     }
-    
+
     public int getMarketsSatBombarded() {
         return marketsSatBombarded;
     }
-    
+
     public int getNumAgentActions() {
         return agentActions;
     }
@@ -101,9 +103,13 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     public int getSlavesSold() {
         return slavesSold;
     }
-    
+
     public int getOrphansMade() {
         return orphansMade;
+    }
+
+    public int getPlanetsSurveyed() {
+        return planetsSurveyed;
     }
 
     /**
@@ -332,6 +338,11 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
         }
         
         marketsSatBombarded++;
+    }
+
+    @Override
+    public void reportPlayerSurveyedPlanet(PlanetAPI planet) {
+        planetsSurveyed++;
     }
     
     public static boolean haveOrphans(String factionId) {

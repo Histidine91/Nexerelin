@@ -92,9 +92,14 @@ public class VictoryScreenScript extends DelayedDialogScreenScript
 		}
 	}
 
+	public static boolean haveOfficerDeaths() {
+		return NexConfig.officerDeaths || Global.getSettings().getModManager().isModEnabled("price_of_command")
+				|| !StatsTracker.getStatsTracker().getDeadOfficers().isEmpty();
+	}
+
 	public static class VictoryDialog implements InteractionDialogPlugin
 	{
-		protected boolean officerDeaths = NexConfig.officerDeaths || !StatsTracker.getStatsTracker().getDeadOfficers().isEmpty();
+		protected boolean officerDeaths = haveOfficerDeaths();
 		
 		protected InteractionDialogAPI dialog;
 		protected TextPanelAPI text;
