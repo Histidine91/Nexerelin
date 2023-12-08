@@ -693,7 +693,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		GroundUnit unit = new GroundUnit(this, unitDefId, 0, index);
 		unit.faction = PlayerFactionStore.getPlayerFaction();
-		unit.isPlayer = true;
+		unit.setPlayer(true);
 		unit.isAttacker = this.playerIsAttacker;
 		unit.fleet = Global.getSector().getPlayerFleet();
 
