@@ -1943,7 +1943,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		public static enum QueueType { NEW, UPGRADE }
 	}
 	
-	public static final TooltipMakerAPI.TooltipCreator AUTONOMOUS_INCOME_NODE_TOOLTIP = new TooltipMakerAPI.TooltipCreator() {
+	public static final TooltipMakerAPI.TooltipCreator AUTONOMOUS_INCOME_NODE_TOOLTIP = new AINTT();
+
+	public static class AINTT implements TooltipMakerAPI.TooltipCreator {
 		public boolean isTooltipExpandable(Object tooltipParam) {
 			return false;
 		}
@@ -1951,8 +1953,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			return 450;
 		}
 		public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-			tooltip.addPara(getString("reportAutonomousTaxTooltip"), 0, Misc.getHighlightColor(), 
+			tooltip.addPara(getString("reportAutonomousTaxTooltip"), 0, Misc.getHighlightColor(),
 					String.format("%.0f", Global.getSettings().getFloat("nex_autonomousIncomeMult") * 100) + "%");
 		}
-	};
+	}
 }
