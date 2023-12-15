@@ -18,6 +18,7 @@ import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.intel.PlayerOutpostIntel;
+import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
@@ -61,6 +62,10 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 	protected boolean addCostEntry(ResourceCostPanelAPI cost, String commodityId, int needed)
 	{
 		int available = (int) Global.getSector().getPlayerFleet().getCargo().getCommodityQuantity(commodityId);
+		if (Commodities.CREW.equals(commodityId)) {
+			available = (int)CrewReplacerUtils.getAvailableCommodity(Global.getSector().getPlayerFleet(), commodityId, "salvage_crew");
+		}
+
 		Color curr = Global.getSector().getPlayerFaction().getColor();
 		if (needed > available) {
 			curr = Misc.getNegativeHighlightColor();
