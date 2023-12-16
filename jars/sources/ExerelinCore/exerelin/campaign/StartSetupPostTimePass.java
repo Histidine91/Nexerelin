@@ -131,7 +131,8 @@ public class StartSetupPostTimePass {
 		handleStartLocation(sector, playerFleet, factionIdForSpawnLoc);
 		
 		// Galatian stipend
-		if (!TutorialMissionIntel.isTutorialInProgress() && !SectorManager.getManager().isHardMode() && !Misc.isSpacerStart()) 
+		if (!TutorialMissionIntel.isTutorialInProgress() && !SectorManager.getManager().isHardMode() && !Misc.isSpacerStart()
+				&& ExerelinSetupData.getInstance().enableStipend)
 		{
 			new Nex_GalatianAcademyStipend();
 		}
@@ -143,6 +144,7 @@ public class StartSetupPostTimePass {
 				MonthlyReport report = SharedData.getData().getPreviousReport();
 				// TODO: maybe do the thing SCC said and give player money instead?
 				if (report != null) {
+					int debt = report.getPreviousDebt();
 					report.setDebt(0);
 					report.setPreviousDebt(0);
 				}

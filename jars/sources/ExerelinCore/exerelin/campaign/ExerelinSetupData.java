@@ -57,6 +57,7 @@ public class ExerelinSetupData
 	@Deprecated public boolean randomStartShips = false;
 	public int dModLevel = 0;
 	public boolean skipStory = Global.getSettings().getBoolean("nex_skipStoryDefault");
+	public boolean enableStipend = true;
 	public String backgroundId = null;
 	public String selectedFactionForBackground = null;
 	

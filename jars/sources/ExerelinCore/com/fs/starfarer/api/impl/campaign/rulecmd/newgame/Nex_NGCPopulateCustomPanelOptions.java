@@ -267,7 +267,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		float incomeHard = NexConfig.hardModeColonyIncomeMult;
 		float vengHard = RevengeanceManager.HARD_MODE_MULT;
 		
-		highlights = new ArrayList<>();
+		highlights = new ArrayList<>();	// important: replace the array instead of just clearing it, due to pass-by-reference
 		highlights.add(Math.round((1 - growthHard) * 100) + "%");
 		highlights.add(Math.round((1 - incomeHard) * 100) + "%");
 		highlights.add(Math.round((vengHard - 1) * 100) + "%");
@@ -284,7 +284,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		);
 		
 		// spacer obligation
-		
+		highlights = new ArrayList<>();
 		tooltipStr = String.format(getString("tooltipSpacerObligation"), highlights.toArray());
 		addCheckboxOption(panel, info, getString("optionSpacerObligation"), "nex_spacerObligation", 
 				data.spacerObligation, Global.getSettings().getSpriteName("income_report", "generic_expense"), plugin, new ButtonEntry() {
@@ -295,8 +295,22 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				}, 
 				createTooltip(tooltipStr, highlights, null)
 		);
+
+		// stipend
+		highlights.add(getString("tooltipStipendHighlight"));
+		tooltipStr = String.format(getString("tooltipStipend"), highlights.toArray());
+		addCheckboxOption(panel, info, getString("optionStipend"), "nex_stipend",
+				data.enableStipend, Global.getSettings().getSpriteName("income_report", "generic_income"), plugin, new ButtonEntry() {
+					@Override
+					public void onToggle() {
+						data.enableStipend = button.isChecked();
+					}
+				},
+				createTooltip(tooltipStr, highlights, null)
+		);
 		
 		// random start location
+		highlights = new ArrayList<>();
 		addCheckboxOption(panel, info, getString("optionRandomStartLocation"), "nex_randomStartLocation", 
 				data.randomStartLocation, "graphics/icons/intel/new_planet_info.png", plugin, new ButtonEntry() {
 						@Override
