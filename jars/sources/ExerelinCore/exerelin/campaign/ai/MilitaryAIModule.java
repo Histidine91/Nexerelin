@@ -196,9 +196,9 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener,
         @Nullable public Class intelClass;
         public String name;
         public FactionAPI attacker;
-        public FactionAPI defender;
-        public MarketAPI target;
-        public MarketAPI origin;
+        @Nullable public FactionAPI defender;
+        @Nullable public MarketAPI target;
+        @Nullable public MarketAPI origin;
         public String type;
         public boolean success;
         public float impact;
