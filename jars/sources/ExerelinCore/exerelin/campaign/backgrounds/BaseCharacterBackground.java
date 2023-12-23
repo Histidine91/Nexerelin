@@ -36,6 +36,14 @@ public abstract class BaseCharacterBackground {
         return true;
     }
 
+    public boolean canBeSelected(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+        return true;
+    }
+
+    public void canNotBeSelectedReason(TooltipMakerAPI tooltip, FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
+
+    }
+
     /**Spawns the player at whatever entity is returned if not null. Is called after onNewGameAfterEconomyLoad, before onNewGameAfterEconomyLoad.*/
     public SectorEntityToken getSpawnLocationOverwrite(FactionSpecAPI factionSpec, NexFactionConfig factionConfig) {
         return null;

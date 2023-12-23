@@ -29,7 +29,6 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
     lateinit var textPanel: TextPanelAPI
     lateinit var visualPanel: VisualPanelAPI
 
-
     override fun execute(ruleId: String?, dialog: InteractionDialogAPI, params: MutableList<Misc.Token>?, memoryMap: MutableMap<String, MemoryAPI>): Boolean {
 
         this.optionPanel = dialog.optionPanel
@@ -91,6 +90,9 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
             }
 
 
+            var canBeSelected = background.canBeSelected(factionSpec, factionConfig)
+
+
             var title = background.getTitle(factionSpec, factionConfig)
             var description = background.getShortDescription(factionSpec, factionConfig)
             var imagePath = background.getIcon(factionSpec, factionConfig)
@@ -107,10 +109,13 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
             }
             first = false
             checkboxes.put(subelement, checkbox)
+            subelement.setCustomData("plugin", background)
 
             var image = subelement.innerElement.beginImageWithText(imagePath, 50f)
 
-            image.addPara(title, 0f, Misc.getHighlightColor(), Misc.getHighlightColor())
+            var titleColor = Misc.getHighlightColor()
+            if (!canBeSelected) titleColor = Misc.getGrayColor()
+            image.addPara(title, 0f, titleColor, titleColor)
             image.addPara(description, 0f, Misc.getTextColor(), Misc.getTextColor())
 
             subelement.innerElement.addImageWithText(0f)
@@ -119,14 +124,17 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
 
 
             subelement.onClick {
-                checkbox.value = true
-                memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_background", background.spec.id)
+                if (background.canBeSelected(factionSpec, factionConfig)) {
+                    checkbox.value = true
+                    memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_background", background.spec.id)
+                }
             }
 
             checkbox.onClick {
-                memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_background", background.spec.id)
+                if (background.canBeSelected(factionSpec, factionConfig)) {
+                    memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_background", background.spec.id)
+                }
             }
-
 
             element.addTooltipTo(object  : TooltipCreator {
                 override fun isTooltipExpandable(tooltipParam: Any?): Boolean {
@@ -140,10 +148,17 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
                 override fun createTooltip(tooltip: TooltipMakerAPI?, expanded: Boolean, tooltipParam: Any?) {
                     background.addTooltipForSelection(tooltip, factionSpec, factionConfig, expanded)
 
+                    if (!canBeSelected) {
+                        tooltip!!.addSpacer(10f)
+                        background.canNotBeSelectedReason(tooltip, factionSpec, factionConfig)
+                    }
+
                     if (expanded && background.spec.id != "nex_none") {
                         tooltip!!.addSpacer(10f)
                         tooltip.addPara("Added by ${background.spec.modName}", 0f, Misc.getTextColor(), Misc.getHighlightColor(), "${background.spec.modName}")
                     }
+
+
                 }
 
             },subelement.elementPanel, TooltipMakerAPI.TooltipLocation.BELOW)
@@ -151,7 +166,21 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
 
         for ((element, checkbox) in checkboxes) {
 
+            var background = element.getCustomData("plugin") as BaseCharacterBackground
+
+
+            if (!background.canBeSelected(factionSpec, factionConfig)) {
+                element.onClick {
+                    element.playSound("ui_button_disabled_pressed", 1f, 1f)
+                }
+                checkbox.onClick {
+                    checkbox.playSound("ui_button_disabled_pressed", 1f, 1f)
+                }
+                continue
+            }
+
             element.onClick {
+
                 element.playClickSound()
                 checkbox.value = true
 
@@ -165,11 +194,15 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
             checkbox.onClick {
                 checkbox.value = true
 
+                checkbox.playClickSound()
+
                 for (other in checkboxes) {
                     if (other.value == checkbox) continue
                     other.value.value = false
                 }
             }
+
+
         }
 
 

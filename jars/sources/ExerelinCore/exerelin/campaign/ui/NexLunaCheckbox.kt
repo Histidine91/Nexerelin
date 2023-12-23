@@ -14,9 +14,9 @@ class NexLunaCheckbox(var value: Boolean, tooltip: TooltipMakerAPI, width: Float
         renderBackground = false
         renderBorder = false
 
-        onClick {
+        /*onClick {
             playClickSound()
-        }
+        }*/
 
         onHoverEnter {
             playScrollSound()
