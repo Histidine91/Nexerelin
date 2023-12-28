@@ -823,16 +823,23 @@ public class GroundUnit {
 		// begin stats section
 		TooltipMakerAPI stats = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH)/2 * sizeMult, 
 				(PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT) * sizeMult, false);
+
+		String commodityId;
+		TooltipMakerAPI line;
+
+		// number of personnel, e.g. marines
+		int personnel = getPersonnelCount();
+		if (personnel > 0) {
+			commodityId = personnelMap.keySet().iterator().next();
+			line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(
+					commodityId).getIconName(), 16 * sizeMult);
+			line.addPara(getPersonnelCount() + "", 0);
+			stats.addImageWithText(pad);
+			stats.addTooltipToPrevious(createTooltip("marines"), TooltipLocation.BELOW);
+		}
+
 		
-		// number of marines
-		String commodityId = personnelMap.keySet().iterator().next();
-		TooltipMakerAPI line = stats.beginImageWithText(Global.getSettings().getCommoditySpec(
-				commodityId).getIconName(), 16 * sizeMult);
-		line.addPara(getPersonnelCount() + "", 0);
-		stats.addImageWithText(pad);
-		stats.addTooltipToPrevious(createTooltip("marines"), TooltipLocation.BELOW);
-		
-		// number of heavy arms
+		// number of equipment, e.g. heavy arms
 		int equipment = getEquipmentCount();
 		if (equipment > 0) {
 			commodityId = equipmentMap.keySet().iterator().next();

@@ -76,7 +76,7 @@ public class GroundBattleLog {
 					else
 						str = String.format(getString(type.equals(TYPE_UNIT_ROUTED) ? "log_unitRouted": "log_unitMoved"), 
 								unitName, prev.ind.getCurrentName(), loc.ind.getCurrentName());
-					str = StringHelper.substituteToken(str, "$unitType", unit.type.getName());
+					str = StringHelper.substituteToken(str, "$unitType", unit.getUnitDef().name);
 					
 					label = tooltip.addPara(str, LOG_PADDING);
 					if (loc == null) {
@@ -98,7 +98,7 @@ public class GroundBattleLog {
 				{
 					float morale = (float)params.get("morale");
 					str = getString("log_unitLosses");
-					str = StringHelper.substituteToken(str, "$unitType", unit.type.getName());
+					str = StringHelper.substituteToken(str, "$unitType", unit.getUnitDef().name);
 					loc = (IndustryForBattle)params.get("location");
 					label = tooltip.addPara(str, LOG_PADDING, h, unit.name, 
 							loc != null ? loc.ind.getCurrentName() : "<unknown location>",
@@ -111,7 +111,7 @@ public class GroundBattleLog {
 			
 			case TYPE_UNIT_DESTROYED:
 				str = getString("log_unitDestroyed");
-				str = StringHelper.substituteToken(str, "$unitType", unit.type.getName());
+				str = StringHelper.substituteToken(str, "$unitType", unit.getUnitDef().name);
 				side = Misc.ucFirst(StringHelper.getString(unit.isAttacker ? "attacker" : "defender"));
 				loc = (IndustryForBattle)params.get("location");
 				locStr = loc != null ? loc.ind.getCurrentName() : "<unknown location>";

@@ -303,7 +303,7 @@ public class GroundBattleRoundResolve {
 	public void damageUnit(GroundUnit unit, float dmg) {
 		dmg = unit.getAdjustedDamageTaken(dmg);
 		
-		float dmgPerKill = unit.type.strength;
+		float dmgPerKill = unit.getUnitDef().strength;
 		int kills = (int)(dmg/dmgPerKill);
 		
 		// if any remaining damage after kills, roll to kill one more unit
@@ -332,11 +332,10 @@ public class GroundBattleRoundResolve {
 		if (kills == 0) return;
 		
 		Map<GroundUnitDef, Integer> toModify = unit.isAttacker ? atkLosses : defLosses;
-
-		int prevMarines = unit.getMarines();
+		GroundUnitDef def = unit.getUnitDef();
 
 		boolean hasEquip = unit.unitDef.equipment != null;
-		int personnelKills = hasEquip ? kills * GroundUnit.CREW_PER_MECH : kills;
+		int personnelKills = hasEquip ? Math.round(kills * (float)def.personnel.mult/def.equipment.mult) : kills;
 		int equipmentKills = hasEquip ? kills : 0;
 		int equipmentKillsTrue = inflictUnitCommodityLosses(unit, equipmentKills, true);
 		int personnelKillsTrue = inflictUnitCommodityLosses(unit, personnelKills, false);
@@ -346,13 +345,12 @@ public class GroundBattleRoundResolve {
 		
 		NexUtils.modifyMapEntry(toModify, unit.unitDef, kills);
 
-		int currMarines = unit.getMarines();
 		if (unit.isPlayer) {
 			NexUtils.modifyMapEntry(playerLosses, unit.unitDef, kills);
 			//intel.playerData.xpTracker.data.remove(prevMarines - currMarines, true);	// do this in inflictUnitCommodityLosses
 		}
 		
-		printDebug(String.format("    Unit %s (%s) took %s losses (%s true losses)", unit.name, unit.type.toString(), kills, killsTrue));
+		printDebug(String.format("    Unit %s (%s) took %s losses (%s true losses)", unit.name, unit.getUnitDef().name, kills, killsTrue));
 	}
 
 	/**
@@ -366,6 +364,8 @@ public class GroundBattleRoundResolve {
 	{
 		if (kills <= 0) return 0;
 
+		GroundUnitDef def = unit.getUnitDef();
+
 		int totalInUnit = isEquipment ? unit.getEquipmentCount() : unit.getPersonnelCount();
 		Map<String, Integer> commodities = isEquipment ? unit.getEquipmentMap() : unit.getPersonnelMap();
 
@@ -376,7 +376,7 @@ public class GroundBattleRoundResolve {
 			float myDeathsRaw = kills * myDeathShare;
 
 			// damage resistance based on the personnel type's utility
-			String jobId = isEquipment ? GBConstants.CREW_REPLACER_JOB_HEAVYARMS : GBConstants.CREW_REPLACER_JOB_MARINES;
+			String jobId = isEquipment ? def.equipment.crewReplacerJobId : def.personnel.crewReplacerJobId;
 			float damResist = CrewReplacerUtils.getCommodityPower(jobId, commodityId);
 			if (damResist <= 0) damResist = 1;	// safety
 
@@ -433,7 +433,7 @@ public class GroundBattleRoundResolve {
 			contrib *= intel.unitSize.damMult;
 			contrib *= NexConfig.groundBattleDamageMult;
 			printDebug(String.format("    Unit %s (%s) contributing attack strength: %.2f", 
-					unit.name, unit.type.toString(), contrib));
+					unit.name, unit.getUnitDef().name, contrib));
 			str += contrib;
 		}
 		
