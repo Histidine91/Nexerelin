@@ -725,6 +725,7 @@ public class DiplomacyBrain {
 		else if (intel instanceof GroundBattleIntel) {
 			GroundBattleIntel gbi = (GroundBattleIntel)intel;
 			source = gbi.getSide(true).getFaction().getId();
+			target = gbi.getSide(false).getFaction().getId();
 		}
 
 		String cfid = Misc.getCommissionFactionId();
