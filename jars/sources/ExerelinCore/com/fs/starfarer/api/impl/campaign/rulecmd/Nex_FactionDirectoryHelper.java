@@ -150,6 +150,8 @@ public class Nex_FactionDirectoryHelper {
 		
 		if (NexUtilsFaction.isExiInCorvus("exigency"))
 			liveFactions.add("exigency");
+		liveFactions.add(Factions.INDEPENDENT);
+
 		for (FactionAPI faction : allFactions)
 		{
 			String factionId = faction.getId();
