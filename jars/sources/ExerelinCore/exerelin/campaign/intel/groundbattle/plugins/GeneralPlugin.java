@@ -66,6 +66,22 @@ public class GeneralPlugin extends BaseGroundBattlePlugin {
 				Misc.getHighlightColor(), GroundBattleIntel.getString("modifierStationDescHighlight"));
 	}
 
+	/*
+	@Override
+	public void onBattleStart() {
+
+		Global.getLogger(this.getClass()).info("Battle started");
+		for (GroundUnit unit : intel.getAllUnits()) {
+			Global.getLogger(this.getClass()).info("  Found " + (unit.isAttacker() ? "attacker" : "defender") + " unit " + unit.toString() + ": from fleet " + unit.getFleet());
+		}
+	}
+
+	@Override
+	public void onPlayerJoinBattle() {
+		//Global.getLogger(this.getClass()).info("Player joined battle, turn " + intel.getTurnNum());
+	}
+	*/
+
 	@Override
 	public float getSortOrder() {
 		return -1000;

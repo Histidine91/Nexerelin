@@ -24,11 +24,14 @@ public abstract class BaseGroundBattlePlugin implements GroundBattlePlugin {
 	public void onBattleStart() {}
 
 	@Override
+	public void onPlayerJoinBattle() {}
+
+	@Override
 	public void apply() {}
 	
 	@Override
 	public void unapply() {}
-	
+
 	@Override
 	public void advance(float days) {}
 	
@@ -45,6 +48,9 @@ public abstract class BaseGroundBattlePlugin implements GroundBattlePlugin {
 			intel.removePlugin(this);
 		}
 	}
+
+	@Override
+	public void reportUnitCreated(GroundUnit unit) {}
 	
 	@Override
 	public void reportUnitMoved(GroundUnit unit, IndustryForBattle lastLoc) {}

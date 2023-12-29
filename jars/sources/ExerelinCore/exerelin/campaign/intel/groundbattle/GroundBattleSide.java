@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
@@ -311,15 +312,13 @@ public class GroundBattleSide {
 		//log.info(String.format("Can create %s units of %s", numUnits, type));
 		for (int i=0; i<numUnits; i++) {
 			int size = Math.round(numTroops/numUnits);
-			GroundUnit unit = createUnit(unitDefId, faction, size);
+			GroundUnit unit = createUnit(unitDefId, faction, size, null);
 			unit.morale *= moraleMult;
 		}
 	}
 	
-	public GroundUnit createUnit(String unitDefId, FactionAPI faction, int size) {
-		GroundUnit unit = new GroundUnit(intel, unitDefId, size, units.size());
-		unit.faction = faction;
-		unit.isAttacker = this.isAttacker;
+	public GroundUnit createUnit(String unitDefId, FactionAPI faction, int size, CampaignFleetAPI fleet) {
+		GroundUnit unit = intel.createUnit(unitDefId, faction, isAttacker, size, fleet, units.size());
 		units.add(unit);
 		return unit;
 	}

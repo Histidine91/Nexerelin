@@ -351,7 +351,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		
 		// create units
 		log.info(String.format("Deploying units: %s marines, %s heavy arms", marines, heavyArms));
-		groundBattle.autoGenerateUnits(marines, heavyArms, faction, side, false);
+		groundBattle.autoGenerateUnits(marines, heavyArms, faction, side, false, fleet);
 		
 		// deploy the newly arrived units
 		if (true || !firstIn) {
@@ -834,4 +834,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 
 	@Override
 	public void reportBattleEnded(GroundBattleIntel battle) {}
+
+	@Override
+	public void reportPlayerJoinedBattle(GroundBattleIntel battle) {}
 }

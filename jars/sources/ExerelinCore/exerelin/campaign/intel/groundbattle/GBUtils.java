@@ -18,7 +18,6 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.invasion.CounterInvasionIntel;
 import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtils;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public class GBUtils {
 	 */
 	public static float estimateDefenderStrengthMult(GroundBattleIntel intel) {
 		GroundBattleSide defender = intel.getSide(false);
-		GroundUnit temp = defender.createUnit(GroundUnitDef.MARINE, defender.getFaction(), 100);
+		GroundUnit temp = defender.createUnit(GroundUnitDef.MARINE, defender.getFaction(), 100, null);
 		MutableStat str = temp.getAttackStat();
 		StatBonus strBonus = temp.getAttackStatBonus();
 		//log.info(NexUtils.mutableStatToString(str));

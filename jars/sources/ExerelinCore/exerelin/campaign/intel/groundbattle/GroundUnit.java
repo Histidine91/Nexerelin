@@ -61,7 +61,7 @@ public class GroundUnit {
 	@Getter @Setter protected CampaignFleetAPI fleet;
 	protected RouteData route;
 	@Getter @Setter protected boolean isPlayer;
-	@Getter protected boolean isAttacker;
+	@Getter @Setter protected boolean isAttacker;
 	@Deprecated protected ForceType type;
 	@Getter protected GroundUnitPlugin plugin;
 	

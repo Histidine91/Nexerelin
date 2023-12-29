@@ -1,18 +1,8 @@
 package exerelin.campaign.intel.missions;
 
-import java.awt.Color;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.PersonImportance;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -39,6 +29,10 @@ import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
+import java.util.List;
+import java.util.Map;
 
 public class GroundBattleTutorial extends HubMissionWithSearch implements GroundBattleCampaignListener
 {	
@@ -304,7 +298,10 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 			setCurrentStage(Stage.FAILED, null, null);
 		}
 	}
-	
+
+	@Override
+	public void reportPlayerJoinedBattle(GroundBattleIntel battle) {}
+
 	public static PersonAPI createContact(MarketAPI market) {
 		PersonAPI person = Global.getFactory().createPerson();
 		person.setId(PERSON_CONTACT);
