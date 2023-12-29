@@ -458,7 +458,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (NexUtilsFaction.isPirateFaction(otherFactionId)) continue;
                 if (INVALID_FACTIONS.contains(otherFactionId)) continue;
                 //if (Nex_IsFactionRuler.isRuler(otherFactionId)) continue;
-                if (Factions.PLAYER.equals(factionId) && Misc.getCommissionFaction() != null) continue;
+                if (Factions.PLAYER.equals(otherFactionId) && Misc.getCommissionFaction() != null) continue;
                 if (faction.isAtBest(otherFactionId, RepLevel.WELCOMING)) continue;
                 
                 // better relationships are more likely to form alliances
