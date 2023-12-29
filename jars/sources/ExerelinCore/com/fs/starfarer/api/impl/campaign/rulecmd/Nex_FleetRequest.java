@@ -614,7 +614,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	
 	protected boolean launchFleet() {
 		MutableValue credits = Global.getSector().getPlayerFleet().getCargo().getCredits();
-		if (cost > credits.get()) {
+		if (cost > credits.get() && !Global.getSettings().isDevMode()) {
 			return false;
 		}
 		AddRemoveCommodity.addCreditsLossText((int)cost, dialog.getTextPanel());
