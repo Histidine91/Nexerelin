@@ -1,3 +1,128 @@
+Version 0.11.1
+
+### Changes from beta 0.11.0x ###
+* Strategy AI fixes/adjustments
+    * Don't start wars with negative diplomacy actions if war weariness too high
+    * Try to fix offensive fleet actions being used against non-hostile markets sometimes
+    * Add a setting for hiding strategic AI of other factions from intel
+    * Strategy AI doesn't try to build stuff on player-governed markets (unless AI faction is player)
+* Rework ceasefire prevention check, should be more reliable now
+    * Factions should not ceasefire if military action between the two sides is ongoing, counting allies
+    * Invasions, raids etc. will not block ceasefire if still in the initial planning stage
+* Silverlight DP 80 -> 75 (make it a little easier to use without neural link)
+* Academy stipend can be disabled in new game settings
+* Personal intel tracks planets surveyed, and shows officer deaths if Price of Command mod is running
+* Officer death setting: survival chance also uses crew loss mult modifier
+    * Destroyed ships still have an officer survival chance if crewLossMult < 1
+* Raids no longer attack hidden markets in the target system
+* Fixes
+    * Fix custom starts being broken by new backgrounds feature
+    * Fix non-transponder cargo scan still checking for heavy arms while commissioned/allied
+    * Random sector/own faction doesn't put markets on NOT_RANDOM_MISSION_TARGET entities (like Sentinel)
+    * Fix error from merc fleet gen plugin not being restored on game load
+    * Fix transmitting update when a rebellion suppression fleet is defeated
+    * Fix 'alliance offer to own commissionee' bug
+    * Fix when lower relations action chooses to show min relations
+* Salvation mission points player more directly to Arroyo
+* Wiping out independents no longer removes them from market transfer list
+* [Modding] Reduce priority of our reputation action response plugin, and don't run it unless the action is one we care about
+* [Modding] Ground battle features, fixes
+    * Delegate some GroundUnit functionality to a new, customizable GroundUnitPlugin
+    * Buttons to create ground unit types can be tied to a player memory key, will be hidden if not present
+        * This also applies to the commodity amount display for the commodities those units use
+    * Fix ground units using a bunch of hardcoded stats instead of reading from config
+
+### Gameplay ###
+* Develop strategic AI to a releasable state
+    * This is a "new" gameplay feature that seeks to make NPC factions act in a more goal-directed manner
+    * Can be enabled in settings (default off)
+    * Mods can modify or add their own strategic 'concerns' and 'actions' to the system
+* Add a new personal background system in new game dialog, by Lukas04
+* Add a new Remnant story mission, "File Drawer Problem"
+* Rearrange order of Remnant story missions
+    * Fragments and File Drawer Problem require Welcoming reputation
+    * Showdown requires Friendly reputation and completing either of the two previous missions
+    * Salvation requires Cooperative reputation and completing Showdown, will also disable File Drawer Problem once completed
+* Gameplay improvements to some Remnant missions
+    * Notably, Showdown will have strength scaling on both sides to account for variability in the size and number of patrols each nexus has
+    * Also try to fix janky behavior by the ally fleet in Salvation
+* Invasion points are still generated in peacetime, at 25% the base rate
+* Invasion point stockpile capped at about 180 days' worth of output for that faction (but will not be less than the points needed to trigger an invasion/raid event)
+    * Pending a potential broader overhaul of resources available to NPC factions
+* Lower ground battledrop cost mults for ground defenses 
+    * Ground def 1.5 -> 1.25
+    * Heavy batteries and planetary shield 2 -> 1.5
+* Prism checks no-sell tag for weapons as well
+* Enhanced vanilla systems adjustments 
+    * Tigra City has sparse ore and poor farmland instead of moderate ore
+    * Eventide has midline instead of high tech battlestation
+* Pirate/Pather commissions will mitigate the Hostile Activity contributions from their respective factions
+* Player special task groups get a 20% discount on operating expenses
+    * Revive costs unchanged
+* Selling survey data to a faction will increase its chances of being picked for colony expedition
+    * Faction loses its bonus after being successfully picked
+* Add a new game setting to disable having neighbors in own faction start (non-random sector only)
+* `invasionPointsPerPlayerLevel` default set to 1 (was previously 1.5, or 2 after being rounded by LunaLib ingame menu config)
+    * Also fixed value not being read from config file
+* Buy ship offer shouldn't pick a Sierra ship
+* Pirate activity on NPC markets won't target non-hostile markets
+* Remove Luddic Path's factional market condition (+10% accessibility)
+* Factions vote yes on alliance vote if their current relationship is the same as the target one
+* Can offer RAT abyss cores to the hypershunt discovery encounter
+
+### UI ###
+* Invasion point stockpiles are shown in diplomacy profiles and strategy AI intel items
+* Faction directory can also print all markets with revanchist claims
+* Player auto-move in ground battles has option to allow deploying new units from orbit
+* Counter-invasion intel also appears in colony threats
+* Ground battle defender strength estimate accounts for modifiers
+* Lower sound effect volumes for ground battle outcomes
+
+### Text ###
+* Add a bit of gameplay info to "Showdown" and "Salvation" briefing dialogs
+* Fix a diplomacy setting description being under the wrong setting
+* Fix ceasefire offer intel missing its title
+
+### Bugfixes ###
+* Fix crash if have active patrol package but no hostile activity intel
+* Fix a brawl mode crash
+* Fix ceasefire offer crash if relations are already at max
+* Fix a crash that could happen when checking a market's original owner
+* Fix crash when using military base starting bonus with own faction start
+* Maybe fix fleet event crashes if star system has no jump points
+* Crash safety for special task group generation
+* Fully fix the issue with special task group ships sometimes losing their variant and requiring a restore
+* Fix ground defenses being disabled by ground combat sometimes
+* Fix some bugs/exploits with AIM merc companies
+* Try to fix recruit operative action sometimes failing
+* Fix repeat relations setting not working with lower relations action
+* Fix own faction start potentially having both patrol HQ and military base if starting on a moon
+* Make random sector's Kanta's Den get appropriate memory flags
+* Fix admins disappearing from comm board in faction ruler mode
+* Fix heavy industry transfer-and-raid exploit when time isn't advanced
+* Fix The Usurpers quest still trying to start in random sector
+* When playing music in personal info intel, try to make it go away when done
+* Can't loot an industry in ground battle more than once (fixes defender infinite sell–loot exploit)
+* Fix AIM anti-piracy package being purchasable when it shouldn't be, if viewing T&C first
+* Remove relationship syncing from Derelicts
+
+### User config ###
+* Add setting for 'skip story' default to LunaSettings
+* Add settings.json option to have no rep penalty with third parties for sat bomb
+* Enable indirectly changing the min/max value of LunaConfig settings
+    * If the value in settings file is lower than min or higher than max defined in code, settings value becomes the new min/max
+
+### Modding ###
+* Music tracks not specified in a faction file can be added to music picker in data/config/modSettings.json
+* Custom start defs can be added and modified via code
+* Arbitrary ground battle plugins can be defined, plugins can execute code on battle generation
+* Mods should now be able to add their own operative actions (previously there was no way to add them to the orders dialog)
+* Fix Nex_TransferMarket.NO_TRANSFER_FACTIONS being non-mutable
+* Fix SectorManager's present factions list never actually losing elements
+
+### Misc ###
+* Add GraphicsLib maps for boss ship, by Himemi/Cieve-san
+
 Version 0.11.0b
 
 ### Gameplay ###
