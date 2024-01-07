@@ -208,6 +208,12 @@ public class StrategicAI extends BaseIntelPlugin {
 
 	}
 
+	public void forceMeeting() {
+		interval.forceIntervalElapsed();
+		advanceImpl(0);
+		interval.advance(0.001f);
+	}
+
 	/*
 	============================================================================
 	// start of GUI stuff
@@ -296,9 +302,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_MEETING) {
-			interval.forceIntervalElapsed();
-			advanceImpl(0);
-			interval.advance(0.001f);
+			forceMeeting();
 			ui.updateUIForItem(this);
 		}
 		else if (buttonId instanceof StrategicAction) {

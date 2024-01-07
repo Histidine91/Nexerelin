@@ -22,7 +22,8 @@ Version 0.11.1
     * Fix error from merc fleet gen plugin not being restored on game load
     * Fix transmitting update when a rebellion suppression fleet is defeated
     * Fix 'alliance offer to own commissionee' bug
-    * Fix when lower relations action chooses to show min relations
+    * Fix logic for when lower relations action chooses to show min relations
+	* Fix a rare crash with strategic AI raids
 * Salvation mission points player more directly to Arroyo
 * Wiping out independents no longer removes them from market transfer list
 * [Modding] Reduce priority of our reputation action response plugin, and don't run it unless the action is one we care about

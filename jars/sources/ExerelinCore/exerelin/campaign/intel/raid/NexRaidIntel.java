@@ -334,7 +334,8 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 			if (isSendingUpdate() && failStage >= 0) {
 				return base + " - " + StringHelper.getString("failed");
 			}
-			if (action.getStatus() == RaidStageStatus.SUCCESS)
+			// action can be null if failure to find a jump point causes init() to exit prematurely
+			if (action != null && action.getStatus() == RaidStageStatus.SUCCESS)
 				return base + " - " + StringHelper.getString("successful", true);
 			return base + " - " + StringHelper.getString("over", true);
 		}
