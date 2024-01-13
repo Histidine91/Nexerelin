@@ -51,15 +51,19 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener,
         if (FleetPoolManager.USE_POOL) {
             float pool = FleetPoolManager.getManager().getCurrentPool(factionId);
             float poolMax = FleetPoolManager.getManager().getMaxPool(factionId);
-            tooltip.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "");
+            float poolIncr = FleetPoolManager.getManager().getPointsLastTick(ai.getFaction());
+            String poolIncrStr = String.format("%.1f", poolIncr);
+            tooltip.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "", poolIncrStr);
             nextPad = pad;
         }
         {
             float points = InvasionFleetManager.getManager().getSpawnCounter(factionId);
             float pointsMax = InvasionFleetManager.getMaxInvasionPoints(ai.getFaction());
+            float pointsIncr = InvasionFleetManager.getPointsLastTick(ai.getFaction());
             String pointsStr = Misc.getWithDGS(points);
             String pointsMaxStr = Misc.getWithDGS(pointsMax);
-            tooltip.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, pointsStr, pointsMaxStr);
+            String pointsIncrStr = "" + Math.round(pointsIncr);  //String.format("%.1f", pointsIncr);
+            tooltip.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, pointsStr, pointsMaxStr, pointsIncrStr);
         }
 
         super.generateReport(tooltip, holder, width);

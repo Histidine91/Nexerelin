@@ -169,15 +169,19 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		if (FleetPoolManager.USE_POOL) {
 			float pool = FleetPoolManager.getManager().getCurrentPool(factionId);
 			float poolMax = FleetPoolManager.getManager().getMaxPool(factionId);
-			tooltip.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "");
+			float poolIncr = FleetPoolManager.getManager().getPointsLastTick(faction);
+			String poolIncrStr = String.format("%.1f", poolIncr);
+			tooltip.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "", poolIncrStr);
 			nextPad = 3;
 		}
 		{
 			float points = InvasionFleetManager.getManager().getSpawnCounter(factionId);
 			float pointsMax = InvasionFleetManager.getMaxInvasionPoints(faction);
+			float pointsIncr = InvasionFleetManager.getPointsLastTick(faction);
 			String pointsStr = Misc.getWithDGS(points);
 			String pointsMaxStr = Misc.getWithDGS(pointsMax);
-			tooltip.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, pointsStr, pointsMaxStr);
+			String pointsIncrStr = "" + Math.round(pointsIncr);  //String.format("%.1f", pointsIncr);
+			tooltip.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, pointsStr, pointsMaxStr, pointsIncrStr);
 		}
 	}
 	
