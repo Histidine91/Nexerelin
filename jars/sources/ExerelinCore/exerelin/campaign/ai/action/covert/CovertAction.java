@@ -36,7 +36,18 @@ public abstract class CovertAction extends BaseStrategicAction {
     }
 
     public MarketAPI pickTargetMarket() {
-        if (concern.getMarket() != null) return concern.getMarket();
+        MarketAPI market = concern.getMarket();
+
+        // check if the market specified by concern is hostile (it may not be, e.g. retaliation concern sometimes targets markets that have already been taken)
+        boolean blockedByRelationship = false;
+        if (market != null) {
+            if (ai.getFaction().getRelationshipLevel(market.getFaction()).ordinal() > getMaxRelToTarget(market.getFaction()).ordinal())
+                blockedByRelationship = true;
+        }
+
+        if (market != null && !blockedByRelationship) {
+            return market;
+        }
 
         return CovertOpsManager.getManager().pickTargetMarket(getAgentFaction(), getTargetFaction(), getActionType(), concern.getMarkets(), null);
     }

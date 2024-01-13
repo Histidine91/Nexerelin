@@ -834,6 +834,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			if (actionType.equals(CovertActionType.INSTIGATE_REBELLION))
 			{
 				if (!canInstigateRebellion(market)) continue;
+				// check relationship
+				if (agentFaction.getRelationshipLevel(market.getFaction()).isAtWorst(RepLevel.NEUTRAL)) continue;
 
 				if (NexUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
 					weight *= 4;
