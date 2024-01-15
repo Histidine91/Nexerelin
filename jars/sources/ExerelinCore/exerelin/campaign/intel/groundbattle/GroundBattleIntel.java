@@ -718,22 +718,22 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return createPlayerUnit(unitDefId, null);
 	}
 	
-	public GroundUnit createPlayerUnit(String unitDefId, Integer size) {
+	public GroundUnit createPlayerUnit(String unitDefId, Integer wantedSize) {
 		int index = 0;
 		if (!playerData.getUnits().isEmpty()) {
 			index = playerData.getUnits().get(playerData.getUnits().size() - 1).index + 1;
 		}
-		boolean autosize = size == null;
-		if (autosize) size = 0;
+		boolean autosize = wantedSize == null;
+		if (autosize) wantedSize = 0;
 
 		GroundUnit unit = this.createUnit(unitDefId, PlayerFactionStore.getPlayerFaction(), Boolean.TRUE.equals(this.playerIsAttacker),
-				size, Global.getSector().getPlayerFleet(), index);
+				0, Global.getSector().getPlayerFleet(), index);
 		unit.setPlayer(true);
 
 		if (autosize) {
-			size = UnitOrderDialogPlugin.getMaxCountForResize(unit, 0, unitSize.getAverageSizeForType(unitDefId));
+			wantedSize = UnitOrderDialogPlugin.getMaxCountForResize(unit, 0, unitSize.getAverageSizeForType(unitDefId));
 		}
-		unit.setSize(size, true);
+		unit.setSize(wantedSize, true);
 		
 		unit.setStartingMorale();
 		
@@ -765,7 +765,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	}
 
 	public void autoGenerateUnits(int marines, int heavyArms, FactionAPI faction, Boolean isAttacker, boolean player) {
-		autoGenerateUnits(marines, heavyArms, faction, isAttacker, player, null);
+		CampaignFleetAPI fleet = player ? Global.getSector().getPlayerFleet() : null;
+		autoGenerateUnits(marines, heavyArms, faction, isAttacker, player, fleet);
 	}
 	
 	/**
@@ -821,8 +822,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		for (int i=0; i<numCreatable; i++) {
 			GroundUnit unit;
 			if (player) unit = createPlayerUnit(GroundUnitDef.MARINE, numPerUnit);
-			else unit = getSide(isAttacker).createUnit(GroundUnitDef.MARINE, faction, numPerUnit, null);
-			unit.setFleet(fleet);
+			else unit = getSide(isAttacker).createUnit(GroundUnitDef.MARINE, faction, numPerUnit, fleet);
 		}
 	}
 	

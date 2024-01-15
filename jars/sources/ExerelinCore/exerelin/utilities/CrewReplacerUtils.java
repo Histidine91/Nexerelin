@@ -10,13 +10,12 @@ import data.scripts.crewReplacer_Crew;
 import data.scripts.crewReplacer_Job;
 import data.scripts.crewReplacer_Main;
 import exerelin.campaign.intel.groundbattle.GBConstants;
+import lombok.extern.log4j.Log4j;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import lombok.extern.log4j.Log4j;
 
 /**
  * Handles interaction with the CrewReplacer mod.
@@ -88,7 +87,7 @@ public class CrewReplacerUtils {
 	public static Map<String, Integer> takeCommodityFromCargo(CampaignFleetAPI fleet, String commodity, String jobId, int count) {
 		if (!enabled) {
 			Map<String, Integer> map = new LinkedHashMap<>();
-			fleet.getCargo().removeCommodity(commodity, count);
+			if (fleet != null) fleet.getCargo().removeCommodity(commodity, count);
 			map.put(commodity, count);
 			return map;
 		}
