@@ -1,14 +1,8 @@
 package exerelin.campaign.fleets;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.AsteroidAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.OrbitAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
@@ -23,16 +17,13 @@ import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.MiningHelperLegacy.MiningReport;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsFleet;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
+import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.log4j.Logger;
-import org.lazywizard.lazylib.MathUtils;
 
 public class MiningFleetManagerV2 extends DisposableFleetManager
 {
@@ -291,12 +282,11 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		
 		return fleet;
 	}
-	
-	@Override
-	protected String getActionInsideText(StarSystemAPI system) {
+
+	protected String getActionInsideText(StarSystemAPI system, CampaignFleetAPI fleet) {
 		return "mining";
 	}
-	
+
 	@Override
 	public void advance(float amount)
 	{

@@ -1424,9 +1424,6 @@ Nex_Commission personCanGiveCommission
 cmsn_resignCommissionOpt,PopulateOptions,"$isPerson
 Nex_Commission personCanGiveCommission
 Nex_Commission hasFactionCommission",,,"20:cmsn_resignCommission:""I'd like to resign my $faction commission""",
-cmsn_lolNo,DialogOptionSelected,"$option == cmsn_askCommission
-$faction.hostileToPlayer score:100","SetEnabled cmsn_askCommission false
-FireBest CMSNTextRejectHostile",,,
 cmsn_doesNotMeetCriteria,DialogOptionSelected,"$option == cmsn_askCommission
 !Nex_Commission playerMeetsCriteria","SetEnabled cmsn_askCommission false
 FireBest CMSNTextUnsuited

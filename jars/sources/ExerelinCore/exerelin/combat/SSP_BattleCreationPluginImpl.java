@@ -242,22 +242,9 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         return factor;
     }
 
-    protected BattleCreationContext context;
-    protected StarCoronaTerrainPlugin corona = null;
-    protected float coronaIntensity = 0f;
-    protected boolean escape;
-    protected float height;
-    protected MissionDefinitionAPI loader;
     protected int nebulaLevel;
     protected ArrayList<BattleObjective> objectives;
-    protected List<String> objs = null;
-    protected float prevXDir = 0;
-    protected float prevYDir = 0;
-    protected PulsarBeamTerrainPlugin pulsar = null;
     protected float sizeMod;
-    protected float width;
-    protected float xPad = 2000;
-    protected float yPad = 2000;
 
     @Override
     public void initBattle(final BattleCreationContext context, MissionDefinitionAPI loader) {
@@ -449,21 +436,32 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         }
     }
 	
-	// fuck knows how this differs from vanilla
+	// Only difference from vanilla is asteroid handling I think?
 	@Override
     protected void createMap(Random random) {
-        loader.initMap(-width / 2f, width / 2f, -height / 2f, height / 2f);
+        loader.initMap((float)-width/2f, (float)width/2f, (float)-height/2f, (float)height/2f);
 
         CampaignFleetAPI playerFleet = context.getPlayerFleet();
         String nebulaTex = null;
         String nebulaMapTex = null;
         boolean inNebula = false;
 
+        boolean protectedFromCorona = false;
+        for (CustomCampaignEntityAPI curr : playerFleet.getContainingLocation().getCustomEntitiesWithTag(Tags.PROTECTS_FROM_CORONA_IN_BATTLE)) {
+            if (Misc.getDistance(curr.getLocation(), playerFleet.getLocation()) <= curr.getRadius() + Global.getSector().getPlayerFleet().getRadius() + 10f) {
+                protectedFromCorona = true;
+                break;
+            }
+        }
+
+        abyssalDepth = Misc.getAbyssalDepth(playerFleet);
+
         float numRings = 0;
 
         Color coronaColor = null;
         // this assumes that all nebula in a system are of the same color
         for (CampaignTerrainAPI terrain : playerFleet.getContainingLocation().getTerrainCopy()) {
+            //if (terrain.getType().equals(Terrain.NEBULA)) {
             if (terrain.getPlugin() instanceof NebulaTextureProvider) {
                 if (terrain.getPlugin().containsEntity(playerFleet)) {
                     inNebula = true;
@@ -481,14 +479,14 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
                         }
                     }
                 }
-            } else if (terrain.getPlugin() instanceof StarCoronaTerrainPlugin && pulsar == null) {
+            } else if (terrain.getPlugin() instanceof StarCoronaTerrainPlugin && pulsar == null && !protectedFromCorona) {
                 StarCoronaTerrainPlugin plugin = (StarCoronaTerrainPlugin) terrain.getPlugin();
                 if (plugin.containsEntity(playerFleet)) {
                     float angle = Misc.getAngleInDegrees(terrain.getLocation(), playerFleet.getLocation());
                     Color color = plugin.getAuroraColorForAngle(angle);
                     float intensity = plugin.getIntensityAtPoint(playerFleet.getLocation());
                     intensity = 0.4f + 0.6f * intensity;
-                    int alpha = (int) (80f * intensity);
+                    int alpha = (int)(80f * intensity);
                     color = Misc.setAlpha(color, alpha);
                     if (coronaColor == null || coronaColor.getAlpha() < alpha) {
                         coronaColor = color;
@@ -496,14 +494,14 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
                         corona = plugin;
                     }
                 }
-            } else if (terrain.getPlugin() instanceof PulsarBeamTerrainPlugin) {
+            } else if (terrain.getPlugin() instanceof PulsarBeamTerrainPlugin && !protectedFromCorona) {
                 PulsarBeamTerrainPlugin plugin = (PulsarBeamTerrainPlugin) terrain.getPlugin();
                 if (plugin.containsEntity(playerFleet)) {
                     float angle = Misc.getAngleInDegreesStrict(terrain.getLocation(), playerFleet.getLocation());
                     Color color = plugin.getPulsarColorForAngle(angle);
                     float intensity = plugin.getIntensityAtPoint(playerFleet.getLocation());
                     intensity = 0.4f + 0.6f * intensity;
-                    int alpha = (int) (80f * intensity);
+                    int alpha = (int)(80f * intensity);
                     color = Misc.setAlpha(color, alpha);
                     if (coronaColor == null || coronaColor.getAlpha() < alpha) {
                         coronaColor = color;
@@ -527,20 +525,20 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
             loader.setBackgroundGlowColor(coronaColor);
         }
 
-        nebulaLevel = 15;
+        int numNebula = 15;
         if (inNebula) {
-            nebulaLevel = 100;
+            numNebula = 100;
         }
         if (!inNebula && playerFleet.isInHyperspace()) {
-            nebulaLevel = 0;
+            numNebula = 0;
         }
 
-        for (int i = 0; i < nebulaLevel; i++) {
-            float x = (float) Math.random() * width - width / 2;
-            float y = (float) Math.random() * height - height / 2;
-            float radius = 100f + (float) Math.random() * 400f;
+        for (int i = 0; i < numNebula; i++) {
+            float x = random.nextFloat() * width - width/2;
+            float y = random.nextFloat() * height - height/2;
+            float radius = 100f + random.nextFloat() * 400f;
             if (inNebula) {
-                radius += 100f + 500f * (float) Math.random();
+                radius += 100f + 500f * random.nextFloat();
             }
             loader.addNebula(x, y, radius);
         }
@@ -585,14 +583,17 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         }
 
         if (numRings > 0) {
-            int numRingAsteroids = (int) (numRings * 300 + (numRings * 600f) * (float) Math.random());
+            int numRingAsteroids = (int) (numRings * 300 + (numRings * 600f) * Math.random());
             if (numRingAsteroids > 1500) {
                 numRingAsteroids = 1500;
             }
-            loader.addRingAsteroids(0, 0, (float) Math.random() * 360f, width, 100f, 200f, numRingAsteroids);
+            loader.addRingAsteroids(0, 0, (float)Math.random() * 360f, width, 100f, 200f, numRingAsteroids);
         }
 
+        //setRandomBackground(loader);
         loader.setBackgroundSpriteName(playerFleet.getContainingLocation().getBackgroundTextureFilename());
+//		loader.setBackgroundSpriteName("graphics/backgrounds/hyperspace_bg_cool.jpg");
+//		loader.setBackgroundSpriteName("graphics/ships/onslaught/onslaught_base.png");
 
         if (playerFleet.getContainingLocation() == Global.getSector().getHyperspace()) {
             loader.setHyperspaceMode(true);

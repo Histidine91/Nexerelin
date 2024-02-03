@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -55,6 +56,17 @@ public class NexUtilsFaction {
 		if (result == null) return null;
 		
 		return result.getFaction();
+    }
+
+    public static FactionAPI getClaimingFaction(SectorEntityToken entity) {
+        if (entity.getContainingLocation() != null) {
+            String claimedBy = entity.getContainingLocation().getMemoryWithoutUpdate().getString(MemFlags.CLAIMING_FACTION);
+            if (claimedBy != null) {
+                return Global.getSector().getFaction(claimedBy);
+            }
+            return getSystemOwner(entity.getContainingLocation());
+        }
+        return null;
     }
     
     public static boolean doesFactionExist(String factionId)

@@ -12,12 +12,14 @@ import com.fs.starfarer.api.characters.SkillsChangeRemoveSmodsEffect;
 import com.fs.starfarer.api.characters.SkillsChangeRemoveVentsCapsEffect;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
 import com.fs.starfarer.api.impl.campaign.CoreLifecyclePluginImpl;
+import com.fs.starfarer.api.impl.campaign.HasslePlayerScript;
 import com.fs.starfarer.api.impl.campaign.SmugglingScanScript;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.econ.impl.Cryorevival;
 import com.fs.starfarer.api.impl.campaign.econ.impl.PopulationAndInfrastructure;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ShipQuality;
 import com.fs.starfarer.api.impl.campaign.enc.EncounterManager;
+import com.fs.starfarer.api.impl.campaign.enc.StrandedGiveTJScript;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.fleets.PersonalFleetHoracioCaden;
 import com.fs.starfarer.api.impl.campaign.fleets.PersonalFleetOxanaHyder;
@@ -42,12 +44,11 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.colony.NexAbandonMarketPlugin;
 import exerelin.campaign.colony.NexStabilizeMarketPlugin;
-import exerelin.campaign.intel.hostileactivity.NexHostileActivityManager;
-import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
 import exerelin.campaign.intel.bases.Nex_PirateBaseManager;
 import exerelin.campaign.intel.bases.Nex_PlayerRelatedPirateBaseManager;
+import exerelin.campaign.intel.hostileactivity.NexHostileActivityManager;
 
 public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 	
@@ -112,6 +113,9 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		
 		PlayerFleetPersonnelTracker.getInstance();
 
+		if (!sector.hasScript(StrandedGiveTJScript.class)) {
+			sector.addScript(new StrandedGiveTJScript());
+		}
 		if (!sector.hasScript(PersonalFleetHoracioCaden.class)) {
 			sector.addScript(new PersonalFleetHoracioCaden());
 		}
@@ -159,9 +163,9 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!sector.hasScript(Nex_LuddicPathBaseManager.class)) {
 			sector.addScript(new Nex_LuddicPathBaseManager());
 		}
-		if (!sector.hasScript(Nex_HegemonyInspectionManager.class)) {
-			sector.addScript(new Nex_HegemonyInspectionManager());
-		}
+		//if (!sector.hasScript(Nex_HegemonyInspectionManager.class)) {
+		//	sector.addScript(new Nex_HegemonyInspectionManager());
+		//}
 		if (!sector.hasScript(Nex_PunitiveExpeditionManager.class)) {
 			sector.addScript(new Nex_PunitiveExpeditionManager());
 		}
@@ -173,6 +177,7 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!sector.hasScript(DisposableHostileActivityFleetManager.class)) {
 			sector.addScript(new DisposableHostileActivityFleetManager());
 		}
+		// MODIFIED
 		if (!sector.hasScript(NexHostileActivityManager.class)) {
 			sector.addScript(new NexHostileActivityManager());
 		}
@@ -213,6 +218,9 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		
 		if (!sector.hasScript(SmugglingScanScript.class)) {
 			sector.addScript(new SmugglingScanScript());
+		}
+		if (!sector.hasScript(HasslePlayerScript.class)) {
+			sector.addScript(new HasslePlayerScript());
 		}
 		
 		PlaythroughLog.getInstance();

@@ -11,17 +11,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.COMPETITION_PRODUCTION_MULT;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.FACTION_MUST_BE_IN_TOP_X_PRODUCERS;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.FREE_PORT_SIZE_MULT;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.ILLEGAL_GOODS_MULT;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.MAX_THRESHOLD;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.MAX_TIMEOUT;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.MIN_COLONY_SIZE_FOR_NON_TERRITORIAL;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.MIN_TIMEOUT;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.PLAYER_FRACTION_TO_NOTICE;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.PROB_TIMEOUT_PER_SENT;
-import static com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager.TERRITORIAL_ANGER;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -31,10 +20,11 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.diplomacy.TributeIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONObject;
 
 public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 	
@@ -159,7 +149,7 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 				boolean destroy = market.getSize() <= maxSize;
 				if (!destroy) continue;
 				
-				FactionAPI claimedBy = NexUtilsFaction.getSystemOwner(market.getStarSystem());
+				FactionAPI claimedBy = NexUtilsFaction.getClaimingFaction(market.getPrimaryEntity());
 				if (claimedBy != curr.faction) continue;
 				
 				PunExReason reason = new PunExReason(PunExType.TERRITORIAL);
@@ -242,13 +232,17 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 				}
 				return;
 			}
-		}	
-		
+		}
+
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<MarketAPI>(curr.random);
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsInGroup(null)) {
-			if (market.getFaction() == curr.faction && 
-					market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY)) {
-				picker.add(market, market.getSize());
+			boolean canSendWithoutMilitaryBase = json.optBoolean("canSendWithoutMilitaryBase", false);
+			boolean military = market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_MILITARY);
+			if (market.getFaction() == curr.faction &&
+					(military || canSendWithoutMilitaryBase)) {
+				float w = 1f;
+				if (military) w *= 10f;
+				picker.add(market, market.getSize() * w);
 			}
 		}
 		

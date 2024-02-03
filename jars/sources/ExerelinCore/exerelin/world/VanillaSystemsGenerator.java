@@ -71,7 +71,7 @@ public class VanillaSystemsGenerator {
 		
 		//TutorialMissionEvent.endGalatiaPortionOfMission();
 		//exerelinEndGalatiaPortionOfMission();	// moved handling elsewhere
-		
+
 		LocationAPI hyper = Global.getSector().getHyperspace();
 		SectorEntityToken atlanticLabel = hyper.addCustomEntity("atlantic_label_id", null, "atlantic_label", null);
 		SectorEntityToken perseanLabel = hyper.addCustomEntity("persean_label_id", null, "persean_label", null);
@@ -81,15 +81,15 @@ public class VanillaSystemsGenerator {
 		SectorEntityToken telmunLabel = hyper.addCustomEntity("telmun_label_id", null, "telmun_label", null);
 		SectorEntityToken cathedralLabel = hyper.addCustomEntity("cathedral_label_id", null, "cathedral_label", null);
 		SectorEntityToken coreLabel = hyper.addCustomEntity("core_label_id", null, "core_label", null);
-		
+
 		atlanticLabel.setFixedLocation(500, -2000);
 		perseanLabel.setFixedLocation(-10000, 1000);
 		luddicLabel.setFixedLocation(-14000, -9500);
-		zinLabel.setFixedLocation(-22000, -17000); 
+		zinLabel.setFixedLocation(-22000, -17000);
 		telmunLabel.setFixedLocation(-16000, 0);
 		cathedralLabel.setFixedLocation(-12700, -12000);
 		coreLabel.setFixedLocation(0, -6000);
-		
+
 		abyssLabel.setFixedLocation(-65000, -47000);
 	}
 	
@@ -144,7 +144,7 @@ public class VanillaSystemsGenerator {
 		//Class c = HeavyArmor.class;
 		
 		boolean enhancedRelations = NexConfig.useEnhancedStartRelations;
-		
+
 		FactionAPI hegemony = sector.getFaction(Factions.HEGEMONY);
 		FactionAPI tritachyon = sector.getFaction(Factions.TRITACHYON);
 		FactionAPI pirates = sector.getFaction(Factions.PIRATES);
@@ -157,58 +157,54 @@ public class VanillaSystemsGenerator {
 		FactionAPI persean = sector.getFaction(Factions.PERSEAN);
 		FactionAPI remnant = sector.getFaction(Factions.REMNANTS);
 		FactionAPI derelict = sector.getFaction(Factions.DERELICT);
-		
+
 		player.setRelationship(hegemony.getId(), 0);
 		player.setRelationship(tritachyon.getId(), 0);
 		player.setRelationship(persean.getId(), 0);
 		//player.setRelationship(pirates.getId(), RepLevel.HOSTILE);
 		player.setRelationship(pirates.getId(), -0.65f);
-		
+
 		player.setRelationship(independent.getId(), 0);
 		player.setRelationship(kol.getId(), 0);
 		player.setRelationship(church.getId(), 0);
 		//player.setRelationship(path.getId(), RepLevel.HOSTILE);
 		player.setRelationship(path.getId(), -0.65f);
-		
+
 
 		// replaced by hostilities set in CoreLifecyclePluginImpl
 		//hegemony.setRelationship(tritachyon.getId(), RepLevel.HOSTILE);
 		//hegemony.setRelationship(persean.getId(), RepLevel.HOSTILE);
-		
+
 		hegemony.setRelationship(pirates.getId(), RepLevel.HOSTILE);
-		
+
 		tritachyon.setRelationship(pirates.getId(), RepLevel.HOSTILE);
 		//tritachyon.setRelationship(independent.getId(), -1);
 		tritachyon.setRelationship(kol.getId(), RepLevel.HOSTILE);
 		//tritachyon.setRelationship(church.getId(), RepLevel.HOSTILE);
 		tritachyon.setRelationship(path.getId(), RepLevel.HOSTILE);
 		tritachyon.setRelationship(persean.getId(), RepLevel.SUSPICIOUS);
-		
+
 		pirates.setRelationship(kol.getId(), RepLevel.HOSTILE);
 		pirates.setRelationship(church.getId(), RepLevel.HOSTILE);
 		pirates.setRelationship(path.getId(), 0);
 		pirates.setRelationship(independent.getId(), RepLevel.HOSTILE);
 		pirates.setRelationship(diktat.getId(), RepLevel.HOSTILE);
 		pirates.setRelationship(persean.getId(), RepLevel.HOSTILE);
-		
+
 		church.setRelationship(kol.getId(), RepLevel.COOPERATIVE);
 		path.setRelationship(kol.getId(), RepLevel.FAVORABLE);
-		
+
 		path.setRelationship(independent.getId(), RepLevel.HOSTILE);
 		path.setRelationship(hegemony.getId(), RepLevel.HOSTILE);
 		path.setRelationship(diktat.getId(), RepLevel.HOSTILE);
 		path.setRelationship(persean.getId(), RepLevel.HOSTILE);
-		if (!enhancedRelations)
-			path.setRelationship(church.getId(), RepLevel.COOPERATIVE);
-		
+		path.setRelationship(church.getId(), RepLevel.COOPERATIVE);
+
 		persean.setRelationship(tritachyon.getId(), RepLevel.SUSPICIOUS);
 		persean.setRelationship(pirates.getId(), RepLevel.HOSTILE);
 		persean.setRelationship(path.getId(), RepLevel.HOSTILE);
-		if (enhancedRelations)
-			persean.setRelationship(diktat.getId(), RepLevel.WELCOMING);
-		else
-			persean.setRelationship(diktat.getId(), RepLevel.COOPERATIVE);
-		
+		persean.setRelationship(diktat.getId(), RepLevel.COOPERATIVE);
+
 		player.setRelationship(remnant.getId(), RepLevel.HOSTILE);
 		independent.setRelationship(remnant.getId(), RepLevel.HOSTILE);
 		pirates.setRelationship(remnant.getId(), RepLevel.HOSTILE);
@@ -218,12 +214,11 @@ public class VanillaSystemsGenerator {
 		path.setRelationship(remnant.getId(), RepLevel.HOSTILE);
 		diktat.setRelationship(remnant.getId(), RepLevel.HOSTILE);
 		persean.setRelationship(remnant.getId(), RepLevel.HOSTILE);
-		
-//		independent.setRelationship(hegemony.getId(), 0);
-//		independent.setRelationship(tritachyon.getId(), 0);
-//		independent.setRelationship(pirates.getId(), 0);
-//		independent.setRelationship(independent.getId(), 0);
-//		independent.setRelationship(player.getId(), 0);
+
+		if (enhancedRelations) {
+			path.setRelationship(church.getId(), RepLevel.NEUTRAL);
+			persean.setRelationship(diktat.getId(), RepLevel.WELCOMING);
+		}
 		
 		// emulate starting hostilities
 		hegemony.setRelationship(Factions.PERSEAN, RepLevel.HOSTILE);

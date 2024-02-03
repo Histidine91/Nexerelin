@@ -6,14 +6,13 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
-import static com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager.MAX_THRESHOLD;
-import static com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager.getAICoreUseValue;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.NexConfig;
 
+@Deprecated
 public class Nex_HegemonyInspectionManager extends HegemonyInspectionManager {
 	
 	// Hegemony won't inspect if player is allied
