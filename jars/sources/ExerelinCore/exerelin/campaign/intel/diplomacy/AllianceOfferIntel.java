@@ -13,7 +13,6 @@ import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
-import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
@@ -54,6 +53,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		Global.getSector().addScript(this);
 
 		PlayerFactionStore.getPlayerFaction().getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN);
+		Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN);	// just in case, my own code confuses me
 	}
 	
 	@Override
@@ -157,7 +157,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		else if (buttonId == BUTTON_REJECT) {
 			state = -1;
 		}
-		
+
 		endAfterDelay();
 		super.buttonPressConfirmed(buttonId, ui);
 	}
@@ -184,10 +184,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		daysRemaining -= Global.getSector().getClock().convertToDays(amount);
 		
 		if (daysRemaining <= 0) {
-			if (NexConfig.acceptCeasefiresOnTimeout)
-				accept();
-			else
-				state = -1;
+			state = -1;
 			sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
 			endAfterDelay();
 		}
