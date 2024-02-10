@@ -918,6 +918,8 @@ public class DiplomacyBrain {
 	
 	public void considerOptions()
 	{
+		if (Global.getSector().isInNewGameAdvance()) return;
+
 		if (!NexConfig.enableDiplomacy) return;
 		if (StrategicAI.getAI(factionId) != null) return;
 
