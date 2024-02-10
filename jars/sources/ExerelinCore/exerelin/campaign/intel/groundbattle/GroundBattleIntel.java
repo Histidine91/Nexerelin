@@ -217,7 +217,12 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		*/
 
 		for (String pluginId : GBDataManager.getPlugins()) {
+			//log.info("Preparing to add ground battle plugin " + pluginId);
 			GroundBattlePlugin plugin = (GroundBattlePlugin)NexUtils.instantiateClassByName(pluginId);
+			if (plugin == null) {
+				log.error("Failed to instantiate ground battle plugin " + pluginId);
+				continue;
+			}
 			addOtherPlugin(plugin);
 		}
 
@@ -799,7 +804,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		for (int i=0; i<numCreatable; i++) {
 			GroundUnit unit;
 			if (player) unit = createPlayerUnit(GroundUnitDef.HEAVY, numPerUnit);
-			else unit = getSide(isAttacker).createUnit(GroundUnitDef.HEAVY, faction, numPerUnit, null);
+			else unit = getSide(isAttacker).createUnit(GroundUnitDef.HEAVY, faction, numPerUnit, fleet);
 		}
 		
 		// add marines
