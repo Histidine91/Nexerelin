@@ -564,8 +564,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             if (oldLive.contains(factionId))
                 continue;
-            if (!NexConfig.getFactionConfig(factionId).playableFaction)
-                continue;
             factionRespawned(Global.getSector().getFaction(factionId), factionMarkets.get(factionId));
         }
     }
@@ -802,8 +800,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static void factionRespawned(FactionAPI faction, MarketAPI market)
     {
+        if (!NexConfig.getFactionConfig(faction.getId()).playableFaction)
+            return;
+
         SectorManager manager = getManager();
         String factionId = faction.getId();
+
+        if (getLiveFactionIdsCopy().contains(factionId))
+            return;
+
         boolean existedBefore = manager.historicFactionIds.contains(factionId);
         
         FactionSpawnedOrEliminatedIntel.EventType type = FactionSpawnedOrEliminatedIntel.EventType.SPAWNED;
@@ -819,10 +824,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         setShowFactionInIntelTab(factionId, true);
         
         // increment "times respawned" count
-        // no, we already did that on launching the respawn event in the first place
-        manager.incrementNumRespawns(factionId);
+        // no, we already did that on launching the respawn event in the first place, or on market transfer
+        //manager.incrementNumRespawns(factionId);
 
-        if (NexConfig.enableStrategicAI) StrategicAI.addAIIfNeeded(factionId);
+        if (NexConfig.enableStrategicAI) {
+            if (factionId.equals(Factions.PLAYER)) return;
+            if (NexConfig.getFactionConfig(factionId).pirateFaction) return;
+            StrategicAI.addAIIfNeeded(factionId);
+        }
     }
     
     public static int getAllianceTotalFromMap(Alliance alliance, Map<String, Integer> map) 
@@ -1250,6 +1259,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
 			log.info("Respawning faction on market transfer: " + newOwner);
             factionRespawned(newOwner, market);
+            getManager().incrementNumRespawns(newOwnerId);
         }
         
         // Update raid condition
