@@ -1,3 +1,15 @@
+Version 0.11.1b
+
+* Compatibility with Starsector 0.97
+* Fix some logic in faction respawn
+    * Previously eliminated non-playable factions will no longer be marked as 'alive' if they get a market again
+    * Factions that shouldn't have strategic AI will no longer get one when respawning
+    * Avoid potential cases of double counting respawn attempts
+* Vengeance fleets no longer spawn from hidden markets
+* Fix NPC heavy units in ground battles not having their fleet set
+* Log an error and continue instead of CTD if ground battle tries to load a plugin that doesn't exist
+* Diplomacy events should no longer happen in new game time pass
+
 Version 0.11.1
 
 ### Changes from beta 0.11.0x ###

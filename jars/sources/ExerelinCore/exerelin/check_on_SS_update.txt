@@ -1,13 +1,15 @@
-TO DO FOR STARSECTOR 0.96
+TO DO FOR STARSECTOR 0.97
 
 Files to check on Starsector update, because they significantly modify vanilla code that could change under us.
 Partial list.
 
 - ExerelinNewGameSetup
-- rules.csv "vanilla overrides"
-- NexCoreLifecyclePlugin
+    - VanillaSystemsGenerator
+-  rules.csv "vanilla overrides"
+-  NexCoreLifecyclePlugin
 - NexFleetInteractionDialogPluginImpl
 - NexFleetEncounterContext
+- Nex_PunitiveExpeditionManager
 - Nex_MarketCMD
 - Nex_SustainedBurnAbilityAI
 - Nex_AICores
