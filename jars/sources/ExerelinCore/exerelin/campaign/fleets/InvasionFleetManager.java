@@ -569,13 +569,24 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return false;
 	}
 
-	public boolean isValidInvasionOrRaidTarget(FactionAPI faction, FactionAPI targetFaction, MarketAPI market, EventType type, boolean isRemnantRaid)
+	/**
+	 * Check whether the specified market is a valid invasion/raid/sat bomb target by this faction.
+	 * @param faction
+	 * @param targetFaction Faction to target. If non-null, must match {@code market}'s faction.
+	 * @param market
+	 * @param type
+	 * @param isRemnantRaid
+	 * @return
+	 */
+	public boolean isValidInvasionOrRaidTarget(FactionAPI faction, @Nullable FactionAPI targetFaction, MarketAPI market, EventType type, boolean isRemnantRaid)
 	{
 		String factionId = faction.getId();
 		FactionAPI marketFaction = market.getFaction();
 		String marketFactionId = marketFaction.getId();
 
+		// Templars are only a valid target if we're specifically targeting Templars
 		if (EXCEPTION_LIST.contains(marketFactionId) && targetFaction != marketFaction) return false;
+
 		if (targetFaction != null && targetFaction != marketFaction)
 			return false;
 
@@ -593,12 +604,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		if (type == EventType.SAT_BOMB && faction.getId().equals(NexUtilsMarket.getOriginalOwner(market)))
 			return false;
 
-		if (isRemnantRaid) {
-			// non-hard mode mercy for new player colonies
-			// TODO: replace with an expiring memory key when we get colonization listener?
-			if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction() && market.getSize() < 4)
-				return false;
-		}
+		// non-hard mode mercy for new player colonies
+		// TODO: replace with an expiring memory key when we get colonization listener?
+		if (!SectorManager.getManager().isHardMode() && marketFaction.isPlayerFaction()
+				&& NexUtilsMarket.isWithOriginalOwner(market) && market.getSize() < 4)
+			return false;
 
 		/*
 		float defenderStrength = InvasionRound.GetDefenderStrength(market);

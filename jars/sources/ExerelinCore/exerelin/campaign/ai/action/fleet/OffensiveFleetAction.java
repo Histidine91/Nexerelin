@@ -73,7 +73,8 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
                 blockedByNonHostile = true;
         }
 
-        if (market != null && !blockedByNonHostile && NexUtilsMarket.shouldTargetForInvasions(market, 0)) {
+        if (market != null && !blockedByNonHostile && !InvasionFleetManager.getManager().isValidInvasionOrRaidTarget(
+                ai.getFaction(), null, market, this.getEventType(), false)) {
             return market;
         }
         return InvasionFleetManager.getManager().getTargetMarketForFleet(ai.getFaction(), faction, null,
@@ -138,6 +139,12 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
             if (concern.getMarkets().isEmpty()) {
                 return false;
             }
+        }
+
+        if (concern.getMarket() != null) {
+            MarketAPI market = concern.getMarket();
+            if (!InvasionFleetManager.getManager().isValidInvasionOrRaidTarget(
+                    ai.getFaction(), null, market, this.getEventType(), false)) return false;
         }
 
         return true;
