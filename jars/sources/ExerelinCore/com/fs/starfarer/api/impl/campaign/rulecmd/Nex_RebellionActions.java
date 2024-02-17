@@ -1,15 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import java.util.List;
-import java.util.Map;
-
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -23,9 +15,12 @@ import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsCargo;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.HashMap;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class Nex_RebellionActions extends PaginatedOptions {
@@ -134,7 +129,7 @@ public class Nex_RebellionActions extends PaginatedOptions {
 		}
 		
 		NexUtilsCargo.addCommodityStockpile(market, commodity, amount);
-		Global.getSector().getEconomy().nextStep();
+		Global.getSector().getEconomy().tripleStep();
 		
 		// impact on rebellion strength
 		float valueMult = 0.02f;
