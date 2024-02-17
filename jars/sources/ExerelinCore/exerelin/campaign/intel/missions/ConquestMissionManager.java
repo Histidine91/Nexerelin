@@ -63,9 +63,9 @@ public class ConquestMissionManager extends BaseEventManager {
 	protected EveryFrameScript createEvent() {
 		if (Global.getSector().getPlayerStats().getLevel() < MIN_PLAYER_LEVEL)
 			return null;
-		
-		if (!NexConfig.enableInvasions)
-			return null;
+
+		if (!NexConfig.enableHostileFleetEvents) return null;
+		if (!NexConfig.enableInvasions)	return null;
 		
 		log.info("Attempting to create conquest mission event");
 		if ((float) Math.random() < 0.75f) return null;

@@ -51,9 +51,10 @@ public class NexConfig
     public static String[] supportedModFactions = new String[]{};
     
     // Invasion stuff
+    public static boolean enableHostileFleetEvents = true;
     public static boolean enableInvasions = true;
     public static boolean legacyInvasions = false;
-	public static boolean invasionsOnlyAfterPlayerColony = false;
+    public static boolean invasionsOnlyAfterPlayerColony = false;
     public static boolean allowInvadeStoryCritical = false;
     public static boolean allowInvadeStartingMarkets = true;
     public static boolean allowPirateInvasions = false;
@@ -130,6 +131,7 @@ public class NexConfig
     public static int maxNPCNewColonySize = 6;
     public static float hardModeColonyGrowthMult = 0.75f;
     public static float hardModeColonyIncomeMult = 0.9f;
+    public static boolean enableColonyExpeditions = true;
     public static float colonyExpeditionInterval = 270;
     public static boolean colonyExpeditionsOnlyAfterPlayerColony = false;
     
@@ -196,7 +198,8 @@ public class NexConfig
             maxAgents = settings.optInt("maxAgents", maxAgents);
             agentStealAllShips = settings.optBoolean("agentStealAllShips", agentStealAllShips);
             useAgentSpecializations = settings.optBoolean("useAgentSpecializations", useAgentSpecializations);
-            
+
+            enableHostileFleetEvents = settings.optBoolean("enableHostileFleetEvents", enableHostileFleetEvents);
             enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);
             legacyInvasions = settings.optBoolean("legacyInvasions", legacyInvasions);
 			invasionsOnlyAfterPlayerColony = settings.optBoolean("invasionsOnlyAfterPlayerColony", invasionsOnlyAfterPlayerColony);
@@ -264,6 +267,7 @@ public class NexConfig
             maxNPCNewColonySize = settings.optInt("maxNPCNewColonySize", maxNPCNewColonySize);
             hardModeColonyGrowthMult = (float)settings.optDouble("hardModeColonyGrowthMult", hardModeColonyGrowthMult);
             hardModeColonyIncomeMult = (float)settings.optDouble("hardModeColonyIncomeMult", hardModeColonyIncomeMult);
+            enableColonyExpeditions = settings.optBoolean("enableColonyExpeditions", enableColonyExpeditions);
             colonyExpeditionInterval = (float)settings.optDouble("colonyExpeditionInterval", colonyExpeditionInterval);
             colonyExpeditionsOnlyAfterPlayerColony = settings.optBoolean("colonyExpeditionsOnlyAfterPlayerColony", colonyExpeditionsOnlyAfterPlayerColony);
             

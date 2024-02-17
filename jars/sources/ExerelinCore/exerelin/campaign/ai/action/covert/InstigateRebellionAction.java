@@ -40,6 +40,7 @@ public class InstigateRebellionAction extends CovertAction {
 
     @Override
     public boolean canUse(StrategicConcern concern) {
+        if (!NexConfig.enableHostileFleetEvents) return false;
         if (!NexConfig.enableInvasions) return false;
         if (!RebellionCreator.ENABLE_REBELLIONS) return false;
         if (!concern.getDef().hasTag("canInvade") && !concern.getDef().hasTag("canInstigateRebellion"))

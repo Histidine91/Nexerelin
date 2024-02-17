@@ -326,6 +326,8 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 	 */
 	protected boolean generateRevengeInvasionFleet(String triggeringFactionId)
 	{
+		if (!NexConfig.enableHostileFleetEvents) return false;
+
 		log.info("Trying to generate revenge invasion fleet");
 		
 		SectorAPI sector = Global.getSector();

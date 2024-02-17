@@ -51,9 +51,9 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 	protected boolean create(MarketAPI createdAt, boolean barEvent) {
 		if (Global.getSector().getPlayerStats().getLevel() < MIN_PLAYER_LEVEL)
 			return false;
-		
-		if (!NexConfig.enableInvasions)
-			return false;
+
+		if (!NexConfig.enableHostileFleetEvents) return false;
+		if (!NexConfig.enableInvasions)	return false;
 		
 		PersonAPI person = getPerson();
 		if (person == null) return false;

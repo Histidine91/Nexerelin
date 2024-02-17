@@ -10,7 +10,6 @@ import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.NexUtilsMath;
 import lombok.extern.log4j.Log4j;
 
@@ -129,6 +128,8 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
 
     @Override
     public boolean canUse(StrategicConcern concern) {
+        if (!NexConfig.enableHostileFleetEvents) return false;
+
         if (ai.getFaction().isPlayerFaction() && !NexConfig.followersInvasions)
             return false;
 

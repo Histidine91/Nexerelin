@@ -2986,6 +2986,8 @@
 		"name_agentEventFilterLevel":"Operative event filter level",
 		"tooltip_agentEventFilterLevel":"Works more or less the same way as the diplomacy filter.",
 		
+		"name_enableHostileFleetActions":"Enable hostile fleet actions",
+		"tooltip_enableHostileFleetActions":"If false, should disable all invasions, raids, etc. from this mod. Vanilla events such as pirate raids and colony crises will be unaffected.",
 		"name_enableInvasions":"Enable invasions",
 		"tooltip_enableInvasions":"Enables invasion events by NPC factions (including player-requested fleets). Player fleet will always be able to personally invade regardless of this setting.",
 		"name_legacyInvasions":"Use legacy invasion system",
@@ -3069,6 +3071,7 @@
 		"tooltip_useNewVengeanceEncounters":"A more vanilla-style, once-and-done ambush mechanic for vengeance fleets.",
 		"name_vengeanceFleetSizeMult":"Vengeance fleet size mult",
 		
+		"name_enableColonyExpeditions":"Enable NPC colony expeditions",
 		"name_colonyExpeditionInterval":"Colony expedition interval",
 		"tooltip_colonyExpeditionInterval":"Base interval at which colony expeditions are launched, modified by factors such as the number of existing colonies. Each participating faction has a chance to be selected in each expedition round.",
 		"name_colonyExpeditionsOnlyAfterPlayerColony":"Colony expeditions only after player colony",

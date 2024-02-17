@@ -1060,6 +1060,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				//canSpawn = false;
 				canSpawn &= currCounter > pointsRequired * 2f;
 			}
+			if (!NexConfig.enableHostileFleetEvents) canSpawn = false;
 			
 			if (!canSpawn)
 			{
@@ -1088,6 +1089,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	protected void processTemplarInvasionPoints()
 	{
+		if (!NexConfig.enableHostileFleetEvents) return;
+
 		List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
 		if (!liveFactionIds.contains("templars")) return;
 		
