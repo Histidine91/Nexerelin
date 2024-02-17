@@ -3,8 +3,8 @@
   "hullId": "nex_silverlight_restrained",
   "displayName": "Standard",
   "goalVariant": true,
-  "fluxCapacitors": 10,
-  "fluxVents": 33,
+  "fluxCapacitors": 12,
+  "fluxVents": 35,
   "quality": 1,
   "permaMods": [],
   "hullMods": [
