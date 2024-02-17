@@ -30,7 +30,7 @@ public class GroundPoolManager extends ResourcePoolManager {
 
 	@Override
 	public Map<String, Float> getCommodityValues() {
-		return ResourcePoolManager.COMMODITIES_SPACE;
+		return ResourcePoolManager.COMMODITIES_GROUND;
 	}
 
 	@Override
