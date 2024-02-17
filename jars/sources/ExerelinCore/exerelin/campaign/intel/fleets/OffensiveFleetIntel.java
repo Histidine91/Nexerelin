@@ -7,6 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
@@ -689,6 +690,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		if (isRouteActionDone(route)) {
 			fleet.getMemoryWithoutUpdate().set(MEM_KEY_ACTION_DONE, true);
 		}
+		if (proxyForFaction != null) {
+			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_NON_HOSTILE + "_" + proxyForFaction.getId(), true);
+		}
+
 		
 		market.getContainingLocation().addEntity(fleet);
 		fleet.setFacing((float) Math.random() * 360f);
