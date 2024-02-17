@@ -2176,6 +2176,7 @@
 		"ethosName_Generous":"Generous",
 		"ethosName_Honorable":"Honorable",
 		"ethosName_Humanitarian":"Humanitarian",
+		"ethosName_Idealistic":"Idealistic",
 		"ethosName_Knowledge":"Knowledge",
 		"ethosName_Liar":"Liar",
 		"ethosName_Mercenary":"Mercenary",
@@ -2985,6 +2986,7 @@
 		"tooltip_agentEventFilterLevel":"Works more or less the same way as the diplomacy filter.",
 		
 		"name_enableInvasions":"Enable invasions",
+		"tooltip_enableInvasions":"Enables invasion events by NPC factions (including player-requested fleets). Player fleet will always be able to personally invade regardless of this setting.",
 		"name_legacyInvasions":"Use legacy invasion system",
 		"tooltip_legacyInvasions":"Disables the ground battle minigame and reverts to the old system of single-day invasion resolution. Will not affect ground battles already in progress.",
 		"name_invasionsOnlyAfterPlayerColony":"Prevent invasions until first player colony",

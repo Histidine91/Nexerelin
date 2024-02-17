@@ -44,7 +44,7 @@ open class PersonalConfigIntel : BaseIntelPlugin(), ModPluginEventListener {
         @JvmField val MUSIC_MAP_KEYS = listOf("encounter_friendly", "market_friendly",
             "encounter_neutral", "market_neutral", "encounter_hostile", "market_hostile")
 
-        @JvmField val ETHOSES = listOf("AntiAI", "Cocky", "Freedom", "Generous", "Honorable", "Humanitarian",
+        @JvmField val ETHOSES = listOf("AntiAI", "Cocky", "Freedom", "Generous", "Honorable", "Humanitarian", "Idealistic",
             "Knowledge", "Liar", "Mercenary", "Mercy", "Order", "ProAI", "Ruthless", "Sarcastic", "Truth", "UseAI")
 
         @JvmField val LUDDIC_ATTITUDES = listOf("Agnostic", "Atheistic", "Cynical", "Faithful", "Pather")

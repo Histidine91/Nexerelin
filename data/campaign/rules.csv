@@ -3570,13 +3570,18 @@ Those eyes seem to peer into your very soul, assuming the Luddics are right and 
 nex_remSalvation_knight6Trust:""I trust Midnight. She is not malicious.""
 nex_remSalvation_knight6Betray:""I am gaining their trust now, so that I may betray them later.""
 nex_remSalvation_knight6Other:""I have my own reasons.""",
-nex_remSalvation_knight6Money,DialogOptionSelected,$option == nex_remSalvation_knight6Money,Call $global.nex_remSalvation_ref floorChurchRep,"$personLastName sighs wearily. ""Yet another given to the sin of Mammon... Even if,"" $heOrShe closes $hisOrHer eyes, ""it serves the Church's purposes, just this once.""
+nex_remSalvation_knight6Money,DialogOptionSelected,$option == nex_remSalvation_knight6Money,"Call $global.nex_remSalvation_ref floorChurchRep
+$player.ethosCynical++","$personLastName sighs wearily. ""Yet another given to the sin of Mammon... Even if,"" $heOrShe closes $hisOrHer eyes, ""it serves the Church's purposes, just this once.""
 
 $HisOrHer eyes open again. ""Very well. Just this once, we shall consent to work with you.""",nex_remSalvation_knightPreBattle:Continue,
-nex_remSalvation_knight6Trust,DialogOptionSelected,$option == nex_remSalvation_knight6Trust,Call $global.nex_remSalvation_ref floorChurchRep,"$personLastName raises an eyebrow, lips pursed. After a few breaths, $heOrShe closes $hisOrHer eyes and recites. ""The temptress shall approach him with doll's face and honeyed words, and he shall be led astray from the flock.""
+nex_remSalvation_knight6Trust,DialogOptionSelected,$option == nex_remSalvation_knight6Trust,"Call $global.nex_remSalvation_ref floorChurchRep
+$player.ethosProAI++
+$player.ethosIdealistic++","$personLastName raises an eyebrow, lips pursed. After a few breaths, $heOrShe closes $hisOrHer eyes and recites. ""The temptress shall approach him with doll's face and honeyed words, and he shall be led astray from the flock.""
 
 $HisOrHer eyes open again. ""But no matter. Very well, just this once, we shall consent to work with you.""",nex_remSalvation_knightPreBattle:Continue,
-nex_remSalvation_knight6Betray,DialogOptionSelected,$option == nex_remSalvation_knight6Betray,Call $global.nex_remSalvation_ref floorChurchRep,"The suspicion on $personLastName's face doesn't go away. $HeOrShe must clearly see that this plan could just as easily apply to the Luddic Church.
+nex_remSalvation_knight6Betray,DialogOptionSelected,$option == nex_remSalvation_knight6Betray,"Call $global.nex_remSalvation_ref floorChurchRep
+$player.ethosLiar++
+$player.ethosAntiAI++","The suspicion on $personLastName's face doesn't go away. $HeOrShe must clearly see that this plan could just as easily apply to the Luddic Church.
 
 Eventually, $heOrShe sighs. ""Very well. Just this once, we shall consent to work with you.""",nex_remSalvation_knightPreBattle:Continue,
 nex_remSalvation_knight6Other,DialogOptionSelected,$option == nex_remSalvation_knight6Other,Call $global.nex_remSalvation_ref floorChurchRep,"You meet stare with stare, giving up nothing. Eventually, $heOrShe sighs and closes $hisOrHer eyes. ""I suppose it does not yet matter. Very well, we shall consent to work with you, just this once.""",nex_remSalvation_knightPreBattle:Continue,
