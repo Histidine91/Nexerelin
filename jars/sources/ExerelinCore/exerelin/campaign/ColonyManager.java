@@ -1285,6 +1285,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				colonyExpeditionProgress = MathUtils.getRandomNumberInRange(-interval * 0.1f, interval * 0.1f);
 				colonyExpeditionProgress -= numColonies * Global.getSettings().getFloat("nex_expeditionDelayPerExistingColony");
 				intel.getFaction().getMemoryWithoutUpdate().set(MEMORY_KEY_FACTION_SURVEY_BONUS, 0);
+				InvasionFleetManager.getManager().modifySpawnCounter(intel.getFaction().getId(), InvasionFleetManager.getInvasionPointCost(intel) * 2);
 			}
 			else {	// failed to spawn, try again in 10 days
 				colonyExpeditionProgress -= Math.min(NexConfig.colonyExpeditionInterval/2, 10);

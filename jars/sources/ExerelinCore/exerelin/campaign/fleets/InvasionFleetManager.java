@@ -1152,11 +1152,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			return null;
 		
 		OffensiveFleetIntel intel = generateInvasionOrRaidFleet(source, target, EventType.BASE_STRIKE, 1, new RequisitionParams());
+		if (intel == null) return null;
 
 		// deduct rage points if the strike fleet was spawned by our own {@code processPirateRage()} method rather than strategic AI
 		if (StrategicAI.getAI(faction.getId()) == null) {
 			NexUtils.modifyMapEntry(pirateRage, faction.getId(), -100);
 		}
+
+		NexUtils.modifyMapEntry(spawnCounter, faction.getId(), -getInvasionPointCost(intel) * 0.75f);
+
 		return intel;
 	}
 	
@@ -1214,7 +1218,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			}
 		}
 	}
-	
+
+
+	/**
+	 * Literally just a wrapper for getInvasionPointCost.
+	 * @param basePointCost
+	 * @param intel
+	 * @return
+	 */
 	@Deprecated
 	public static float getInvasionPointReduction(float basePointCost, OffensiveFleetIntel intel) {
 		return getInvasionPointCost(basePointCost, intel);
