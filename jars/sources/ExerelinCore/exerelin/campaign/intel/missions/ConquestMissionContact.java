@@ -85,6 +85,9 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 			return false;
 		}
 		if (market.isInvalidMissionTarget()) return false;
+
+		float currReward = ConquestMissionIntel.calculateReward(market, true);
+		if (currReward <= 0) return false;
 		
 		if (!setMarketMissionRef(market, "$nex_conquest_ref")) {
 			return false;

@@ -15,9 +15,10 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager.EventType;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
 
 public class ConquestMissionManager extends BaseEventManager {
 
@@ -89,6 +90,8 @@ public class ConquestMissionManager extends BaseEventManager {
 		}
 		
 		float duration = getDuration(target);
+		float currReward = ConquestMissionIntel.calculateReward(target, true);
+		if (currReward <= 0) return null;
 		
 		ConquestMissionIntel intel = new ConquestMissionIntel(target, faction, duration);
 		intel.init();
