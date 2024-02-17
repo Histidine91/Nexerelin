@@ -1937,36 +1937,7 @@ public class Nex_MarketCMD extends MarketCMD {
 //		
 //		text.addTooltip();
 		
-		setSatBombLimitedHatred(false, null);
-		if (hidden) {
-			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
-					"satBombWarningHidden", "$market", market.getName()));
-			setSatBombLimitedHatred(true, SatBombExcuse.HIDDEN);
-		}
-		else if (nonHostile.isEmpty()) {
-			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarningAllHostile"));
-		}
-		else if (DiplomacyTraits.hasTrait(faction.getId(), TraitIds.MONSTROUS)) {
-			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
-					"satBombWarningMonstrous", "$theFaction", faction.getDisplayNameWithArticle()));
-			setSatBombLimitedHatred(true, SatBombExcuse.MONSTROUS);
-		}
-		else if (market.getSize() <= 3 || market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
-		{
-			text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment", 
-					"satBombWarningSmall", "$market", market.getName()));
-			setSatBombLimitedHatred(true, SatBombExcuse.SMALL_SIZE);
-		}
-		else if (market.getFaction().getMemoryWithoutUpdate().contains(SatBombIntel.FACTION_MEMORY_KEY)
-				&& market.getFaction().getMemoryWithoutUpdate().getInt(SatBombIntel.FACTION_MEMORY_KEY) > 0)
-		{
-			String str = StringHelper.getString("nex_bombardment", "satBombWarningSatBomber");
-			str = StringHelper.substituteFactionTokens(str, market.getFaction());
-			text.addPara(str);
-			setSatBombLimitedHatred(true, SatBombExcuse.SMALL_SIZE);
-		} else {
-			text.addPara(StringHelper.getString("nex_bombardment", "satBombWarning"));
-		}
+		checkForSatBombLimitedHatred(nonHostile);
 		
 		if (!nonHostile.isEmpty()) {
 			TooltipMakerAPI info = text.beginTooltip();
@@ -2005,6 +1976,41 @@ public class Nex_MarketCMD extends MarketCMD {
 					 h, "" + temp.bombardCost, "" + fuel);
 		
 		addBombardConfirmOptions();
+	}
+
+	protected void checkForSatBombLimitedHatred(List<FactionAPI> nonHostile) {
+		setSatBombLimitedHatred(false, null);
+		if (market.isHidden()) {
+			if (text != null) text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment",
+					"satBombWarningHidden", "$market", market.getName()));
+			setSatBombLimitedHatred(true, SatBombExcuse.HIDDEN);
+		}
+		else if (DiplomacyTraits.hasTrait(faction.getId(), TraitIds.MONSTROUS)) {
+			if (text != null) text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment",
+					"satBombWarningMonstrous", "$theFaction", faction.getDisplayNameWithArticle()));
+			setSatBombLimitedHatred(true, SatBombExcuse.MONSTROUS);
+		}
+		else if (market.getSize() <= 3 || market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
+		{
+			if (text != null) text.addPara(StringHelper.getStringAndSubstituteToken("nex_bombardment",
+					"satBombWarningSmall", "$market", market.getName()));
+			setSatBombLimitedHatred(true, SatBombExcuse.SMALL_SIZE);
+		}
+		else if (market.getFaction().getMemoryWithoutUpdate().contains(SatBombIntel.FACTION_MEMORY_KEY)
+				&& market.getFaction().getMemoryWithoutUpdate().getInt(SatBombIntel.FACTION_MEMORY_KEY) > 0) {
+			if (text != null) {
+				String str = StringHelper.getString("nex_bombardment", "satBombWarningSatBomber");
+				str = StringHelper.substituteFactionTokens(str, market.getFaction());
+				text.addPara(str);
+			}
+			setSatBombLimitedHatred(true, SatBombExcuse.SMALL_SIZE);
+		}
+		else if (nonHostile != null && nonHostile.isEmpty()) {
+			if (text != null) text.addPara(StringHelper.getString("nex_bombardment", "satBombWarningAllHostile"));
+		}
+		else {
+			if (text != null) text.addPara(StringHelper.getString("nex_bombardment", "satBombWarning"));
+		}
 	}
 	
 	protected void setSatBombLimitedHatred(boolean val, SatBombExcuse excuse) {
@@ -2060,8 +2066,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		playerFleet.getCargo().removeFuel(temp.bombardCost);
 		AddRemoveCommodity.addCommodityLossText(Commodities.FUEL, temp.bombardCost, text);
-		
-		int size = market.getSize();
+
 		for (FactionAPI curr : temp.willBecomeHostile) {
 			CustomRepImpact impact = new CustomRepImpact();
 			impact.delta = market.getSize() * -0.01f * 1f;
@@ -2385,6 +2390,12 @@ public class Nex_MarketCMD extends MarketCMD {
 	@Override
 	public void doBombardment(FactionAPI faction, BombardType type) {
 		super.doBombardment(faction, type);
+		if (temp instanceof NexTempData) {
+			NexTempData nTemp = (NexTempData)temp;
+			nTemp.attackerFaction = faction;
+			checkForSatBombLimitedHatred(null);
+		}
+
 		if (type == BombardType.TACTICAL) {
 			NexUtilsMarket.reportNPCTacticalBombardment(market, temp);
 		} else {
@@ -2485,6 +2496,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		 */
 		public boolean satBombLimitedHatred;
 		public SatBombExcuse satBombExcuse;
+		public FactionAPI attackerFaction = Global.getSector().getPlayerFaction();
 		public FactionAPI targetFaction;
 		public int sizeBeforeBombardment;
 	}

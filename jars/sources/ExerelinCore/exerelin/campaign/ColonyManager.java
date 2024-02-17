@@ -1503,6 +1503,18 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 	}
 
+	public void reportSatBomb(MarketAPI market, MarketCMD.TempData actionData) {
+		checkIndustriesAfterSatBomb(market);
+
+		// increment attacker badboy
+		if (actionData instanceof Nex_MarketCMD.NexTempData) {
+			Nex_MarketCMD.NexTempData nad = (Nex_MarketCMD.NexTempData)actionData;
+			if (!nad.satBombLimitedHatred && nad.attackerFaction != null) {
+				DiplomacyManager.modifyBadboy(nad.attackerFaction, nad.sizeBeforeBombardment * nad.sizeBeforeBombardment);
+			}
+		}
+	}
+
 	@Override
 	public void reportEconomyTick(int iterIndex) {
 		if (TutorialMissionIntel.isTutorialInProgress()) 
@@ -1913,7 +1925,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	@Override
 	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, 
 			MarketAPI market, MarketCMD.TempData actionData) {
-		checkIndustriesAfterSatBomb(market);
+		reportSatBomb(market, actionData);
 	}
 	
 	@Override
@@ -1928,7 +1940,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	@Override
 	public void reportNPCSaturationBombardment(MarketAPI market, MarketCMD.TempData actionData) 
 	{
-		checkIndustriesAfterSatBomb(market);
+		reportSatBomb(market, actionData);
 	}
 	
 	public static class QueuedIndustry {

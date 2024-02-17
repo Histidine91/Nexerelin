@@ -890,6 +890,7 @@
 		"title":"Diplomacy Profile",
 		"alignments":"alignments",
 		"warWeariness":"war weariness",
+		"badboy":"infamy",
 		
 		"claimedMarkets":"$TheFaction has revanchist claims on the following markets: ",
 		"claimedMarketsEntry":"$market (size $size)",

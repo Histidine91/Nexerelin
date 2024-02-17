@@ -1243,7 +1243,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             NexUtils.addExpiringIntel(intel);
         }
         
-        DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
+        DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner, isCapture);
         if (playerInvolved) StatsTracker.getStatsTracker().notifyMarketCaptured(market);
         
         int marketsRemaining = NexUtilsFaction.getFactionMarkets(oldOwner.getId(), true).size();

@@ -4,6 +4,7 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.MutableStat.StatMod;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -50,6 +51,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     protected static final String CONFIG_FILE = "data/config/exerelin/diplomacyConfig.json";
     protected static final String MANAGER_MAP_KEY = "exerelin_diplomacyManager";
 	public static final String MEM_KEY_MAX_RELATIONS = "$nex_max_relations";
+	public static final String MEM_KEY_BADBOY = "$nex_badboy";
     
     public static final List<String> disallowedFactions;
         
@@ -65,6 +67,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float WAR_WEARINESS_ENEMY_COUNT_MULT = 0.25f;
     public static final float PEACE_TREATY_CHANCE = 0.3f;
     public static final float MIN_INTERVAL_BETWEEN_WARS = 30f;
+    public static final float BADBOY_DECAY_PER_MONTH = 3f;
     
     public static final float DOMINANCE_MIN = 0.25f;
     public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.67f;
@@ -179,6 +182,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public DiplomacyManager()
     {
         super(true);
+        Global.getSector().getListenerManager().addListener(this, false);
         
         interval = getDiplomacyInterval();
         this.intervalUtil = new IntervalUtil(interval * 0.75F, interval * 1.25F);
@@ -1177,13 +1181,16 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
         return allies;
     }
-    
-    public static void notifyMarketCaptured(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner)
+
+    public static void notifyMarketCaptured(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner, boolean isCapture)
     {
         getManager().handleMarketCapture(market, oldOwner, newOwner);
         for (DiplomacyBrain brain : getManager().diplomacyBrains.values())
         {
             brain.updateAllDispositions(0);
+        }
+        if (!NexUtilsMarket.wasOriginalOwner(market, newOwner.getId())) {
+            modifyBadboy(newOwner, market.getSize() * market.getSize());
         }
     }
     
@@ -1514,15 +1521,47 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     {
         return applyStartRelationsModeToPirates;
     }
-    
-    public void reverseCompatibility() {
-        if (profiles == null) {
-            profiles = new HashMap<>();
-            for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
-                createDiplomacyProfile(factionId);
-            }
+
+    public static float decayBadboy(FactionAPI faction, float elapsedMult) {
+        float curr = getBadboy(faction);
+        if (curr <= 0) return 0;
+        float decay = BADBOY_DECAY_PER_MONTH * elapsedMult;
+        curr -= decay;
+        if (curr < 0) {
+            faction.getMemoryWithoutUpdate().unset(MEM_KEY_BADBOY);
+            return 0;
         }
-    }    
+        setBadboy(faction, curr);
+        return curr;
+    }
+
+    public static float getBadboy(FactionAPI faction) {
+        MemoryAPI mem = faction.getMemoryWithoutUpdate();
+        if (!mem.contains(MEM_KEY_BADBOY)) return 0;
+        return mem.getFloat(MEM_KEY_BADBOY);
+    }
+
+    public static void setBadboy(FactionAPI faction, float amount) {
+        MemoryAPI mem = faction.getMemoryWithoutUpdate();
+        mem.set(MEM_KEY_BADBOY, amount);
+    }
+
+    public static float modifyBadboy(FactionAPI faction, float amount) {
+        float newAmount = getBadboy(faction) + amount;
+        setBadboy(faction, newAmount);
+        return newAmount;
+    }
+
+    @Override
+    public void reportEconomyTick(int iterIndex) {
+        float numIter = Global.getSettings().getFloat("economyIterPerMonth");
+        float tickMult = 1/numIter;
+        for (FactionAPI faction : Global.getSector().getAllFactions()) {
+            decayBadboy(faction, tickMult);
+        }
+    }
+
+    public void reportEconomyMonthEnd() {}
     
     public static class DiplomacyEventDef {
         public String name;
