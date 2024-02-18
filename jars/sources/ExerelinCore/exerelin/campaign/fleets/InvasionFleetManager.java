@@ -30,6 +30,7 @@ import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.GroundPoolManager;
 import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.econ.ResourcePoolManager.RequisitionParams;
+import exerelin.campaign.intel.fleets.BlockadeWrapperIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.invasion.InvasionIntel;
@@ -88,6 +89,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float MAX_INVASION_SIZE = 2000;
 	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 6f;
 	public static final float SAT_BOMB_CHANCE = 0.4f;
+	public static final float BLOCKADE_CHANCE = 0.3f;
 	public static final float RAID_COST_MULT = 0.65f;
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 0.9f;
@@ -790,15 +792,20 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		// sat bomb
 		// note: don't sat bomb own originally-owned markets
-		if (NexConfig.allowNPCSatBomb && type == EventType.RAID && Math.random() < SAT_BOMB_CHANCE 
+		if (NexConfig.allowNPCSatBomb && type == EventType.INVASION && Math.random() < SAT_BOMB_CHANCE
 				&& canSatBomb(faction, targetMarket))
 		{
 			type = EventType.SAT_BOMB;
 		}
+
+		if (type == EventType.RAID && Math.random() < BLOCKADE_CHANCE)
+		{
+			type = EventType.BLOCKADE;
+		}
 		
-		// always invade rather than raid derelicts
+		// always invade rather than raid etc. against derelicts
 		if (targetMarket.getFactionId().equals("nex_derelict") 
-				&& (type == EventType.RAID || type == EventType.SAT_BOMB))
+				&& (type == EventType.RAID || type == EventType.SAT_BOMB) || type == EventType.BLOCKADE)
 			type = EventType.INVASION;
 		
 		return generateInvasionOrRaidFleet(originMarket, targetMarket, type, sizeMult, rp);
@@ -814,7 +821,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float organizeTime = getOrganizeTime(fp);
 		fp *= InvasionFleetManager.getInvasionSizeMult(factionId);
 		fp *= sizeMult;
-		if (type == EventType.RAID)
+		if (type == EventType.RAID || type == EventType.BLOCKADE)
 			fp *= RAID_SIZE_MULT;
 		else if (type == EventType.RESPAWN)
 			fp *= RESPAWN_SIZE_MULT;
@@ -866,6 +873,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			{
 				log.info("Spawning saturation bombardment fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
 				intel = new SatBombIntel(faction, origin, target, fp, organizeTime);
+				break;
+			}
+			case BLOCKADE:
+			{
+				log.info("Spawning blockade fleet for " + faction.getDisplayName() + "; source " + origin.getName() + "; target " + target.getName());
+				intel = new BlockadeWrapperIntel(faction, origin, target, fp, organizeTime);
 				break;
 			}
 		}
@@ -1183,6 +1196,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	 * When a faction reaches 100 or more points, a strike is launched against the base that pushed it over the limit.
 	 */
 	protected void processPirateRage() {
+		if (!NexConfig.enableHostileFleetEvents) return;
+
 		//boolean pirateInvasions = ExerelinConfig.allowPirateInvasions;
 		float rageIncrement = Global.getSettings().getFloat("nex_pirateRageIncrement");
 		
@@ -1256,7 +1271,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static float getInvasionPointCost(float basePointCost, float fp, EventType type)
 	{
 		float amount = basePointCost * Math.max(fp/BASE_INVASION_SIZE, 0.8f);
-		if (type == EventType.RAID || type == EventType.DEFENSE)
+		if (type == EventType.RAID || type == EventType.DEFENSE || type == EventType.BLOCKADE)
 			amount *= RAID_COST_MULT;
 
 		log.info("Preparing to deduct " + amount + " invasion points for event " + type);
@@ -1551,7 +1566,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return false;
 	}
 	
-	public enum EventType { INVASION, RAID, RESPAWN, BASE_STRIKE, SAT_BOMB, DEFENSE, OTHER };
+	public enum EventType { INVASION, RAID, RESPAWN, BASE_STRIKE, SAT_BOMB, BLOCKADE, DEFENSE, OTHER };
 	
 	// No longer used
 	// only kept around because some classes I'm keeping for reference still reference it

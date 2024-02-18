@@ -5,7 +5,7 @@
 			"desc":"We must take back our rightful territory of $market (size $size) from the vile $faction!",
 			#"icon":"",	# if blank or unspecified, will default to faction icon (more generally, it uses whatever icon the code says to use)
 			"classPath":"exerelin.campaign.ai.concern.RevanchismConcern",
-			"tags":["military", "market", "canInvade", "canDeclareWar", "trait_irredentist"],
+			"tags":["military", "market", "canInvade", "canDeclareWar", "canTransferMarket", "trait_irredentist"],
 			"module":MILITARY	# which AI module handles this concern, mostly for organizational purposes
 		},
 		"vulnerableEnemyTarget":{
@@ -13,7 +13,7 @@
 			"desc":"$market (size $size) is a highly valuable target, yet poorly defended for its value. This presents us with an opportunity.",
 			"classPath":"exerelin.campaign.ai.concern.VulnerableEnemyTargetConcern",
 			"tags":["military", "economy", "market", "canInvade", "canRaid", "canSatBomb", "canDestabilize", "canRebel", "trait_predatory"],
-			"enabled":false,	# for now, until I implement factions actually building up their defenses on vulnerable targets
+			"enabled":true,
 			"module":MILITARY
 		},
 		"enemyInSharedSystem":{
@@ -96,7 +96,7 @@
 			"name":"Competition",
 			"desc":"$TheFaction competes with us in the production of $commodity (market share $theirShare%%). We should secure our commercial interests.",
 			"classPath":"exerelin.campaign.ai.concern.CommodityCompetitionConcern",
-			"tags":["economy", "commodity", "canDestroyCommodity", "canSabotageIndustry", "canInvade", "canRaid", "canBuildEcon", "trait_monopolist"],
+			"tags":["economy", "commodity", "canDestroyCommodity", "canSabotageIndustry", "canInvade", "canRaid", "canBlockade", "canBuildEcon", "trait_monopolist"],
 			"module":ECONOMIC
 		},
 		"importDependency":{
@@ -160,6 +160,11 @@
 			"classPath":"exerelin.campaign.ai.action.fleet.BaseStrikeAction",
 			"tags":["military", "market", "canBaseStrike", "unfriendly", "aggressive", "wartime"],
 		},
+		"blockade":{
+			"name":"Blockade",
+			"classPath":"exerelin.campaign.ai.action.fleet.BlockadeAction",
+			"tags":["military", "market", "canBlockade", "unfriendly", "aggressive", "wartime", "useIfSurplusShips", "trait_monopolist"],
+		},
 		
 		"diplomacyPositive":{
 			"name":"Diplomatic Action (Positive)",
@@ -190,6 +195,12 @@
 			"name":"Enter Alliance",
 			"classPath":"exerelin.campaign.ai.action.EnterAllianceAction",
 			"tags":["diplomacy", "friendly"],
+		},
+		
+		"transferMarket":{
+			"name":"Transfer Market",
+			"classPath":"exerelin.campaign.ai.action.EnterAllianceAction",
+			"tags":["diplomacy", "friendly", "canTransferMarket"],
 		},
 		
 		"agentRaiseRelations":{
