@@ -1,11 +1,12 @@
 package exerelin.campaign.battle;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
 
 import java.util.ArrayList;
@@ -75,6 +76,67 @@ public class NexWarSimScript {
         }
 
         return report;
+    }
+
+    public static float getFactionAndAlliedStrength(String factionId, String enemyFactionId, StarSystemAPI system) {
+        return getFactionAndAlliedStrength(Global.getSector().getFaction(factionId), Global.getSector().getFaction(enemyFactionId), system);
+    }
+
+    public static float getFactionAndAlliedStrength(FactionAPI faction, FactionAPI enemyFaction, StarSystemAPI system) {
+        float strength = 0f;
+
+//		if (system.getName().toLowerCase().contains("naraka") && Factions.PIRATES.equals(faction.getId())) {
+//			System.out.println("wefwefwe");
+//		}
+
+        Set<CampaignFleetAPI> seenFleets = new HashSet<CampaignFleetAPI>();
+        for (CampaignFleetAPI fleet : system.getFleets()) {
+            FactionAPI fleetFaction = fleet.getFaction();
+            if (willFactionSideWithUs(fleetFaction, faction, enemyFaction)) continue;
+            if (fleet.isStationMode()) continue;
+            if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_TRADE_FLEET)) continue;
+            if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_SMUGGLER)) continue;
+
+            if (fleet.isPlayerFleet()) continue;
+
+            strength += fleet.getEffectiveStrength();
+
+            seenFleets.add(fleet);
+        }
+
+        for (RouteData route : RouteManager.getInstance().getRoutesInLocation(system)) {
+            if (route.getActiveFleet() != null && seenFleets.contains(route.getActiveFleet())) continue;
+
+            OptionalFleetData data = route.getExtra();
+            if (data == null) continue;
+            if (route.getFactionId() == null) continue;
+            FactionAPI routeFaction = Global.getSector().getFaction(route.getFactionId());
+            if (willFactionSideWithUs(routeFaction, faction, enemyFaction)) continue;
+
+            strength += data.getStrengthModifiedByDamage();
+        }
+
+        return strength;
+    }
+
+    public static boolean willFactionSideWithUs(FactionAPI factionToConsider, FactionAPI us, FactionAPI them) {
+        if (factionToConsider == us) return true;
+        if (factionToConsider == them) return false;
+
+        // player will always side with their commissioning faction and vice-versa
+        FactionAPI commFaction = Misc.getCommissionFaction();
+        if (commFaction != null) {
+            if (factionToConsider.isPlayerFaction() && commFaction == us) return true;
+            if (us.isPlayerFaction() && factionToConsider == commFaction) return true;
+        }
+
+        if (them == null) {
+            return factionToConsider.getRelationshipLevel(us).isAtWorst(RepLevel.FRIENDLY) || AllianceManager.areFactionsAllied(factionToConsider.getId(), us.getId());
+        }
+
+        boolean hostileToUs = factionToConsider.isHostileTo(us);
+        boolean hostileToThem = factionToConsider.isHostileTo(them);
+        return !hostileToUs && hostileToThem;
     }
 
     public static class FactionStrengthReport {

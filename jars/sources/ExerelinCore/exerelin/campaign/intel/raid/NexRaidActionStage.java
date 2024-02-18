@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
+import com.fs.starfarer.api.impl.campaign.econ.impl.OrbitalStation;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.intel.raid.PirateRaidActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -16,12 +17,14 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.battle.NexWarSimScript;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +57,38 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 	protected NexRaidIntel getNexRaidIntel() {
 		return (NexRaidIntel)intel;
 	}
-	
+
+	// Count ally strength instead of just the direct factions
+	@Override
+	protected void autoresolve() {
+		// MODIFIED
+		float str = NexWarSimScript.getFactionAndAlliedStrength(intel.getFaction(), null, system);
+		float enemyStr = WarSimScript.getEnemyStrength(intel.getFaction(), system);
+
+		status = RaidIntel.RaidStageStatus.FAILURE;
+		for (MarketAPI target : targets) {
+			if (!target.getFaction().isHostileTo(intel.getFaction())) continue;
+
+			float defensiveStr = enemyStr + WarSimScript.getStationStrength(target.getFaction(), system, target.getPrimaryEntity());
+			if (defensiveStr >= str) {
+				continue;
+			}
+
+			Industry station = Misc.getStationIndustry(target);
+			if (station != null) {
+				OrbitalStation.disrupt(station);
+			}
+
+//			float raidStr = intel.getRaidFP() / intel.getNumFleets() * Misc.FP_TO_GROUND_RAID_STR_APPROX_MULT;
+//			new MarketCMD(target.getPrimaryEntity()).doGenericRaid(intel.getFaction(), raidStr);
+			performRaid(null, target);
+
+			str -= defensiveStr * 0.5f;
+			status = RaidIntel.RaidStageStatus.SUCCESS;
+		}
+		removeMilScripts();
+	}
+
 	// Simplified version of PirateRaidActionStage.updateRoutes()
 
 	/**

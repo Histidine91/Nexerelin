@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.battle.NexWarSimScript;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.utilities.StringHelper;
@@ -60,8 +61,8 @@ public class BaseStrikeActionStage extends InvActionStage {
 	@Override
 	protected void autoresolve() {
 		Global.getLogger(this.getClass()).info("Autoresolving base strike action");
-		float str = WarSimScript.getFactionStrength(intel.getFaction(), target.getStarSystem());
-		float enemyStr = WarSimScript.getFactionStrength(target.getFaction(), target.getStarSystem());
+		float str = NexWarSimScript.getFactionAndAlliedStrength(intel.getFaction(), getTarget().getFaction(), getTarget().getStarSystem());
+		float enemyStr = NexWarSimScript.getFactionAndAlliedStrength(getTarget().getFaction(), intel.getFaction(), getTarget().getStarSystem());
 		
 		float defensiveStr = enemyStr + WarSimScript.getStationStrength(target.getFaction(), 
 							 target.getStarSystem(), target.getPrimaryEntity());

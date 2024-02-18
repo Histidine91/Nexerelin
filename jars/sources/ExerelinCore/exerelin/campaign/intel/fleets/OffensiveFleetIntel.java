@@ -740,7 +740,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		float raidStr = getRaidStr();
 		float attackerStr = attackerRpt.totalStrength + raidStr;
 		float stationStr = WarSimScript.getStationStrength(targetFaction, system, target.getPrimaryEntity());
-		float defenderStr = WarSimScript.getFactionStrength(targetFaction, system);
+		float defenderStr = NexWarSimScript.getFactionAndAlliedStrength(targetFaction, this.faction, system);
 		float defenderStr2 = defenderRpt.totalStrength + stationStr;
 
 		String spaceStr = "";

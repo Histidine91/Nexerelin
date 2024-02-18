@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.battle.NexWarSimScript;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
@@ -337,8 +338,8 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	
 	protected void autoresolve() {
 		Global.getLogger(this.getClass()).info("Autoresolving invasion action vs. " + target.getId());
-		float str = WarSimScript.getFactionStrength(intel.getFaction(), target.getStarSystem());
-		float enemyStr = WarSimScript.getFactionStrength(target.getFaction(), target.getStarSystem());
+		float str = NexWarSimScript.getFactionAndAlliedStrength(intel.getFaction(), getTarget().getFaction(), getTarget().getStarSystem());
+		float enemyStr = NexWarSimScript.getFactionAndAlliedStrength(getTarget().getFaction(), intel.getFaction(), getTarget().getStarSystem());
 		
 		float defensiveStr = enemyStr + WarSimScript.getStationStrength(target.getFaction(), 
 							 target.getStarSystem(), target.getPrimaryEntity());
