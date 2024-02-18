@@ -34,7 +34,7 @@ public class DerelictEmpire extends Scenario {
 			if (corvus || market.getMemoryWithoutUpdate().getBoolean("$nex_randomMarket"))
 			{
 				if (market.getMemoryWithoutUpdate().getBoolean("$nex_procgen_hq")) continue;
-				if (NexUtilsFaction.isPirateFaction(market.getFactionId())) continue;
+				if (NexUtilsFaction.isPirateFaction(market.getFactionId()) && !NexConfig.allowPirateInvasions) continue;
 				if (market.getFactionId().equals(Factions.INDEPENDENT))
 					continue;
 				if (corvus && corvusSpawnPoints.contains(market.getPrimaryEntity().getId()))
