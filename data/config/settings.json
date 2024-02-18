@@ -128,6 +128,8 @@
 	"nex_sizeFractionForVictory":0.501,	# note: winner must also be twice as big as the next largest party
 	"nex_heavyIndustryFractionForVictory":0.667,
 	
+	"nex_ha_policeMaxFleets":1,
+	
 	"nex_colonyConditionValues":{
 		#"ore_sparse":1,	# worthless
 		"ore_moderate":2,	# 2.5,

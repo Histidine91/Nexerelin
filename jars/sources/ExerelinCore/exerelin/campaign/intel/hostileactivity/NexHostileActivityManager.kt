@@ -1,17 +1,20 @@
 package exerelin.campaign.intel.hostileactivity
 
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.impl.campaign.ids.Factions
-import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel
-import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityManager
-import com.fs.starfarer.api.impl.campaign.intel.events.LuddicPathHostileActivityFactor
-import com.fs.starfarer.api.impl.campaign.intel.events.PirateHostileActivityFactor
+import com.fs.starfarer.api.impl.campaign.intel.events.*
 import exerelin.utilities.NexUtilsFaction
 import exerelin.utilities.StringHelper
 
 class NexHostileActivityManager : HostileActivityManager() {
 
     init {
-        addDefenseFleetFactorsIfNeeded(HostileActivityEventIntel.get())
+        val ha = HostileActivityEventIntel.get()
+        if (ha != null) {
+            addCustomFactorsIfNeeded(ha)
+            addDefenseFleetFactorsIfNeeded(ha)
+            addCommissionFactorsIfNeeded(ha)
+        }
     }
 
     override fun advance(amount: Float) {
@@ -26,6 +29,7 @@ class NexHostileActivityManager : HostileActivityManager() {
 
             val ha = HostileActivityEventIntel.get()
             if (ha != null) {
+                addCustomFactorsIfNeeded(ha)
                 addDefenseFleetFactorsIfNeeded(ha)
                 addCommissionFactorsIfNeeded(ha)
             }
@@ -49,8 +53,7 @@ class NexHostileActivityManager : HostileActivityManager() {
          exerelin.campaign.intel.hostileactivity.NexHostileActivityManager.addDefenseFleetFactorsIfNeeded(HostileActivityEventIntel.get())
          */
         @JvmStatic
-        fun addDefenseFleetFactorsIfNeeded(ha: HostileActivityEventIntel?) {
-            if (ha == null) return
+        fun addDefenseFleetFactorsIfNeeded(ha: HostileActivityEventIntel) {
             val alreadyHas = hasFactorOfClass(ha, DefenseFleetsFactor::class.java)
             if (alreadyHas) return
             var defFactor = DefenseFleetsFactor(ha);
@@ -61,8 +64,7 @@ class NexHostileActivityManager : HostileActivityManager() {
         }
 
         @JvmStatic
-        fun addCommissionFactorsIfNeeded(ha: HostileActivityEventIntel?) {
-            if (ha == null) return
+        fun addCommissionFactorsIfNeeded(ha: HostileActivityEventIntel) {
             //val alreadyHas = hasFactorOfClass(ha, DefenseFleetsFactor::class.java)
 
             val pirateFactor = ha.getActivityOfClass(PirateHostileActivityFactor::class.java)
@@ -76,6 +78,14 @@ class NexHostileActivityManager : HostileActivityManager() {
             if (wantAddLPC) {
                 patherFactor.addCause(OutlawCommissionActivityCause(ha, Factions.LUDDIC_PATH, "lp"))
             }
+        }
+
+        @JvmStatic
+        fun addCustomFactorsIfNeeded(ha: HostileActivityEventIntel) {
+            Global.getLogger(this.javaClass).info("Preparing to add custom factors")
+            val alreadyHas = hasFactorOfClass(ha, PoliceHostileActivityFactor::class.java)
+            if (alreadyHas) return
+            ha.addActivity(PoliceHostileActivityFactor(ha), PoliceFreePortActivityCause(ha))
         }
 
         @JvmStatic

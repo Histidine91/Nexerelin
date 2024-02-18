@@ -4955,12 +4955,12 @@ $nex_RACA_inspection score:5","ShowPic ai_core_uninstall
 AddTextSmall After removal, the Alpha Core will appear in your cargo holds if currently docked at $marketName, or in local storage otherwise.",You cut the comm link and consider your options.,"nex_RACA_override:Remove the AI core and appoint a new administrator
 RACA_ignore:Leave the AI core in place for now",
 ,,,,,,
-RACA_answer,DialogOptionSelected,$option == RACA_answer,"ShowPersonVisual
+nex_RACA_answer,DialogOptionSelected,$option == RACA_answer score:2,"ShowPersonVisual
 SetStoryOption nex_RACA_persuade 1 nex_RACA_persuade ui_char_spent_story_point_leadership ""Persuaded an alpha core admin to vacate its post""","""Hello $player.firstName. I am a beta-level instance of the AI assigned to govern $marketName, uploaded to your system in order to facilitate a real-time conversation.""","RACA_demand:Demand the AI disclose its physical location and allow itself to be disconnected
 RACA_ask:Ask why the core is no longer in the bunker
 nex_RACA_persuade:""I wish to make use of your services elsewhere.""
 RACA_cutComm:Cut the comm link",
-RACA_demand,DialogOptionSelected,$option == RACA_demand,"SetStoryOption nex_RACA_persuade 1 nex_RACA_persuade ui_char_spent_story_point_leadership ""Persuaded an alpha core admin to vacate its post""","""I'm sorry, $playerFirstName, I'm afraid I can't do that.""","RACA_pressure:""There's a certain amount of pressure on me to stop using AI technology.""
+nex_RACA_demand,DialogOptionSelected,$option == RACA_demand score:2,"SetStoryOption nex_RACA_persuade 1 nex_RACA_persuade ui_char_spent_story_point_leadership ""Persuaded an alpha core admin to vacate its post""","""I'm sorry, $playerFirstName, I'm afraid I can't do that.""","RACA_pressure:""There's a certain amount of pressure on me to stop using AI technology.""
 nex_RACA_persuade:""I wish to make use of your services elsewhere.""
 RACA_cutComm:Cut the comm link",
 nex_RACA_persuade,DialogOptionSelected,$option == nex_RACA_persuade,,"You give an abbreviated speech to the AI praising its services $onOrAt $marketName, using flattery liberally but without excess. You express your profound gratitude for your lengthy relationship together, and before the AI thinks to cut you off, you explain that you can promote it to administration of a new, better colony.
@@ -4971,6 +4971,104 @@ The avatar on your display shimmers. ""A curious choice of tactic to use on one 
 nex_RACA_persuade2,DialogOptionSelected,$option == nex_RACA_persuade2,ShowPic ai_core_uninstall,"Moments after disconnecting, the lights of the control chamber go dark. Looks like the AI is signalling that it has held up its end of the bargain.",nex_RACA_override:Appoint a new administrator,
 nex_RACA_override,DialogOptionSelected,$option == nex_RACA_override,DismissDialog override,,,
 #END remove AI core admin dialog alt. version,,,,,,
+,,,,,,
+# hostile activity,,,,,,
+nex_HA_policeHassleBFE,BeginFleetEncounter,"!$hassle_didAlready
+!$isHostile
+$pursuePlayer_hassle score:50
+$hassleType == nex_police","$hassle_didAlready = true 0
+$hassleComplete = true
+MakeOtherFleetPreventDisengage hassle true
+unset $ignorePlayerCommRequests
+$nex_HA_policeScanConv = true 0
+HailPlayer",,,
+nex_HA_policeHassleComms,OpenCommLink,"$entity.nex_HA_policeScanConv score:100
+$entity.relativeStrength >= 0","$entity.ignorePlayerCommRequests = true 7
+AddTextSmall ""The cargo scan will use the Hegemony's list of illegal commodities."" h
+Nex_MiscCMD saveFactionColor hegemony
+SetTextHighlightColors $factionColor
+SetTextHighlights ""Hegemony's""","""Halt, captain! This system is the site of an ongoing investigation by the Department of Narcotics, Armaments and Technology. You are hereby ordered to submit to a cargo scan for illegal goods.""","0:cargoScan_comply:Allow the scan
+1:nex_HA_policeHassleObject:""Cargo scan? This is my territory!""
+2:cargoScan_refuse:Refuse",
+nex_HA_policeHassleCommsWeaker,OpenCommLink,"$entity.nex_HA_policeScanConv score:100
+$entity.relativeStrength < 0","$entity.ignorePlayerCommRequests = true 7
+MakeOtherFleetPreventDisengage hassle false","""Halt, captain! This system is the site of an ongoing investigation by the Department of Narcotics, Armaments and Technology."" 
+
+The $personPost tries to look suitably intimidating. The attempt is... unimpressive. ""You are hereby... requested to submit to a cargo scan for illegal goods.""","#0:cargoScan_comply:Allow the scan
+1:nex_HA_policeHassleObject:""Cargo scan? This is my territory!""
+2:cargoScan_refuse:Refuse",
+nex_HA_policeHassleObject,DialogOptionSelected,"$option == nex_HA_policeHassleObject
+$entity.relativeStrength >= 0",RemoveOption nex_HA_policeHassleObject,"$PersonRank $personLastName sneers, the very Platonic ideal of officiousness. ""The entire Sector is under the jurisdiction of the Persean Sector Criminal Police Commission, as laid out in the Nova Maxios Agreement of 145,"" $heOrShe says slowly, as if explaining things to a particularly dense student. ""As such, the concept of 'your territory' has no relevance or legal standing, where an ongoing Sectorpol investigation is concerned.
+
+""Now, will you submit to a search, or do you confess to trafficking and obstruction of justice?""",,
+nex_HA_policeHassleObjectWeaker,DialogOptionSelected,"$option == nex_HA_policeHassleObjectWeaker
+$entity.relativeStrength < 0",unset $nex_HA_policeScanConv,"$PersonRank $personLastName tries to match you in a staring competition. Given the disparity in fleet strength, the outcome is a foregone conclusion.
+
+""You'll regret your obstinacy,"" $heOrShe spits out after a while. ""Sectorpol remembers those who obstruct its justice.""",cutCommLinkNoText:Cut the comm link,
+,,,,,,
+nex_HA_policeHassle_cargoScanStart,DialogOptionSelected,"$option == cargoScan_comply
+$entity.nex_HA_policeScanConv score:20","MakeOtherFleetPreventDisengage hassle false
+AddText ""After a brief wait, the $faction $otherFleetName transmits the scan results.""
+Nex_CargoScan
+FireBest CargoScanResult",,,
+nex_HA_policeHassle_cargoScanContraband,CargoScanResult,"$scan_contrabandFound score:10
+$entity.nex_HA_policeScanConv score:20",MakeOtherFleetPreventDisengage hassle true,"""Ah-ha!"" $PersonRank $personLastName is positively gloating. ""A smuggler, caught red-handed with dangerous contraband. Eject your illegal goods immediately for seizure... or face the consequences!""","0:cargoScan_comply_contraband:Surrender the contraband and cut the comm link
+1:cargoScan_refuse:Refuse",
+nex_HA_policeHassle_cargoScanRefuse,DialogOptionSelected,"$option == cargoScan_refuse
+$entity.nex_HA_policeScanConv score:20
+$entity.relativeStrength >= 0","$entity.ignorePlayerCommRequests = true 0
+unset $nex_HA_policeScanConv
+AdjustRepActivePerson CARGO_SCAN_REFUSE
+ShowDefaultVisual
+EndConversation","""Suspect resisting arrest!"" the $personPost shouts to someone outside the visual pickup. ""Shoot to kill, shoot to kill!""
+
+The comm link terminates as the other $shipOrFleet powers up weapons.",,
+nex_HA_policeHassle_cargoScanRefuseWeaker,DialogOptionSelected,"$option == cargoScan_refuse
+$entity.nex_HA_policeScanConv score:20
+$entity.relativeStrength < 0","$entity.ignorePlayerCommRequests = true 0
+unset $nex_HA_policeScanConv
+AdjustRepActivePerson CARGO_SCAN_REFUSE
+ShowDefaultVisual
+EndConversation NO_CONTINUE","""You wretched criminal scum—""
+
+You cut the comm link rather than wait for the $personRank to finish their sentence.",,
+nex_HA_policeHassle_cargoScanContrabandSurrender,DialogOptionSelected,"$option == cargoScan_comply_contraband
+$entity.nex_HA_policeScanConv score:20","CargoScanApplyResult $scan_cargoScanResult
+MakeOtherFleetPreventDisengage hassle false
+unset $nex_HA_policeScanConv
+ShowDefaultVisual
+EndConversation",,,
+,,,,,,
+nex_HA_greetingPoliceHostileStronger,OpenCommLink,"$nex_HA_police score:10
+$entity.isHostile
+$entity.relativeStrength >= 0",$entity.ignorePlayerCommRequests = true 1,"""This is Sectorpol! You are under arrest for smuggling, tax evasion, piracy, murder, interstellar terrorism and unlicensed possession of AI cores. Do not resist!""
+OR
+""Stop right there, criminal scum! Surrender your fleet and illegal goods at once, or we will be forced to destroy both!""
+OR
+""It's all over, lawbreaker! You are under arrest. Stop resisting and this will be easier on all of us!""",,
+,,,,,,
+nex_HA_policeRaid_commsNotHostile,OpenCommLink,"$entity.nex_HA_policeRaid_fleet score:1000
+!$entity.isHostile","$entity.ignorePlayerCommRequests = true 7
+Highlight $entity.nex_HA_policeRaid_targetMarket","""Greetings, independent $shipOrFleet,"" the $post says. ""This is a detachment of Sectorpol's Department of Narcotics, Armaments and Technology. We are here to serve a warrant for search, seizure and arrest $entity.nex_HA_policeRaid_targetOnOrAt $entity.nex_HA_policeRaid_targetMarket, to remove the criminal elements and their illegal activities that have been allowed to fester there.""
+
+$HeOrShe looks at you with stern disapproval, for allowing this to happen. ""For your own sake, please cooperate with all law enforcement authorities.""","nex_HA_policeRaid_respWarrant:Demand to see this warrant
+nex_HA_policeRaid_respRights:""You have no right to do this. This is a violation of my civil liberties.""
+cutCommLink:Cut the comm link",
+nex_HA_policeRaid_commsHostile,OpenCommLink,"$entity.nex_HA_policeRaid_fleet score:1000
+$entity.isHostile","$entity.ignorePlayerCommRequests = true 7
+Highlight $entity.nex_HA_policeRaid_targetMarket","""Greetings, independent $shipOrFleet,"" the $post says. ""This is a detachment of Sectorpol's Department of Narcotics, Armaments and Technology. We are here to serve a warrant for search, seizure and arrest $entity.nex_HA_policeRaid_targetOnOrAt $entity.nex_HA_policeRaid_targetMarket, to remove the criminal elements and their illegal activities.
+
+""You are under arrest as well, for aiding and abetting these criminals and obstructing justice. Surrender your fleet and we will take you in peacefully. Or..."" $heOrShe lets the sentence hang in the empty void between your fleets.",cutCommLink:Cut the comm link,
+nex_HA_policeRaid_respWarrant,DialogOptionSelected,$option == nex_HA_policeRaid_respWarrant,RemoveOption nex_HA_policeRaid_respWarrant,"""Of course."" $PersonRank $personLastName's smile doesn't reach $hisOrHer eyes.
+
+You examine the transmitted document on your screen. All the hyper-detailed documentation about what is to be searched and seized and who is to be arrested boils down to one thing: an unlimited license for Sectorpol to sweep through $entity.nex_HA_policeRaid_targetMarket and detain—or kill—all the criminal families and societies who have regrettably infiltrated your territory in the process of your legitimate pursuit of interstellar trade and commerce. 
+
+As a veteran space captain, you require no description of the likely effects of their gendarmes sweeping through an urban area in pursuit of almost as well-armed pirates, smugglers and mobsters.",,
+nex_HA_policeRaid_respRights,DialogOptionSelected,$option == nex_HA_policeRaid_respRights,RemoveOption nex_HA_policeRaid_respRights,"""On the contrary, $playerSirOrMadam,"" $personRank says coldly. ""Under the Nova Maxios Agreement to which all major polities of the Sector are signatories, Sectorpol is empowered to serve a warrant lawfully issued by a recognised court, on any location in the Persean Sector.
+
+""We have meticulously crossed all our i's and dotted our t's on this one, captain. Your attempt at legalese will not shield the scum pouring drugs into the hab-corridors of Chicomoztoc and guns in the hands of Lost Astropolis gangs.""",,
+,,,,,,
+#END hostile activity,,,,,,
 ,,,,,,
 # Misc. dialog,,,,,,
 Nex_SierraThoughtsRemnantFragments,SierrasThoughts,"$global.nex_remFragments_deployedShards score:5

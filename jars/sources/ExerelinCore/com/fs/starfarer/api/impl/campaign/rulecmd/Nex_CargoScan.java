@@ -1,13 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CargoStackAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -18,28 +12,24 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.CargoScan.CHANCE_TO_FIND_ILLEGAL_MULT;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.CargoScan.CONTRABAND_FOUND;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.CargoScan.INSPECTION_DAMAGE_MULT;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.CargoScan.PODS_FOUND;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.CargoScan.RESULT_KEY;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.CargoScan.SUSPICOUS_CARGO_FOUND;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import lombok.extern.log4j.Log4j;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class Nex_CargoScan extends CargoScan {
 	
 	public static final boolean ENABLED = true;
+	public static final String MEM_KEY_FACTION_ID_FOR_ILLEGAL = "$nex_cargoScan_factionIdForIllegal";
 	
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (!ENABLED) return super.execute(ruleId, dialog, params, memoryMap);
@@ -49,8 +39,13 @@ public class Nex_CargoScan extends CargoScan {
 		
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		CampaignFleetAPI other = (CampaignFleetAPI) dialog.getInteractionTarget();
-		
+
+		// MODIFIED
 		FactionAPI faction = other.getFaction();
+		FactionAPI factionForLegality = faction;
+		if (other.getMemoryWithoutUpdate().contains(MEM_KEY_FACTION_ID_FOR_ILLEGAL)) {
+			factionForLegality = Global.getSector().getFaction(other.getMemoryWithoutUpdate().getString(MEM_KEY_FACTION_ID_FOR_ILLEGAL));
+		}
 		
 		Nex_CargoScanResult result = new Nex_CargoScanResult();
 		
@@ -67,7 +62,7 @@ public class Nex_CargoScan extends CargoScan {
 		float totalFuel = playerFleet.getCargo().getFuel();
 		
 		for (CargoStackAPI stack : playerFleet.getCargo().getStacksCopy()) {
-			boolean legal = !isIllegal(faction, stack);	// MODIFIED
+			boolean legal = !isIllegal(factionForLegality, stack);	// MODIFIED
 			if (legal) {
 				totalLegal += stack.getSize();
 				totalLegalCargo += stack.getCargoSpace();
@@ -126,7 +121,7 @@ public class Nex_CargoScan extends CargoScan {
 			float illegalFuelSoFar = 0;
 			for (CargoStackAPI stack : stacks) {
 				if (stack.getSize() <= 0) continue;
-				boolean legal = !faction.isIllegal(stack);
+				boolean legal = !isIllegal(factionForLegality, stack);
 				float chanceToFind = 0f;
 				if (stack.isPersonnelStack()) {
 					if (totalCrew > 0) {
@@ -209,7 +204,7 @@ public class Nex_CargoScan extends CargoScan {
 						if (vLevel == SectorEntityToken.VisibilityLevel.COMPOSITION_DETAILS ||
 								vLevel == SectorEntityToken.VisibilityLevel.COMPOSITION_AND_FACTION_DETAILS) {
 							for (CargoStackAPI stack : entity.getCargo().getStacksCopy()) {
-								boolean legal = !faction.isIllegal(stack);
+								boolean legal = !isIllegal(factionForLegality, stack);
 								if (!legal) {
 									memory.set(PODS_FOUND, true, 0);
 									Misc.fadeAndExpire(entity);
@@ -238,9 +233,11 @@ public class Nex_CargoScan extends CargoScan {
 			repLoss = 5f;
 		}
 		if (repLoss > 0) {
-			CoreReputationPlugin.RepActionEnvelope envelope = new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOMS_CAUGHT_SMUGGLING, repLoss, dialog.getTextPanel());
-			Global.getSector().adjustPlayerReputation(envelope, faction.getId());
-			
+			CoreReputationPlugin.RepActionEnvelope envelope;
+			if (!other.getMemoryWithoutUpdate().contains(MemFlags.MEMORY_KEY_NO_REP_IMPACT)) {
+				envelope = new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOMS_CAUGHT_SMUGGLING, repLoss, dialog.getTextPanel());
+				Global.getSector().adjustPlayerReputation(envelope, faction.getId());
+			}
 			envelope = new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOMS_CAUGHT_SMUGGLING, repLoss * 2f, dialog.getTextPanel());
 			Global.getSector().adjustPlayerReputation(envelope, dialog.getInteractionTarget().getActivePerson());
 		}

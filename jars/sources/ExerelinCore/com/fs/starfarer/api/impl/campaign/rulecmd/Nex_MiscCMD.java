@@ -36,6 +36,9 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 				return isRemote(dialog.getInteractionTarget());
 			case "hasOngoingInspection":
 				return hasOngoingInspection(dialog.getInteractionTarget().getMarket());
+			case "saveFactionColor":
+				saveFactionColor(params.get(1).getString(memoryMap), memoryMap.get(MemKeys.LOCAL));
+				return true;
 			default:
 				return false;
 		}
@@ -68,5 +71,9 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 			return true;
 		}
 		return false;
+	}
+
+	public static void saveFactionColor(String factionId, MemoryAPI local) {
+		local.set("$factionColor", Global.getSector().getFaction(factionId).getBaseUIColor(), 0);
 	}
 }

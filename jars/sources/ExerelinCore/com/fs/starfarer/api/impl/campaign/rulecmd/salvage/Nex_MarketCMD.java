@@ -98,6 +98,10 @@ public class Nex_MarketCMD extends MarketCMD {
 	public Nex_MarketCMD(SectorEntityToken entity) {
 		super(entity);
 	}
+
+	public TempData getTempData() {
+		return temp;
+	}
 	
 	@Override
 	protected void init(SectorEntityToken entity) {
@@ -2129,8 +2133,6 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 		}
 		
-		
-		
 		if (temp.bombardType == BombardType.TACTICAL) {
 			text.addPara(StringHelper.getString("nex_bombardment", "effectMilitaryDisrupt"));
 			
@@ -2149,9 +2151,6 @@ public class Nex_MarketCMD extends MarketCMD {
 					text.addPara(StringHelper.getString("nex_bombardment", "effectAllDisruptAndDownsize"), 
 							Misc.getHighlightColor()
 							, "" + market.getSize());
-				}
-				if (temp instanceof NexTempData) {
-					((NexTempData)temp).sizeBeforeBombardment = market.getSize();
 				}
 			}
 			ListenerUtil.reportSaturationBombardmentFinished(dialog, market, temp);
@@ -2377,12 +2376,20 @@ public class Nex_MarketCMD extends MarketCMD {
 	@Override
 	public void doGenericRaid(FactionAPI faction, float attackerStr, float maxPenalty) {
 		super.doGenericRaid(faction, attackerStr, maxPenalty);
+		if (temp instanceof NexTempData) {
+			NexTempData nTemp = (NexTempData)temp;
+			nTemp.attackerFaction = faction;
+		}
 		NexUtilsMarket.reportNPCGenericRaid(market, temp);
 	}
 	
 	@Override
 	public boolean doIndustryRaid(FactionAPI faction, float attackerStr, Industry industry, float durMult) {
 		boolean result = super.doIndustryRaid(faction, attackerStr, industry, durMult);
+		if (temp instanceof NexTempData) {
+			NexTempData nTemp = (NexTempData)temp;
+			nTemp.attackerFaction = faction;
+		}
 		NexUtilsMarket.reportNPCIndustryRaid(market, temp, industry);
 		return result;
 	}
@@ -2489,6 +2496,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			this.targetFaction = entity.getFaction();
 			if (entity.getMarket() != null)
 				this.sizeBeforeBombardment = entity.getMarket().getSize();
+
+			attackerFaction = Global.getSector().getPlayerFaction();
 		}
 		
 		/**
@@ -2496,7 +2505,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		 */
 		public boolean satBombLimitedHatred;
 		public SatBombExcuse satBombExcuse;
-		public FactionAPI attackerFaction = Global.getSector().getPlayerFaction();
+		public FactionAPI attackerFaction;
 		public FactionAPI targetFaction;
 		public int sizeBeforeBombardment;
 	}
