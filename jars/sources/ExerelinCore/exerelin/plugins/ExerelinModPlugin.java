@@ -24,7 +24,6 @@ import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseManager;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityManager;
-import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import com.fs.starfarer.api.impl.campaign.missions.cb.MilitaryCustomBounty;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.StarSystemType;
@@ -46,7 +45,10 @@ import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.*;
 import exerelin.campaign.fleets.*;
 import exerelin.campaign.graphics.MiningCooldownDrawerV2;
-import exerelin.campaign.intel.*;
+import exerelin.campaign.intel.FactionBountyManager;
+import exerelin.campaign.intel.MilestoneTracker;
+import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
+import exerelin.campaign.intel.PersonalConfigIntel;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
 import exerelin.campaign.intel.bases.Nex_PirateBaseManager;
@@ -147,7 +149,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         Nex_PirateBaseManager.replaceManager();
         Nex_LuddicPathBaseManager.replaceManager();
         ScriptReplacer.replaceScript(sector, HostileActivityManager.class, new NexHostileActivityManager());
-        ScriptReplacer.replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
+        //ScriptReplacer.replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());   // inspection manager no longer used
         ScriptReplacer.replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
         //ScriptReplacer.replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());
         
@@ -214,11 +216,6 @@ public class ExerelinModPlugin extends BaseModPlugin
 
         SectorManager.getManager().reverseCompatibility();
         
-        if (SectorManager.isFactionAlive(Factions.PLAYER) && DiplomacyManager.getManager().getDiplomacyProfile(Factions.PLAYER) == null) 
-        {
-            DiplomacyManager.getManager().createDiplomacyProfile(Factions.PLAYER);
-        }
-        
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
             if (!market.hasCondition(FactionConditionPlugin.CONDITION_ID)) {
                 market.addCondition(FactionConditionPlugin.CONDITION_ID);
@@ -227,6 +224,10 @@ public class ExerelinModPlugin extends BaseModPlugin
 
         if (MiningCooldownDrawer.getEntity() != null)
             MiningCooldownDrawer.remove();
+
+        if (!Global.getSector().getListenerManager().hasListener(DiplomacyManager.getManager())) {
+            Global.getSector().getListenerManager().addListener(DiplomacyManager.getManager());
+        }
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();
@@ -454,7 +455,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         addScriptsAndEventsIfNeeded();
         
-        reverseCompatibility();
+        if (!newGame) reverseCompatibility();
         refreshMarketSettings();
         refreshFactionSettings();
         

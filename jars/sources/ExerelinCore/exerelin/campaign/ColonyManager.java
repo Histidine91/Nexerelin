@@ -9,7 +9,6 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.*;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
-import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.AdminData;
@@ -70,7 +69,7 @@ import static com.fs.starfarer.api.util.Misc.getImmigrationPlugin;
  * admin bonuses from empire size, and relief fleets.
  */
 public class ColonyManager extends BaseCampaignEventListener implements EveryFrameScript,
-		EconomyTickListener, InvasionListener, PlayerColonizationListener, MarketImmigrationModifier,
+		InvasionListener, PlayerColonizationListener, MarketImmigrationModifier,
 		ColonyPlayerHostileActListener, ColonyNPCHostileActListener
 {
 	public static Logger log = Global.getLogger(ColonyManager.class);
@@ -1522,8 +1521,11 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		// workaround: reportEconomyTick is called twice,
 		// since we've added colony manager as a script in sector, and also as a listener
 		// so don't do anything the second time
-		if (currIter == iterIndex)
+		// Dunno if this is still needed since we're no longer implementing EconomyTickListener, but keep it for now
+		if (currIter == iterIndex) {
+			log.error("reportEconomyTick called twice by ColonyManager");
 			return;
+		}
 		
 		updateMarkets();
 		processNPCConstruction();
