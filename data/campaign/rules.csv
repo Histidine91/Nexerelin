@@ -1652,6 +1652,42 @@ SetShortcut cutCommLinkPolite ""ESCAPE""","""Finally, you could take a commissio
 You'll be expected to fight our enemies, though, so it's quite a commitment. If I were you, I'd hold off on it until you've got a more solid fleet behind you.""","cutCommLinkPolite:""Thanks, I'll think about it.""",
 #END Vanilla overrides,,,,,,
 ,,,,,,
+# Vanilla not-quite-overrides,,,,,,
+nex_lppGileadShrineVisitFirstTime_notChurch,PopulateOptions,"$market.id == gilead
+$faction.id != luddic_church
+$market.tag:luddic_shrine
+$menuState == main
+!$market.knowAboutShrine","ShrineCMD addIntel
+$market.knowAboutShrine = true",It is well known that pilgrims of the Luddic faith travel here from across the Persean Sector to visit the holy shrine of Gilead. The shrine is said to be built where Ludd kissed the ground after first stepping onto the surface of the planet.,,
+nex_lppGileadShrineVisitOption_notChurch,PopulateOptions,"$market.id == gilead
+$faction.id != luddic_church
+$market.tag:luddic_shrine
+$menuState == main
+$player.transponderOn
+!$justVisitedShrine
+!$market.lpp_finishPilgrimage",,,3:lpp_gileadShrineVisitStart:Join the pilgrims visiting the Luddic shrine,
+nex_lppVolturnShrineOption_notDiktat,PopulateOptions,"$market.id == volturn
+$market.tag:luddic_shrine
+$menuState == main
+$faction.id != sindrian_diktat
+$global.lpp_inProgress
+!$market.didShrineIntro
+!$justVisitedShrine",,,3:lpp_volturnVisitStart:Take a shuttle to visit the Luddic shrine,
+nex_lppVolturnShrineOptionAgain_notDiktat,PopulateOptions,"$market.id == volturn
+$market.tag:luddic_shrine
+$faction.id != sindrian_diktat
+$menuState == main
+$global.lpp_inProgress
+$market.didShrineIntro
+!$justVisitedShrine",,,3:lpp_volturnVisitStart:Take a shuttle to visit the Luddic shrine,
+nex_lppVolturnShrineOptionPostLPP_notDiktat,PopulateOptions,"$market.id == volturn
+$market.tag:luddic_shrine
+$faction.id != sindrian_diktat
+$menuState == main
+$global.lpp_missionCompleted
+!$justVisitedShrine",,,3:lpp_volturnVisitStart:Take a shuttle to visit the Luddic shrine,
+#END Vanilla not-quite-overrides,,,,,,
+,,,,,,
 # Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplarsHostile,MarketPostOpen,"$hasMarket
 $faction.id == templars score:1000
