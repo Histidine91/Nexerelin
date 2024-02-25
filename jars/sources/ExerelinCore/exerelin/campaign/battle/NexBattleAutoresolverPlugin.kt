@@ -9,7 +9,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI
 open class NexBattleAutoresolverPlugin(battle: BattleAPI?) : BattleAutoresolverPluginImpl(battle) {
 
     companion object {
-        @JvmField val MEM_KEY_STRENGTH_MULT = "\$nex_autoresolve_strMult";
+        const val MEM_KEY_STRENGTH_MULT = "\$nex_autoresolve_strMult";
     }
 
     override fun computeDataForMember(member: FleetMemberAPI): FleetMemberAutoresolveData {

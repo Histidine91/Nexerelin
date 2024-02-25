@@ -89,7 +89,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     companion object {
         @JvmField var SALVATION_ENABLED = true;
         @JvmField var DEBUG_MODE = false;
-        @JvmField val STAT_MOD_ID = "nex_remSalvation_mod";
+        const val STAT_MOD_ID = "nex_remSalvation_mod";
 
         @JvmField val log : Logger = Global.getLogger(RemnantSalvation::class.java)
         // runcode exerelin.campaign.intel.missions.remnant.RemnantSalvation.Companion.devAddTriggers()
