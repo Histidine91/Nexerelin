@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo;
 import com.fs.starfarer.api.impl.campaign.fleets.misc.MiscFleetCreatorPlugin;
 import com.fs.starfarer.api.impl.campaign.fleets.misc.MiscFleetRouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.*;
+import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityIntel;
 import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
@@ -143,6 +144,10 @@ public class ExerelinModPlugin extends BaseModPlugin
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
         
         // replace or remove relevant intel items
+        for (IntelInfoPlugin iip : Global.getSector().getIntelManager().getIntel(FactionHostilityIntel.class)) {
+            FactionHostilityIntel host = (FactionHostilityIntel)iip;
+            host.endHostilties();
+        }
         ScriptReplacer.replaceScript(sector, FactionHostilityManager.class, null);
         //ScriptReplacer.replaceScript(sector, PirateBaseManager.class, new Nex_PirateBaseManager());
         //ScriptReplacer.replaceScript(sector, LuddicPathBaseManager.class, new Nex_LuddicPathBaseManager());
@@ -152,7 +157,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         //ScriptReplacer.replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());   // inspection manager no longer used
         ScriptReplacer.replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
         //ScriptReplacer.replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());
-        
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             replaceSubmarket(market, Submarkets.LOCAL_RESOURCES);
