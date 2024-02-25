@@ -31,9 +31,9 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 	// everything protected out of habit
 	protected FactionAPI faction1;
 	protected FactionAPI faction2;
-	protected String allianceId;
+	@Getter protected String allianceId;
 	// more permanent store, since we may decide to no longer have alliance be accessible by ID once dissolved
-	protected String allianceName;	
+	@Getter protected String allianceName;
 	protected boolean isDissolved = false;
 	protected transient TextFieldAPI nameField;
 	@Getter	@Setter protected StrategicAction strategicAction;
@@ -57,7 +57,16 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 		params.put("type", UpdateType.FORMED);
 		this.sendUpdateIfPlayerHasIntel(params, false);
 	}
-	
+
+	public void setAllianceName(String name) {
+		this.allianceName = name;
+		if (getAlliance() != null) getAlliance().setName(name);
+	}
+
+	protected Alliance getAlliance() {
+		return AllianceManager.getAllianceByUUID(allianceId);
+	}
+
 	@Override
 	public String getSortString() {
 		//what does this string do?
@@ -92,7 +101,7 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 					NexUtilsFaction.addFactionNamePara(info, initPad, tc, faction1);
 					NexUtilsFaction.addFactionNamePara(info, pad, tc, faction2);
 
-					sub1 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
+					sub1 = getAlliance().getAllianceMarketSizeSum() + "";
 					str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPointShort", 
 							"$size", sub1);
 					info.addPara(str, pad, tc, hl, sub1);
@@ -106,8 +115,8 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 							"$Faction", sub1);
 					info.addPara(str, initPad, tc, faction1.getBaseUIColor(), sub1);
 
-					sub1 = AllianceManager.getAllianceByUUID(allianceId).getMembersCopy().size() + "";
-					sub2 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
+					sub1 = getAlliance().getMembersCopy().size() + "";
+					sub2 = getAlliance().getAllianceMarketSizeSum() + "";
 					str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPointUpdate", 
 							"$num", sub1);
 					str = StringHelper.substituteToken(str, "$size", sub2);
@@ -126,8 +135,8 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 					break;
 			}
 		} else if (!isDissolved) {
-			sub1 = AllianceManager.getAllianceByUUID(allianceId).getMembersCopy().size() + "";
-			sub2 = AllianceManager.getAllianceByUUID(allianceId).getAllianceMarketSizeSum() + "";
+			sub1 = getAlliance().getMembersCopy().size() + "";
+			sub2 = getAlliance().getAllianceMarketSizeSum() + "";
 			str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "intelStrengthPoint", 
 					"$num", sub1);
 			str = StringHelper.substituteToken(str, "$size", sub2);
@@ -151,7 +160,7 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 			return;
 		}
 		
-		Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
+		Alliance alliance = getAlliance();
 		if (alliance == null)
 		{
 			info.addPara("ERROR: Unable to find alliance " + allianceName + "!", opad);
@@ -313,7 +322,7 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 		String num = NexUtilsFaction.getFactionMarkets(factionId).size() + "";
 		String sizeSum = NexUtilsFaction.getFactionMarketSizeSum(factionId) + "";
 		Map<String, String> sub = new HashMap<>();
-		boolean permanent = AllianceManager.getAllianceByUUID(allianceId).isPermaMember(factionId);
+		boolean permanent = getAlliance().isPermaMember(factionId);
 		sub.put("$faction", name + (permanent ? " " + getString("memberPermanentSuffix") : ""));
 		sub.put("$num", num);
 		sub.put("$size", sizeSum);
@@ -353,7 +362,7 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
 		if (buttonId == BUTTON_RENAME) {
-			Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
+			Alliance alliance = getAlliance();
 			allianceName = nameField.getText();
 			alliance.setName(allianceName);
 			ui.updateUIForItem(this);
@@ -370,7 +379,7 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(StringHelper.getString("alliances", true));
-		Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
+		Alliance alliance = getAlliance();
 		if (alliance != null)
 		{
 			for (String factionId : alliance.getMembersCopy())

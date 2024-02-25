@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.intel.AllianceIntel;
@@ -71,6 +72,7 @@ public class Alliance
 	
 	public void setName(String name) {
 		this.name = name;
+		if (this.getIntel() != null) this.getIntel().setAllianceName(name);
 	}
 	
 	public Alignment getAlignment() {
@@ -154,8 +156,8 @@ public class Alliance
 	}
 	
 	/**
-	 * Gets a random alliance market to report an event from
-	 * Prefers markets with Headquarters, then by size
+	 * Gets a random alliance market to report an event from.
+	 * Prefers markets with High Command if {@code preferHq} is true, then by size (with military base counting 1.5 times as much).
 	 * @param preferHq
 	 * @return
 	 */
@@ -167,7 +169,7 @@ public class Alliance
 		for (MarketAPI market : markets)
 		{
 			float weight = market.getSize();
-			if (market.hasIndustry(Industries.MILITARYBASE))
+			if (Misc.isMilitary(market))
 				weight *= 1.5f;
 			picker2.add(market, weight);
 			if (market.hasIndustry(Industries.HIGHCOMMAND))
