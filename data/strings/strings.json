@@ -2653,7 +2653,7 @@
 		"intel_desc2":"To avert an undesirable outcome, $theFaction demands a tribute equal to %s of the colony's gross income. Its population growth will also be reduced by %s, and it cannot exceed size %s.",
 		"intel_descAccepted":"You are currently paying tribute from $market.",
 		"intel_descRejected":"You have refused to pay tribute for $market.",
-		"intel_descOver":"The tribute event is now over.",
+		"intel_descOver":"The tribute event has been terminated due to circumstances, such as a change in the faction claiming the system.",
 		"intel_descTime":"You have $timeLeft $days to accept the offer.",
 		"intel_dialogConfirm":"Confirm?",
 	},

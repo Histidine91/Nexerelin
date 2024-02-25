@@ -137,7 +137,7 @@ public class ColonyTargetValuator {
 		score /= hazard;
 		score *= getDistanceValueMult(distanceLY, faction);
 		
-		if (NexUtilsFaction.getSystemOwner(market.getContainingLocation()) == faction) 
+		if (NexUtilsFaction.getClaimingFaction(market.getPrimaryEntity()) == faction)
 		{
 			score *= 2;
 		}

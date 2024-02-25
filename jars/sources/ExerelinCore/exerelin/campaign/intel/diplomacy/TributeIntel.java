@@ -9,12 +9,7 @@ import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
@@ -23,11 +18,12 @@ import exerelin.campaign.econ.TributeCondition;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.lazywizard.lazylib.MathUtils;
 
 public class TributeIntel extends BaseIntelPlugin {
 	
@@ -258,7 +254,7 @@ public class TributeIntel extends BaseIntelPlugin {
 			return;
 		}
 		
-		FactionAPI claimingFaction = NexUtilsFaction.getSystemOwner(market.getStarSystem());
+		FactionAPI claimingFaction = NexUtilsFaction.getClaimingFaction(market.getPrimaryEntity());
 		if (claimingFaction == null || !claimingFaction.getId().equals(factionId) 
 				|| claimingFaction.isHostileTo(Factions.PLAYER) 
 				|| claimingFaction == Misc.getCommissionFaction()) 
