@@ -210,11 +210,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 		for (SModRecord record : PlaythroughLog.getInstance().getSModsInstalled()) {
 			FleetMemberAPI thisMember = record.getMember();
 			if (member != thisMember) continue;
-			if (record.getSMods().isEmpty()) continue;
-			String modId = record.getSMods().get(0);
-			if (!member.getVariant().getSMods().contains(modId)) continue;
-			if (!member.getVariant().getHullMods().contains(modId)) continue;
-			count++;
+			count += record.getSPSpent();
 		}
 		return count;
 	}

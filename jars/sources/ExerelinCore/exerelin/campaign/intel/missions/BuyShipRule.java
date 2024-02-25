@@ -363,7 +363,8 @@ public abstract class BuyShipRule {
 
 		@Override
 		boolean isShipAllowed(FleetMemberAPI member) {
-			return member.getVariant().getSMods().size() > 0;
+			return member.getVariant().getSMods().size() > 0
+					|| member.getVariant().getSModdedBuiltIns().size() > 0;
 		}
 
 		@Override
