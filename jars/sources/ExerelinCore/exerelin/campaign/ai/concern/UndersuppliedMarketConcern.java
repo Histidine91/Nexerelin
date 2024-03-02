@@ -116,6 +116,11 @@ public class UndersuppliedMarketConcern extends BaseStrategicConcern implements 
 
             float size = data.getMarketValue();
             List<EconomyInfoHelper.ProducerEntry> producers = EconomyInfoHelper.getInstance().getProducersByCommodity(commodityId);
+            if (producers.isEmpty()) {
+                this.end();
+                return;
+            }
+
             int numProducers = producers.size();
             // output units
             int totalOutput = 0;
