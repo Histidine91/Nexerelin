@@ -20,11 +20,8 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.campaign.intel.groundbattle.GBUtils;
-import exerelin.campaign.intel.groundbattle.GroundBattleCampaignListener;
-import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.campaign.intel.groundbattle.*;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel.BattleOutcome;
-import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
@@ -154,7 +151,7 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 		float strength = GBUtils.estimateTotalDefenderStrength(battle, true);
 		int marines = Math.round(strength * 0.65f);
 		int heavies = Math.round(strength * 0.4f / GroundUnit.HEAVY_COUNT_DIVISOR);
-		marines += heavies * GroundUnit.CREW_PER_MECH;
+		marines += heavies * GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).personnel.mult;
 		battle.autoGenerateUnits(marines, heavies, attacker, true, false);
 		
 		battle.playerJoinBattle(false, false);

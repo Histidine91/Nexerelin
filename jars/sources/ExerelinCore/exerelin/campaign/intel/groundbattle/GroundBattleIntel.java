@@ -776,7 +776,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		int heavyArms = (int)CrewReplacerUtils.getHeavyArms(player, GBConstants.CREW_REPLACER_JOB_HEAVYARMS);
 		
 		// add heavy units
-		int usableHeavyArms = Math.min(heavyArms, marines/GroundUnit.CREW_PER_MECH);
+		int usableHeavyArms = Math.min(heavyArms, marines/GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).personnel.mult);
 		if (isCramped()) {
 			//log.info("Cramped conditions, halving heavy unit count");
 			usableHeavyArms /= 2;
@@ -824,7 +824,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		
 		// add marines
-		marines -= heavyArms * GroundUnit.CREW_PER_MECH;
+		marines -= heavyArms * GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).personnel.mult;
 		int remainingSlots = MAX_PLAYER_UNITS - playerData.getUnits().size();
 		perUnitSize = unitSize.getMaxSizeForType(GroundUnitDef.MARINE);
 		
@@ -878,7 +878,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		for (ForceType type : map.keySet()) {
 			int thisNum = map.get(type);
 			if (type == ForceType.HEAVY)
-				num += thisNum * GroundUnit.CREW_PER_MECH;
+				num += thisNum * GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).personnel.mult;
 			else
 				num += thisNum;
 		}

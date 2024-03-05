@@ -46,10 +46,11 @@ public class GroundUnit {
 	public static final float BUTTON_SECTION_WIDTH = 64;
 	//public static final Object BUTTON_NEW_MARINE = new Object();
 	//public static final Object BUTTON_NEW_HEAVY = new Object();
-	
+
+	// legacy constants, kept around for a few purposes
 	public static final float HEAVY_COUNT_DIVISOR = 6f;	// a marine platoon has 6x as many marines as a mech platoon has mechs
 	public static final float REBEL_COUNT_MULT = 0.6f;	// rebel units are 40% smaller
-	public static final int CREW_PER_MECH = 2;
+	//public static final int CREW_PER_MECH = 2;
 
 	public final String id = Misc.genUID();
 	@Getter protected String unitDefId;
@@ -726,7 +727,7 @@ public class GroundUnit {
 	}
 	
 	public int getSize() {
-		int num = unitDef.equipment != null ? getEquipmentCount() : getPersonnelCount();
+		int num = unitDef.equipment != null ? getEquipmentCount()/unitDef.equipment.mult : getPersonnelCount()/unitDef.personnel.mult;
 		return num;
 	}
 	
@@ -1081,7 +1082,7 @@ public class GroundUnit {
 		}
 	}
 	
-	public static enum UnitSize {
+	public enum UnitSize {
 		PLATOON(40, 65, 1f),
 		COMPANY(120, 200, 0.5f),
 		BATTALION(500, 800, 0.25f),

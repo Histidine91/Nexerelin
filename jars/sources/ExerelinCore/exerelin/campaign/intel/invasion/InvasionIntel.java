@@ -28,11 +28,8 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.fleets.*;
-import exerelin.campaign.intel.groundbattle.GBUtils;
-import exerelin.campaign.intel.groundbattle.GroundBattleCampaignListener;
-import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.campaign.intel.groundbattle.*;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel.BattleOutcome;
-import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
@@ -344,7 +341,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 			heavyArms = marines/5;
 			if (target.getPlanetEntity() == null) heavyArms /= 2;
 		}
-		heavyArms = Math.min(heavyArms, marines/GroundUnit.CREW_PER_MECH);
+		heavyArms = Math.min(heavyArms, marines/GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).personnel.mult);
 		
 		// first boots to hit the ground
 		boolean firstIn = groundBattle.getSide(side).getUnits().isEmpty();

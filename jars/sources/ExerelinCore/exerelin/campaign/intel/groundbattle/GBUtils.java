@@ -15,7 +15,6 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.groundbattle.GroundUnit.ForceType;
 import exerelin.campaign.intel.invasion.CounterInvasionIntel;
 import exerelin.utilities.NexConfig;
 import org.apache.log4j.Logger;
@@ -144,19 +143,22 @@ public class GBUtils {
 		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
 		int marines = cargo.getMarines();
 		int heavyArms = (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS);
+		float marineStr = GroundUnitDef.getUnitDef(GroundUnitDef.MARINE).strength;
+		float heavyStr = GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).strength;
+		int crewMult = GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).personnel.mult;
 		
 		// if cramped, do marines only
 		// else, heavy arms then marines
 		if (false && intel.isCramped()) {
-			return new float[] {marines * ForceType.MARINE.strength};
+			return new float[] {marines * marineStr};
 		}
 		else {
-			heavyArms = Math.min(heavyArms, marines/GroundUnit.CREW_PER_MECH);
+			heavyArms = Math.min(heavyArms, marines/crewMult);
 
-			int remainingMarines = marines - heavyArms * GroundUnit.CREW_PER_MECH;
+			int remainingMarines = marines - heavyArms * crewMult;
 
-			return new float[] {remainingMarines * ForceType.MARINE.strength,
-					heavyArms * ForceType.HEAVY.strength};
+			return new float[] {remainingMarines * marineStr,
+					heavyArms * heavyStr};
 		}
 	}
 	
