@@ -379,9 +379,7 @@ public class GroundBattleSide {
 		List<GroundUnit> generatedRebels = new ArrayList<>();
 		for (int i=0; i<numUnits; i++) {
 			int size = Math.round(numTroops/numUnits);
-			GroundUnit unit = new GroundUnit(intel, GroundUnitDef.REBEL, size, generatedRebels.size());
-			unit.faction = faction;
-			unit.isAttacker = true;
+			GroundUnit unit = intel.createUnit(GroundUnitDef.REBEL, faction, true, size, null, generatedRebels.size());
 			intel.getSide(true).getUnits().add(unit);
 			generatedRebels.add(unit);
 		}
