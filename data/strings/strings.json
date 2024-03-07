@@ -1557,7 +1557,7 @@
 		"modifierFactionAttackMult":"%s damage dealt",
 		"modifierFactionDamageTakenMult":"%s damage received",
 		"modifierFactionMoraleDamageTakenMult":"%s morale damage received",
-		"modifierLuddicMoraleDamageTakenMult":"%s morale damage received on originally Luddic-held colonies (effect squared for militia)",
+		"modifierLuddicMoraleDamageTakenMult":"%s morale damage received on originally Luddic-held colonies (effect squared with Luddic Majority)",
 		
 		"modifierStation":"Orbital Station",
 		"modifierStationDesc":"An orbital station is active. Enemy fleets cannot support ground forces.",

@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -21,7 +22,7 @@ public class LuddicChurchBonusSubplugin extends FactionBonusSubplugin {
 			Float mult = getSettingsFloat("luddef_moraleDamageTakenMult");
 			if (mult != null) {
 				dmg *= mult;
-				if (unit.getUnitDef().hasTag("militia"))
+				if (intel.getMarket().hasCondition(Conditions.LUDDIC_MAJORITY))
 					dmg *= mult;
 			}
 		}
