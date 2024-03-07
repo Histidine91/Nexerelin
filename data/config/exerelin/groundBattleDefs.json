@@ -198,6 +198,10 @@
 	#},
 	
 	"unitTypes":{
+		# note on unit mults: it may be best if the personnel mult for infantry units, and equipment mult for mechanized units, is 1 if possible
+		# otherwise unusual behavior may occur
+		# if you need an extra-large unit, use the unitSizeMult
+		
 		"marine":{
 			"name":"marine",
 			"type":"MARINE",	# legacy setting, may remove later; for now it's mandatory though
@@ -281,6 +285,21 @@
 		#	},
 		#	"tags":["marine", "lobster"],
 		#	"sortOrder":1,
+		#},
+		
+		#"helldiver":{
+		#	"name":"helldiver",
+		#	"type":"MARINE",
+		#	"playerCanCreate":true,
+		#	"strength":1,
+		#	"unitSizeMult":2,
+		#	"personnel":{
+		#		"commodityId":"crew",
+		#		"crewReplacerJobId":"nex_groundBattle_helldivers",
+		#		"mult":1,
+		#	},
+		#	"tags":["marine"],
+		#	"sortOrder":1.5,
 		#},
 	},
 	

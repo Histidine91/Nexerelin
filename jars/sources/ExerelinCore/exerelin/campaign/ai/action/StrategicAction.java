@@ -25,7 +25,7 @@ public interface StrategicAction extends Comparable<StrategicAction> {
     void setFaction(FactionAPI faction);
 
     /**
-     * Creates the action. {@code canUse()} should already have been called beforehand to determine as much as possible
+     * Creates the action. {@code canUse()} should already have been called beforehand to determine as far as possible
      * whether the action can actually be executed, but we may nevertheless find the action unable to proceed here.
      * @return True if successfully generated, false otherwise.
      */
@@ -34,7 +34,7 @@ public interface StrategicAction extends Comparable<StrategicAction> {
     void initForConcern(StrategicConcern concern);
 
     /**
-     * Called after {@code generate()} to actually begin executing the action.
+     * Called after {@code generate()}; currently just used to set the delegate's strategic action and update status.
      */
     void postGenerate();
     /**

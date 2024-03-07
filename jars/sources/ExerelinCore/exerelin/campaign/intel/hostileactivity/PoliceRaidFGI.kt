@@ -60,7 +60,7 @@ class PoliceRaidFGI(params: GenericRaidParams?) : GenericRaidFGI(params)
 
     override fun hasCustomRaidAction(): Boolean {
         val market = params.raidParams.allowedTargets.first()
-        val anyHostile = this.fleets.any { it.isHostileTo(market.primaryEntity) }
+        val anyHostile = this.fleets.any { it.isHostileTo(market.primaryEntity) || it.isHostileTo(Global.getSector().playerFleet) }
         return !anyHostile  // if any of the fleets are hostile, do the full-up raid against defenses
     }
 
@@ -98,7 +98,7 @@ class PoliceRaidFGI(params: GenericRaidParams?) : GenericRaidFGI(params)
         )
         Misc.setRaidedTimestamp(market)
 
-        val durMult = 1     // Global.getSettings().getFloat("punitiveExpeditionDisruptDurationMult")
+        val durMult = 0.75f     // Global.getSettings().getFloat("punitiveExpeditionDisruptDurationMult")
         for (industryId in params.raidParams.disrupt) {
             val ind = market.getIndustry(industryId) ?: continue
             temp.target = ind

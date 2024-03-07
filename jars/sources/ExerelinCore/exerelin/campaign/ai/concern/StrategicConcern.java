@@ -20,14 +20,15 @@ public interface StrategicConcern extends Comparable<StrategicConcern> {
     void setAI(StrategicAI ai, StrategicAIModule module);
 
     /**
-     * Review the Sector's situation and fill self with relevant data.
+     * Called when the concern is first created. Review the Sector's situation and fill self with relevant data.
      * @return True if a valid concern has been generated, false otherwise.
      */
     boolean generate();
 
     /**
-     * If returning false, hide/remove the concern. Probably should not require extensive validation (i.e. invalidating
-     * a military concern if the target faction is no longer hostile should be fine, calculating whether a target is still vulnerable
+     * Called on every AI strategy meeting after concern creation. If returning false, hide/remove the concern.<br/>
+     * Probably should not require extensive validation (i.e. invalidating a military concern if the target faction
+     * is no longer hostile should be fine, calculating whether a target is still vulnerable
      * should probably be left till the next {@code update()}.
      * @return
      */
@@ -52,14 +53,15 @@ public interface StrategicConcern extends Comparable<StrategicConcern> {
     float getPriorityFloat();
 
     /**
-     * Called periodically to make sure the concern is still relevant.
+     * Called on every AI strategy meeting after concern creation, after {@code isValid}.
+     * Update internal data as needed, make sure the concern is still relevant.
      */
     void update();
 
     void advance(float days);
 
     /**
-     * Should be called when the concern is generated and each time it is updated.
+     * Override with any custom changes to concern priority. Should be called when the concern is generated and each time it is updated.
      */
     void reapplyPriorityModifiers();
 

@@ -258,6 +258,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			str = StringHelper.substituteToken(str, "$theFaction", faction.getDisplayNameWithArticle(), true);
 			tooltip.addPara(str, 3);
 		}
+		unindent(tooltip);
 
 		float badboy = DiplomacyManager.getBadboy(faction);
 		String badboyStr = String.format("%.0f", weariness);
@@ -268,8 +269,6 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 
 		Color badboyColor = Misc.interpolateColor(Color.WHITE, Misc.getNegativeHighlightColor(), colorProgress);
 		tooltip.addPara(str, pad, badboyColor, badboyStr);
-
-		unindent(tooltip);
 	}
 	
 	/**
