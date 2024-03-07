@@ -2100,6 +2100,13 @@ public class Nex_MarketCMD extends MarketCMD {
 			int atrocities = (int) Global.getSector().getCharacterData().getMemoryWithoutUpdate().getFloat(MemFlags.PLAYER_ATROCITIES);
 			atrocities++;
 			Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(MemFlags.PLAYER_ATROCITIES, atrocities);
+
+			if (market != null && market.getFaction() != null) {
+				MemoryAPI mem = market.getFaction().getMemoryWithoutUpdate();
+				int count = mem.getInt(MemFlags.FACTION_SATURATION_BOMBARED_BY_PLAYER);
+				count++;
+				mem.set(MemFlags.FACTION_SATURATION_BOMBARED_BY_PLAYER, count);
+			}
 		}		
 		
 		int stabilityPenalty = getTacticalBombardmentStabilityPenalty();
