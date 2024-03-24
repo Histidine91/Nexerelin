@@ -347,8 +347,12 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 			// don't pick factions hostile to the guys we just pissed off
 			if (sector.getFaction(enemyId).isHostileTo(triggeringFactionId))
 				continue;
+
+			float pointMult = InvasionFleetManager.getManager().getSpawnCounter(enemyId)/NexConfig.pointsRequiredForInvasionFleet;
+			if (pointMult < 0.5f) continue;
 			
 			float weight = enemyId.equals(triggeringFactionId) ? 3 : 1;
+			weight *= pointMult;
 			
 			attackerPicker.add(enemyId, weight);
 		}
