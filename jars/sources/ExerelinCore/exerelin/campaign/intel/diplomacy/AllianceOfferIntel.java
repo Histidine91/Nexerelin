@@ -31,7 +31,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	public static final Object EXPIRED_UPDATE = new Object();
 	public static final String BUTTON_ACCEPT = "Accept";
 	public static final String BUTTON_REJECT = "Reject";
-	public static final float COOLDOWN = 120;
+	public static final float COOLDOWN = 150;
 	public static final String MEM_KEY_COOLDOWN = "$nex_allianceOffer_cooldown";
 
 	protected String factionId;
@@ -222,10 +222,11 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		tags.add(PlayerFactionStore.getPlayerFactionId());
 		return tags;
 	}
-	
+
 	@Override
 	public String getCommMessageSound() {
-		return "nex_ui_ceasefire_prompt";
+		//return "nex_ui_ceasefire_prompt";
+		return super.getCommMessageSound();
 	}
 		
 	@Override

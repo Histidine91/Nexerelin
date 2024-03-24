@@ -89,9 +89,9 @@ public class GBUtils {
 		float countForSize = getTroopCountForMarketSize(intel.getMarket());
 		countForSize *= 0.5f + (intel.market.getStabilityValue() / 10f) * 0.75f;
 		
-		float health = 1;
+		float mult = NexConfig.groundBattleGarrisonSizeMult;
 		if (useHealth) {
-			health = 1 - GBUtils.getGarrisonDamageMemory(intel.getMarket());
+			mult *= 1 - GBUtils.getGarrisonDamageMemory(intel.getMarket());
 		}
 		
 		marines *= 0.5f + 0.5f * getDeficitFactor(intel.market, Commodities.MARINES);
@@ -102,9 +102,9 @@ public class GBUtils {
 		marines *= 1 + 0.25f * suppliesFactor;
 		heavies *= 1 + 0.25f * suppliesFactor;
 		
-		militia = Math.round(militia * countForSize * 2.5f * health);
-		marines = Math.round(marines * countForSize * health);
-		heavies = Math.round(heavies * countForSize / GroundUnit.HEAVY_COUNT_DIVISOR * health);
+		militia = Math.round(militia * countForSize * 2.5f * mult);
+		marines = Math.round(marines * countForSize * mult);
+		heavies = Math.round(heavies * countForSize / GroundUnit.HEAVY_COUNT_DIVISOR * mult);
 		
 		return new float[] {militia, marines, heavies};
 	}
@@ -122,7 +122,7 @@ public class GBUtils {
 		return lowest;
 	}
 	
-	public static float estimateTotalDefenderStrength(GroundBattleIntel intel, boolean useHealth) 
+	public static float estimateTotalDefenderStrength(GroundBattleIntel intel, boolean useHealth)
 	{
 		float str = 0;
 		float[] strByType = estimateDefenderStrength(intel, useHealth);

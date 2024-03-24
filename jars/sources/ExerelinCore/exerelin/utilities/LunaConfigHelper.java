@@ -3,6 +3,7 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import lombok.extern.log4j.Log4j;
 import lunalib.lunaSettings.LunaSettings;
@@ -55,7 +56,13 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("invasionFleetSizeMult", "float", tabFleets, NexConfig.invasionFleetSizeMult, 0.1, 10);
         addSetting("fleetRequestCostPerFP", "int", tabFleets, Math.round(NexConfig.fleetRequestCostPerFP), 1, 10000);
         addSetting("creditLossOnColonyLossMult", "float", tabFleets, NexConfig.creditLossOnColonyLossMult, 0, 1);
+
+        addHeader("groundBattles", tabFleets);
         addSetting("groundBattleDamageMult", "float", tabFleets, NexConfig.groundBattleDamageMult, 0, 5);
+        addSetting("groundBattleGarrisonSizeMult", "float", tabFleets, NexConfig.groundBattleGarrisonSizeMult, 0.25f, 4);
+        addSetting("groundBattleGarrisonXP", "float", tabFleets, NexConfig.groundBattleGarrisonXP, 0, 1);
+        addSetting("groundBattleInvasionTroopSizeMult", "float", tabFleets, NexConfig.groundBattleInvasionTroopSizeMult, 0.25f, 4);
+        addSetting("groundBattleInvasionTroopXP", "float", tabFleets, NexConfig.groundBattleInvasionTroopXP, 0, 1);
 
         addHeader("diplomacy", tabDiplomacy);
         addSetting("enableDiplomacy", "boolean", tabDiplomacy, NexConfig.enableDiplomacy);
@@ -69,6 +76,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("allianceGracePeriod", "int", tabDiplomacy, NexConfig.allianceGracePeriod, 0, 1825);
         //addSetting("allianceFormationInterval", "int", tabDiplomacy, NexConfig.allianceFormationInterval);
         addSetting("ignoreAlignmentForAlliances", "boolean", tabDiplomacy, NexConfig.ignoreAlignmentForAlliances);
+        addSetting("npcAllianceOffers", "boolean", tabDiplomacy, NexConfig.npcAllianceOffers);
 
         addHeader("insurance", null);
         addSetting("legacyInsurance", "boolean", NexConfig.legacyInsurance);
@@ -170,7 +178,14 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.invasionFleetSizeMult = (float)loadSetting("invasionFleetSizeMult", "float");
         NexConfig.fleetRequestCostPerFP = (int)loadSetting("fleetRequestCostPerFP", "int");
         NexConfig.creditLossOnColonyLossMult = (float)loadSetting("creditLossOnColonyLossMult", "float");
+
         NexConfig.groundBattleDamageMult = (float)loadSetting("groundBattleDamageMult", "float");
+        NexConfig.groundBattleGarrisonSizeMult = (float)loadSetting("groundBattleGarrisonSizeMult", "float");
+        NexConfig.groundBattleGarrisonXP = (float)loadSetting("groundBattleGarrisonXP", "float");
+        NexConfig.groundBattleInvasionTroopSizeMult = (float)loadSetting("groundBattleInvasionTroopSizeMult", "float");
+        NexConfig.groundBattleInvasionTroopXP = (float)loadSetting("groundBattleInvasionTroopXP", "float");
+        GBConstants.DEFENSE_STAT.xp = NexConfig.groundBattleGarrisonXP;
+        GBConstants.OFFENSE_STAT.xp = NexConfig.groundBattleInvasionTroopXP;
 
         NexConfig.enableDiplomacy = (boolean)loadSetting("enableDiplomacy", "boolean");
         NexConfig.followersDiplomacy = (boolean)loadSetting("followersDiplomacy", "boolean");
@@ -182,6 +197,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.allianceGracePeriod = (int)loadSetting("allianceGracePeriod", "int");
         //NexConfig.allianceFormationInterval = (float)loadSetting("allianceFormationInterval", "int");
         NexConfig.ignoreAlignmentForAlliances = (boolean)loadSetting("ignoreAlignmentForAlliances", "boolean");
+        NexConfig.npcAllianceOffers = (boolean)loadSetting("npcAllianceOffers", "boolean");
 
         NexConfig.legacyInsurance = (boolean)loadSetting("legacyInsurance", "boolean");
         NexConfig.playerInsuranceMult = (float)loadSetting("playerInsuranceMult", "float");

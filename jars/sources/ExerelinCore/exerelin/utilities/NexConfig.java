@@ -72,7 +72,13 @@ public class NexConfig
     public static float creditLossOnColonyLossMult = 0.5f;
     public static boolean allowNPCSatBomb = true;
     public static float permaHateFromPlayerSatBomb = 0.2f;
+
+    // ground battles
     public static float groundBattleDamageMult = 1;
+    public static float groundBattleGarrisonSizeMult = 1;
+    public static float groundBattleGarrisonXP = 0.25f;
+    public static float groundBattleInvasionTroopSizeMult = 1;
+    public static float groundBattleInvasionTroopXP = 0.5f;
 
     // Diplomacy
     public static boolean enableDiplomacy = true;
@@ -84,6 +90,7 @@ public class NexConfig
     public static float allianceFormationInterval = 30f;
     public static boolean ignoreAlignmentForAlliances = false;
     public static float predefinedAllianceNameChance = 1;
+    public static boolean npcAllianceOffers = true;
     
     // Prism Freeport
     public static boolean prismInHyperspace = false;
@@ -220,7 +227,12 @@ public class NexConfig
             creditLossOnColonyLossMult = (float)settings.optDouble("creditLossOnColonyLossMult", creditLossOnColonyLossMult);
             allowNPCSatBomb = settings.optBoolean("allowNPCSatBomb", allowNPCSatBomb);
             permaHateFromPlayerSatBomb = (float)settings.optDouble("permaHateFromPlayerSatBomb", permaHateFromPlayerSatBomb);
+
             groundBattleDamageMult = (float)settings.optDouble("groundBattleDamageMult", groundBattleDamageMult);
+            groundBattleGarrisonSizeMult = (float)settings.optDouble("groundBattleGarrisonSizeMult", groundBattleGarrisonSizeMult);
+            groundBattleGarrisonXP = (float)settings.optDouble("groundBattleGarrisonXP", groundBattleGarrisonXP);
+            groundBattleInvasionTroopSizeMult = (float)settings.optDouble("groundBattleInvasionTroopSizeMult", groundBattleInvasionTroopSizeMult);
+            groundBattleInvasionTroopXP = (float)settings.optDouble("groundBattleInvasionTroopXP", groundBattleInvasionTroopXP);
 
             enableDiplomacy = settings.optBoolean("enableDiplomacy", enableDiplomacy);
             allowRandomDiplomacyTraits = settings.optBoolean("allowRandomDiplomacyTraits", allowRandomDiplomacyTraits);
@@ -231,6 +243,7 @@ public class NexConfig
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
             ignoreAlignmentForAlliances = settings.optBoolean("ignoreAlignmentForAlliances", ignoreAlignmentForAlliances);
             predefinedAllianceNameChance = (float)settings.optDouble("predefinedAllianceNameChance", predefinedAllianceNameChance);
+            npcAllianceOffers = settings.optBoolean("npcAllianceOffers", npcAllianceOffers);
             
             prismInHyperspace = settings.optBoolean("prismInHyperspace", prismInHyperspace);
             prismMaxWeapons = settings.optInt("prismMaxWeapons", prismMaxWeapons);

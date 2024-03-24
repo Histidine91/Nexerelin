@@ -80,6 +80,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
             FactionAPI comm = Misc.getCommissionFaction();
             if (faction.isPlayerFaction() && comm != null) return false;    // don't deal with player while commissioned
             boolean playerRuled = Nex_IsFactionRuler.isRuler(faction);
+            if (playerRuled && !NexConfig.npcAllianceOffers) return false;
             if (playerRuled && faction.getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN)) return false;
         }
 

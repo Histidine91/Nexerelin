@@ -848,6 +848,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		float attackerStr = (int) Math.round(attacker.computeEffective(attackerBase.computeEffective(0f)));
 		float defenderStr = (int) Math.round(defender.computeEffective(0));
+		defenderStr *= NexConfig.groundBattleGarrisonSizeMult;
 		
 		tempInvasion.attackerStr = attackerStr;
 		tempInvasion.defenderStr = defenderStr;

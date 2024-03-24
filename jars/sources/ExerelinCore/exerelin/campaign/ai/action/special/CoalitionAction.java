@@ -152,7 +152,7 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
     @Override
     public void applyPriorityModifiers() {
         super.applyPriorityModifiers();
-        priority.modifyFlat("temp", 400, "lololol");
+        priority.modifyFlat("base", 120, StrategicAI.getString("statBase", true));
     }
 
     @Override

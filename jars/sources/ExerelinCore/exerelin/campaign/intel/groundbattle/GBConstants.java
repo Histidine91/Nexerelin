@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker.PersonnelData;
+import exerelin.utilities.NexConfig;
 
 public class GBConstants {
 	
@@ -71,12 +72,12 @@ public class GBConstants {
 	public static PersonnelData DEFENSE_STAT = new PersonnelData("generic_defender");
 	static {
 		DEFENSE_STAT.num = 100;
-		DEFENSE_STAT.xp = 25;
+		DEFENSE_STAT.xp = NexConfig.groundBattleGarrisonXP * 100;
 	}
 	
 	public static PersonnelData OFFENSE_STAT = new PersonnelData("generic_attacker");
 	static {
 		OFFENSE_STAT.num = 100;
-		OFFENSE_STAT.xp = 50;
+		OFFENSE_STAT.xp = NexConfig.groundBattleInvasionTroopXP * 100;
 	}
 }

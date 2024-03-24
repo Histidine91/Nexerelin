@@ -68,17 +68,23 @@
     "creditLossOnColonyLossMult": 0.4,
     "allowNPCSatBomb": true,	# NPC factions can launch saturation bombardment missions in place of some invasions, raids and vengeance fleets
     "permaHateFromPlayerSatBomb": 0.24f,	# sat bombing permanently lowers max relationship with relevant factions by this much (doubled for actual victim)
-    "groundBattleDamageMult":1,	# modifier to damage dealt during ground battle resolution; lower this to make battles last longer
+    
+    "groundBattleDamageMult":1,				# modifier to damage dealt during ground battle resolution; lower this to make battles last longer
+    "groundBattleGarrisonSizeMult":1,		# also used in legacy invasions
+    "groundBattleInvasionTroopSizeMult":1,	# applied on fleet spawn, also used in legacy invasions
+    "groundBattleGarrisonXP":0.25,			# same effects as for player marines
+    "groundBattleInvasionTroopXP":0.5,
     
     "enableDiplomacy":true,
     "allowRandomDiplomacyTraits":true,	# randomize diplomacy traits when faction relations are randomized
-    "useRelationshipBounds": true,  # if false, disregard min/max faction relationships in faction config
+    "useRelationshipBounds": true,		# if false, disregard min/max faction relationships in faction config
     
     "enableAlliances": true,	# will not dissolve existing alliances if changed, or affect scripted alliances (e.g. Iron Shell with Hegemony)
     "allianceGracePeriod": 120,  # no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
     "ignoreAlignmentForAlliances": false,
-    "predefinedAllianceNameChance": 1,	# use one of two pre-written names for alliances based on the two founding factions (currently only vanilla factions are supported) 
+    "predefinedAllianceNameChance": 1,	# use one of two pre-written names for alliances based on the two founding factions (currently only vanilla factions are supported)
+    "npcAllianceOffers": true,
     
     "baseTariffMult": 0.6,  # 1.0 = base tariff (usually 30%)
     "freeMarketTariffMult": 0.5,    # 0.5 = halved tariffs

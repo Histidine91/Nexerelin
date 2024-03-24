@@ -199,16 +199,20 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		if (NexConfig.legacyInvasions) {
 			float defenderStrength = InvasionRound.getDefenderStrength(target, 0.75f);
 			marinesTotal = (int)(defenderStrength * InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT);
+			marinesTotal *= NexConfig.groundBattleInvasionTroopSizeMult;
 		}
-		// base on Nex new invasion mechanic garrison
 
+		// base on Nex new invasion mechanic garrison
 		else {
 			float garrison = GBUtils.estimateTotalDefenderStrength(target, faction, false);
+			garrison /= NexConfig.groundBattleGarrisonSizeMult;
 			marinesTotal = (int)Math.ceil(garrison * MARINE_GARRISION_MULT);
 			
 			if (!expectBombable()) {
 				marinesTotal *= MARINE_NON_BOMBABLE_MULT;
 			}
+
+			marinesTotal *= NexConfig.groundBattleInvasionTroopSizeMult;
 		}
 		if (marinesTotal < 100) marinesTotal = 100;
 		else if (marinesTotal > MAX_MARINES_TOTAL) {
