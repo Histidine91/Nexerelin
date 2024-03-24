@@ -11,10 +11,12 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes
 import com.fs.starfarer.api.impl.campaign.ids.Industries
-import com.fs.starfarer.api.impl.campaign.intel.events.*
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel.EventStageData
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseHostileActivityFactor
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel
 import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel.HAERandomEventData
-import com.fs.starfarer.api.impl.campaign.intel.group.FGRaidAction
 import com.fs.starfarer.api.impl.campaign.intel.group.FleetGroupIntel
 import com.fs.starfarer.api.impl.campaign.intel.group.FleetGroupIntel.FGIEventListener
 import com.fs.starfarer.api.impl.campaign.intel.group.GenericRaidFGI.GenericRaidParams
@@ -130,8 +132,7 @@ open class PoliceHostileActivityFactor(intel: HostileActivityEventIntel?) : Base
             override fun createTooltip(tooltip: TooltipMakerAPI, expanded: Boolean, tooltipParam: Any) {
                 val opad = 10f
                 val str = getString("factorTooltip")
-                tooltip.addPara(str, 0f
-                )
+                tooltip.addPara(str, 0f)
             }
         }
     }
@@ -232,6 +233,10 @@ open class PoliceHostileActivityFactor(intel: HostileActivityEventIntel?) : Base
         return if (stage.id === HostileActivityEventIntel.Stage.HA_EVENT) {
             getDefaultEventTooltip("[temp] Sectorpol expedition", intel, stage)
         } else null
+    }
+
+    override fun getProgressStr(intel: BaseEventIntel?): String? {
+        return ""
     }
 
     override fun getEventFrequency(intel: HostileActivityEventIntel?, stage: EventStageData): Float {

@@ -82,10 +82,13 @@ class NexHostileActivityManager : HostileActivityManager() {
 
         @JvmStatic
         fun addCustomFactorsIfNeeded(ha: HostileActivityEventIntel) {
-            Global.getLogger(this.javaClass).info("Preparing to add custom factors")
+            //Global.getLogger(this.javaClass).info("Preparing to add custom factors")
             val alreadyHas = hasFactorOfClass(ha, PoliceHostileActivityFactor::class.java)
             if (alreadyHas) return
             ha.addActivity(PoliceHostileActivityFactor(ha), PoliceFreePortActivityCause(ha))
+
+            val remnant = ha.getActivityOfClass(RemnantHostileActivityFactor::class.java)
+            if (remnant != null) ha.addActivity(remnant, RemnantFriendlyCause(ha));
         }
 
         @JvmStatic
