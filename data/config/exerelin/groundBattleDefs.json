@@ -224,9 +224,9 @@
 			"playerCanCreate":true,
 			"strength":5.5,
 			"unitSizeMult":0.166667,
-			"dropCostMult":7.5,
-			"offensiveStrMult":1.25,
-			"crampedStrMult":0.75,
+			"dropCostMult":7.5,			# base drop/move cost is proportional to unit size, measured by number of equipment items if present or number of personnel items otherwise
+			"offensiveStrMult":1.25,	# on industries not held by the unit's side
+			"crampedStrMult":0.75,		# on things like station-only markets and water-surface planets
 			"equipment":{
 				"commodityId":"hand_weapons",
 				"crewReplacerJobId":"nex_groundBattle_heavyarms",

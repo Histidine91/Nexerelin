@@ -655,7 +655,8 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			for (CampaignFleetAPI fleet : attackFleets) {
 				if (fleet == straggler) continue;
 				if (fleet.getContainingLocation() != station.getContainingLocation() && !Misc.isNear(fleet, stagingArea.getLocation())) continue;
-				if (fleet.getVisibilityLevelOfPlayerFleet() == VisibilityLevel.COMPOSITION_DETAILS) {
+				if (fleet.getVisibilityLevelOfPlayerFleet() == VisibilityLevel.COMPOSITION_DETAILS
+						|| fleet.getVisibilityLevelToPlayerFleet() == VisibilityLevel.COMPOSITION_DETAILS) {
 					found = true;
 					log.info("Spotted fleet " + fleet.getName());
 					break;

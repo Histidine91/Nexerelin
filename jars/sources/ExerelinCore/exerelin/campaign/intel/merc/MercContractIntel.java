@@ -575,6 +575,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		//tags.add(getString("intel_tag"));
 		tags.add(Tags.INTEL_FLEET_LOG);
 		tags.add(Tags.INTEL_ACCEPTED);
+		tags.add(Tags.INTEL_AGREEMENTS);
 		tags.add(StringHelper.getString("exerelin_misc", "intelTagPersonal"));
 		return tags;
 	}

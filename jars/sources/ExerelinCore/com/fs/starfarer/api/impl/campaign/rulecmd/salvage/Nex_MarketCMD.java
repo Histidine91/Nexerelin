@@ -977,7 +977,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		dialog.getVisualPanel().showImagePortion("illustrations", "raid_prepare", 640, 400, 0, 0, 480, 300);
 
-		float marines = CrewReplacerUtils.getMarines(playerFleet, CREWREPLACER_JOB_RAID);
+		float marines = CrewReplacerUtils.getMarines(playerFleet, GBConstants.CREW_REPLACER_JOB_MARINES);
 		
 		String str;
 		TooltipMakerAPI info;
