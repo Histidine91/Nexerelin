@@ -2664,9 +2664,9 @@ nex_remLostSci_inquireSpacer2,DialogOptionSelected,$option == nex_remLostSci_inq
 Call $global.nex_remLostSci_ref beginPlanetStage
 unset $global.nex_remLostSci_wantTalkToSpacer","""Well, they didn't hide very well; Ludd knows what a surprise I had when my first mate comes running to me. I would've sent them out the airlock, but they paid their fare after the fact, so it all worked out it the end. Paid me a generous tip too, to keep quiet about it.""
 
-The spacer stops, realizing that he is not, in fact, keeping quiet. Then $heOrShe sighs and throws back his beer. ""Ah, to vacuum with it. Buy me another one and I'll tell you the name of this planet.""
+The spacer stops, realizing that $heOrShe is not, in fact, keeping quiet. Then $heOrShe sighs and throws back $hisOrHer beer. ""Ah, to vacuum with it. Buy me another one and I'll tell you the name of this planet.""
 
-You do so, and get a name and system: $nex_remLostSci_planet, in the $nex_remLostSci_system. ""You couldn’t pay me to settle down someplace like that, but I guess they really didn’t want to be found.""",nex_remLostSci_inquireSpacerEnd:Thank him and leave,
+You do so, and get a name and system: $nex_remLostSci_planet, in the $nex_remLostSci_system. ""You couldn’t pay me to settle down someplace like that, but I guess they really didn’t want to be found.""",nex_remLostSci_inquireSpacerEnd:Thank $himOrHer and leave,
 nex_remLostSci_inquireSpacerEnd,DialogOptionSelected,$option == nex_remLostSci_inquireSpacerEnd,"EndConversation
 ShowDefaultVisual
 FireAll PopulateOptions","On your way out, you notice someone leaving the room in a hurry.",,
@@ -4183,7 +4183,7 @@ nex_msbOfferOptionBar,nex_msb_optionBar,,,,nex_msb_startBar:Look into the privat
 nex_msbOfferTextContact,DialogOptionSelected,$option == nex_msb_start,"$missionId = nex_msb
 SetTextHighlightColors $nex_msb_factionColor h h h
 SetTextHighlights $nex_msb_faction $nex_msb_dist  $nex_msb_baseBounty $nex_msb_days
-Call $nex_msb_ref showMap ""Target: $nex_msb_systemNameShort""","""The terms are this,"" $heOrShe says. ""The target is the $nex_msb_faction naval forces stationed at $nex_msb_baseName in $nex_msb_systemName, $nex_msb_dist light-years away. The base rate is $nex_msb_baseBounty credits per frigate destroyed or disabled in or near the system, on an increasing scale for larger hulls, as specified in addendum A of the terms I've forwarded. The bounty will be in effect for $nex_msb_days days.
+Call $nex_msb_ref showMap ""Target: $nex_msb_systemNameShort""","""The terms are this,"" $heOrShe says. ""The target is the $nex_msb_faction naval forces stationed at $nex_msb_baseName in the $nex_msb_systemName, $nex_msb_dist light-years away. The base rate is $nex_msb_baseBounty credits per frigate destroyed or disabled in or near the system, on an increasing scale for larger hulls, as specified in addendum A of the terms I've forwarded. The bounty will be in effect for $nex_msb_days days.
 
 ""$TheFaction's naval forces will be most grateful for your assistance in this matter, captain.""","contact_accept:Accept
 contact_decline:Decline",
@@ -4200,7 +4200,7 @@ SetTextHighlightColors $nex_msb_factionColor h h h
 SetTextHighlights $nex_msb_faction $nex_msb_dist  $nex_msb_baseBounty $nex_msb_days
 Call $nex_msb_ref showMap ""Target: $nex_msb_systemNameShort""","You reach the end of the brief queue and take the seat offered by the naval officer.
 
-""The $faction navy seeks capable private military contractors for an operation against the $nex_msb_faction,"" $heOrShe explains. ""The target location is $nex_msb_baseName in $nex_msb_systemName, $nex_msb_dist light-years away. Payment is also applicable for any targets of opportunity encountered that are hostile to $theFaction. 
+""The $faction navy seeks capable private military contractors for an operation against $nex_msb_theFaction,"" $heOrShe explains. ""The target location is $nex_msb_baseName in the $nex_msb_systemName, $nex_msb_dist light-years away. 
 
 ""The base rate is $nex_msb_baseBounty credits per frigate destroyed or disabled, on an increasing scale for larger hulls,"" the officer transmits a document to your TriPad, ""as specified in addendum A of the provided terms. The duration of the bounty is $nex_msb_days days.""","contact_acceptBar:Accept
 contact_declineBarNoContinue:Decline",
