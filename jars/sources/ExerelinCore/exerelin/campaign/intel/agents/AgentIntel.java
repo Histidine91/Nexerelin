@@ -308,6 +308,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			else addAction(repeat);
 			
 			Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(repeat.cost);
+			repeat.setSp(CovertActionIntel.StoryPointUse.NONE);
 			repeat.activate();
 			return repeat;
 		} catch (CloneNotSupportedException ex) {

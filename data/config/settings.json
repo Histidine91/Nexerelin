@@ -190,12 +190,12 @@
 	
 	# Bonus XP values for most story-point-using actions
 	"bonusXP":{
-		"agentOrderSuccess":0.5,
-		"agentOrderDetection":0.75,
-		"agentOrderBoth":0,
+		"agentOrderSuccess":0.75,
+		"agentOrderDetection":1,
+		"agentOrderBoth":0.5,
 		
 		"nex_hireMerc":0.75,
-		"nex_gb_inspire":0.25,
+		"nex_gb_inspire":0.5,
 		
 		"nex_remFragments_threaten":1,
 		"nex_remBrawl_smoothtalk":0.75,

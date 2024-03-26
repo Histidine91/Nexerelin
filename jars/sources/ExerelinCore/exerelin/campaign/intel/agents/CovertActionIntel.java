@@ -71,7 +71,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	protected int newLevel = -1;
 	protected float days;
 	protected float cost;
-	protected StoryPointUse sp = StoryPointUse.NONE;
+	@Getter @Setter protected StoryPointUse sp = StoryPointUse.NONE;
 	protected float daysRemaining;
 	protected Float injuryTime;
 	protected MarketAPI agentEscapeDest;
