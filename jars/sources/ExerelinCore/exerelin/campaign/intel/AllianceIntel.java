@@ -60,7 +60,11 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 
 	public void setAllianceName(String name) {
 		this.allianceName = name;
-		if (getAlliance() != null) getAlliance().setName(name);
+		if (getAlliance() != null) getAlliance().setNameRaw(name);
+	}
+
+	public void setAllianceNameRaw(String name) {
+		this.allianceName = name;
 	}
 
 	protected Alliance getAlliance() {

@@ -72,7 +72,11 @@ public class Alliance
 	
 	public void setName(String name) {
 		this.name = name;
-		if (this.getIntel() != null) this.getIntel().setAllianceName(name);
+		if (this.getIntel() != null) this.getIntel().setAllianceNameRaw(name);
+	}
+
+	public void setNameRaw(String name) {
+		this.name = name;
 	}
 	
 	public Alignment getAlignment() {
