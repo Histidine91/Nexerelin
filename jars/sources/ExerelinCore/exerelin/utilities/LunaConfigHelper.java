@@ -184,8 +184,8 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.groundBattleGarrisonXP = (float)loadSetting("groundBattleGarrisonXP", "float");
         NexConfig.groundBattleInvasionTroopSizeMult = (float)loadSetting("groundBattleInvasionTroopSizeMult", "float");
         NexConfig.groundBattleInvasionTroopXP = (float)loadSetting("groundBattleInvasionTroopXP", "float");
-        GBConstants.DEFENSE_STAT.xp = NexConfig.groundBattleGarrisonXP;
-        GBConstants.OFFENSE_STAT.xp = NexConfig.groundBattleInvasionTroopXP;
+        GBConstants.DEFENSE_STAT.xp = NexConfig.groundBattleGarrisonXP * GBConstants.DEFENSE_STAT.num;
+        GBConstants.OFFENSE_STAT.xp = NexConfig.groundBattleInvasionTroopXP * GBConstants.OFFENSE_STAT.num;
 
         NexConfig.enableDiplomacy = (boolean)loadSetting("enableDiplomacy", "boolean");
         NexConfig.followersDiplomacy = (boolean)loadSetting("followersDiplomacy", "boolean");
