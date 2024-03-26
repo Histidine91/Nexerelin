@@ -10,7 +10,7 @@ public class BlockadeAction extends OffensiveFleetAction {
 
     @Override
     public InvasionFleetManager.EventType getEventType() {
-        return InvasionFleetManager.EventType.RAID;
+        return InvasionFleetManager.EventType.BLOCKADE;
     }
 
     @Override

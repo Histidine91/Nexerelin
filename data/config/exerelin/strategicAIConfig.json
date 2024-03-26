@@ -126,7 +126,7 @@
 			"name":"Test Raise Relations",
 			"desc":"This should not appear",
 			"classPath":"exerelin.campaign.ai.concern.special.TestRaiseRelations",
-			"tags":["diplomacy", "canDiplomacy", "diplomacy_positive"],
+			"tags":["diplomacy", "canDiplomacy", "diplomacy_positive", "hidden"],
 			"module":EXECUTIVE
 		},		
 	},

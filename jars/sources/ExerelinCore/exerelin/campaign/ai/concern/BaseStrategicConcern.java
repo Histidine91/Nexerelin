@@ -242,7 +242,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
             action.updatePriority();
             modifyActionPriority(action);
             float priority = action.getPriorityFloat();
-            if (ExerelinModPlugin.isNexDev && SAIConstants.DEBUG_LOGGING) {
+            if (ExerelinModPlugin.isNexDev && SAIConstants.DEBUG_LOGGING && !this.getDef().hasTag("hidden")) {
                 log.info(String.format("  Action %s has priority %s", action.getName(), NexUtils.mutableStatToString(action.getPriority())));
             }
             if (priority < SAIConstants.MIN_ACTION_PRIORITY_TO_USE) continue;

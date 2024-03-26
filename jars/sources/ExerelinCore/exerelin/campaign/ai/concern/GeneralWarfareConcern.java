@@ -2,6 +2,7 @@ package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -100,6 +101,17 @@ public class GeneralWarfareConcern extends BaseStrategicConcern {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean canTakeAction(StrategicAction action) {
+        RepLevel max = action.getMaxRelToTarget(action.getFaction());
+        if (max.isAtBest(RepLevel.HOSTILE)) {
+            Global.getLogger(this.getClass()).warn(String.format("General warfare concern for %s: blocking action %s due to max rel %s",
+                    ai.getFaction().getDisplayName(), action.getName(), max.getDisplayName()));
+            return false;
+        }
+        return true;
     }
 
     @Override
