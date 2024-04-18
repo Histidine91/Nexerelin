@@ -1,0 +1,6 @@
+{
+    "playableFaction":false,
+    "corvusCompatible":true,
+    "noRandomizeRelations":true,
+    "noSyncRelations":true,
+}
