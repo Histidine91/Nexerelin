@@ -118,9 +118,15 @@ public class NexUtilsFaction {
     
     public static boolean hasAnyMarkets(String factionId)
     {
+        return hasAnyMarkets(factionId, false);
+    }
+
+    public static boolean hasAnyMarkets(String factionId, boolean noHidden)
+    {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
         for (MarketAPI market : allMarkets)
         {
+            if (noHidden && market.isHidden()) continue;
             if (market.getFactionId().equals(factionId))
                 return true;
         }

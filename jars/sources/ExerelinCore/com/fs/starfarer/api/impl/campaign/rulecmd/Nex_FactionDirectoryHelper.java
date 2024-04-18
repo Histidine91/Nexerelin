@@ -156,7 +156,7 @@ public class Nex_FactionDirectoryHelper {
 		{
 			String factionId = faction.getId();
 			boolean allowed = anyPlayable && NexConfig.getFactionConfig(factionId).playableFaction;
-			allowed = allowed || liveFactions.contains(factionId) || NexUtilsFaction.hasAnyMarkets(factionId) || NexUtilsFaction.isExiInCorvus(factionId);
+			allowed = allowed || liveFactions.contains(factionId) || NexUtilsFaction.hasAnyMarkets(factionId, true) || NexUtilsFaction.isExiInCorvus(factionId);
 			if (allowed)
 				result.add(factionId);
 		}
