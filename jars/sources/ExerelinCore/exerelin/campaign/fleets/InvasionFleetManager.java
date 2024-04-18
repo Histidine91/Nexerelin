@@ -821,7 +821,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float organizeTime = getOrganizeTime(fp);
 		fp *= InvasionFleetManager.getInvasionSizeMult(factionId);
 		fp *= sizeMult;
-		if (type == EventType.RAID || type == EventType.BLOCKADE)
+		if (type == EventType.RAID)	// || type == EventType.BLOCKADE)
 			fp *= RAID_SIZE_MULT;
 		else if (type == EventType.RESPAWN)
 			fp *= RESPAWN_SIZE_MULT;

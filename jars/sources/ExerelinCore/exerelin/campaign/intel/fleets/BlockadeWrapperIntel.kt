@@ -14,12 +14,14 @@ import com.fs.starfarer.api.impl.campaign.missions.FleetCreatorMission
 import com.fs.starfarer.api.ui.SectorMapAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
+import exerelin.campaign.PlayerFactionStore
 import exerelin.campaign.ai.action.StrategicAction
 import exerelin.campaign.ai.action.StrategicActionDelegate.ActionStatus
 import exerelin.utilities.NexConfig
 import lombok.Getter
 import lombok.Setter
 import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * Wrapper for a base game {@code BlockadeFGI}, for places where an {@code OffensiveFleetIntel} is expected.
@@ -40,14 +42,13 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
         }
 
         val random = Random()
-        val params = GenericRaidParams(Random(random.nextLong()), true)
+        val params = GenericRaidParams(Random(random.nextLong()), target.faction.isPlayerFaction)
         params.factionId = faction.id
         params.source = from
-
         params.prepDays = this.orgDur
         params.payloadDays = 180f
-
         params.makeFleetsHostile = false
+        addFleetsToParams(params)
 
         val bParams = FGBlockadeParams()
         bParams.where = target.starSystem
@@ -57,14 +58,13 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
 
         fgi = BlockadeFGI(params, bParams)
         fgi.listener = this
-        Global.getSector().intelManager.addIntel(fgi)
 
         when (NexConfig.nexIntelQueued) {
             0 -> addIntelIfNeeded()
             1 -> if (isPlayerTargeted || playerSpawned || targetFaction === Misc.getCommissionFaction()) //TODO all intel has the problem of not updating without active comm relays and not queueing the update
                 addIntelIfNeeded() else if (shouldDisplayIntel()) queueIntelIfNeeded()
             2 -> if (playerSpawned) addIntelIfNeeded() else if (shouldDisplayIntel()) {
-                Global.getSector().intelManager.queueIntel(this)
+                Global.getSector().intelManager.queueIntel(fgi)
                 intelQueuedOrAdded = true
             }
             else -> {
@@ -76,6 +76,47 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
                 )
             }
         }
+    }
+
+    /**
+     * Converts {@code fp} to fleet counts and sizes.
+     */
+    fun addFleetsToParams(params: GenericRaidParams) {
+        val maxFPPerFleet = faction.getApproximateMaxFPPerFleet(FactionAPI.ShipPickMode.PRIORITY_THEN_ALL) * 0.9f
+
+        var totalDifficulty: Int = (this.fp / maxFPPerFleet * 10 * BLOCKADE_FP_BONUS_MULT).roundToInt().coerceAtLeast(1)
+
+        log.info(String.format("  Blockade initial FP: %s, max FP per fleet %s, total int points: %s", this.fp, maxFPPerFleet, totalDifficulty))
+
+        while (totalDifficulty > 0) {
+            var thisDiff = 5
+            // every sixth fleet can be maximum size
+            if (params.fleetSizes.size % 6 == 0) thisDiff = totalDifficulty
+
+            thisDiff = thisDiff.coerceAtMost(9)
+            log.info(String.format("  Number of fleets previously %s, size int for this one %s",  params.fleetSizes.size, thisDiff))
+            totalDifficulty -= thisDiff
+            log.info("  Size points remaining: " + totalDifficulty)
+
+            params.fleetSizes.add(totalDifficulty)
+        }
+    }
+
+    override fun queueIntelIfNeeded() {
+        if (intelQueuedOrAdded) return
+        if (faction.isPlayerFaction) Global.getSector().intelManager.addIntel(fgi) else Global.getSector().intelManager.queueIntel(
+            fgi
+        )
+        intelQueuedOrAdded = true
+    }
+
+    override fun addIntelIfNeeded() {
+        if (intelQueuedOrAdded) return
+        if (shouldMakeImportantIfTargetingPlayer()
+            && (targetFaction.isPlayerFaction || targetFaction === PlayerFactionStore.getPlayerFaction())
+        ) fgi.isImportant = true
+        Global.getSector().intelManager.addIntel(fgi)
+        intelQueuedOrAdded = true
     }
 
     override fun reportFGIAborted(intel: FleetGroupIntel?) {
@@ -133,5 +174,9 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
 
     override fun getStrategicActionName(): String {
         return fgi?.name ?: super.getStrategicActionName()
+    }
+
+    companion object {
+        @JvmField val BLOCKADE_FP_BONUS_MULT = 2f
     }
 }
