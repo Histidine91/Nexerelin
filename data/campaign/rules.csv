@@ -17,7 +17,7 @@ SetShortcut exerelinNGCIntroEnd ESCAPE",">>> GREETINGS, STARFARER <<<
 
 Welcome to the Nexerelin mod for Starsector!
 
-Nexerelin is essentially a 4X extension to the game. Factions within the sector will wage war, create alliances and compete to control a greater share of the sector.
+Nexerelin is essentially a 4X extension to the game, but also more than that. Factions within the sector will wage war, create alliances and compete to control a greater share of the sector. The mod also includes a range of other features, from quality-of-life improvements to a series of story missions.
 
 Nexerelin is compatible with a large number of community-made faction mods, which you can add for a more varied gameplay experience.","exerelinNGCIntroNextPage:Next
 exerelinNGCIntroEnd:Skip",$introPage needs to be a float
@@ -47,9 +47,9 @@ ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOption
 7:exerelinNGCSectorOptions:Sector generation
 8:exerelinNGCFactionOptions:Faction settings
 9:exerelinNGCOtherOptions:Other options",
-ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems. The Academy storyline will be disabled in random sector, and some features from other mods may not be usable.""
+ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems. The Academy storyline will be disabled in random sector, and some features from the base game or other mods may not be usable.""
 SetTooltipHighlights exerelinNGCEnableCorvusMode ""Academy storyline"" disabled features ""not be usable""",,exerelinNGCEnableCorvusMode:Disable random core worlds,
-ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems. The Academy storyline will be disabled in random sector, and some features from other mods may not be usable.""
+ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems. The Academy storyline will be disabled in random sector, and some features from the base game or other mods may not be usable.""
 SetTooltipHighlights exerelinNGCDisableCorvusMode ""Academy storyline"" disabled features ""not be usable""",,exerelinNGCDisableCorvusMode:Enable random core worlds,
 ,,,,,,
 ExerelinNewGameFactionConfig,ExerelinNGCFactionOptions,,"SetEnabled nex_NGCFactionToggleMenu true
@@ -2816,7 +2816,7 @@ nex_remLostSci_findScientist6,DialogOptionSelected,$option == nex_remLostSci_fin
 They get up and start pacing. ""I was born on Culann, you know. My parents were R&D types for TT, expected me to follow in their footsteps. Only I saw what kind of things they and their colleagues were doing and left as soon as I graduated.
 
 ""So I went to Opis, jewel of the Sector. Jewel after Mairaath, that is. And everything was just fine until Philip Andrada, Hero of the Sector, showed up."" They shake their head. ""I actually made it out alive. Got a new job in pretty short order, even. Until the Lion's interference got too much and I had to flee again.""",nex_remLostSci_findScientist6b:Continue,
-nex_remLostSci_findScientist6b,DialogOptionSelected,$option == nex_remLostSci_findScientist6b,"Highlight ""you""","Thump, thump, thump, go the footsteps on the polymer-panelled floor. ""So I ran to the Galatia Academy. 'Finally, a place where knowledge and study are cherished for their own sake,' I thought. And for many cycles I taught and did research there. Until, of course, the Provost had to upset the Hegemony and their marines came crashing down on our lecture halls and laboratories,"" they slam a fist into an open hand. ""There's no place anymore where a person can do science without the hand of the state reaching down their neck!""
+nex_remLostSci_findScientist6b,DialogOptionSelected,$option == nex_remLostSci_findScientist6b,"Highlight ""you""","Thump, thump, thump, go the footsteps on the polymer-panelled floor. ""So I ran to the Galatia Academy. 'Finally, a place where knowledge and study are cherished for their own sake,' I thought. And for many cycles I taught and did research there. Until, of course, the Provost had to upset the Hegemony and their marines came crashing down on our lecture halls and laboratories,"" they slam a fist into an open hand. ""There's no place anymore where someone can do science without the hand of the state reaching down their neck!""
 
 They slump back down in the chair, hands on thighs, and laugh again. ""And so I ran here, to $nex_remLostSci_planet... and then of course you come hounding me to the edge of the Sector!""",nex_remLostSci_findScientist7:Continue,
 nex_remLostSci_findScientist7,DialogOptionSelected,$option == nex_remLostSci_findScientist7,FireAll Nex_RemLostSci_ScientistConvoQuestioning,"""As for your paper,"" they sigh after a while, then gesture at the workbench. ""Red chip, 2x2, top rack on the left.""
