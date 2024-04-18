@@ -60,7 +60,7 @@
     "invasionFleetSizeMult": 1,
     "responseFleetSizeMult": 1,
     "invasionGracePeriod": 90,  # factions won't accumulate invasion points for this many days at start
-    "pointsRequiredForInvasionFleet": 27000,    # name is a bit misleading, but anyway bigger number = longer delay between invasion fleets
+    "pointsRequiredForInvasionFleet": 30000,    # name is a bit misleading, but anyway bigger number = longer delay between invasion fleets
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 30,
     "invasionPointsPerPlayerLevel": 1,
@@ -151,6 +151,7 @@
     "stabilizePackageEffect": 2,
     "rebellionMult": 1,	# higher mult means unrest will boil over into rebellion more quickly
     
+	"enableColonyExpeditions": true,
     "maxNPCNewColonySize": 6,	# for new colonies created by colony expedition event
     "hardModeColonyGrowthMult": 0.75,
     "hardModeColonyIncomeMult": 0.9,

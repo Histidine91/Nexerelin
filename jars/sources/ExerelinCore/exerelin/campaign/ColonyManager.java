@@ -1270,6 +1270,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			if (!completed) return;
 		}
 
+		if (!NexConfig.enableColonyExpeditions) return;
 		if (NexConfig.colonyExpeditionsOnlyAfterPlayerColony) {
 			boolean have = Misc.isPlayerFactionSetUp();
 			if (!have) return;
