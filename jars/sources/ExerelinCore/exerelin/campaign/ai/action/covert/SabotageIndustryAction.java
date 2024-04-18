@@ -1,5 +1,6 @@
 package exerelin.campaign.ai.action.covert;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -7,6 +8,7 @@ import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.ai.concern.GeneralWarfareConcern;
 import exerelin.campaign.ai.concern.HasIndustryTarget;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.EconomyInfoHelper;
@@ -54,6 +56,11 @@ public class SabotageIndustryAction extends CovertAction {
 
         CovertActionIntel intel = new SabotageIndustry(null, market, industry, getAgentFaction(), getTargetFaction(),
                 false, null);
+        if (concern instanceof GeneralWarfareConcern && !ai.getFaction().isHostileTo(market.getFaction())) {
+            Global.getLogger(this.getClass()).warn(String.format("General warfare concern for %s attempting to sabotage non-hostile faction %s",
+                    ai.getFaction().getDisplayName(), market.getFaction().getDisplayName()));
+        }
+
         return beginAction(intel);
     }
 
@@ -96,8 +103,8 @@ public class SabotageIndustryAction extends CovertAction {
 
         // I was gonna stop here if this is a General Warfare concern, so it only picks military targets
         // but mehhh
-
-        EconomyInfoHelper.ProducerEntry prod = CovertOpsManager.getManager().pickEconomicSabotageTarget(ai.getFaction());
+        // changed it to at least not sabotage targets outside the concern
+        EconomyInfoHelper.ProducerEntry prod = CovertOpsManager.getManager().pickEconomicSabotageTarget(ai.getFaction(), concern.getFactions());
         if (prod != null) {
             Map<String, Object> targetData = CovertOpsManager.getManager().pickSabotageIndustryTargetFromProducerEntry(prod);
             return (Industry)targetData.get("industry");

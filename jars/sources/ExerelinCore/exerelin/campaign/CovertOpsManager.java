@@ -26,6 +26,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.magiclib.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ai.StrategicAI;
@@ -623,8 +624,12 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		picker.add(null, 5);
 		return picker.pick();
 	}
-	
+
 	public ProducerEntry pickEconomicSabotageTarget(FactionAPI agentFaction) {
+		return pickEconomicSabotageTarget(agentFaction, null);
+	}
+	
+	public ProducerEntry pickEconomicSabotageTarget(FactionAPI agentFaction, @Nullable List<FactionAPI> validTargetFactions) {
 		WeightedRandomPicker<ProducerEntry> picker = new WeightedRandomPicker<>(random);
 		Map<String, Integer> commoditiesWeProduce = EconomyInfoHelper.getInstance()
 				.getCommoditiesProducedByFaction(agentFaction.getId());
@@ -633,6 +638,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		for (ProducerEntry prod : EconomyInfoHelper.getInstance().getCompetingProducers(agentFaction.getId(), 4, true))
 		{
 			if (DISALLOWED_FACTIONS.contains(prod.factionId)) continue;
+			FactionAPI targetFaction = Global.getSector().getFaction(prod.factionId);
+			if (validTargetFactions != null && !validTargetFactions.contains(targetFaction)) continue;
 			
 			float weight = 1;
 			RepLevel repLevel = agentFaction.getRelationshipLevel(prod.factionId);
@@ -681,7 +688,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	/**
 	 * Picks an appropriate target for our agent action.
 	 * @param agentFaction
-	 * @param factions
+	 * @param factions List of valid factions to target (optional)
 	 * @param actionType
 	 * @param random
 	 * @return A {@code HashMap} containing targeting details (faction, market, industry, etc.) as appropriate
@@ -709,7 +716,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		// Sabotage industry or destroy commodity stocks: Attack competitors
 		if (isDestroyStocks || isSabotage)
 		{
-			ProducerEntry target = pickEconomicSabotageTarget(agentFaction);
+			ProducerEntry target = pickEconomicSabotageTarget(agentFaction, factions);
 			if (target != null) 
 			{
 				if (isDestroyStocks) {
