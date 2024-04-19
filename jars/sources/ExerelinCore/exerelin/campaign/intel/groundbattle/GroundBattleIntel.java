@@ -808,7 +808,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 * @param player
 	 * @param fleet
 	 */
-	public void autoGenerateUnits(int marines, int heavyArms, FactionAPI faction, Boolean isAttacker, boolean player, CampaignFleetAPI fleet) {
+	public List<GroundUnit> autoGenerateUnits(int marines, int heavyArms, FactionAPI faction, Boolean isAttacker, boolean player, CampaignFleetAPI fleet) {
+		List<GroundUnit> created = new ArrayList<>();
+
 		float perUnitSize = unitSize.getMaxSizeForType(GroundUnitDef.HEAVY);
 		int numCreatable = 0;
 		
@@ -850,7 +852,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			GroundUnit unit;
 			if (player) unit = createPlayerUnit(GroundUnitDef.MARINE, numPerUnit);
 			else unit = getSide(isAttacker).createUnit(GroundUnitDef.MARINE, faction, numPerUnit, fleet);
+			created.add(unit);
 		}
+		return created;
 	}
 	
 	public void updateStability() {

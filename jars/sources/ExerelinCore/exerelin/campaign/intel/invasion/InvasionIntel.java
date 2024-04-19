@@ -40,6 +40,7 @@ import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -352,7 +353,8 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		
 		// create units
 		log.info(String.format("Deploying units: %s marines, %s heavy arms", marines, heavyArms));
-		groundBattle.autoGenerateUnits(marines, heavyArms, faction, side, false, fleet);
+		List<GroundUnit> units = groundBattle.autoGenerateUnits(marines, heavyArms, faction, side, false, fleet);
+		for (GroundUnit unit : units) unit.setRoute(route);
 		
 		// deploy the newly arrived units
 		if (true || !firstIn) {

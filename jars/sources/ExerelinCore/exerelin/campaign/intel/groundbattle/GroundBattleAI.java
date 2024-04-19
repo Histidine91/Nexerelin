@@ -317,6 +317,8 @@ public class GroundBattleAI {
 				//log.info("Remaining strRatio: " + remainingStr);
 				if (strAtLoc.hasEnemyPresence && remainingStr < 1.05f)
 					continue;
+			} else {
+				if (!unit.isFleetInRange()) continue;
 			}
 			
 			printDebug(String.format(" - Available unit: %s, at %s, strength %s", 

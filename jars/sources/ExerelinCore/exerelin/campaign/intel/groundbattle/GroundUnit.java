@@ -60,7 +60,7 @@ public class GroundUnit {
 	@Getter @Setter	protected String name;
 	@Getter @Setter	protected FactionAPI faction;
 	@Getter @Setter protected CampaignFleetAPI fleet;
-	protected RouteData route;
+	@Getter @Setter protected RouteData route;
 	@Getter @Setter protected boolean isPlayer;
 	@Getter @Setter protected boolean isAttacker;
 	@Deprecated protected ForceType type;
