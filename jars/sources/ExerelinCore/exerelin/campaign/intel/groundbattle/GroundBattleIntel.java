@@ -486,9 +486,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		FactionAPI joinSide = getSide(playerIsAttacker).getFaction();
 		boolean alreadyOurSide = joinSide.isPlayerFaction() || joinSide == Misc.getCommissionFaction()
 				|| AllianceManager.areFactionsAllied(joinSide.getId(), PlayerFactionStore.getPlayerFactionId());
-		if (repChange && !alreadyOurSide) {
+		if (repChange) {
 			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
-			impact.delta = market.getSize() * -0.02f;
+			if (!alreadyOurSide) impact.delta = market.getSize() * -0.02f;
 			// not now, we also need to look at requested fleets
 			//impact.ensureAtBest = tempInvasion.success ? RepLevel.VENGEFUL : RepLevel.HOSTILE;
 			impact.ensureAtBest = RepLevel.HOSTILE;
@@ -771,8 +771,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 */
 	public void autoGeneratePlayerUnits() {
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+		// TODO: handle 'crew replacer' and 'no crew replacer' cases separately
 		// we could try getting crew replacements for marines as well, but kinda jank since marines and tank crew may not have fully overlapping commodities
-		int marines = player.getCargo().getMarines();
+		int marines = (int)CrewReplacerUtils.getMarines(player, GBConstants.CREW_REPLACER_JOB_MARINES);
+		int tankCrew = (int)CrewReplacerUtils.getMarines(player, GBConstants.CREW_REPLACER_JOB_TANKCREW);
 		int heavyArms = (int)CrewReplacerUtils.getHeavyArms(player, GBConstants.CREW_REPLACER_JOB_HEAVYARMS);
 		
 		// add heavy units
@@ -782,7 +784,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			usableHeavyArms /= 2;
 		}
 		
-		autoGenerateUnits(marines, usableHeavyArms, null, null, true);
+		autoGenerateUnits(tankCrew, usableHeavyArms, null, null, true);
+		if (CrewReplacerUtils.enabled) {
+			marines -= tankCrew;
+			autoGenerateUnits(marines, 0, null, null, true);
+		}
 	}
 
 	public void autoGenerateUnits(int marines, int heavyArms, FactionAPI faction, Boolean isAttacker, boolean player) {
