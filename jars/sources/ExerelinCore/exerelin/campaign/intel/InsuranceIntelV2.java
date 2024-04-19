@@ -8,30 +8,20 @@ import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.RepairTrackerAPI;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
-import com.fs.starfarer.api.ui.ButtonAPI;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
-import com.fs.starfarer.api.ui.IntelUIAPI;
-import com.fs.starfarer.api.ui.LabelAPI;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.MutableValue;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.FormatFlagsConversionMismatchException;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class InsuranceIntelV2 extends BaseIntelPlugin {
 	public static Logger log = Global.getLogger(InsuranceIntelV2.class);
@@ -63,12 +53,12 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	
 	protected IntervalUtil updateInterval = new IntervalUtil(0.25f, 0.25f);
 	
-	protected long lifetimePremiums;
-	protected long lifetimeClaims;
-	protected long premiumMultNumerator;
-		
-	protected List<InsuranceClaim> claimsHistory = new ArrayList<>();
-	protected Map<String, InsurancePolicy> policies = new HashMap<>();
+	@Getter @Setter	protected long lifetimePremiums;
+	@Getter @Setter protected long lifetimeClaims;
+	@Getter @Setter	protected long premiumMultNumerator;
+
+	@Getter protected List<InsuranceClaim> claimsHistory = new ArrayList<>();
+	@Getter protected Map<String, InsurancePolicy> policies = new HashMap<>();
 		
 	public InsuranceIntelV2() {
 		Global.getSector().getIntelManager().addIntel(this);
