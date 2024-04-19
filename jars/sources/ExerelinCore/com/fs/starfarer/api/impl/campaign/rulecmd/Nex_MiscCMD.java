@@ -36,6 +36,8 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 				return isRemote(dialog.getInteractionTarget());
 			case "hasOngoingInspection":
 				return hasOngoingInspection(dialog.getInteractionTarget().getMarket());
+			case "hasAnyColoniesForQuartermasterSupplies":
+				return hasAnyColoniesForQuartermasterSupplies();
 			case "saveFactionColor":
 				saveFactionColor(params.get(1).getString(memoryMap), memoryMap.get(MemKeys.LOCAL));
 				return true;
@@ -68,6 +70,14 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 			HegemonyInspectionIntel inspect = (HegemonyInspectionIntel)iip;
 			if (inspect.getTarget() != market) continue;
 			if (inspect.getOrders() == AntiInspectionOrders.BRIBE) continue;
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean hasAnyColoniesForQuartermasterSupplies() {
+		for (MarketAPI market : Misc.getPlayerMarkets(true)) {
+			if (market.isHidden()) continue;
 			return true;
 		}
 		return false;

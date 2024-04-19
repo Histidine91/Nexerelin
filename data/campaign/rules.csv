@@ -1646,6 +1646,15 @@ $market.ruinsExplored
 $market.isPlanetConditionMarketOnly
 !$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $marketName have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
 ,,,,,,
+bqfsASkedForSuppliesDeclineColony,DialogOptionSelected,"$option == bqfs_askForSupplies2
+Nex_MiscCMD hasAnyColoniesForQuartermasterSupplies score:100","AdjustRepActivePerson -1
+FireAll PopulateOptions
+RemoveOption bqfs_askForSupplies","$HeOrShe back looks to you, perplexed. ""You own your own planet and you've come to me begging for supplies?""
+
+""I'll count this as a joke in poor taste, $playerSirOrMadam.""
+
+$HeOrShe doesn't look amused, and doesn't manage to imbue $hisOrHer words with quite the tone of respect $hisOrHer words alone would imply.",,
+,,,,,,
 tut_janContactReport3,DialogOptionSelected,$option == tutReport3,"AddAbility exerelin_follow_me 7
 SetShortcut cutCommLinkPolite ""ESCAPE""","""Finally, you could take a commission with the Hegemony - due to the Galatia business, your standing is high enough that such a request would be accepted.
 
