@@ -31,7 +31,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	public static final Object EXPIRED_UPDATE = new Object();
 	public static final String BUTTON_ACCEPT = "Accept";
 	public static final String BUTTON_REJECT = "Reject";
-	public static final float COOLDOWN = 150;
+	public static final float COOLDOWN = 180;
 	public static final String MEM_KEY_COOLDOWN = "$nex_allianceOffer_cooldown";
 
 	protected String factionId;
@@ -53,7 +53,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		Global.getSector().addScript(this);
 
 		PlayerFactionStore.getPlayerFaction().getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN);
-		Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN);	// just in case, my own code confuses me
+		Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN);
 	}
 	
 	@Override

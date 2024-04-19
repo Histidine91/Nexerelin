@@ -72,16 +72,19 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
             if (alliance.getMembersCopy().contains(ai.getFactionId()) && !alliance.canJoin(faction)) return false;
             if (alliance.getMembersCopy().contains(faction) && !alliance.canJoin(ai.getFaction())) return false;
         }
-        else if (faction != null) {
+
+        if (faction != null) {
             if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
-            if (!AllianceManager.getManager().canAlly(ai.getFactionId(), faction.getId())) return false;
+            if (alliance == null) {
+                if (!AllianceManager.getManager().canAlly(ai.getFactionId(), faction.getId())) return false;
+            }
             if (NexUtilsFaction.isPirateFaction(faction.getId())) return false;
 
             FactionAPI comm = Misc.getCommissionFaction();
             if (faction.isPlayerFaction() && comm != null) return false;    // don't deal with player while commissioned
             boolean playerRuled = Nex_IsFactionRuler.isRuler(faction);
             if (playerRuled && !NexConfig.npcAllianceOffers) return false;
-            if (playerRuled && faction.getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN)) return false;
+            if (playerRuled && ai.getFaction().getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN)) return false;
         }
 
         if (!ALLIANCE_DEBUGGING && NexUtils.getTrueDaysSinceStart() < NexConfig.allianceGracePeriod) return false;
