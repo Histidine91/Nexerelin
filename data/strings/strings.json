@@ -1719,6 +1719,9 @@
 		"police_eventDesc3":"Militarily thwarting the raid will result in the factions leaving your dens of vice alone, and you will gain reputation with criminal factions.",
 		"police_eventDesc3Highlight":"reputation with criminal factions",
 		"police_eventResetReq":"You remove all free ports worthy of Sectorpol's notice",
+		
+		"remnant_friendlyActivityCauseName":"Friendly with Remnants",
+		"remnant_friendlyActivityCauseTooltip":"Your association with the Remnants via %s leads to them grudgingly accepting your status as an uninvited neighbour.",
 	},
 	
 	"exerelin_landmarks":{

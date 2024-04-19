@@ -52,6 +52,10 @@ public class RemnantQuestUtils {
 		market.addPerson(person);
 	}
 
+	public static PersonAPI getDissonant() {
+		return Global.getSector().getImportantPeople().getPerson(PERSON_DISSONANT);
+	}
+
 	public static PersonAPI getOrCreateLostScientist() {
 		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_LOST_SCIENTIST);
 		if (person != null) return person;

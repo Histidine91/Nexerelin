@@ -69,10 +69,11 @@ open class PoliceHostileActivityFactor(intel: HostileActivityEventIntel?) : Base
             if (!market.isFreePort) return 0f;
             var score = market.size.toFloat()
             var drugs = market.getCommodityData(Commodities.DRUGS).maxSupply
-            drugs = drugs.coerceAtLeast(market.getCommodityData(Commodities.DRUGS).maxDemand)
+            drugs = drugs.coerceAtLeast(market.getCommodityData(Commodities.DRUGS).maxDemand/2)
             if (drugs > 1) score += drugs
             var guns = market.getCommodityData(Commodities.HAND_WEAPONS).maxSupply
             if (guns > 1) score += guns
+            score -= 2
 
             if (score < MIN_ACTIVITY_PER_COLONY) return 0f;
 

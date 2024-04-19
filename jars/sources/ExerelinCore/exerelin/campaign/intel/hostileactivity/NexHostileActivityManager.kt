@@ -22,7 +22,10 @@ class NexHostileActivityManager : HostileActivityManager() {
         if (tracker.intervalElapsed()) {
             val playerHasColonies = !NexUtilsFaction.getPlayerMarkets(INCLUDE_AUTONOMOUS, false).isEmpty()
             if (HostileActivityEventIntel.get() == null && playerHasColonies) {
-                HostileActivityEventIntel()
+                val ha = HostileActivityEventIntel()
+                purgeOldListeners()
+                replaceVanillaOverrideActivities(ha)
+
             } else if (HostileActivityEventIntel.get() != null && !playerHasColonies) {
                 HostileActivityEventIntel.get().endImmediately()
             }
@@ -89,6 +92,34 @@ class NexHostileActivityManager : HostileActivityManager() {
 
             val remnant = ha.getActivityOfClass(RemnantHostileActivityFactor::class.java)
             if (remnant != null) ha.addActivity(remnant, RemnantFriendlyCause(ha));
+        }
+
+        @JvmStatic
+        fun replaceVanillaOverrideActivities(ha: HostileActivityEventIntel) {
+            ha.removeActivityOfClass(PerseanLeagueHostileActivityFactor::class.java)
+            ha.removeActivityOfClass(LuddicChurchHostileActivityFactor::class.java)
+            ha.removeActivityOfClass(SindrianDiktatHostileActivityFactor::class.java)
+            Global.getSector().listenerManager.removeListenerOfClass(
+                PerseanLeagueHostileActivityFactor::class.java
+            )
+            Global.getSector().listenerManager.removeListenerOfClass(
+                LuddicChurchHostileActivityFactor::class.java
+            )
+            Global.getSector().listenerManager.removeListenerOfClass(
+                SindrianDiktatHostileActivityFactor::class.java
+            )
+
+            ha.addActivity(NexPerseanLeagueHostileActivityFactor(ha), StandardPerseanLeagueActivityCause(ha))
+            ha.addActivity(NexLuddicChurchHostileActivityFactor(ha), LuddicChurchStandardActivityCause(ha))
+            ha.addActivity(NexSindrianDiktatHostileActivityFactor(ha), SindrianDiktatStandardActivityCause(ha))
+        }
+
+        @JvmStatic
+        fun purgeOldListeners() {
+            Global.getSector().listenerManager.removeListenerOfClass(NexPerseanLeagueHostileActivityFactor::class.java)
+            Global.getSector().listenerManager.removeListenerOfClass(NexLuddicChurchHostileActivityFactor::class.java)
+            Global.getSector().listenerManager.removeListenerOfClass(NexSindrianDiktatHostileActivityFactor::class.java)
+            Global.getSector().listenerManager.removeListenerOfClass(PoliceHostileActivityFactor::class.java)
         }
 
         @JvmStatic

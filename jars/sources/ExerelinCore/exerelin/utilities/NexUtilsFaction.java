@@ -202,7 +202,9 @@ public class NexUtilsFaction {
     {
         return (factionId.equals(Factions.LUDDIC_CHURCH) 
                 || factionId.equals(Factions.LUDDIC_PATH)
-                || factionId.equals(Factions.KOL));
+                || factionId.equals(Factions.KOL)
+                || factionId.equals("knights_of_selkie")
+        );
     }
     
     /**

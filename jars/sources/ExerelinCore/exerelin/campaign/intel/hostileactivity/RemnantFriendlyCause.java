@@ -19,7 +19,9 @@ public class RemnantFriendlyCause extends BaseHostileActivityCause2 {
 
     public boolean isActive() {
         PersonAPI midnight = RemnantQuestUtils.getDissonant();
-        return midnight != null && ContactIntel.getContactIntel(midnight) != null;
+        if (midnight == null) return false;
+        ContactIntel ci = ContactIntel.getContactIntel(midnight);
+        return ci != null && !ci.isEnding() && !ci.isEnded();
     }
 
     @Override
@@ -28,12 +30,17 @@ public class RemnantFriendlyCause extends BaseHostileActivityCause2 {
     }
 
     @Override
+    public String getDesc() {
+        return NexHostileActivityManager.getString("remnant_friendlyActivityCauseName");
+    }
+
+    @Override
     public TooltipMakerAPI.TooltipCreator getTooltip() {
         return new BaseFactorTooltip() {
             public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
                 float opad = 10f;
                 String midnightName = RemnantQuestUtils.getDissonant().getNameString();
-                String str = String.format("[temp] Your association with the Remnants via %s leads to them grudgingly accepting your status as an uninvited neighbour.",
+                String str = String.format(NexHostileActivityManager.getString("remnant_friendlyActivityCauseTooltip"),
                         midnightName);
                 tooltip.addPara(str, 0f);
             }
@@ -68,6 +75,6 @@ public class RemnantFriendlyCause extends BaseHostileActivityCause2 {
     }
 
     public float getEffectMultiplier() {
-        return -1f;
+        return -1;
     }
 }
