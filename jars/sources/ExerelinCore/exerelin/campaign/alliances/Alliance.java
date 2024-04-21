@@ -5,9 +5,11 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
 import exerelin.utilities.*;
@@ -237,6 +239,16 @@ public class Alliance
 				value = alignments.get(align);
 		}
 		return value;
+	}
+
+	/**
+	 * Do new members or mergers of this alliance require player approval?
+	 * @return
+	 */
+	public boolean requirePlayerApproval() {
+		String factionId = PlayerFactionStore.getPlayerFactionId();
+		if (!members.contains(factionId)) return false;
+		return Nex_IsFactionRuler.isRuler(factionId);
 	}
 
 	public boolean canJoin(FactionAPI faction) {

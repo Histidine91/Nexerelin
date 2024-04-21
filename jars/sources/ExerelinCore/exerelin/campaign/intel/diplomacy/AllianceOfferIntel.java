@@ -3,6 +3,7 @@ package exerelin.campaign.intel.diplomacy;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
@@ -31,7 +32,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	public static final Object EXPIRED_UPDATE = new Object();
 	public static final String BUTTON_ACCEPT = "Accept";
 	public static final String BUTTON_REJECT = "Reject";
-	public static final float COOLDOWN = 180;
+	public static final float COOLDOWN = 60;	// tripled if player rejects offer or it expires
 	public static final String MEM_KEY_COOLDOWN = "$nex_allianceOffer_cooldown";
 
 	protected String factionId;
@@ -39,12 +40,14 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	protected float daysRemaining = MathUtils.getRandomNumberInRange(20, 30);
 	@Getter	@Setter	protected StrategicAction strategicAction;
 	@Nullable @Getter protected Alliance alliance;
+	@Nullable @Getter protected Alliance alliance2;
 
 	//runcode new exerelin.campaign.intel.diplomacy.AllianceOfferIntel("luddic_church", null).init();
-	public AllianceOfferIntel(String offeringFactionId, @Nullable Alliance alliance)
+	public AllianceOfferIntel(String offeringFactionId, @Nullable Alliance alliance, @Nullable Alliance alliance2)
 	{
 		this.factionId = offeringFactionId;
 		this.alliance = alliance;
+		this.alliance2 = alliance2;
 	}
 	
 	public void init() {
@@ -59,7 +62,18 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 									Color tc, float initPad) {
-		NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
+		if (alliance2 != null) {
+			alliance.getIntel().printFactionList(info, alliance.getMembersSorted(), alliance.getName(), initPad);
+			alliance2.getIntel().printFactionList(info, alliance2.getMembersSorted(), alliance2.getName(), 0);
+		} else if (alliance != null) {
+			if (!alliance.getMembersCopy().contains(factionId)) {
+				NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
+				initPad = 0;
+			}
+			alliance.getIntel().printFactionList(info, alliance.getMembersSorted(), alliance.getName(), initPad);
+		} else {
+			NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
+		}
 	}
 	
 	@Override
@@ -89,9 +103,11 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		replace.put("$isOrAre", faction.getDisplayNameIsOrAre());
 		//StringHelper.addFactionNameTokensCustom(replace, "otherFaction", faction2);
 
-		// join existing alliance, or form new alliance? apply descriptions for each case
+		// merge alliances, join existing alliance, or form new alliance? apply descriptions for each case
 		String strId = "intelAllianceDescNew";
-		if (AllianceManager.getFactionAlliance(factionId) != null) {
+		if (alliance != null && alliance2 != null) {
+			strId = "intelAllianceDescMerge";
+		} else if (AllianceManager.getFactionAlliance(factionId) != null) {
 			strId = "intelAllianceDescInvite";
 		} else if (AllianceManager.getFactionAlliance(PlayerFactionStore.getPlayerFactionId()) != null) {
 			strId = "intelAllianceDescJoin";
@@ -99,10 +115,13 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		if (alliance != null) {
 			replace.put("$alliance", alliance.getName());
 		}
+		if (alliance2 != null) {
+			replace.put("$otherAlliance", alliance2.getName());
+		}
 		
 		String str = StringHelper.getStringAndSubstituteTokens("exerelin_diplomacy", strId, replace);
 		LabelAPI label = info.addPara(str, opad);
-		label.setHighlight(faction.getDisplayNameWithArticleWithoutArticle(), alliance != null ? alliance.getName() : "");
+		label.setHighlight(faction.getDisplayNameWithArticleWithoutArticle(), alliance != null ? alliance.getName() : "", alliance2 != null ? alliance2.getName() : "");
 		label.setHighlightColors(faction.getBaseUIColor(), h);
 		
 		if (state == 0) {
@@ -135,8 +154,17 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	public void accept() {
 		if (state == 1) return;
 
-		alliance = AllianceManager.createAlliance(factionId, PlayerFactionStore.getPlayerFactionId());
+		if (alliance2 != null) AllianceManager.getManager().mergeAlliance(alliance, alliance2);
+		else alliance = AllianceManager.createAlliance(factionId, PlayerFactionStore.getPlayerFactionId());
 		state = 1;
+	}
+
+	public void reject(boolean applyExtendedCooldown) {
+		state = -1;
+		if (applyExtendedCooldown) {
+			PlayerFactionStore.getPlayerFaction().getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN * 3);
+			Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN * 3);
+		}
 	}
 	
 	@Override
@@ -155,7 +183,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 			accept();
 		}
 		else if (buttonId == BUTTON_REJECT) {
-			state = -1;
+			reject(true);
 		}
 
 		endAfterDelay();
@@ -168,7 +196,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 			return;
 		
 		if (!SectorManager.isFactionAlive(factionId)) {
-			state =-1;
+			reject(false);
 			sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
 			endAfterDelay();
 			return;
@@ -176,7 +204,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 
 		// auto-reject if relations become too poor
 		if (Global.getSector().getPlayerFaction().isAtBest(factionId, RepLevel.NEUTRAL)) {
-			state = -1;
+			reject(false);
 			endAfterDelay();
 			return;
 		}
@@ -184,7 +212,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		daysRemaining -= Global.getSector().getClock().convertToDays(amount);
 		
 		if (daysRemaining <= 0) {
-			state = -1;
+			reject(true);
 			sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
 			endAfterDelay();
 		}
@@ -216,6 +244,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
+		tags.add(StringHelper.getString(Tags.INTEL_AGREEMENTS, true));
 		tags.add(StringHelper.getString("diplomacy", true));
 		tags.add(StringHelper.getString("alliances", true));
 		tags.add(factionId);

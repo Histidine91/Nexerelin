@@ -12,6 +12,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.alliances.AllianceVoter.VoteResult;
@@ -190,8 +191,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         if (alliance1 != null && alliance2 != null)
         {
-            log.error("Attempt to form alliance with two factions who are already in an alliance");
-            return null;
+            //log.error("Attempt to form alliance with two factions who are already in an alliance");
+            //return null;
+            manager.mergeAlliance(alliance1, alliance2);
+            return alliance1;
         }
         else if (alliance1 != null)
         {
@@ -345,6 +348,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
      * @param second
      */
     public void mergeAlliance(Alliance first, Alliance second) {
+        if (first == second) return;
         
         for (String permaMember : second.getPermaMembersCopy()) {
             first.addPermaMember(permaMember);
@@ -436,6 +440,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         if (!NexConfig.enableAlliances) return;
 
+        //boolean debug = false;
+
         log.info("Trying to make alliance");
         SectorAPI sector = Global.getSector();
         List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
@@ -449,6 +455,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             if (NexUtilsFaction.isPirateFaction(factionId)) continue;
             if (INVALID_FACTIONS.contains(factionId)) continue;
 			if (Nex_IsFactionRuler.isRuler(factionId)) continue;
+			if (StrategicAI.getAI(factionId) != null) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             for (String otherFactionId : liveFactionIds)
@@ -472,7 +479,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                         if (Global.getSector().getFaction(otherFactionId).getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN))
                             continue;
 
-                        AllianceOfferIntel offer = new AllianceOfferIntel(factionId, null);
+                        AllianceOfferIntel offer = new AllianceOfferIntel(factionId, null, null);
                         offer.init();
                     }
                     else {
@@ -487,10 +494,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         // no valid alliances to create, let's look for an existing alliance to join
         for (String factionId : liveFactionIds)
         {
+            //if (debug) break;
             if (alliancesByFactionId.containsKey(factionId)) continue;
             if (INVALID_FACTIONS.contains(factionId)) continue;
             if (Nex_IsFactionRuler.isRuler(factionId)) continue;
             if (NexUtilsFaction.isPirateFaction(factionId)) continue;
+            if (StrategicAI.getAI(factionId) != null) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             WeightedRandomPicker<Alliance> picker = new WeightedRandomPicker<>();
@@ -499,12 +508,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             {
                 float value = NexConfig.ignoreAlignmentForAlliances ? 1 : getAlignmentCompatibilityWithAlliance(factionId, alliance);
                 if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE) continue;
-                
+
 				if (Math.random() > Math.pow(JOIN_CHANCE_MULT_PER_MEMBER, alliance.getMembersCopy().size()))
 				{
 					continue;
 				}
-                
+
 				float relationship = alliance.getAverageRelationshipWithFaction(factionId);
 				if (relationship < MIN_RELATIONSHIP_TO_JOIN || Math.random() > relationship * JOIN_CHANCE_MULT)
 				{
@@ -521,32 +530,50 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                     }
                 }
                 if (abort) continue;
-                
-                picker.add(alliance, relationship * (value + 1));
+
+                float weight = relationship * (value + 1);
+                picker.add(alliance, weight);
             }
             // okay, join an alliance
             if (!picker.isEmpty())
             {
-                joinAlliance(factionId, picker.pick());
+                Alliance all = picker.pick();
+                if (all.requirePlayerApproval()) {
+                    if (Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN))
+                        continue;
+
+                    AllianceOfferIntel offer = new AllianceOfferIntel(factionId, all, null);
+                    offer.init();
+                }
+                else joinAlliance(factionId, all);
                 return; // only one alliance at a time
             }
         }
         
         // no valid alliances to join, try to merge existing alliances
-        for (Alliance alliance : alliances) {
-			boolean didAnything = false;
-			
+        OUTER: for (Alliance alliance : alliances) {
+            if (NexConfig.enableStrategicAI) break;
+
             for (Alliance otherAlliance : alliances) {
                 if (alliance == otherAlliance) continue;
                 if (Math.random() > MERGE_CHANCE_MULT) continue;
-                
+
                 if (canMerge(alliance, otherAlliance)) {
-                    mergeAlliance(alliance, otherAlliance);
-					didAnything = true;
-					break;
+                    if (alliance.requirePlayerApproval() || otherAlliance.requirePlayerApproval()) {
+                        String factionId = PlayerFactionStore.getPlayerFactionId();
+                        if (Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN))
+                            continue;
+
+                        Alliance toOffer = !alliance.getMembersCopy().contains(factionId) ? alliance : otherAlliance;
+                        AllianceOfferIntel offer = new AllianceOfferIntel(toOffer.getRandomMember(), alliance, otherAlliance);
+                        offer.init();
+                    }
+                    else {
+                        mergeAlliance(alliance, otherAlliance);
+                    }
+					break OUTER;
                 }
             }
-			if (didAnything) break;
         }
     }
 	
@@ -629,10 +656,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 			return;
         
         float days = Global.getSector().getClock().convertToDays(amount);
+        daysElapsed += days;
     
         if (daysElapsed < NexConfig.allianceGracePeriod)
         {
-            daysElapsed += days;
             return;
         }
         

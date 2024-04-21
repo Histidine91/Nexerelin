@@ -67,14 +67,14 @@
 			"name":"Powerful Unfriendly",
 			"desc":"$TheFaction $factionIsOrAre strong, and our relations with them are not always friendly. We should either appease them or take other precautions.",
 			"classPath":"exerelin.campaign.ai.concern.PowerfulUnfriendlyConcern",
-			"tags":["diplomacy", "canDiplomacy", "canCoalition", "trait_paranoid", "trait_submissive"],
+			"tags":["diplomacy", "canDiplomacy", "canCoalition", "trait_paranoid", "trait_submissive", "coalition_enemy"],
 			"module":DIPLOMATIC
 		},
 		"closeAdversaries":{
 			"name":"Close Adversaries",
 			"desc":"Two factions unfriendly to us, $theFaction and $theOtherFaction, are getting closer than we would like.",
 			"classPath":"exerelin.campaign.ai.concern.CloseAdversariesConcern",
-			"tags":["diplomacy", "canLowerRelations", "diplomacy_negative", "canDeclareWar", "canMakePeace", "canCoalition", "trait_paranoid"],
+			"tags":["diplomacy", "canLowerRelations", "diplomacy_negative", "canDeclareWar", "canMakePeace", "canCoalition", "trait_paranoid", "coalition_enemy"],
 			"module":DIPLOMATIC
 		},
 		"warWeariness":{

@@ -21,7 +21,7 @@ public class RaiseRelationsAction extends CovertAction {
     protected boolean beginAction(CovertActionIntel intel) {
         boolean result = super.beginAction(intel);
         if (result) {
-            Global.getSector().getMemoryWithoutUpdate().set("$nex_diplomacy_cooldown", true, DiplomacyAction.DIPLOMACY_GLOBAL_COOLDOWN);
+            Global.getSector().getMemoryWithoutUpdate().set(DiplomacyAction.MEM_KEY_GLOBAL_COOLDOWN, true, DiplomacyAction.DIPLOMACY_GLOBAL_COOLDOWN);
         }
         return result;
     }

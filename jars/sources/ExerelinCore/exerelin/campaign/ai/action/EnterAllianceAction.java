@@ -16,9 +16,10 @@ import lombok.Setter;
 
 public class EnterAllianceAction extends DiplomacyAction implements StrategicActionDelegate {
 
-    public static final boolean ALLIANCE_DEBUGGING = false;
+    public static final boolean ALLIANCE_DEBUGGING = true;
 
     @Getter @Setter protected Alliance alliance;
+    @Getter @Setter protected Alliance alliance2;
 
     /*
         note: when applying to join an existing alliance, 'faction' will be the AI faction
@@ -28,27 +29,19 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
     @Override
     public boolean generate() {
-        String afid = ai.getFactionId();
-        boolean isPlayerControlled = faction != null && Nex_IsFactionRuler.isRuler(faction);
-        if (alliance != null) {
-            if (isPlayerControlled) {
-                AllianceOfferIntel offer = new AllianceOfferIntel(afid, alliance);
-                setDelegate(offer);
-                offer.init();
-                return true;
-            } else {
-                AllianceManager.joinAllianceStatic(faction.getId(), alliance);
-            }
+        boolean requirePlayerApproval = faction != null && Nex_IsFactionRuler.isRuler(faction);
+        if (alliance != null) requirePlayerApproval |= alliance.requirePlayerApproval();
+        if (alliance2 != null) requirePlayerApproval |= alliance2.requirePlayerApproval();
 
+        if (requirePlayerApproval) {
+            AllianceOfferIntel offer = new AllianceOfferIntel(faction.getId(), alliance, alliance2);
+            setDelegate(offer);
+            offer.init();
+            return true;
         } else {
-            if (isPlayerControlled) {
-                AllianceOfferIntel offer = new AllianceOfferIntel(afid, AllianceManager.getFactionAlliance(afid));
-                setDelegate(offer);
-                offer.init();
-                return true;
-            } else {
-                alliance = AllianceManager.createAlliance(ai.getFactionId(), this.faction.getId());
-            }
+            if (alliance2 != null) AllianceManager.getManager().mergeAlliance(alliance, alliance2);
+            else if (alliance != null) AllianceManager.joinAllianceStatic(faction.getId(), alliance);
+            else alliance = AllianceManager.createAlliance(ai.getFactionId(), this.faction.getId());
         }
         if (alliance == null) return false;
 
@@ -84,7 +77,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
             if (faction.isPlayerFaction() && comm != null) return false;    // don't deal with player while commissioned
             boolean playerRuled = Nex_IsFactionRuler.isRuler(faction);
             if (playerRuled && !NexConfig.npcAllianceOffers) return false;
-            if (playerRuled && ai.getFaction().getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN)) return false;
+            if (!ALLIANCE_DEBUGGING && playerRuled && ai.getFaction().getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN)) return false;
         }
 
         if (!ALLIANCE_DEBUGGING && NexUtils.getTrueDaysSinceStart() < NexConfig.allianceGracePeriod) return false;

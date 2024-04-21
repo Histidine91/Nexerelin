@@ -12,7 +12,7 @@ import exerelin.utilities.NexFactionConfig;
 
 public class DiplomacyAction extends BaseStrategicAction {
 
-    public static final float DIPLOMACY_GLOBAL_COOLDOWN = 3;
+    public static final float DIPLOMACY_GLOBAL_COOLDOWN = 0.5f; // just enough to avoid the same AI doing diplomacy twice
     public static final String MEM_KEY_GLOBAL_COOLDOWN = "$nex_diplomacy_cooldown";
 
     @Override
