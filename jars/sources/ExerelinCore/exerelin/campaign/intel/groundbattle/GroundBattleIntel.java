@@ -771,23 +771,23 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 */
 	public void autoGeneratePlayerUnits() {
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
-		// TODO: handle 'crew replacer' and 'no crew replacer' cases separately
-		// we could try getting crew replacements for marines as well, but kinda jank since marines and tank crew may not have fully overlapping commodities
+
 		int marines = (int)CrewReplacerUtils.getMarines(player, GBConstants.CREW_REPLACER_JOB_MARINES);
 		int tankCrew = (int)CrewReplacerUtils.getMarines(player, GBConstants.CREW_REPLACER_JOB_TANKCREW);
 		int heavyArms = (int)CrewReplacerUtils.getHeavyArms(player, GBConstants.CREW_REPLACER_JOB_HEAVYARMS);
-		
-		// add heavy units
+
 		int usableHeavyArms = Math.min(heavyArms, marines/GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).personnel.mult);
 		if (isCramped()) {
 			//log.info("Cramped conditions, halving heavy unit count");
 			usableHeavyArms /= 2;
 		}
-		
-		autoGenerateUnits(tankCrew, usableHeavyArms, null, null, true);
+
 		if (CrewReplacerUtils.enabled) {
-			marines -= tankCrew;
+			autoGenerateUnits(tankCrew, usableHeavyArms, null, null, true);
+			marines = (int)CrewReplacerUtils.getMarines(player, GBConstants.CREW_REPLACER_JOB_MARINES);
 			autoGenerateUnits(marines, 0, null, null, true);
+		} else {
+			autoGenerateUnits(marines, usableHeavyArms, null, null, true);
 		}
 	}
 

@@ -1,7 +1,7 @@
 package exerelin.campaign.intel.groundbattle;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -16,6 +16,7 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.invasion.CounterInvasionIntel;
+import exerelin.utilities.CrewReplacerUtils;
 import exerelin.utilities.NexConfig;
 import org.apache.log4j.Logger;
 
@@ -140,9 +141,11 @@ public class GBUtils {
 	}
 	
 	public static float[] estimatePlayerStrength(GroundBattleIntel intel) {
-		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-		int marines = cargo.getMarines();
-		int heavyArms = (int)cargo.getCommodityQuantity(Commodities.HAND_WEAPONS);
+		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+		int marines;	// = (int)CrewReplacerUtils.getMarines(player, GBConstants.CREW_REPLACER_JOB_MARINES);
+		int tankCrew = (int)CrewReplacerUtils.getMarines(player, GBConstants.CREW_REPLACER_JOB_TANKCREW);
+		int heavyArms = (int)CrewReplacerUtils.getHeavyArms(player, GBConstants.CREW_REPLACER_JOB_HEAVYARMS);
+
 		float marineStr = GroundUnitDef.getUnitDef(GroundUnitDef.MARINE).strength;
 		float heavyStr = GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).strength;
 		int crewMult = GroundUnitDef.getUnitDef(GroundUnitDef.HEAVY).personnel.mult;
@@ -150,12 +153,12 @@ public class GBUtils {
 		// if cramped, do marines only
 		// else, heavy arms then marines
 		if (false && intel.isCramped()) {
+			marines = (int)CrewReplacerUtils.getMarines(player, GBConstants.CREW_REPLACER_JOB_MARINES);
 			return new float[] {marines * marineStr};
 		}
 		else {
-			heavyArms = Math.min(heavyArms, marines/crewMult);
-
-			int remainingMarines = marines - heavyArms * crewMult;
+			heavyArms = Math.min(heavyArms, tankCrew/crewMult);
+			int remainingMarines = (int)CrewReplacerUtils.getMarines(player, GBConstants.CREW_REPLACER_JOB_MARINES) - heavyArms * crewMult;
 
 			return new float[] {remainingMarines * marineStr,
 					heavyArms * heavyStr};
