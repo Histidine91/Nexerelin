@@ -14,8 +14,9 @@ public class FastRepair extends BaseHullMod {
     public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize,
                                                MutableShipStatsAPI stats, String id) {
         stats.getRepairRatePercentPerDay().modifyPercent(id, 200);
-        stats.getRepairRatePercentPerDay().modifyPercent(id, 200);
         stats.getDynamic().getMod(Stats.INSTA_REPAIR_FRACTION).modifyFlat(id, FREE_REPAIR_PERCENT * 0.01f);
+        stats.getDynamic().getMod(Stats.DMOD_ACQUIRE_PROB_MOD).modifyMult(id, 0);
+        stats.getDynamic().getMod(Stats.INDIVIDUAL_SHIP_RECOVERY_MOD).modifyFlat(id, 1000f);
     }
 
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {

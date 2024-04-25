@@ -355,7 +355,7 @@
 					"rankId":"spaceCaptain",
 					"aiCoreId":"omega_core",
 					"persistentId":"nex_endbringer",
-					"chatterCharacterId":"robotic",
+					"chatterCharacterId":"emote",
 					"skills":{
 						"missile_specialization":2,
 					},

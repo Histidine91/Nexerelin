@@ -580,6 +580,8 @@ public class ExerelinModPlugin extends BaseModPlugin
             TextureData.readTextureDataCSV("data/lights/nex_tex_data.csv");
             LightData.readLightDataCSV("data/lights/nex_light_data.csv");
         }
+
+        Global.getSettings().getHullSpec("facet_endbringer").getHints().remove(ShipHullSpecAPI.ShipTypeHints.UNBOARDABLE);
     }
     
     @Override

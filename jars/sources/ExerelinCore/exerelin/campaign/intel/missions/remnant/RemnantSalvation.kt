@@ -639,9 +639,16 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         params.commander = RemnantQuestUtils.getOrCreateArgent()
         params.officerNumberMult = 1.2f
         params.officerLevelBonus = 1
+        if (Global.getSettings().modManager.isModEnabled("knights_of_ludd")) {
+            log.info("Selkiefying knight fleet")
+            params.factionId = "knights_of_selkie";
+        }
+        params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL
 
         var fleet = FleetFactoryV3.createFleet(params)
         knightFleet = fleet
+
+        fleet.setFaction(Factions.LUDDIC_CHURCH, true)
 
         fleet.memoryWithoutUpdate["\$genericHail"] = true
         fleet.memoryWithoutUpdate["\$genericHail_openComms"] = "Nex_RemSalvationHail_Knight"

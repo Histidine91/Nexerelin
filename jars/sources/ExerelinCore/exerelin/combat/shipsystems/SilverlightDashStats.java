@@ -54,7 +54,7 @@ public class SilverlightDashStats extends BaseShipSystemScript {
         applyGfx(stats, state, effectLevel);
 
         if (state == State.ACTIVE) {
-            if (!USE_SHARD_EVERYFRAME) detachShardsIfNeeded((ShipAPI)stats.getEntity(), true);
+            detachShardsIfNeeded((ShipAPI)stats.getEntity(), true);
             processAspectSpawn((ShipAPI)stats.getEntity());
         }
 
@@ -207,13 +207,13 @@ public class SilverlightDashStats extends BaseShipSystemScript {
 
         // launch if main ship or any of the modules are at 40% or higher hard flux
         // or if significant enemy presence?
-        boolean wantLaunch = ship.getHardFluxLevel() > 0.4f;
+        boolean wantLaunch = ship.getHardFluxLevel() > 0.4f || ship.getFluxLevel() > 0.8f;
         if (!USE_SHARD_EVERYFRAME || fromSystemUse) {
             wantLaunch |= ship.areSignificantEnemiesInRange();
         }
-        if (!wantLaunch) {
+        if (!wantLaunch && !fromSystemUse) {
             for (ShipAPI module : ship.getChildModulesCopy()) {
-                if (module.getHardFluxLevel() > 0.4f) {
+                if (module.getHardFluxLevel() > 0.4f || module.getHullLevel() < 1) {
                     wantLaunch = true;
                     break;
                 }
