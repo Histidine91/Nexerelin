@@ -906,32 +906,18 @@ nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,Fire
 # Stabilization package,,,,,,
 nex_stabilizePackageOption,PopulateOptions,"$entity.hasMarket
 Nex_IsBaseOfficial any
-$faction.id != player",,,"11:nex_stabilizePackage_main:""I can help with your unrest problem.""",
-nex_stabilizePackageOptionDisabled,PopulateOptions,"$entity.hasMarket
-$faction.id != player
-!Nex_StabilizePackage enabled","SetTooltip nex_stabilizePackage_main ""$marketName does not require such assistance at present.""
-SetEnabled nex_stabilizePackage_main false",,,
-nex_stabilizePackageOptionCooldown,PopulateOptions,"$entity.hasMarket
-$faction.id != player
-$market.nex_stabilizePackage_cooldown","SetTooltip nex_stabilizePackage_main ""$marketName has already been recently stabilized. Delivery of further packages will not be worthwhile for $nex_stabilizePackage_textCooldown.""
-SetTooltipHighlightColors nex_stabilizePackage_main hColor
-SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textCooldown
-SetEnabled nex_stabilizePackage_main false",,,
-nex_stabilizePackageOptionCooldownInvasion,PopulateOptions,"$entity.hasMarket
-$faction.id != player
-$market.nex_captureStabilizeTimeout","SetTooltip nex_stabilizePackage_main ""$marketName was recently conquered, and the situation remains too chaotic for stabilization to be feasible. This will last for $nex_stabilizePackage_textInvadeCooldown.""
-SetTooltipHighlightColors nex_stabilizePackage_main hColor
-SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textInvadeCooldown
-SetEnabled nex_stabilizePackage_main false",,,
+$faction.id != player",FireAll Nex_StabilizePackageCheckEnabled,,"11:nex_stabilizePackage_main:""I can help with your unrest problem.""",
 nex_stabilizePackageSelRelief,DialogOptionSelected,"$option == nex_stabilizePackage_main
 $market.nex_stabilizePackage_type == ""relief""","Nex_StabilizePackage init
-SetShortcut nex_stabilizePackage_cancel ""ESCAPE""","""Truly? We would be most grateful for any assistance you can render. Supplies and food — and of course, credits — would help get the people of $marketName through their current difficulties.""
+SetShortcut nex_stabilizePackage_cancel ""ESCAPE""
+FireAll Nex_StabilizePackageCheckEnabled","""Truly? We would be most grateful for any assistance you can render. Supplies and food — and of course, credits — would help get the people of $marketName through their current difficulties.""
 OR
 ""You are most generous, $playerName. A proper contribution of aid materials and credits would greatly aid or relief efforts.""","nex_stabilizePackage_proceed:Deliver the relief package
 nex_stabilizePackage_cancel:Reconsider",
 nex_stabilizePackageSelRepression,DialogOptionSelected,"$option == nex_stabilizePackage_main
 $market.nex_stabilizePackage_type == ""repression""","Nex_StabilizePackage init
-SetShortcut nex_stabilizePackage_cancel ""ESCAPE""","""We would welcome your assistance in this matter. An adequate contribution of supplies, munitions and funding would greatly assist our efforts in maintaining order.""
+SetShortcut nex_stabilizePackage_cancel ""ESCAPE""
+FireAll Nex_StabilizePackageCheckEnabled","""We would welcome your assistance in this matter. An adequate contribution of supplies, munitions and funding would greatly assist our efforts in maintaining order.""
 OR
 ""Indeed? Well, should you have the proper supplies and credits to support our pacification efforts, my superiors would make their gratitude known.""","nex_stabilizePackage_proceed:Deliver the pacification package
 nex_stabilizePackage_cancel:Reconsider",
@@ -948,6 +934,27 @@ OR
 ""Perhaps generosity has its limits.
 
 Anything else?""",,
+,,,,,,
+nex_stabilizePackageDisabled,Nex_StabilizePackageCheckEnabled,!Nex_StabilizePackage enabled,"SetTooltip nex_stabilizePackage_main ""$marketName does not require such assistance at present.""
+SetEnabled nex_stabilizePackage_main false
+SetTooltip nex_stabilizePackage_proceed ""$marketName does not require such assistance at present.""
+SetEnabled nex_stabilizePackage_proceed false",,,
+nex_stabilizePackageCooldown,Nex_StabilizePackageCheckEnabled,$market.nex_stabilizePackage_cooldown,"SetTooltip nex_stabilizePackage_main ""$marketName has already been recently stabilized. Delivery of further packages will not be worthwhile for $nex_stabilizePackage_textCooldown.""
+SetTooltipHighlightColors nex_stabilizePackage_main hColor
+SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textCooldown
+SetEnabled nex_stabilizePackage_main false
+SetTooltip nex_stabilizePackage_proceed ""$marketName has already been recently stabilized. Delivery of further packages will not be worthwhile for $nex_stabilizePackage_textCooldown.""
+SetTooltipHighlightColors nex_stabilizePackage_proceed hColor
+SetTooltipHighlights nex_stabilizePackage_proceed $nex_stabilizePackage_textCooldown
+SetEnabled nex_stabilizePackage_proceed false",,,
+nex_stabilizePackageCooldownInvasion,Nex_StabilizePackageCheckEnabled,$market.nex_captureStabilizeTimeout,"SetTooltip nex_stabilizePackage_main ""$marketName was recently conquered, and the situation remains too chaotic for stabilization to be feasible. This will last for $nex_stabilizePackage_textInvadeCooldown.""
+SetTooltipHighlightColors nex_stabilizePackage_main hColor
+SetTooltipHighlights nex_stabilizePackage_main $nex_stabilizePackage_textInvadeCooldown
+SetEnabled nex_stabilizePackage_main false
+SetTooltip nex_stabilizePackage_proceed ""$marketName was recently conquered, and the situation remains too chaotic for stabilization to be feasible. This will last for $nex_stabilizePackage_textInvadeCooldown.""
+SetTooltipHighlightColors nex_stabilizePackage_proceed hColor
+SetTooltipHighlights nex_stabilizePackage_proceed $nex_stabilizePackage_textInvadeCooldown
+SetEnabled nex_stabilizePackage_proceed false",,,
 #END Stabilization package,,,,,,
 ,,,,,,
 # Grant autonomy,,,,,,
