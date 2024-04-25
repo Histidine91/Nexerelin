@@ -82,7 +82,7 @@ class DefenseFleetsFactor(intel: HostileActivityEventIntel?) : BaseHostileActivi
         //if (intel.def.averageSMods != null) params.averageSMods = intel.def.averageSMods - 1  // don't want S-mods on the generics
         params.noCommanderSkills = true
         params.ignoreMarketFleetSizeMult = true
-        params.mode = FactionAPI.ShipPickMode.PRIORITY_THEN_ALL
+        params.modeOverride = FactionAPI.ShipPickMode.PRIORITY_THEN_ALL
 
         var tempFleet : CampaignFleetAPI? = FleetFactoryV3.createFleet(params);
         tempFleet?.inflateIfNeeded()

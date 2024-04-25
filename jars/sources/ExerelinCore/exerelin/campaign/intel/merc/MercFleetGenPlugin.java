@@ -64,7 +64,7 @@ public class MercFleetGenPlugin {
 					0	// qualityMod
 			);
 			params.factionId = def.factionIdForShipPick;
-			params.mode = ShipPickMode.PRIORITY_THEN_ALL;
+			params.modeOverride = ShipPickMode.PRIORITY_THEN_ALL;
 			params.officerNumberMult = 0;
 			if (def.doctrineSizeOverride != null) {
 				FactionDoctrineAPI copy = def.getFaction().getDoctrine().clone();
