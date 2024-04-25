@@ -32,7 +32,7 @@ public class SpecialForcesManager implements EveryFrameScript {
 	public static final float MAX_POINTS = 300;
 	public static final float POINTS_TO_SPAWN = 250;
 	public static final float POINT_GENERATION_MULT = 0.1f;	// since we're now working with fleet pool points instead of invasion points
-	public static final int RESPAWN_DELAY = 30;
+	public static final int RESPAWN_DELAY = 60;
 	public static final float SIZE_MULT = 0.6f;
 	public static final String MEM_KEY_RESPAWN_DELAY = "$nex_specialForcesRespawnDelay";
 	
