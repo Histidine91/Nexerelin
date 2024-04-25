@@ -4,6 +4,10 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ColonyInteractionListener;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.RepairTrackerAPI;
@@ -23,11 +27,14 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 
-public class InsuranceIntelV2 extends BaseIntelPlugin {
+public class InsuranceIntelV2 extends BaseIntelPlugin implements ColonyInteractionListener {
 	public static Logger log = Global.getLogger(InsuranceIntelV2.class);
 	
 	public static final boolean DISPLAY_ONLY = false;
 	public static final boolean INSURE_OFFICERS = false;
+	public static final boolean FREE_INSURANCE_FOR_LEGAL_PURCHASES = false;
+
+	public static final Set<String> FREE_INSURANCE_SUBMARKETS = new HashSet<>(Arrays.asList("exerelin_prismMarket"));
 	
 	public static final float COMPENSATION_PER_DMOD = 0.2f;
 	public static final float LIFE_INSURANCE_PER_LEVEL = 2000f;
@@ -63,7 +70,12 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 	public InsuranceIntelV2() {
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
+		Global.getSector().getListenerManager().addListener(this);
 		this.setImportant(true);
+	}
+
+	public static InsuranceIntelV2 getInstance() {
+		return (InsuranceIntelV2)Global.getSector().getIntelManager().getFirstIntel(InsuranceIntelV2.class);
 	}
 	
 	/*
@@ -112,11 +124,11 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		return Global.getSector().getPlayerFleet().getCargo().getCredits();
 	}
 	
-	public void insureShip(FleetMemberAPI member) {
-		insureShip(member, calcPremiumMult());
+	public InsurancePolicy insureShip(FleetMemberAPI member) {
+		return insureShip(member, calcPremiumMult());
 	}
 	
-	public void insureShip(FleetMemberAPI member, float premiumMult) {
+	public InsurancePolicy insureShip(FleetMemberAPI member, float premiumMult) {
 		int premium = calcPremium(member, premiumMult);
 		int insuredAmount = calcInsurableAmount(member);
 		
@@ -136,6 +148,8 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 			getCreditsMutable().subtract(premium);
 		
 		lifetimePremiums += premium;
+
+		return policy;
 	}
 	
 	public void insureAllShips() {
@@ -379,6 +393,12 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 			}
 		}
 		claimsHistory.removeAll(claimsToRemove);
+	}
+
+	public void reverseCompatibility() {
+		if (!Global.getSector().getListenerManager().hasListener(this)) {
+			Global.getSector().getListenerManager().addListener(this);
+		}
 	}
 	
 	@Override
@@ -871,7 +891,36 @@ public class InsuranceIntelV2 extends BaseIntelPlugin {
 		format = StringHelper.substituteToken(format, "$year", date[2] + "");
 		return format;
 	}
-	
+
+	@Override
+	public void reportPlayerOpenedMarket(MarketAPI market) {}
+
+	@Override
+	public void reportPlayerClosedMarket(MarketAPI market) {}
+
+	@Override
+	public void reportPlayerOpenedMarketAndCargoUpdated(MarketAPI market) {}
+
+	@Override
+	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
+		if (!FREE_INSURANCE_FOR_LEGAL_PURCHASES) return;
+
+		SubmarketAPI submarket = transaction.getSubmarket();
+		if (submarket == null) return;
+		if (!FREE_INSURANCE_SUBMARKETS.contains(submarket.getSpecId())) {
+			if (!submarket.getPlugin().isOpenMarket() && !submarket.getPlugin().isMilitaryMarket()) return;
+			if (submarket.getPlugin().isFreeTransfer()) return;
+		}
+
+		for (PlayerMarketTransaction.ShipSaleInfo sale : transaction.getShipsBought()) {
+			FleetMemberAPI member = sale.getMember();
+			if (policies.containsKey(member.getId())) continue;
+
+			InsurancePolicy policy = insureShip(member, 0);
+			policy.premium = calcPremium(member, calcPremiumMult());
+		}
+	}
+
 	public static class InsuranceClaim {
 		public FleetMemberAPI member;
 		public OfficerDataAPI officer;

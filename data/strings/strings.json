@@ -2054,8 +2054,8 @@
 		
 		"headerTitle":"Insurance management",
 		"headerBreakdown":"Breakdown",
-		"descInsuranceMult":"Insurance mult: %s×",
-		"descPremiumMult":"Premium mult: %s×",
+		"descInsuranceMult":"Insurance mult: %s ×",
+		"descPremiumMult":"Premium mult: %s ×",
 		"descLifetimePremiums":"Total lifetime premiums",
 		"descLifetimeClaims":"Total lifetime claims",
 		"descHistoryTime":"Claims from past %s days",
@@ -2077,7 +2077,7 @@
 
 		"helpPara3Title":"Premiums",
 		"helpPara3-1":"Insurance premiums are paid up front in full and will not be refunded under any circumstances.",
-		"helpPara3-2":"The insurance premium multiplier ranges from %s× to %s×. It increases when claims are paid and decreases for every %s days that elapse on the policy.",
+		"helpPara3-2":"The insurance premium multiplier ranges from %s × to %s ×. It increases when claims are paid and decreases for every %s days that elapse on the policy.",
 		"helpPara3-3":"The multiplier formula is: %s + (claims - annualized premiums)/%s",
 		
 		"helpFooter":"Copyright © c.%s FeBSure. All rights reserved.",

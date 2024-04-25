@@ -46,10 +46,7 @@ import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.econ.*;
 import exerelin.campaign.fleets.*;
 import exerelin.campaign.graphics.MiningCooldownDrawerV2;
-import exerelin.campaign.intel.FactionBountyManager;
-import exerelin.campaign.intel.MilestoneTracker;
-import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
-import exerelin.campaign.intel.PersonalConfigIntel;
+import exerelin.campaign.intel.*;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
 import exerelin.campaign.intel.bases.Nex_PirateBaseManager;
@@ -232,6 +229,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!Global.getSector().getListenerManager().hasListener(DiplomacyManager.getManager())) {
             Global.getSector().getListenerManager().addListener(DiplomacyManager.getManager());
         }
+
+        if (InsuranceIntelV2.getInstance() != null) InsuranceIntelV2.getInstance().reverseCompatibility();
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();
