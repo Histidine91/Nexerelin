@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin.ListInfoMode;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.intel.group.FleetGroupIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.*;
 import com.fs.starfarer.api.ui.*;
@@ -94,46 +96,49 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 		
 		final SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
 		
-		List<RaidIntel> allRaids = new ArrayList<>();
+		List<IntelInfoPlugin> allRaids = new ArrayList<>();
 		
-		final List<RaidIntel> incomingList = sf.getRouteAI().getActiveRaidsHostile();
+		final List<IntelInfoPlugin> incomingList = sf.getRouteAI().getActiveRaidsHostile();
 		allRaids.addAll(incomingList);
-		final List<RaidIntel> outgoingList = sf.getRouteAI().getActiveRaidsFriendly();
+		final List<IntelInfoPlugin> outgoingList = sf.getRouteAI().getActiveEventsFriendly();
 		allRaids.addAll(outgoingList);
 		
-		for (final RaidIntel raid : allRaids) {
+		for (IntelInfoPlugin iip : allRaids) {
+			if (!(iip instanceof RaidIntel) && !(iip instanceof FleetGroupIntel)) continue;
+			final BaseIntelPlugin intel = (BaseIntelPlugin)iip;
+
 			CustomPanelAPI row = panel.createCustomPanel(Nex_VisualCustomPanel.PANEL_WIDTH - 4, height, null);
 			
 			TooltipMakerAPI info = row.createUIElement(width, height, false);
-			TooltipMakerAPI imgWithText = info.beginImageWithText(raid.getIcon(), height/2);
-			raid.createIntelInfo(imgWithText, ListInfoMode.MAP_TOOLTIP);
+			TooltipMakerAPI imgWithText = info.beginImageWithText(intel.getIcon(), height/2);
+			intel.createIntelInfo(imgWithText, ListInfoMode.MAP_TOOLTIP);
 			info.addImageWithText(pad);
 			row.addUIElement(info).inTL(pad, 0);
 			
 			TooltipMakerAPI btnHolder = row.createUIElement(buttonWidth, height, false);
 			
 			ButtonAPI selButton = btnHolder.addButton(StringHelper.getString("nex_specialForces", "dialogButtonViewRaid"), 
-					"view_" + raid.hashCode(), Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), 
+					"view_" + intel.hashCode(), Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(),
 					Alignment.MID, CutStyle.TOP, buttonWidth, buttonHeight, pad);
 			plugin.addButton(new InteractionDialogCustomPanelPlugin.ButtonEntry(
-					selButton, "nex_view_" + raid.hashCode()) 
+					selButton, "nex_view_" + intel.hashCode())
 			{
 				@Override
 				public void onToggle() {
-					dialog.getVisualPanel().showCore(CoreUITabId.INTEL, null, raid, new NexUtilsGUI.NullCoreInteractionListener());
+					dialog.getVisualPanel().showCore(CoreUITabId.INTEL, null, intel, new NexUtilsGUI.NullCoreInteractionListener());
 				}
 			});
 			
 			ButtonAPI joinButton = btnHolder.addButton(StringHelper.getString("nex_specialForces", "dialogButtonJoinRaid"), 
-					"join_" + raid.hashCode(), Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), 
+					"join_" + intel.hashCode(), Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(),
 					Alignment.MID, CutStyle.BOTTOM, buttonWidth, buttonHeight, pad);
 			plugin.addButton(new InteractionDialogCustomPanelPlugin.ButtonEntry(
-					joinButton, "nex_join_" + raid.hashCode()) 
+					joinButton, "nex_join_" + intel.hashCode())
 			{
 				@Override
 				public void onToggle() {
-					boolean offensive = outgoingList.contains(raid);
-					joinRaid(dialog, raid, sf, offensive);
+					boolean offensive = outgoingList.contains(intel);
+					joinRaid(dialog, intel, sf, offensive);
 					showMainMenu(dialog, memoryMap);
 				}
 			});
@@ -145,11 +150,11 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 		Nex_VisualCustomPanel.addTooltipToPanel();
 	}
 	
-	public void joinRaid(InteractionDialogAPI dialog, RaidIntel raid, SpecialForcesIntel sf, boolean offensive) {
+	public void joinRaid(InteractionDialogAPI dialog, IntelInfoPlugin raid, SpecialForcesIntel sf, boolean offensive) {
 		SpecialForcesRouteAI ai = sf.getRouteAI();
 		SpecialForcesTask task;
-		if (offensive) task = ai.generateRaidAssistTask(raid, ai.getRaidAttackPriority(raid));
-		else task = ai.generateRaidDefenseTask(raid, ai.getRaidDefendPriority(raid));
+		if (offensive) task = ai.generateRaidAssistTask(raid, ai.getEventAttackPriority(raid));
+		else task = ai.generateRaidDefenseTask(raid, ai.getEventDefendPriority(raid));
 		
 		ai.assignTask(task);
 		printTaskInfo(dialog, sf, task);

@@ -9,6 +9,8 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.intel.group.*;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
@@ -44,7 +46,8 @@ import java.util.*;
 public class SpecialForcesRouteAI {
 	
 	public static Logger log = Global.getLogger(SpecialForcesRouteAI.class);
-	
+
+	public static final boolean FGI_ENABLED = true;
 	public static final float MAX_RAID_ETA_TO_CARE = 60;
 	// only defend against player if they're at least this strong
 	public static final float MIN_PLAYER_STR_TO_DEFEND = 300;
@@ -73,19 +76,24 @@ public class SpecialForcesRouteAI {
 		return null;
 	}
 	
-	protected List<RaidIntel> getActiveRaids() {
-		List<RaidIntel> raids = new ArrayList<>();
+	protected List<IntelInfoPlugin> getActiveEvents() {
+		List<IntelInfoPlugin> raids = new ArrayList<>();
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel()) 
 		{
-			if (!(intel instanceof RaidIntel))
+			if (intel.isEnding() || intel.isEnded()) continue;
+
+			if (intel instanceof RaidIntel) {
+
+			}
+			else if (intel instanceof FleetGroupIntel) {
+
+			}
+			else {
 				continue;
+			}
+
 			
-			RaidIntel raid = (RaidIntel)intel;
-			
-			if (raid.isEnding() || raid.isEnded())
-				continue;
-			
-			raids.add(raid);
+			raids.add(intel);
 		}
 		return raids;
 	}
@@ -101,52 +109,74 @@ public class SpecialForcesRouteAI {
 	/**
 	 * Cut player some slack early on: don't join raids against size 3-4 markets.
 	 * (except Starfarer mode)
-	 * @param raid
+	 * @param event
 	 * @return
 	 */
-	public static boolean shouldShowPlayerMercy(RaidIntel raid) {
+	public static boolean shouldShowPlayerMercy(IntelInfoPlugin event) {
 		if (SectorManager.getManager().isHardMode()) return false;
 		
 		FactionAPI player = Global.getSector().getPlayerFaction();
-		if (raid instanceof OffensiveFleetIntel) 
-		{
-			OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
-			MarketAPI target = ofi.getTarget();
-			if (target != null && target.getFaction() == player
-					&& target.getSize() < 5)
-				return true;
-		} 
-		else if (raid instanceof HegemonyInspectionIntel) 
-		{
-			HegemonyInspectionIntel insp = (HegemonyInspectionIntel)raid;
-			if (insp.getTarget().getSize() < 5)
-				return true;
-		}
-		else {
-			StarSystemAPI sys = raid.getSystem();
-			if (sys != null) 
-			{
-				MarketAPI owner = NexUtilsFaction.getSystemOwningMarket(sys);
-				if (owner != null && owner.getFaction() == player && owner.getSize() < 5)
+		try {
+			if (event instanceof OffensiveFleetIntel) {
+				OffensiveFleetIntel ofi = (OffensiveFleetIntel) event;
+				MarketAPI target = ofi.getTarget();
+				if (target != null && target.getFaction() == player
+						&& target.getSize() < 5)
 					return true;
+			} else if (event instanceof HegemonyInspectionIntel) {
+				HegemonyInspectionIntel insp = (HegemonyInspectionIntel) event;
+				if (insp.getTarget().getSize() < 5)
+					return true;
+			} else if (event instanceof BlockadeFGI) {
+				BlockadeFGI block = (BlockadeFGI) event;
+				for (MarketAPI target : Global.getSector().getEconomy().getMarkets(block.getBlockadeParams().where)) {
+					if (!target.getFaction().isPlayerFaction()) continue;
+					if (target.getSize() >= 5)
+						return false;
+				}
+				return true;
+			} else if (event instanceof GenericRaidFGI) {
+				GenericRaidFGI raid = (GenericRaidFGI) event;
+				for (MarketAPI target : Global.getSector().getEconomy().getMarkets(raid.getParams().raidParams.where)) {
+					if (!target.getFaction().isPlayerFaction()) continue;
+					if (target.getSize() >= 5)
+						return false;
+				}
+				return true;
+			} else if (event instanceof RaidIntel) {
+				StarSystemAPI sys = ((RaidIntel) event).getSystem();
+				if (sys != null) {
+					MarketAPI owner = NexUtilsFaction.getSystemOwningMarket(sys);
+					if (owner != null && owner.getFaction() == player && owner.getSize() < 5)
+						return true;
+				}
 			}
+		} catch (Exception ex) {
+			log.error("Error in show player mercy check", ex);
 		}
 		return false;
 	}
 	
-	protected boolean isAssistableFriendlyRaid(RaidIntel raid) {
-		if (!raid.getFaction().equals(sf.faction))
+	protected boolean isAssistableFriendlyEvent(IntelInfoPlugin event) {
+		FactionAPI faction;
+		if (event instanceof RaidIntel) {
+			faction = ((RaidIntel)event).getFaction();
+		} else if (FGI_ENABLED && event instanceof FleetGroupIntel) {
+			faction = ((FleetGroupIntel)event).getFaction();
+		} else return false;
+
+		if (!AllianceManager.areFactionsAllied(faction.getId(), sf.faction.getId()))
 			return false;
 
-		if (raid instanceof OffensiveFleetIntel) {
-			if (raid instanceof BaseStrikeIntel) return false;
-			if (raid instanceof ColonyExpeditionIntel) return false;
-			if (((OffensiveFleetIntel)raid).getOutcome() != null) return false;
+		if (event instanceof OffensiveFleetIntel) {
+			if (event instanceof BaseStrikeIntel) return false;
+			if (event instanceof ColonyExpeditionIntel) return false;
+			if (((OffensiveFleetIntel)event).getOutcome() != null) return false;
 		}
 		else {	// probably a pirate raid
-			if (raid instanceof PunitiveExpeditionIntel) return false;
+			if (event instanceof PunitiveExpeditionIntel) return false;
 		}
-		if (shouldShowPlayerMercy(raid)) return false;
+		if (shouldShowPlayerMercy(event)) return false;
 		
 		return true;
 	}
@@ -155,16 +185,16 @@ public class SpecialForcesRouteAI {
 	 * Gets active raid-type events by us against hostile factions.
 	 * @return
 	 */
-	public List<RaidIntel> getActiveRaidsFriendly() {
-		List<RaidIntel> raids = getActiveRaids();
-		List<RaidIntel> raidsFiltered = new ArrayList<>();
-		for (RaidIntel raid : raids) {
-			if (!isAssistableFriendlyRaid(raid))
+	public List<IntelInfoPlugin> getActiveEventsFriendly() {
+		List<IntelInfoPlugin> events = getActiveEvents();
+		List<IntelInfoPlugin> eventsFiltered = new ArrayList<>();
+		for (IntelInfoPlugin event : events) {
+			if (!isAssistableFriendlyEvent(event))
 				continue;			
 			
-			raidsFiltered.add(raid);
+			eventsFiltered.add(event);
 		}
-		return raidsFiltered;
+		return eventsFiltered;
 	}
 	
 	protected boolean hasMarketInSystem(StarSystemAPI system, FactionAPI faction) 
@@ -178,22 +208,31 @@ public class SpecialForcesRouteAI {
 		return false;
 	}
 	
-	protected boolean isDefendableEnemyRaid(RaidIntel raid) {
-		if (!raid.getFaction().isHostileTo(sf.faction))
+	protected boolean isDefendableEnemyEvent(IntelInfoPlugin event) {
+		FactionAPI faction;
+		StarSystemAPI sys = null;
+		if (event instanceof RaidIntel) {
+			faction = ((RaidIntel)event).getFaction();
+			sys = ((RaidIntel)event).getSystem();
+		} else if (FGI_ENABLED && event instanceof FleetGroupIntel) {
+			faction = ((FleetGroupIntel)event).getFaction();
+		} else return false;
+
+		if (!faction.isHostileTo(sf.faction))
 			return false;
 		
-		if (raid instanceof OffensiveFleetIntel) {
+		if (event instanceof OffensiveFleetIntel) {
 			//sf.debugMsg("Testing raid intel " + raid.getName(), false);
-			if (raid instanceof BaseStrikeIntel) return false;
-			if (raid instanceof ColonyExpeditionIntel) return false;
+			if (event instanceof BaseStrikeIntel) return false;
+			if (event instanceof ColonyExpeditionIntel) return false;
 			
 			// Nex raid, valid if one of the targeted markets is ours
-			if (raid instanceof NexRaidIntel) {
-				if (hasMarketInSystem(raid.getSystem(), sf.faction))
+			if (event instanceof NexRaidIntel) {
+				if (hasMarketInSystem(sys, sf.faction))
 					return true;
 			}
 			
-			OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
+			OffensiveFleetIntel ofi = (OffensiveFleetIntel)event;
 			if (ofi.getOutcome() != null) {
 				//sf.debugMsg("  Outcome already happened", true);
 				return false;
@@ -209,7 +248,7 @@ public class SpecialForcesRouteAI {
 		}
 		else {	// probably a pirate raid
 			// Only count the raid if we have a market in target system
-			if (hasMarketInSystem(raid.getSystem(), sf.faction))
+			if (hasMarketInSystem(sys, sf.faction))
 				return true;			
 		}
 		return false;
@@ -219,11 +258,11 @@ public class SpecialForcesRouteAI {
 	 * Gets active raid-type events by hostile factions against us.
 	 * @return
 	 */
-	public List<RaidIntel> getActiveRaidsHostile() {
-		List<RaidIntel> raids = getActiveRaids();
-		List<RaidIntel> raidsFiltered = new ArrayList<>();
-		for (RaidIntel raid : raids) {			
-			if (!isDefendableEnemyRaid(raid))
+	public List<IntelInfoPlugin> getActiveRaidsHostile() {
+		List<IntelInfoPlugin> raids = getActiveEvents();
+		List<IntelInfoPlugin> raidsFiltered = new ArrayList<>();
+		for (IntelInfoPlugin raid : raids) {
+			if (!isDefendableEnemyEvent(raid))
 				continue;		
 			
 			raidsFiltered.add(raid);
@@ -354,7 +393,7 @@ public class SpecialForcesRouteAI {
 		// if joining a raid, try to make sure we arrive at the same time as them
 		// instead of showing up super early and potentially getting whacked
 		if (task.type == TaskType.ASSIST_RAID) {
-			float delay = task.raid.getETA() - travelTime;
+			float delay = getETA(task.raid) - travelTime;
 			if (delay > 0) {
 				RouteManager.RouteSegment wait = new RouteManager.RouteSegment(delay, from);
 				wait.custom = SpecialForcesAssignmentAI.CUSTOM_DELAY_BEFORE_RAID;
@@ -386,25 +425,26 @@ public class SpecialForcesRouteAI {
 		if (!silent) sf.sendUpdateIfPlayerHasIntel(SpecialForcesIntel.NEW_ORDERS_UPDATE, false, false);
 	}
 	
-	public SpecialForcesTask generateRaidDefenseTask(RaidIntel raid, float priority) {
+	public SpecialForcesTask generateRaidDefenseTask(IntelInfoPlugin event, float priority) {
 		SpecialForcesTask task = new SpecialForcesTask(TaskType.DEFEND_RAID, priority);
-		task.raid = raid;
-		task.system = task.raid.getSystem();
-		if (task.raid instanceof OffensiveFleetIntel) {
-			task.setMarket(((OffensiveFleetIntel)task.raid).getTarget());
-		}
-		task.time = 30 + raid.getETA();
+		task.raid = event;
+		task.system = getSystemForEvent(event);
+		task.setMarket(getMarketForEvent(event));
+
+		task.time = 30;
+		if (event instanceof BlockadeFGI) task.time *= 3;
+		task.time += getETA(event);
+
 		return task;
 	}
 	
-	public SpecialForcesTask generateRaidAssistTask(RaidIntel raid, float priority) {
+	public SpecialForcesTask generateRaidAssistTask(IntelInfoPlugin event, float priority) {
 		SpecialForcesTask task = new SpecialForcesTask(TaskType.ASSIST_RAID, priority);
-		task.raid = raid;
-		task.system = task.raid.getSystem();
-		if (task.raid instanceof OffensiveFleetIntel) {
-			task.setMarket(((OffensiveFleetIntel)task.raid).getTarget());
-		}
+		task.raid = event;
+		task.system = getSystemForEvent(event);
+		task.setMarket(getMarketForEvent(event));
 		task.time = 30;	// don't add ETA here, apply it as a delay instead
+		if (event instanceof BlockadeFGI) task.time *= 3;
 		return task;
 	}
 	
@@ -503,14 +543,14 @@ public class SpecialForcesRouteAI {
 		}
 		
 		// check for priority raid defense missions
-		List<Pair<RaidIntel, Float>> hostileRaids = new ArrayList<>();
-		for (RaidIntel raid : getActiveRaidsHostile()) {
-			if (raid.getETA() > MAX_RAID_ETA_TO_CARE) continue;
-			hostileRaids.add(new Pair<>(raid, getRaidDefendPriority(raid)));
+		List<Pair<IntelInfoPlugin, Float>> hostileRaids = new ArrayList<>();
+		for (IntelInfoPlugin event : getActiveRaidsHostile()) {
+			if (getETA(event) > MAX_RAID_ETA_TO_CARE) continue;
+			hostileRaids.add(new Pair<>(event, getEventDefendPriority(event)));
 		}
 		//sf.debugMsg("Hostile raid count: " + hostileRaids.size(), false);
 		
-		Pair<RaidIntel, Float> priorityDefense = pickPriorityDefendTask(hostileRaids, isBusy);
+		Pair<IntelInfoPlugin, Float> priorityDefense = pickPriorityDefendTask(hostileRaids, isBusy);
 		if (priorityDefense != null) {
 			SpecialForcesTask task = generateRaidDefenseTask(priorityDefense.one, priorityDefense.two);
 			return task;
@@ -523,14 +563,14 @@ public class SpecialForcesRouteAI {
 		WeightedRandomPicker<SpecialForcesTask> picker = new WeightedRandomPicker<>();
 		
 		// Defend vs. raid
-		for (Pair<RaidIntel, Float> raid : hostileRaids) {
+		for (Pair<IntelInfoPlugin, Float> raid : hostileRaids) {
 			picker.add(generateRaidDefenseTask(raid.one, raid.two), raid.two);
 		}
 		
 		// Assist raid
-		for (RaidIntel raid : getActiveRaidsFriendly()) {
-			if (raid.getETA() > MAX_RAID_ETA_TO_CARE) continue;
-			float priority = getRaidAttackPriority(raid);
+		for (IntelInfoPlugin raid : getActiveEventsFriendly()) {
+			if (getETA(raid) > MAX_RAID_ETA_TO_CARE) continue;
+			float priority = getEventAttackPriority(raid);
 			picker.add(generateRaidAssistTask(raid, priority), priority);
 		}
 		
@@ -564,6 +604,48 @@ public class SpecialForcesRouteAI {
 		
 		return alliedMarkets;
 	}
+
+	protected float getETA(IntelInfoPlugin event) {
+		if (event instanceof RaidIntel) {
+			return ((RaidIntel)event).getETA();
+		}
+		if (event instanceof GenericRaidFGI) {
+			FleetGroupIntel fgi = ((GenericRaidFGI)event);
+			return fgi.getETAUntil(GenericRaidFGI.PAYLOAD_ACTION);
+		}
+		return 0;
+	}
+
+	protected StarSystemAPI getSystemForEvent(IntelInfoPlugin event) {
+		if (event instanceof RaidIntel) {
+			return ((RaidIntel)event).getSystem();
+		}
+		else if (event instanceof BlockadeFGI) {
+			BlockadeFGI fgi = ((BlockadeFGI)event);
+			return fgi.getBlockadeParams().where;
+		}
+		else if (event instanceof GenericRaidFGI) {
+			GenericRaidFGI fgi = ((GenericRaidFGI)event);
+			return fgi.getParams().raidParams.where;
+		}
+		return null;
+	}
+
+	protected MarketAPI getMarketForEvent(IntelInfoPlugin event) {
+		if (event instanceof OffensiveFleetIntel) {
+			return ((OffensiveFleetIntel)event).getTarget();
+		}
+		else if (event instanceof BlockadeFGI) {
+			BlockadeFGI fgi = ((BlockadeFGI)event);
+			return fgi.getBlockadeParams().specificMarket;
+		}
+		else if (event instanceof GenericRaidFGI) {
+			GenericRaidFGI fgi = ((GenericRaidFGI)event);
+			if (fgi.getParams().raidParams.allowedTargets.isEmpty()) return null;
+			return fgi.getParams().raidParams.allowedTargets.get(0);
+		}
+		return null;
+	}
 	
 	/**
 	 * Picks the highest-priority raid for a priority defense assignment, if any exceed the needed priority threshold.
@@ -572,14 +654,14 @@ public class SpecialForcesRouteAI {
 	 * @param isBusy
 	 * @return
 	 */
-	protected Pair<RaidIntel, Float> pickPriorityDefendTask(List<Pair<RaidIntel, Float>> raids, boolean isBusy) 
+	protected Pair<IntelInfoPlugin, Float> pickPriorityDefendTask(List<Pair<IntelInfoPlugin, Float>> raids, boolean isBusy)
 	{
-		Pair<RaidIntel, Float> highest = null;
+		Pair<IntelInfoPlugin, Float> highest = null;
 		float highestScore = currentTask != null ? currentTask.priority : 0;
 		if (isBusy) highestScore *= 2;
 		float minimum = getPriorityNeededForUrgentDefense(isBusy);
 		
-		for (Pair<RaidIntel, Float> entry : raids) {
+		for (Pair<IntelInfoPlugin, Float> entry : raids) {
 			float score = entry.two;
 			if (score < minimum) continue;
 			if (score > highestScore) {
@@ -603,15 +685,15 @@ public class SpecialForcesRouteAI {
 		// We were assigned to assist or defend against a raid, but it's already ended
 		// or otherwise no longer applicable
 		else if (currentTask.raid != null) {
-			RaidIntel raid = currentTask.raid;
-			if (raid.isEnding() || raid.isEnded()) {
+			IntelInfoPlugin event = currentTask.raid;
+			if (event.isEnding() || event.isEnded()) {
 				return true;
 			}
-			else if (taskType == TaskType.ASSIST_RAID && !isAssistableFriendlyRaid(raid)) 
+			else if (taskType == TaskType.ASSIST_RAID && !isAssistableFriendlyEvent(event))
 			{
 				return true;
 			}
-			else if (taskType == TaskType.DEFEND_RAID && !isDefendableEnemyRaid(raid))
+			else if (taskType == TaskType.DEFEND_RAID && !isDefendableEnemyEvent(event))
 			{
 				return true;
 			}
@@ -726,41 +808,81 @@ public class SpecialForcesRouteAI {
 			updateTaskIfNeeded();
 		}
 	}
-	
+
 	/**
-	 * Gets the priority level for defending against the specified raid-type event.
-	 * @param raid
+	 * Get a list of the markets targeted by the provided {@code RaidIntel} or {@code FleetGroupIntel}, that we care about.
+	 * @param event
+	 * @param isDefender Is the special task group checking for raid defend jobs, or raid assist ones?
 	 * @return
 	 */
-	public float getRaidDefendPriority(RaidIntel raid) {
+	public List<MarketAPI> getEventTargets(IntelInfoPlugin event, boolean isDefender) {
 		List<MarketAPI> targets = new ArrayList<>();
-		float mult = 1;
-		
-		if (raid instanceof OffensiveFleetIntel) {
-			OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
-			
+		if (event instanceof OffensiveFleetIntel) {
+			OffensiveFleetIntel ofi = (OffensiveFleetIntel)event;
+
 			// raid: assign values for all allied markets contained in system
-			if (raid instanceof NexRaidIntel) {
+			if (event instanceof NexRaidIntel) {
 				for (MarketAPI market : Global.getSector().getEconomy().getMarkets(ofi.getTarget().getContainingLocation()))
 				{
-					if (!AllianceManager.areFactionsAllied(market.getFactionId(), sf.faction.getId()))
-						continue;
 					targets.add(market);
 				}
 			}
+			// other OFI types, assume single target
 			else {
 				targets.add(ofi.getTarget());
 			}
-			
-			if (raid instanceof InvasionIntel)
-				mult = 6;
-			else if (raid instanceof SatBombIntel)
-				mult = 8;
+		} else if (event instanceof RaidIntel) {
+			RaidIntel raid = ((RaidIntel)event);
+			for (MarketAPI market : Global.getSector().getEconomy().getMarkets(raid.getSystem()))
+			{
+				targets.add(market);
+			}
+		} else if (event instanceof BlockadeFGI) {
+			BlockadeFGI fgi = (BlockadeFGI)event;
+			FGBlockadeAction.FGBlockadeParams params = fgi.getBlockadeParams();
+			if (params.specificMarket != null) targets.add(params.specificMarket);
+			else targets.addAll(Global.getSector().getEconomy().getMarkets(params.where));
+		} else if (event instanceof GenericRaidFGI) {
+			GenericRaidFGI fgi = (GenericRaidFGI)event;
+			FGRaidAction.FGRaidParams params = fgi.getParams().raidParams;
+			if (params.allowAnyHostileMarket) {
+				targets.addAll(Global.getSector().getEconomy().getMarkets(params.where));
+			} else {
+				targets.addAll(params.allowedTargets);
+			}
 		}
+
+		// filter out the markets we don't actually care about
+		Iterator<MarketAPI> targetIter = targets.iterator();
+		while (targetIter.hasNext()) {
+			MarketAPI target = targetIter.next();
+			boolean alliedToUs = AllianceManager.areFactionsAllied(target.getFactionId(), sf.faction.getId());
+			boolean hostileToUs = target.getFaction().isHostileTo(sf.faction);
+
+			if (isDefender && !alliedToUs) targetIter.remove();
+			else if (!isDefender && !hostileToUs) targetIter.remove();
+		}
+
+		return targets;
+	}
+
+	/**
+	 * Gets the priority level for defending against the specified raid-type event.
+	 * @param event
+	 * @return
+	 */
+	public float getEventDefendPriority(IntelInfoPlugin event) {
+		List<MarketAPI> targets = getEventTargets(event, true);
+		float mult = 1;
+
+		if (event instanceof InvasionIntel)
+			mult = 6;
+		else if (event instanceof SatBombIntel)
+			mult = 8;
 		
 		float priority = 0;
 		for (MarketAPI market : targets) {
-			priority += getRaidDefendPriority(market);
+			priority += getEventDefendPriority(market);
 		}
 		priority *= mult;
 		
@@ -769,38 +891,21 @@ public class SpecialForcesRouteAI {
 	
 	/**
 	 * Gets the priority level for assisting the specified raid-type event.
-	 * @param raid
+	 * @param event
 	 * @return
 	 */
-	public float getRaidAttackPriority(RaidIntel raid) {
-		List<MarketAPI> targets = new ArrayList<>();
+	public float getEventAttackPriority(IntelInfoPlugin event) {
+		List<MarketAPI> targets = getEventTargets(event, false);
 		float mult = 1;
-		
-		if (raid instanceof OffensiveFleetIntel) {
-			OffensiveFleetIntel ofi = (OffensiveFleetIntel)raid;
-			
-			// raid: assign values for all hostile markets contained in system
-			if (raid instanceof NexRaidIntel) {
-				for (MarketAPI market : Global.getSector().getEconomy().getMarkets(ofi.getTarget().getContainingLocation()))
-				{
-					if (market.getFaction().isHostileTo(sf.faction))
-						continue;
-					targets.add(market);
-				}
-			}
-			else {
-				targets.add(ofi.getTarget());
-			}
-			
-			if (raid instanceof InvasionIntel)
-				mult = 3;
-			else if (raid instanceof SatBombIntel)
-				mult = 3;
-		}
-		
+
+		if (event instanceof InvasionIntel)
+			mult = 3;
+		else if (event instanceof SatBombIntel)
+			mult = 3;
+
 		float priority = 0;
 		for (MarketAPI market : targets) {
-			priority += getRaidAttackPriority(market);
+			priority += getEventAttackPriority(market);
 		}
 		priority *= mult;
 		
@@ -812,7 +917,7 @@ public class SpecialForcesRouteAI {
 	 * @param market
 	 * @return
 	 */
-	public float getRaidDefendPriority(MarketAPI market) {
+	public float getEventDefendPriority(MarketAPI market) {
 		float priority = market.getSize() * market.getSize();
 		if (NexUtilsMarket.hasHeavyIndustry(market))
 			priority *= 4;
@@ -826,7 +931,7 @@ public class SpecialForcesRouteAI {
 	 * @param market
 	 * @return
 	 */
-	public float getRaidAttackPriority(MarketAPI market) {
+	public float getEventAttackPriority(MarketAPI market) {
 		float priority = market.getSize() * market.getSize();
 		if (NexUtilsMarket.hasHeavyIndustry(market))
 			priority *= 3;
@@ -910,7 +1015,7 @@ public class SpecialForcesRouteAI {
 		float battleLength = (float)Math.pow(market.getSize(), 2)/2;
 		if (battleLength < travelTime) return 0;
 		
-		return getRaidDefendPriority(market) * 1.5f;
+		return getEventDefendPriority(market) * 1.5f;
 	}
 	
 	/**
@@ -973,7 +1078,7 @@ public class SpecialForcesRouteAI {
 	public static class SpecialForcesTask implements Cloneable {
 		public TaskType type;
 		public float priority;
-		public RaidIntel raid;
+		public IntelInfoPlugin raid;
 		public float time = 45;	// controls how long the action segment lasts
 		@Getter private MarketAPI market;
 		@Getter @Setter private SectorEntityToken entity;
@@ -993,7 +1098,7 @@ public class SpecialForcesRouteAI {
 		
 		public void setMarket(MarketAPI market) {
 			this.market = market;
-			this.entity = market.getPrimaryEntity();
+			if (market != null) this.entity = market.getPrimaryEntity();
 		}
 
 		public StarSystemAPI getSystem() {
@@ -1015,9 +1120,9 @@ public class SpecialForcesRouteAI {
 				case RAID:
 					return StringHelper.getFleetAssignmentString("raiding", market.getName());
 				case ASSIST_RAID:
-					return StringHelper.getFleetAssignmentString("assisting", raid.getName());
+					return StringHelper.getFleetAssignmentString("assisting", ((BaseIntelPlugin)raid).getSmallDescriptionTitle());
 				case DEFEND_RAID:
-					return StringHelper.getFleetAssignmentString("defendingVs", raid.getName());
+					return StringHelper.getFleetAssignmentString("defendingVs", ((BaseIntelPlugin)raid).getSmallDescriptionTitle());
 				case COUNTER_GROUND_BATTLE:
 					return StringHelper.getFleetAssignmentString("counteringGroundBattle", market.getName());
 				case PATROL:
