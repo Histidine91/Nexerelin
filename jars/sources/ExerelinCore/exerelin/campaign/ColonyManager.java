@@ -1510,7 +1510,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (actionData instanceof Nex_MarketCMD.NexTempData) {
 			Nex_MarketCMD.NexTempData nad = (Nex_MarketCMD.NexTempData)actionData;
 			if (!nad.satBombLimitedHatred && nad.attackerFaction != null) {
-				DiplomacyManager.modifyBadboy(nad.attackerFaction, nad.sizeBeforeBombardment * nad.sizeBeforeBombardment);
+				DiplomacyManager.modifyBadboy(nad.attackerFaction, nad.sizeBeforeBombardment * nad.sizeBeforeBombardment * 4);
 			}
 		}
 	}

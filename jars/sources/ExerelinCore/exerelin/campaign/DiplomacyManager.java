@@ -1189,8 +1189,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         {
             brain.updateAllDispositions(0);
         }
-        if (!NexUtilsMarket.wasOriginalOwner(market, newOwner.getId())) {
-            modifyBadboy(newOwner, market.getSize() * market.getSize());
+        String originalOwner = NexUtilsMarket.getOriginalOwner(market);
+        if (originalOwner != null && !AllianceManager.areFactionsAllied(originalOwner, newOwner.getId()))
+        {
+            modifyBadboy(newOwner, market.getSize() * market.getSize() * 2);
         }
     }
     

@@ -261,13 +261,13 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		unindent(tooltip);
 
 		float badboy = DiplomacyManager.getBadboy(faction);
-		String badboyStr = String.format("%.0f", weariness);
+		String badboyStr = String.format("%.0f", badboy);
 		str = getString("badboy", true) + ": " + badboyStr;
 		colorProgress = Math.min(badboy, BADBOY_MAX_FOR_COLOR)/BADBOY_MAX_FOR_COLOR;
 		if (colorProgress > 1) colorProgress = 1;
 		if (colorProgress < 0) colorProgress = 0;
 
-		Color badboyColor = Misc.interpolateColor(Color.WHITE, Misc.getNegativeHighlightColor(), colorProgress);
+		Color badboyColor = Misc.interpolateColor(Misc.getTextColor(), Misc.getNegativeHighlightColor(), colorProgress);
 		tooltip.addPara(str, pad, badboyColor, badboyStr);
 	}
 	
