@@ -446,7 +446,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		if (eta > 1 && failStage < 0) {
 			String days = getDaysString(eta);
 			String str = StringHelper.getStringAndSubstituteToken("nex_fleetIntel", "bulletETA", "$days", days);
-			info.addPara(str, pad, color, hl, "" + (int)Math.round(eta));
+			info.addPara(str, pad, color, hl, "" + Math.round(eta));
 		}
 	}
 
@@ -549,14 +549,14 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 		float refundMult = 0;
 		if (currentStage <= 1) refundMult = 1;
-		else if (currentStage == 2) refundMult = 0.67f;
-		else if (currentStage == 3) refundMult = 0.33f;
+		else if (currentStage == 2) refundMult = 0.75f;
+		else if (currentStage == 3) refundMult = 0.5f;
 
 		try {
 			String fid = proxyForFaction != null ? proxyForFaction.getId() : faction.getId();
-			InvasionFleetManager.getManager().modifySpawnCounterV2(fid, invPointsSpent);
-			FleetPoolManager.getManager().modifyPool(fid, fleetPoolPointsSpent);
-			GroundPoolManager.getManager().modifyPool(fid, groundPoolPointsSpent);
+			InvasionFleetManager.getManager().modifySpawnCounterV2(fid, invPointsSpent * refundMult);
+			FleetPoolManager.getManager().modifyPool(fid, fleetPoolPointsSpent * refundMult);
+			GroundPoolManager.getManager().modifyPool(fid, groundPoolPointsSpent * refundMult);
 		} catch (NullPointerException npe) {
 			// do nothing
 		}
