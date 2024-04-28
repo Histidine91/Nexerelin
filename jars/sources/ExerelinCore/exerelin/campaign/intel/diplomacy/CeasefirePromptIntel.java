@@ -2,6 +2,7 @@ package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
@@ -252,6 +253,7 @@ public class CeasefirePromptIntel extends BaseIntelPlugin implements PopupDialog
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
+		tags.add(StringHelper.getString(Tags.INTEL_AGREEMENTS, true));
 		tags.add(StringHelper.getString("diplomacy", true));
 		tags.add(factionId);
 		tags.add(PlayerFactionStore.getPlayerFactionId());

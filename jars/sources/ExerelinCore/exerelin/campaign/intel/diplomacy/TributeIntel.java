@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
@@ -308,6 +309,7 @@ public class TributeIntel extends BaseIntelPlugin {
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
+		tags.add(Tags.INTEL_AGREEMENTS);
 		tags.add(StringHelper.getString("diplomacy", true));
 		tags.add(factionId);
 		tags.add(Factions.PLAYER);
