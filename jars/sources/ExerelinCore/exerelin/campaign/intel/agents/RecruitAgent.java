@@ -201,6 +201,11 @@ public class RecruitAgent extends CovertActionIntel {
 	}
 
 	@Override
+	public boolean dialogCanShowAction(AgentOrdersDialog dialog) {
+		return true;
+	}
+
+	@Override
 	public boolean dialogCanActionProceed(AgentOrdersDialog dialog) {
 		return specialization != null;
 	}
