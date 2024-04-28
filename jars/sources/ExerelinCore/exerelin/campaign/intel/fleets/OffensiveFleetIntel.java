@@ -735,8 +735,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 		bullet(info);
 
-		FactionStrengthReport attackerRpt = NexWarSimScript.getFactionStrengthReport(faction, target.getStarSystem());
-		FactionStrengthReport defenderRpt = NexWarSimScript.getFactionStrengthReport(targetFaction, target.getStarSystem());
+		FactionStrengthReport attackerRpt = NexWarSimScript.getFactionStrengthReport(faction, targetFaction, target.getStarSystem());
+		FactionStrengthReport defenderRpt = NexWarSimScript.getFactionStrengthReport(targetFaction, faction, target.getStarSystem());
 		float raidStr = getRaidStr();
 		float attackerStr = attackerRpt.totalStrength + raidStr;
 		float stationStr = WarSimScript.getStationStrength(targetFaction, system, target.getPrimaryEntity());
@@ -804,11 +804,11 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		unindent(info);
 
 		String key = "Successful";
-		if (spaceWin == -1)
+		if (spaceWin2 == -1)
 			key = "DefeatInOrbit";
 		else if (groundWin == -1)
 			key = "DefeatOnGround";
-		else if (spaceWin < 1 || groundWin < 1)
+		else if (spaceWin2 < 1 || groundWin < 1)
 			key = "Uncertain";
 		String outcomeDesc = StringHelper.getString("nex_fleetIntel", "prediction" + key);
 		outcomeDesc = StringHelper.substituteToken(outcomeDesc, "$theAction", getActionNameWithArticle(), true);
@@ -841,8 +841,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		if (!ExerelinModPlugin.isNexDev) return;
 		float pad = 3, opad = 10;
 
-		FactionStrengthReport attacker = getFactionStrengthReport(faction, target.getStarSystem());
-		FactionStrengthReport defender = getFactionStrengthReport(targetFaction, target.getStarSystem());
+		FactionStrengthReport attacker = getFactionStrengthReport(faction, targetFaction, target.getStarSystem());
+		FactionStrengthReport defender = getFactionStrengthReport(targetFaction, targetFaction, target.getStarSystem());
 
 		info.addPara("Attacker breakdown", faction.getBaseUIColor(), opad);
 		bullet(info);
@@ -864,9 +864,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 				RouteManager.OptionalFleetData data = route.getExtra();
 				if (data == null) continue;
 				if (data.strength != null) {
-					float mult = 1f;
-					if (data.damage != null) mult *= (1f - data.damage);
-					printDebugStrengthRow(info, "Route " + route.toString(), (float)Math.round(data.strength * mult));
+					printDebugStrengthRow(info, new FactionStrengthReportEntry(route));
 				}
 			}
 		}
@@ -878,6 +876,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			printDebugStrengthRow(info, entry.name, entry.strength);
 		}
 		unindent(info);
+	}
+
+	protected void printDebugStrengthRow(TooltipMakerAPI info, FactionStrengthReportEntry entry) {
+		printDebugStrengthRow(info, entry.name, entry.strength);
 	}
 
 	protected void printDebugStrengthRow(TooltipMakerAPI info, String name, float strength) {

@@ -18,13 +18,20 @@ import static com.fs.starfarer.api.impl.campaign.fleets.RouteManager.*;
 
 public class NexWarSimScript {
 
-    public static FactionStrengthReport getFactionStrengthReport(FactionAPI faction, LocationAPI loc) {
+    /**
+     * Gets a list of all the military forces present in a system that will side with our faction against the enemy, and their total strength.
+     * @param faction
+     * @param enemy
+     * @param loc
+     * @return
+     */
+    public static FactionStrengthReport getFactionStrengthReport(FactionAPI faction, FactionAPI enemy, LocationAPI loc) {
         FactionStrengthReport report = new FactionStrengthReport(faction.getId());
 
         Set<CampaignFleetAPI> seenFleets = new HashSet<>();
         Set<RouteData> seenRoutes = new HashSet<>();
         for (CampaignFleetAPI fleet : loc.getFleets()) {
-            if (fleet.getFaction() != faction) continue;
+            if (!willFactionSideWithUs(fleet.getFaction(), faction, enemy)) continue;
             if (fleet.isStationMode()) continue;
             if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_TRADE_FLEET)) continue;
             if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_SMUGGLER)) continue;
@@ -45,9 +52,7 @@ public class NexWarSimScript {
             if (!faction.getId().equals(route.getFactionId())) continue;
 
             if (data.strength != null) {
-                float mult = 1f;
-                if (data.damage != null) mult *= (1f - data.damage);
-                report.addEntry(new FactionStrengthReportEntry("Route " + route.toString(), route, (float)Math.round(data.strength * mult)));
+                report.addEntry(new FactionStrengthReportEntry(route));
                 seenRoutes.add(route);
             }
         }
@@ -68,9 +73,7 @@ public class NexWarSimScript {
                 report.addEntry(new FactionStrengthReportEntry(fleet));
                 seenFleets.add(fleet);
             } else {
-                float mult = 1f;
-                if (route.getExtra().damage != null) mult *= (1f - route.getExtra().damage);
-                report.addEntry(new FactionStrengthReportEntry(sf.getName(), route, (float)Math.round(route.getExtra().strength * mult)));
+                report.addEntry(new FactionStrengthReportEntry(sf.getName(), route));
                 seenRoutes.add(route);
             }
         }
@@ -92,12 +95,13 @@ public class NexWarSimScript {
         Set<CampaignFleetAPI> seenFleets = new HashSet<CampaignFleetAPI>();
         for (CampaignFleetAPI fleet : system.getFleets()) {
             FactionAPI fleetFaction = fleet.getFaction();
-            if (willFactionSideWithUs(fleetFaction, faction, enemyFaction)) continue;
             if (fleet.isStationMode()) continue;
             if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_TRADE_FLEET)) continue;
             if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_SMUGGLER)) continue;
 
             if (fleet.isPlayerFleet()) continue;
+
+            if (!willFactionSideWithUs(fleetFaction, faction, enemyFaction)) continue;
 
             strength += fleet.getEffectiveStrength();
 
@@ -111,7 +115,7 @@ public class NexWarSimScript {
             if (data == null) continue;
             if (route.getFactionId() == null) continue;
             FactionAPI routeFaction = Global.getSector().getFaction(route.getFactionId());
-            if (willFactionSideWithUs(routeFaction, faction, enemyFaction)) continue;
+            if (!willFactionSideWithUs(routeFaction, faction, enemyFaction)) continue;
 
             strength += data.getStrengthModifiedByDamage();
         }
@@ -119,6 +123,12 @@ public class NexWarSimScript {
         return strength;
     }
 
+    /**
+     * @param factionToConsider
+     * @param us
+     * @param them Can be null, but this may lead to inaccurate results.
+     * @return
+     */
     public static boolean willFactionSideWithUs(FactionAPI factionToConsider, FactionAPI us, FactionAPI them) {
         if (factionToConsider == us) return true;
         if (factionToConsider == them) return false;
@@ -131,7 +141,7 @@ public class NexWarSimScript {
         }
 
         if (them == null) {
-            return factionToConsider.getRelationshipLevel(us).isAtWorst(RepLevel.FRIENDLY) || AllianceManager.areFactionsAllied(factionToConsider.getId(), us.getId());
+            return AllianceManager.areFactionsAllied(factionToConsider.getId(), us.getId());
         }
 
         boolean hostileToUs = factionToConsider.isHostileTo(us);
@@ -166,9 +176,16 @@ public class NexWarSimScript {
             strength = fleet.getEffectiveStrength();
         }
 
-        public FactionStrengthReportEntry(String name, RouteData route, float strength) {
+        public FactionStrengthReportEntry(RouteData route) {
+            this(String.format("%s route from %s", route.getFactionId(), route.getMarket() != null? route.getMarket().getName() : ""), route);
+        }
+
+        public FactionStrengthReportEntry(String name, RouteData route) {
             this.name = name;
             this.route = route;
+
+            float strength = route.getExtra().strength;
+            if (route.getExtra().damage != null) strength *= (1f - route.getExtra().damage);
             this.strength = strength;
         }
     }
