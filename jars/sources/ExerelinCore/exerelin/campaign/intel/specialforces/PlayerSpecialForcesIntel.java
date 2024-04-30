@@ -358,6 +358,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		the latter prevents reverting to stock variant on fleet deflation
 	 */
 	public void checkVariants() {
+		if (fleet == null) return;
 		int errorCount = 0;
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			ShipVariantAPI variant = member.getVariant();
