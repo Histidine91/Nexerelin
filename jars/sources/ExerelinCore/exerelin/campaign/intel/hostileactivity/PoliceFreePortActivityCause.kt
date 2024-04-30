@@ -16,6 +16,7 @@ import kotlin.math.roundToInt
 class PoliceFreePortActivityCause(intel: HostileActivityEventIntel?) : BaseHostileActivityCause2(intel) {
 
     companion object {
+        const val ENABLED = true
         const val MAX_MAG = 0.45f
 
         @JvmStatic
@@ -48,6 +49,7 @@ class PoliceFreePortActivityCause(intel: HostileActivityEventIntel?) : BaseHosti
     }
 
     override fun getProgress(): Int {
+        if (!ENABLED) return 0
         if (isDefeatedExpedition()) return 0
         var score = 0
         for (market in Misc.getPlayerMarkets(false)) {
@@ -65,7 +67,6 @@ class PoliceFreePortActivityCause(intel: HostileActivityEventIntel?) : BaseHosti
     }
 
     override fun getMagnitudeContribution(system: StarSystemAPI): Float {
-        //if (KantaCMD.playerHasProtection()) return 0f;
         if (progress <= 0) return 0f
         var total = 0f
         for (market in Misc.getMarketsInLocation(system, Factions.PLAYER)) {

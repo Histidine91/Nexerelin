@@ -300,7 +300,7 @@
 		"intelButtonUnlockMastery":"Unlock mastery",
 		"intelButtonUnlockMasteryWithLevel":"Unlock mastery (level %s)",
 		"intelButtonCellKill":"Internal security mode",
-		"intelButtonCellKillTooltip":"When operative is idle, will periodically travel to player or commissioning faction colonies with Pather cells, and destroy them. Will also find unlocated pirate bases if no relevant cells exist.\n\nShould only be used on one operative at a time, as nothing prevents multiple operatives from trying to remove the same cell.",
+		"intelButtonCellKillTooltip":"When operative is idle, will periodically travel to player faction colonies with Pather cells, and destroy them. Will also find unlocated pirate bases if no relevant cells exist.\n\nShould only be used on one operative at a time, as nothing prevents multiple operatives from trying to remove the same cell.",
 		"intelButtonRepeatRelations":"Repeat relation actions",
 		"intelButtonRepeatRelationsTooltip":"After completing a raise/lower relations action, repeat it until reaching the maximum effect or ordered to abort (or you run out of money).",
 		"intelHeaderLocalReport":"Local report",

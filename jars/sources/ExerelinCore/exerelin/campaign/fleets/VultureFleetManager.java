@@ -309,8 +309,8 @@ public class VultureFleetManager extends DisposableFleetManager
 				continue;
 			CampaignFleetAPI nearbyHostile = getFleetCloseToTarget(entity.getLocation(), loc, hostileFleets);
 			if (nearbyHostile != null) {
-				log.info("Entity " + entity.getName() + " has unfriendly fleet " 
-						+ nearbyHostile.getNameWithFactionKeepCase() + " nearby, skip");
+				//log.info("Entity " + entity.getName() + " has unfriendly fleet "
+				//		+ nearbyHostile.getNameWithFactionKeepCase() + " nearby, skip");
 				continue;
 			}
 			results.add(entity);

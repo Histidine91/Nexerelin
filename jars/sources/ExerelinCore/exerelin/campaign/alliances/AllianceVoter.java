@@ -170,6 +170,7 @@ public class AllianceVoter {
 			for (String defier : vote.defied)
 			{
 				FactionAPI defierFaction = Global.getSector().getFaction(defier);
+				// uses adjustPlayerReputation to generate a notification message
 				if (member.equals(playerAlignedFactionId))
 				{
 					NexUtilsReputation.adjustPlayerReputation(defierFaction, penalty);

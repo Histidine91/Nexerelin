@@ -316,6 +316,7 @@ public class StrategicAI extends BaseIntelPlugin {
 			concern.setActionCooldown(0);
 			StrategicAction act = concern.fireBestAction();
 			if (act != null) {
+				execModule.currentConcerns.add(concern);
 				ui.updateUIForItem(this);
 			}
 		}

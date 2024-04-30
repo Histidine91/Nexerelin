@@ -8,6 +8,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.plugins.ExerelinModPlugin;
 
 import java.awt.*;
 
@@ -31,7 +32,7 @@ public class EconomicAIModule extends StrategicAIModule {
 
         EconomyInfoHelper helper = EconomyInfoHelper.getInstance();
 
-        tooltip.addPara(StrategicAI.getString("intelPara_income"), opad, hl, Misc.getDGSCredits(helper.getFactionNetIncome(factionId)));
+        if (ExerelinModPlugin.isNexDev) tooltip.addPara(StrategicAI.getString("intelPara_income"), opad, hl, Misc.getDGSCredits(helper.getFactionNetIncome(factionId)));
 		tooltip.addPara(StrategicAI.getString("intelPara_competitors"), opad);
 		for (String otherFactionId : SectorManager.getLiveFactionIdsCopy()) {
 			if (factionId.equals(otherFactionId)) continue;

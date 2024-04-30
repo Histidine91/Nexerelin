@@ -454,7 +454,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 					+ baseFP + ".", opad, Misc.getHighlightColor(), fpRound + "", baseFP + "");
 		}
 		
-		if (outcome == null) {
+		if (outcome == null || ExerelinModPlugin.isNexDev) {
 			addStandardStrengthComparisons(info, target, targetFaction, true, false, null, null);
 			if (brawlMode) {
 				string = StringHelper.getString("exerelin_invasion", "intelBrawl");

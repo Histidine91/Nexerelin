@@ -454,7 +454,7 @@ public class StartSetupPostTimePass {
 	
 	/**
 	 * Sends the player fleet to the intended starting star system, orbiting the home market.
-	 * Also grants the starting commission and unlocks storage.
+	 * Also unlocks storage.
 	 * @param playerFleet
 	 * @param entity Home planet/station
 	 */

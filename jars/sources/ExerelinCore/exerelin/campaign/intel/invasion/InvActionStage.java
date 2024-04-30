@@ -337,12 +337,15 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	}
 	
 	protected void autoresolve() {
-		Global.getLogger(this.getClass()).info("Autoresolving invasion action vs. " + target.getId());
+		log.info("Autoresolving invasion action vs. " + target.getId());
 		float str = NexWarSimScript.getFactionAndAlliedStrength(intel.getFaction(), getTarget().getFaction(), getTarget().getStarSystem());
 		float enemyStr = NexWarSimScript.getFactionAndAlliedStrength(getTarget().getFaction(), intel.getFaction(), getTarget().getStarSystem());
 		
 		float defensiveStr = enemyStr + WarSimScript.getStationStrength(target.getFaction(), 
 							 target.getStarSystem(), target.getPrimaryEntity());
+
+		log.info(String.format("Our strength (%s): %.2f, their strength (%s) %.2f",
+				intel.getFaction().getDisplayName(), str, getTarget().getFaction().getDisplayName(), enemyStr));
 		
 		if (defensiveStr >= str) {
 			status = RaidStageStatus.FAILURE;

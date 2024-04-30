@@ -13,7 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-// same as BeginMission except for not accepting the mission immediately
+/**
+ * Same as BeginMission except for not accepting the mission immediately.
+ * Obsolete, just use BeginMission with {@code false} for the {@code accept} arg.
+ */
+@Deprecated
 public class Nex_CreateMission extends BaseCommandPlugin {
 
 	@Override

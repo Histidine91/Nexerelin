@@ -143,7 +143,7 @@
     "useEnhancedCoreWorlds": true,	# increases defenses and/or economic capacity of some core worlds in non-random sector
     "useEnhancedAdmins": true,	# gives named NPC admins some special skills
     
-    "useCustomBattleCreationPlugin": true,	# affects things like map size and number of objectives
+    #"useCustomBattleCreationPlugin": true,	# affects things like map size and number of objectives. Not used (since 0.11.1b and probably much earlier)
     
     "officerDeaths": false,	# officer permadeath (may be buggy)
     "officerDaredevilBonus": false,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
