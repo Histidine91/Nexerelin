@@ -19,6 +19,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_SpecialForcesConfig;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.hullmods.Automated;
 import com.fs.starfarer.api.loading.VariantSource;
@@ -34,6 +35,7 @@ import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsGUI;
 import lombok.Getter;
 import lombok.Setter;
+import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
@@ -566,6 +568,55 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		return node;
 	}
+
+	/**
+	 * Check if a particular 'revive ships' button in this intel item should be enabled or disabled.
+	 * @param button {@code ButtonAPI} that should be disabled if necessary.
+	 * @param info
+	 * @param fromScratch True if the fleet was wiped out and is now being resurrected. False if still alive.
+	 * @param cost Cost of revival (may be for a single ship, or the whole fleet).
+	 * @return False if button was disabled, true otherwise.
+	 */
+	protected boolean validateReviveButton(ButtonAPI button, TooltipMakerAPI info, boolean fromScratch, float cost) {
+		float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+
+		if (fromScratch) {
+			InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+			boolean allow = dial != null && dial.getInteractionTarget() != null && dial.getInteractionTarget().getMarket() != null;
+			if (!allow) {
+				disableReviveButton(button, info, getString("intelTooltipDisbandNotDocked"));
+				return false;
+			}
+		} else {
+			BattleAPI bat = fleet.getBattle();
+			if (bat != null && !bat.isPlayerInvolved()) {
+				disableReviveButton(button, info, getString("intelTooltipDisbandNotDocked"));
+				return false;
+			}
+			boolean haveMarket = false;
+			for (MarketAPI market : Misc.getMarketsInLocation(fleet.getContainingLocation())) {
+				if (market.getFaction().isAtBest(fleet.getFaction(), RepLevel.INHOSPITABLE))
+					continue;
+				if (MathUtils.getDistance(market.getPrimaryEntity(), fleet) > Nex_SpecialForcesConfig.MAX_REVIVE_DISTANCE)
+					continue;
+
+				haveMarket = true;
+				break;
+			}
+
+			if (!haveMarket) {
+				disableReviveButton(button, info, getString("dialogTooltipNoMarketForRevive"));
+				return false;
+			}
+		}
+
+		if (cost > credits) {
+			String reason = String.format(getString("intelTooltipRecreateNotEnoughCredits"), Misc.getWithDGS(cost));
+			disableReviveButton(button, info, reason);
+			return false;
+		}
+		return true;
+	}
 	
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, Color tc, float initPad) {
@@ -592,14 +643,25 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		}
 		
 		if (isAlive) {
+			boolean inBattle = fleet != null && fleet.getBattle() != null;
 			ButtonAPI command = info.addButton(getString("intelButtonCommand"), 
 					BUTTON_COMMAND, faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, opad);
-			if (fleet != null && fleet.getBattle() != null) {
+			if (inBattle) {
 				command.setEnabled(false);
 				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(getString("intelTooltipCommandInBattle"), 360), 
 						TooltipMakerAPI.TooltipLocation.BELOW);
 			}
+
+			// revive all
+			if (!deadMembers.isEmpty()) {
+				ButtonAPI revive = info.addButton(getString("intelButtonRecreateAll"),
+						BUTTON_RECREATE_ALL, faction.getBaseUIColor(), faction.getDarkUIColor(),
+						(int)(width), 20f, pad);
+				float cost = getReviveCost(deadMembers);
+				validateReviveButton(revive, info, false, cost);
+			}
+
 			ButtonAPI check = info.addAreaCheckbox(getString("intelButtonCheckIndependent"), BUTTON_INDEPENDENT_MODE, 
 					faction.getBaseUIColor(), faction.getDarkUIColor(), faction.getBrightUIColor(),
 					(int)width, 20f, opad);
@@ -613,43 +675,23 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		} else if (!waitingForSpawn) {
 			// dead mode
 			
-			ButtonAPI button = info.addButton(getString("intelButtonDisband"), 
+			info.addButton(getString("intelButtonDisband"),
 					BUTTON_DISBAND, faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, opad);
-						
-			InteractionDialogAPI dial = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
-			boolean allow = dial != null && dial.getInteractionTarget() != null && dial.getInteractionTarget().getMarket() != null;
-			if (!allow) {
-				disableReviveButton(button, info, getString("intelTooltipDisbandNotDocked"));
-			}
-			
-			float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
 			
 			// revive flagship
-			button = info.addButton(getString("intelButtonRecreate"), 
+			ButtonAPI button = button = info.addButton(getString("intelButtonRecreate"),
 					BUTTON_RECREATE, faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, opad);
 			float cost = getReviveCost(flagship);
-			if (!allow) {
-				disableReviveButton(button, info, getString("intelTooltipDisbandNotDocked"));
-			}
-			else if (cost > credits) {
-				String reason = String.format(getString("intelTooltipRecreateNotEnoughCredits"), Misc.getWithDGS(cost));
-				disableReviveButton(button, info, reason);
-			}
+			validateReviveButton(button, info, true, cost);
 			
 			// revive all
 			button = info.addButton(getString("intelButtonRecreateAll"), 
 					BUTTON_RECREATE_ALL, faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, pad);
 			cost = getReviveCost(deadMembers);
-			if (!allow) {
-				disableReviveButton(button, info, getString("intelTooltipDisbandNotDocked"));
-			}
-			else if (cost > credits) {
-				String reason = String.format(getString("intelTooltipRecreateNotEnoughCredits"), Misc.getWithDGS(cost));
-				disableReviveButton(button, info, reason);
-			}
+			validateReviveButton(button, info, true, cost);
 		}
 
 		// list dead members
@@ -716,7 +758,13 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			ui.updateUIForItem(this);
 		}
 		else if (buttonId == BUTTON_RECREATE_ALL) {
-			recreate(true);
+			if (isAlive) {
+				Iterator<FleetMemberAPI> iter = deadMembers.iterator();
+				while (iter.hasNext()) {
+					reviveDeadMember(iter.next());
+				}
+			}
+			else recreate(true);
 			ui.updateUIForItem(this);
 		}
 		else if (buttonId == BUTTON_INDEPENDENT_MODE) {

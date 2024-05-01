@@ -2472,6 +2472,7 @@
 		"intelDescDebug":"This intel is displayed only for debugging. You should not be seeing it under normal conditions.",
 		
 		"intelButtonCommand":"Give orders",
+		"intelButtonReviveAll":"Revive all ships",
 		"intelTooltipCommandInBattle":"Fleet is currently in battle and cannot receive orders.",
 		"intelButtonDisband":"Disband",
 		"intelButtonRecreate":"Revive flagship",
