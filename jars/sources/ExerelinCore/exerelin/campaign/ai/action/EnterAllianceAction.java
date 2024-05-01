@@ -16,7 +16,7 @@ import lombok.Setter;
 
 public class EnterAllianceAction extends DiplomacyAction implements StrategicActionDelegate {
 
-    public static final boolean ALLIANCE_DEBUGGING = true;
+    public static final boolean ALLIANCE_DEBUGGING = false;
 
     @Getter @Setter protected Alliance alliance;
     @Getter @Setter protected Alliance alliance2;
