@@ -1,13 +1,11 @@
 package exerelin.campaign.ai.action;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.StrategicAI;
-import exerelin.campaign.ai.concern.RevanchismConcern;
 import exerelin.campaign.ai.concern.StrategicConcern;
 
 public class TransferMarketAction extends BaseStrategicAction implements StrategicActionDelegate {
@@ -15,9 +13,22 @@ public class TransferMarketAction extends BaseStrategicAction implements Strateg
     @Override
     public boolean generate() {
         MarketAPI market = concern.getMarket();
+        if (market.getFaction().isPlayerFaction()) {
+            // TODO: offer to buy the market
+            return false;
+        }
+
         SectorManager.transferMarket(market, ai.getFaction(), market.getFaction(), false, false, null, 0);
         delegate = this;
         return true;
+    }
+
+    @Override
+    public void postGenerate() {
+        super.postGenerate();
+        if (delegate == this) {
+            end(StrategicActionDelegate.ActionStatus.SUCCESS);
+        }
     }
 
     @Override
@@ -35,7 +46,10 @@ public class TransferMarketAction extends BaseStrategicAction implements Strateg
         FactionAPI faction = market.getFaction();
         if (AllianceManager.areFactionsAllied(faction.getId(), ai.getFactionId())) return true;
 
-        return faction.getRelationshipLevel(ai.getFaction()).isAtWorst(RepLevel.FRIENDLY);
+        RepLevel rel = RepLevel.FRIENDLY;
+        if (market.getSize() >= 5) rel = RepLevel.COOPERATIVE;
+
+        return faction.getRelationshipLevel(ai.getFaction()).isAtWorst(rel);
     }
 
     @Override
