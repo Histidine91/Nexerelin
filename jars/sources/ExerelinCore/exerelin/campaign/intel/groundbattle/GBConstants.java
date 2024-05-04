@@ -50,8 +50,10 @@ public class GBConstants {
 	public static int EXISTING_UNREST_DIVISOR = 4;
 	public static float DISRUPTED_TROOP_CONTRIB_MULT = 0.5f;
 	public static float DISRUPT_WHEN_CAPTURED_TIME = 0.25f;
+	public static boolean DISRUPT_FROM_COMBAT = false;
 	public static float DISRUPT_DAMAGE_MIN_FACTOR = 0.15f;	// local attacker must have at least this much more damage than local defender to disrupt
 	public static float DISRUPT_DAMAGE_TIME_MULT = 0.25f;	// multiplier of base disrupt time from raiding
+	public static float MAX_DISRUPT_TIME = 3f;
 	
 	public static float SUPPLIES_TO_DEPLOY_MULT = 0.25f;
 	public static float MAX_SUPPORT_DIST = 250;

@@ -407,6 +407,7 @@ public class GroundBattleRoundResolve {
 	}
 
 	public void disruptIndustryFromCombat(IndustryForBattle ifb) {
+		if (!GBConstants.DISRUPT_FROM_COMBAT) return;
 		if (ifb.getPlugin().getDef().hasTag("noBombard") || ifb.getPlugin().getDef().hasTag("resistBombard"))
 			return;
 
@@ -420,7 +421,10 @@ public class GroundBattleRoundResolve {
 
 		Industry ind = ifb.getIndustry();
 		float disruptTime = NexUtilsMarket.getIndustryDisruptTime(ind) * GBConstants.DISRUPT_DAMAGE_TIME_MULT * surplus;
-		ind.setDisrupted(ind.getDisruptedDays() + disruptTime, true);
+		disruptTime = Math.min(disruptTime, GBConstants.MAX_DISRUPT_TIME);
+
+		float newDisrupt = ind.getDisruptedDays() + disruptTime;
+		ind.setDisrupted(newDisrupt, true);
 	}
 	
 	public float getAttackStrengthOnIndustry(IndustryForBattle ifb, boolean attacker) 
