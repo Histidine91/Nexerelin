@@ -56,7 +56,7 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
 
         params.style = FleetCreatorMission.FleetStyle.STANDARD
 
-        fgi = BlockadeFGI(params, bParams)
+        fgi = NexBlockadeFGI(params, bParams)
         fgi.listener = this
 
         when (NexConfig.nexIntelQueued) {
@@ -141,6 +141,7 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
     }
     override fun setStrategicAction(strategicAction: StrategicAction?) {
         this.strategicAction = strategicAction
+        if (fgi is NexBlockadeFGI) (fgi as NexBlockadeFGI).strategicAction = strategicAction;
     }
 
     override fun getIntelTags(map: SectorMapAPI): Set<String> {
