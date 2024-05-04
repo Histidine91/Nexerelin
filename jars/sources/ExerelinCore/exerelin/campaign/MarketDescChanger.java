@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ColonyDecivListener;
+import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import exerelin.ExerelinConstants;
@@ -22,7 +23,7 @@ import java.util.Map;
 /**
  * Handles changing of market descriptions when a market is captured.
  */
-public class MarketDescChanger implements InvasionListener, ColonyDecivListener {
+public class MarketDescChanger implements InvasionListener, ColonyDecivListener, PlayerColonizationListener {
 	
 	public static final List<DescUpdateEntry> DESCRIPTIONS = new ArrayList<>();
 	public static final Map<String, List<DescUpdateEntry>> DESCRIPTIONS_BY_ENTITY_ID = new HashMap<>();
@@ -98,6 +99,12 @@ public class MarketDescChanger implements InvasionListener, ColonyDecivListener 
 		}
 	}
 
+	public static void setEntityDescsForMarket(MarketAPI market, String factionId) {
+		for (SectorEntityToken linked : market.getConnectedEntities()) {
+			setEntityDescId(linked, factionId);
+		}
+	}
+
 	@Override
 	public void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, 
 			Nex_MarketCMD.TempDataInvasion actionData, CargoAPI cargo) {
@@ -121,9 +128,17 @@ public class MarketDescChanger implements InvasionListener, ColonyDecivListener 
 			boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength) 
 	{
 		String factionId = newOwner.getId();
-		for (SectorEntityToken linked : market.getConnectedEntities()) {
-			setEntityDescId(linked, factionId);
-		}
+		setEntityDescsForMarket(market, factionId);
+	}
+
+	@Override
+	public void reportPlayerColonizedPlanet(PlanetAPI planet) {
+		setEntityDescsForMarket(planet.getMarket(), Factions.PLAYER);
+	}
+
+	@Override
+	public void reportPlayerAbandonedColony(MarketAPI colony) {
+		setEntityDescsForMarket(colony, Factions.NEUTRAL);
 	}
 
 	@Override
