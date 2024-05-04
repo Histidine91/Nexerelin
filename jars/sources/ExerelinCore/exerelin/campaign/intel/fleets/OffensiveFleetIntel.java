@@ -581,7 +581,15 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public void terminateEvent(OffensiveOutcome outcome)
 	{
 		reportOutcome(outcome);
-		forceFail(true);
+		try {
+			forceFail(true);
+		} catch (Exception ex) {
+			log.info("wololo event broke??", ex);
+			log.info(String.format("Event is %s, faction %s, target %s (%s), class %s", this.getName(),
+					faction.getDisplayName(), target.getName(), target.getFaction().getDisplayName(), this.getClass().getName()));
+			endAfterDelay();
+		}
+
 	}
 	
 	public void checkForTermination() {
@@ -895,6 +903,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	protected int getRouteCount() {
 		int currStage = getCurrentStage();
+		if (currStage >= stages.size()) return 0;	// can happen when getting debug strengths for an already-finished event
 		BaseRaidStage stage = (BaseRaidStage) stages.get(currStage);
 		
 		return stage.getRoutes().size();
@@ -902,6 +911,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 	protected List<RouteData> getRoutes() {
 		int currStage = getCurrentStage();
+		if (currStage >= stages.size()) return new ArrayList<>();	// can happen when getting debug strengths for an already-finished event
 		BaseRaidStage stage = (BaseRaidStage) stages.get(currStage);
 
 		return stage.getRoutes();
