@@ -98,7 +98,17 @@
 				"marine":0.2,
 				"heavy":0.1,
 			},	
-		},		
+		},
+		
+		"militarygarrison":{	# AotD Planetary Defense Bureau
+			"tags":["resistBombard"],
+			"strengthMult":1.2,
+			"troopCounts":{
+				"mililtia":2,
+				"marine":1,
+				"heavy":0.5,
+			},	
+		},
 	},
 	
 	"conditions":{
@@ -140,6 +150,19 @@
 			"color":[224,96,48,255],
 			"tags":["preventBombardment", "preventCAS"],
 			"plugin":"exerelin.campaign.intel.groundbattle.plugins.IndEvoMinefieldPlugin",
+		},
+		
+		"hmi_fang_spawn":{
+			"troopCounts":{
+				"militia":1,
+				"marine":0.5,
+			},
+		},
+		"hmi_draco_spawn":{
+			"troopCounts":{
+				"militia":1,
+				"marine":0.5,
+			},
 		},
 	},
 	

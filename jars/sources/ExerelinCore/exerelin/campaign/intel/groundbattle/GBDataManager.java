@@ -95,6 +95,14 @@ public class GBDataManager {
 				if (jsonCondEntry.has("tags")) {
 					def.tags.addAll(NexUtils.JSONArrayToArrayList(jsonCondEntry.getJSONArray("tags")));
 				}
+				if (jsonCondEntry.has("troopCounts")) {
+					JSONObject jsonTroopCounts = jsonCondEntry.getJSONObject("troopCounts");
+					Iterator iter2 = jsonTroopCounts.keys();
+					while (iter2.hasNext()) {
+						String troopId = (String)iter2.next();
+						def.troopCounts.put(troopId, (float)jsonTroopCounts.getDouble(troopId));
+					}
+				}
 				def.plugin = jsonCondEntry.optString("plugin", null);
 				def.desc = jsonCondEntry.optString("desc", "");
 				if (jsonCondEntry.has("highlights"))
@@ -238,6 +246,7 @@ public class GBDataManager {
 		public final String conditionId;
 		public String plugin;
 		public Set<String> tags = new HashSet<>();
+		public Map<String, Float> troopCounts = new HashMap<>();
 		public String desc;
 		public Color color;	// not set yet
 		public List<String> highlights;
@@ -245,6 +254,11 @@ public class GBDataManager {
 		
 		public ConditionDef(String conditionId) {
 			this.conditionId = conditionId;
+		}
+
+		public float getTroopContribution(String type) {
+			if (!troopCounts.containsKey(type)) return 0;
+			return troopCounts.get(type);
 		}
 	}
 	

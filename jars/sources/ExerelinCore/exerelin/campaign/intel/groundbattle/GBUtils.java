@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -85,6 +86,15 @@ public class GBUtils {
 			militia += ind.getPlugin().getTroopContribution("militia");
 			marines += ind.getPlugin().getTroopContribution("marine");
 			heavies += ind.getPlugin().getTroopContribution("heavy");
+		}
+
+		for (MarketConditionAPI cond : intel.getMarket().getConditions()) {
+			String condId = cond.getId();
+			GBDataManager.ConditionDef cd = GBDataManager.getConditionDef(condId);
+			if (cd == null) continue;
+			militia += cd.getTroopContribution("militia");
+			marines += cd.getTroopContribution("marine");
+			heavies += cd.getTroopContribution("heavy");
 		}
 		
 		float countForSize = getTroopCountForMarketSize(intel.getMarket());
