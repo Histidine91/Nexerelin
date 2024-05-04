@@ -199,7 +199,7 @@
 		
 		"transferMarket":{
 			"name":"Transfer Market",
-			"classPath":"exerelin.campaign.ai.action.EnterAllianceAction",
+			"classPath":"exerelin.campaign.ai.action.TransferMarketAction",
 			"tags":["diplomacy", "friendly", "canTransferMarket"],
 		},
 		

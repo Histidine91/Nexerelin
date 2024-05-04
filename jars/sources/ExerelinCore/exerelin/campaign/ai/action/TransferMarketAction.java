@@ -1,27 +1,28 @@
 package exerelin.campaign.ai.action;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.ai.concern.RevanchismConcern;
 import exerelin.campaign.ai.concern.StrategicConcern;
 
 public class TransferMarketAction extends BaseStrategicAction implements StrategicActionDelegate {
-
 
     @Override
     public boolean generate() {
         MarketAPI market = concern.getMarket();
         SectorManager.transferMarket(market, ai.getFaction(), market.getFaction(), false, false, null, 0);
-
+        delegate = this;
         return true;
     }
 
     @Override
     public boolean canUse(StrategicConcern concern) {
-        return concern.getDef().hasTag("canReturnMarket") && concern.getMarket() != null && enoughRep(concern.getMarket());
+        return concern.getDef().hasTag("canTransferMarket") && concern.getMarket() != null && enoughRep(concern.getMarket());
     }
 
     @Override
