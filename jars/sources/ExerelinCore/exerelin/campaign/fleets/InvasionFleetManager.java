@@ -14,14 +14,12 @@ import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.SectorManager;
-import exerelin.campaign.StatsTracker;
+import exerelin.campaign.*;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
@@ -59,7 +57,7 @@ import java.util.*;
  * an invasion or raid against one of its enemies.
  * The relevant code paths start in {@code advance()}, so look there.
  */
-public class InvasionFleetManager extends BaseCampaignEventListener implements EveryFrameScript
+public class InvasionFleetManager extends BaseCampaignEventListener implements InvasionListener, EveryFrameScript
 {
 	public static final String MANAGER_MAP_KEY = "exerelin_invasionFleetManager";
 	public static final String MEM_KEY_FACTION_TARGET_COOLDOWN = "$nex_recentlyTargetedMilitary";
@@ -125,7 +123,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	protected float fleetRequestStock;
 	protected int fleetRequestCapacity;
 	
-	public InvasionFleetManager()
+	protected InvasionFleetManager()
 	{
 		super(true);
 		this.tracker = new IntervalUtil(1, 1);
@@ -1550,6 +1548,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		Map<String, Object> data = Global.getSector().getPersistentData();
 		manager = new InvasionFleetManager();
+		//Global.getSector().getListenerManager().addListener(manager);
 		data.put(MANAGER_MAP_KEY, manager);
 		return manager;
 	}
@@ -1565,7 +1564,22 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	{
 		return false;
 	}
-	
+
+	@Override
+	public void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, Nex_MarketCMD.TempDataInvasion actionData, CargoAPI cargo) {}
+
+	@Override
+	public void reportInvasionRound(InvasionRound.InvasionRoundResult result, CampaignFleetAPI fleet, MarketAPI defender, float atkStr, float defStr) {}
+
+	@Override
+	public void reportInvasionFinished(CampaignFleetAPI fleet, FactionAPI attackerFaction, MarketAPI market, float numRounds, boolean success) {}
+
+	@Override
+	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved,
+									   boolean isCapture, List<String> factionsToNotify, float repChangeStrength) {
+
+	}
+
 	public enum EventType { INVASION, RAID, RESPAWN, BASE_STRIKE, SAT_BOMB, BLOCKADE, DEFENSE, OTHER };
 	
 	// No longer used
