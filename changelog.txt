@@ -1,3 +1,78 @@
+Version 0.11.1x
+
+## Gameplay ##
+* Alliance fixes/improvements
+    * NPCs joining or merging an alliance requires player consent if player is a member
+    * Fix strategic AI spamming player with invites to an existing alliance 
+    * Alliance offer cooldown is short if player accepts, long if rejected or expires
+    * Strategic AI can request an alliance merger
+    * When using strategic AI, don't ally outside of AI actions
+    * Pirate factions won't spontaneously join alliances
+* NPC factions can launch blockades
+    * Unlike the League colony crisis blockade, these are smaller but don't have command or supply fleets to snipe
+    * Blockade has chance to replace raid if strategic AI is disabled (sat bomb now replaces invasion instead of raid)
+* Colony crisis stuff
+    * Crises that originate from a specific market (League, Church and Diktat ones) will be properly suppressed if the origin (Kazeron, Hesperus or Sindria) is captured by another faction
+    * Add a pseudo-Independents colony crisis involving free ports (can be disabled in config)
+    * Remnant contact will now negate Remnant colony crisis points
+* Remnant mission 'Salvation' improvements
+    * Knight fleet will use ships from Knights of Ludd mod if available
+    * Boss shard launch behavior closer to what was intended
+    * Fix some irregularities in special merc's immortality
+* Invasion etc. adjustments
+    * Player colonies below size 4 won't be targeted for military actions (except in Starfarer mode)
+    * Autoresolve for Nex military events will take into account allied factions in the system
+    * Base strike missions and colony expeditions consume invasion points
+    * 'Revenge' invasions will not spawn if invasion points too low
+* Ground units fighting won't cause industry disruption any more
+* Strategy AI can have captured markets returned to the original owner if sufficiently friendly
+* Luddic shrines can be visited even if the markets are captured
+* Having an outpost won't block supplies request from quartermaster
+* Derelict Empire also takes over pirate-type factions' markets at start, if pirate invasions are enabled
+* Luddic Church ground battle bonus is squared on worlds with Luddic Majority
+    * Previously it was squared for being militia
+* Increase bonus XP for agent action SP use and ground battle Inspire
+* NPC special task groups 1/13th smaller, respawn delay 30 -> 60
+* Proxy raids launched by strategic AI won't be hostile to sponsor faction
+
+## UI ##
+* Boolean settings to disable invasions/raids/sat bombs and colony expeditions
+* Faction directory won't display factions that only have hidden markets
+
+## Text ##
+* Clarify intel text when tribute is cancelled by external factors
+* Fix inconsistent captain's pronouns in 'File Drawer Problem' mission
+* Market desc changer handles player colonize/abandon
+
+## Bugfixes ##
+* Fix undersupplied market concern crashing on update() if no producers left
+* Fix an unusual crash with player special task group on game load
+* Fix NPC factions not invading if their invasion point capacity has reached the minimum allowed
+* Fix strategic AI general warfare concern causing sabotage of unrelated factions' industries
+* Fix joining a ground battle sometimes not forcing relations to hostile when it should
+* Fix stabilize package option being available when it shouldn't if a dialog option is removed
+* Fix player saturation bombardments not being tracked in some places
+* Buy ship rule should now work properly with S-modded built-in hullmods
+* Fix invasion point refund for cancelled actions not taking stage into account
+* Don't generate conquest mission if the reward is zero
+* Fix repeat relations action allowing free reuse of story point effect
+* Fix recruit operative action not showing on own markets
+* Maybe fix prices not updating sufficiently after delivering commodities to suppress rebellion
+* NPC ground units shouldn't be able to deploy if their fleet is destroyed (if fleets were not abstracted on battle start)
+
+## Modding ##
+* Ground battle stuff
+    * Add some config options for ground battle attacker and defender strengths
+    * Fixes/improvements in support for custom ground unit types and Crew Replacer mod
+    * Market conditions can generate ground battle troops
+    * Add handling for HMI Fang and Draco market conditions, AotD Planetary Defense Bureau industry
+* Add some relevant getters/setters for insurance intel
+
+## Misc ##
+* End vanilla faction hostilities on loading Nex into existing save
+* Update Silverlight variants for new OP costs
+
+
 Version 0.11.1b
 
 * Compatibility with Starsector 0.97
