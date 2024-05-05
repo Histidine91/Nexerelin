@@ -209,7 +209,7 @@ public class VictoryScoreboardIntel extends BaseIntelPlugin {
 		row.addUIElement(nameHolder).rightOfTop(imageHolder, pad * 2);
 		
 		if (entry.alliance != null) {
-			TooltipMakerAPI allyContribHolder = row.createUIElement(100, height/2, false);
+			TooltipMakerAPI allyContribHolder = row.createUIElement(110, height/2, false);
 			Color hl = entry.allianceContrib > 0 ? Misc.getPositiveHighlightColor() : Misc.getTextColor();
 			allyContribHolder.addPara(getString("textAllyContrib"), 0, hl, entry.allianceContrib + "");
 			row.addUIElement(allyContribHolder).belowLeft(nameHolder, 0);

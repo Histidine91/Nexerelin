@@ -107,10 +107,13 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		String strId = "intelAllianceDescNew";
 		if (alliance != null && alliance2 != null) {
 			strId = "intelAllianceDescMerge";
-		} else if (AllianceManager.getFactionAlliance(factionId) != null) {
-			strId = "intelAllianceDescInvite";
-		} else if (AllianceManager.getFactionAlliance(PlayerFactionStore.getPlayerFactionId()) != null) {
-			strId = "intelAllianceDescJoin";
+		} else if (alliance != null) {
+			String player = PlayerFactionStore.getPlayerFactionId();
+			if (alliance.getMembersCopy().contains(player)) {
+				strId = "intelAllianceDescJoin";
+			} else {
+				strId = "intelAllianceDescInvite";
+			}
 		}
 		if (alliance != null) {
 			replace.put("$alliance", alliance.getName());
@@ -155,7 +158,10 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		if (state == 1) return;
 
 		if (alliance2 != null) AllianceManager.getManager().mergeAlliance(alliance, alliance2);
-		else alliance = AllianceManager.createAlliance(factionId, PlayerFactionStore.getPlayerFactionId());
+		else {
+			// don't try to remove player from existing alliance before joining new one, it'll break the "other faction joins us" case
+			alliance = AllianceManager.createAlliance(factionId, PlayerFactionStore.getPlayerFactionId());
+		}
 		state = 1;
 	}
 
@@ -244,7 +250,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
-		tags.add(StringHelper.getString(Tags.INTEL_AGREEMENTS, true));
+		tags.add(Tags.INTEL_AGREEMENTS);
 		tags.add(StringHelper.getString("diplomacy", true));
 		tags.add(StringHelper.getString("alliances", true));
 		tags.add(factionId);

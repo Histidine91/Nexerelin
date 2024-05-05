@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.intel.diplomacy.AllianceOfferIntel;
@@ -17,6 +18,7 @@ import lombok.Setter;
 public class EnterAllianceAction extends DiplomacyAction implements StrategicActionDelegate {
 
     public static final boolean ALLIANCE_DEBUGGING = false;
+    public static final String MEMKEY_ANTISPAM = "$nex_allianceOffer_antispam";
 
     @Getter @Setter protected Alliance alliance;
     @Getter @Setter protected Alliance alliance2;
@@ -34,9 +36,12 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
         if (alliance2 != null) requirePlayerApproval |= alliance2.requirePlayerApproval();
 
         if (requirePlayerApproval) {
-            AllianceOfferIntel offer = new AllianceOfferIntel(faction.getId(), alliance, alliance2);
+            FactionAPI offerer = faction;
+            if (offerer == PlayerFactionStore.getPlayerFaction()) offerer = ai.getFaction();
+            AllianceOfferIntel offer = new AllianceOfferIntel(offerer.getId(), alliance, alliance2);
             setDelegate(offer);
             offer.init();
+            ai.getFaction().getMemoryWithoutUpdate().set(MEMKEY_ANTISPAM, true, 0.5f);
             return true;
         } else {
             if (alliance2 != null) AllianceManager.getManager().mergeAlliance(alliance, alliance2);
@@ -45,6 +50,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
         }
         if (alliance == null) return false;
 
+        ai.getFaction().getMemoryWithoutUpdate().set(MEMKEY_ANTISPAM, true, 0.5f);
         delegate = this;
         return true;
     }
@@ -57,6 +63,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
         if (!ALLIANCE_DEBUGGING && Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_GLOBAL_COOLDOWN))
             return false;
+        if (ai.getFaction().getMemoryWithoutUpdate().getBoolean(MEMKEY_ANTISPAM)) return false;
 
         if (NexUtilsFaction.isPirateFaction(ai.getFactionId())) return false;
 

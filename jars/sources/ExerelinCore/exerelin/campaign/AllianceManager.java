@@ -191,10 +191,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         if (alliance1 != null && alliance2 != null)
         {
-            //log.error("Attempt to form alliance with two factions who are already in an alliance");
-            //return null;
-            manager.mergeAlliance(alliance1, alliance2);
-            return alliance1;
+            log.error("Attempt to form alliance with two factions who are already in an alliance");
+            return null;
+
+            // no thank you, mergers should require an explicit call
+            //manager.mergeAlliance(alliance1, alliance2);
+            //return alliance1;
         }
         else if (alliance1 != null)
         {
