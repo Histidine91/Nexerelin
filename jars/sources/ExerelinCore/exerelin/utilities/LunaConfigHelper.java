@@ -120,6 +120,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("hardModeColonyIncomeMult", "float", NexConfig.hardModeColonyIncomeMult, 0.5f, 1f);
         addSetting("enablePunitiveExpeditions", "boolean", NexConfig.enablePunitiveExpeditions);
         //addSetting("prismNumBossShips", "int", NexConfig.prismNumBossShips, 0, 10);
+        addSetting("enableNexColonyCrises", "boolean", NexConfig.enableNexColonyCrises);
         addSetting("officerDeaths", "boolean", NexConfig.officerDeaths);
         addSetting("rebellionMult", "float", NexConfig.rebellionMult, 0f, 10f);
         addSetting("skipStoryDefault", "boolean", Global.getSettings().getBoolean("nex_skipStoryDefault"));
@@ -232,6 +233,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.hardModeColonyGrowthMult = (float)loadSetting("hardModeColonyGrowthMult", "float");
         NexConfig.hardModeColonyIncomeMult = (float)loadSetting("hardModeColonyIncomeMult", "float");
         NexConfig.enablePunitiveExpeditions = (boolean)loadSetting("enablePunitiveExpeditions", "boolean");
+        NexConfig.enableNexColonyCrises = (boolean)loadSetting("enableNexColonyCrises", "boolean");
         NexConfig.officerDeaths = (boolean)loadSetting("officerDeaths", "boolean");
         NexConfig.rebellionMult = (float)loadSetting("rebellionMult", "float");
         Global.getSettings().setBoolean("nex_skipStoryDefault", (boolean)loadSetting("skipStoryDefault", "boolean"));

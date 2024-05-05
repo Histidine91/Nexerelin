@@ -11,6 +11,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator
 import com.fs.starfarer.api.util.Misc
 import exerelin.campaign.intel.hostileactivity.PoliceHostileActivityFactor.Companion.getFreePortScore
 import exerelin.campaign.intel.hostileactivity.PoliceHostileActivityFactor.Companion.isDefeatedExpedition
+import exerelin.utilities.NexConfig
 import kotlin.math.roundToInt
 
 class PoliceFreePortActivityCause(intel: HostileActivityEventIntel?) : BaseHostileActivityCause2(intel) {
@@ -50,6 +51,7 @@ class PoliceFreePortActivityCause(intel: HostileActivityEventIntel?) : BaseHosti
 
     override fun getProgress(): Int {
         if (!ENABLED) return 0
+        if (!NexConfig.enableNexColonyCrises) return 0
         if (isDefeatedExpedition()) return 0
         var score = 0
         for (market in Misc.getPlayerMarkets(false)) {

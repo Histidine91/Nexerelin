@@ -3131,6 +3131,8 @@
 		"name_hardModeColonyIncomeMult":"Starfarer mode colony income mult",
 		"name_enablePunitiveExpeditions":"Enable punitive expeditions",
 		"tooltip_enablePunitiveExpeditions":"Toggles vanilla (pre-0.97) punitive expeditions sent by factions for commodity competition and/or operating free ports. Does not affect bombardments of player colonies in claimed territory. Not needed with vanilla factions, but use this if a mod faction is sending expeditions.",
+		"name_enableNexColonyCrises":"Enable Nexerelin's colony crises",
+		"tooltip_enableNexColonyCrises":"Enable colony crises added by this mod (currently this is just the free port one).",
 		"name_officerDeaths":"Officer deaths",
 		"tooltip_officerDeaths":"Player officers may be killed or go MIA in combat.",
 		"name_rebellionMult":"Rebellion generation mult",

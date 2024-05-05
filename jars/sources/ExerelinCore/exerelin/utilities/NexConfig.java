@@ -176,6 +176,7 @@ public class NexConfig
     public static boolean autoResistAIInspections = true;
     public static boolean allyVictories = true;
     public static boolean updateMarketDescOnCapture = true;
+    public static boolean enableNexColonyCrises = true;
 
     public static void loadSettings()
     {
@@ -301,6 +302,7 @@ public class NexConfig
             autoResistAIInspections = settings.optBoolean("autoResistAIInspections", autoResistAIInspections);
             allyVictories = settings.optBoolean("allyVictories", allyVictories);
             updateMarketDescOnCapture = settings.optBoolean("updateMarketDescOnCapture", updateMarketDescOnCapture);
+            enableNexColonyCrises = settings.optBoolean("enableNexColonyCrises", enableNexColonyCrises);
 
             useEnhancedStartRelations = settings.optBoolean("useEnhancedStartRelations", useEnhancedStartRelations);
             useConfigRelationshipsInNonRandomSector = settings.optBoolean("useConfigRelationshipsInNonRandomSector", useConfigRelationshipsInNonRandomSector);
