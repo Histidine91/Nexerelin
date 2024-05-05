@@ -2626,6 +2626,7 @@
 		
 		"concernDesc_paranoidHigherRepLevel":"This concern is applying at a higher reputation level than normal due to the Paranoid trait.",
 		"concernDesc_predatoryHigherRepLevel":"This concern is applying at a higher reputation level than normal due to the Predatory trait.",
+		"concernDesc_revanchism_success":"We have reclaimed our rightful territory of $market (size $size)!",
 		"concernDesc_retaliation_success":"We must respond in kind at once, to show $theFaction that we are not defenseless.",
 		"concernDesc_retaliation_fail":"Although their attempt failed, we must swiftly punish them for their insolence.",
 		

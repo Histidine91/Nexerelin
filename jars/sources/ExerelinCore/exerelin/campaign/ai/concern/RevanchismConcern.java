@@ -74,7 +74,15 @@ public class RevanchismConcern extends MarketRelatedConcern {
     @Override
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
         LabelAPI label = super.createTooltipDesc(tooltip, holder, pad);
-        label.setText(StringHelper.substituteFactionTokens(label.getText(), market.getFaction()));
+        String text = label.getText();
+        // special handling if we've already taken the market
+        if (market.getFaction() == ai.getFaction()) {
+            text = StrategicAI.getString("concernDesc_revanchism_success");
+            text = StringHelper.substituteToken(text, "$market", market.getName());
+            text = StringHelper.substituteToken(text, "$size", market.getSize() + "");
+        }
+
+        label.setText(StringHelper.substituteFactionTokens(text, market.getFaction()));
         return label;
     }
 
