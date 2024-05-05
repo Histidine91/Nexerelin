@@ -24,7 +24,7 @@ import java.util.*;
 
 public class PirateActivityConcern extends BaseStrategicConcern {
 
-    public static final float RAGE_REDUCTION_ON_SUCCESS = 50;
+    public static final float RAGE_REDUCTION_ON_SUCCESS = 80;
 
     @Getter protected float rage = 0;
     Set<RageEntry> affectedMarkets = new HashSet<>();
@@ -92,7 +92,7 @@ public class PirateActivityConcern extends BaseStrategicConcern {
         if (affectedMarkets.isEmpty()) return;
 
         rageThisUpdate *= ai.getDaysSinceLastUpdate();
-        Global.getLogger(this.getClass()).info(String.format("Rage this update: %.1f", rageThisUpdate));
+        //Global.getLogger(this.getClass()).info(String.format("Rage this update: %.1f", rageThisUpdate));
         modifyRage(rageThisUpdate);
         super.update();
     }

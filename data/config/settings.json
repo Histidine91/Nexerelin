@@ -41,7 +41,7 @@
 	
 	"nex_conquestMissionIntervalRateMult":0.05,
 	"nex_disruptMissionIntervalRateMult":0.125,
-	"nex_pirateRageIncrement":0.04,
+	"nex_pirateRageIncrement":0.02,
 	"nex_expeditionDelayPerExistingColony":15,
 	"nex_colonyExpeditionOnlyAfterGalatia":false,
 	"nex_faction_respawn_cooldown":150,
