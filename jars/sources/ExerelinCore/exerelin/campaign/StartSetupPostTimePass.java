@@ -49,9 +49,8 @@ public class StartSetupPostTimePass {
 		Global.getLogger(StartSetupPostTimePass.class).info("Running start setup post time pass");
 		SectorAPI sector = Global.getSector();
 		if (Global.getSector().isInNewGameAdvance()) return;
-		
+
 		boolean corvusMode = SectorManager.getManager().isCorvusMode();
-		Global.getSector().getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_RANDOM_SECTOR, !corvusMode);
 		
 		if (corvusMode && !TutorialMissionIntel.isTutorialInProgress())
 			VanillaSystemsGenerator.exerelinEndGalatiaPortionOfMission();

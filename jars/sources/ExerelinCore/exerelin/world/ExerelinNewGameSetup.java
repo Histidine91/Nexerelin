@@ -268,6 +268,8 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		boolean corvusMode = setupData.corvusMode;
 		boolean grandSector = Global.getSettings().getModManager().isModEnabled("ZGrand Sector");
 		boolean adjustedSector = Global.getSettings().getModManager().isModEnabled("Adjusted Sector");
+
+		Global.getSector().getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_RANDOM_SECTOR, !corvusMode);
 		
 		// use vanilla hyperspace map
 		String hyperMap = "data/campaign/terrain/hyperspace_map.png";
