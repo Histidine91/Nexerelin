@@ -572,6 +572,10 @@
 	},
 	
 	"nex_backgrounds":{
+		"dialogTitle":"Choose your Background",
+		"dialogPara1":"A background can determine an assortment of different things, be that starting cargo, skills or future interactions with other characters. You can also choose to begin as a nobody who has yet to make their name known.",
+		"dialogPara2":"Hover over a background to get more information.",
+		
 		"intelTitle":"Background: %s",
 		"intelDescNoBackground":"You have no known background.",
 		

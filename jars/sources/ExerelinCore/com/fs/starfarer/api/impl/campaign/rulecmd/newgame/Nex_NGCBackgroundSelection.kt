@@ -21,6 +21,7 @@ import exerelin.campaign.backgrounds.UnknownCharacterBackground
 import exerelin.utilities.NexConfig
 import exerelin.campaign.ui.NexLunaCheckbox
 import exerelin.campaign.ui.NexLunaElement
+import exerelin.utilities.StringHelper
 import org.lwjgl.input.Keyboard
 
 class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
@@ -54,9 +55,9 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
         memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_faction_for_background", factionId)
 
         optionPanel.clearOptions()
-        textPanel.addPara("Choose your Background", Misc.getBasePlayerColor(), Misc.getBasePlayerColor())
-        textPanel.addPara("A background can determine an assortment of different things, be that starting cargo, skills or future interactions with other characters. You can also choose to begin as a nobody who has yet to make their name known.")
-        textPanel.addPara("Hover over a background to get more information.")
+        textPanel.addPara(StringHelper.getString("nex_backgrounds", "dialogTitle"), Misc.getBasePlayerColor(), Misc.getBasePlayerColor())
+        textPanel.addPara(StringHelper.getString("nex_backgrounds", "dialogPara1"))
+        textPanel.addPara(StringHelper.getString("nex_backgrounds", "dialogPara2"))
 
         optionPanel.addOption("Done", "nex_NGCDoneWithBackground")
         optionPanel.setShortcut("nex_NGCDone", Keyboard.KEY_RETURN, false, false, false, false)
