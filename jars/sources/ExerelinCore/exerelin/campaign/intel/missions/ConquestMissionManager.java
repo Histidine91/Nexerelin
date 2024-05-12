@@ -67,12 +67,12 @@ public class ConquestMissionManager extends BaseEventManager {
 		if (!NexConfig.enableHostileFleetEvents) return null;
 		if (!NexConfig.enableInvasions)	return null;
 		
-		log.info("Attempting to create conquest mission event");
+		//log.info("Attempting to create conquest mission event");
 		if ((float) Math.random() < 0.75f) return null;
 		
 		FactionAPI faction = pickSourceFaction();
 		if (faction == null) {
-			log.info("Failed to pick source faction");
+			//log.info("Failed to pick source faction");
 			return null;
 		}
 		
@@ -80,12 +80,12 @@ public class ConquestMissionManager extends BaseEventManager {
 				faction, null, null, Global.getSector().getEconomy().getMarketsCopy(), 
 				EventType.INVASION);
 		if (target == null) {
-			log.info("Failed to pick target market");
+			//log.info("Failed to pick target market");
 			return null;
 		} 
 		else if (target.getFaction().isPlayerFaction() || target.getFaction() == Misc.getCommissionFaction()) 
 		{
-			log.info("Target market belongs to player, retry later");
+			//log.info("Target market belongs to player, retry later");
 			return null;
 		}
 		
@@ -97,7 +97,7 @@ public class ConquestMissionManager extends BaseEventManager {
 		intel.init();
 		if (intel.isDone()) intel = null;
 		
-		log.info("Intel successfully created");
+		//log.info("Intel successfully created");
 		return intel;
 	}
 	
