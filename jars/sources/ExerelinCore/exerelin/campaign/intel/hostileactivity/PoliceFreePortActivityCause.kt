@@ -53,6 +53,8 @@ class PoliceFreePortActivityCause(intel: HostileActivityEventIntel?) : BaseHosti
         if (!ENABLED) return 0
         if (!NexConfig.enableNexColonyCrises) return 0
         if (isDefeatedExpedition()) return 0
+        if (PoliceHostileActivityFactor.getEligibleFactions().isEmpty()) return 0
+
         var score = 0
         for (market in Misc.getPlayerMarkets(false)) {
             score += getFreePortScore(market!!).toInt()

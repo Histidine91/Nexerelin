@@ -108,12 +108,6 @@ open class PoliceHostileActivityFactor(intel: HostileActivityEventIntel?) : Base
 
     protected var raid : FleetGroupIntel? = null
 
-    override fun getProgress(intel: BaseEventIntel?): Int {
-        return if (getEligibleFactions().isEmpty()) {
-            0
-        } else super.getProgress(intel)
-    }
-
     override fun getDesc(intel: BaseEventIntel?): String? {
         return getString("factorName")
     }
@@ -159,7 +153,7 @@ open class PoliceHostileActivityFactor(intel: HostileActivityEventIntel?) : Base
         m.beginFleet()
         val loc = system.location
         var factionId = Factions.MERCENARY
-        if (Math.random() > 0.35f) factionId = NexUtils.getRandomListElement(getEligibleFactions())
+        if (Math.random() > 0.35f) factionId = NexUtils.getRandomListElement(getEligibleFactions()) ?: Factions.MERCENARY
         m.createStandardFleet(difficulty, factionId, loc)
         m.triggerSetFleetQuality(HubMissionWithTriggers.FleetQuality.SMOD_1)
         m.triggerSetFleetQuality(HubMissionWithTriggers.FleetQuality.HIGHER)
