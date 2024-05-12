@@ -1086,6 +1086,7 @@
 		"scramblingFrom":"scrambling from $target",
 		"orbiting":"orbiting $target",
 		"rendezvous":"waiting at rendezvous point",
+		"usingGate":"using $target",
 		
 		"assisting":"assisting $target",
 		"attacking":"attacking $target",

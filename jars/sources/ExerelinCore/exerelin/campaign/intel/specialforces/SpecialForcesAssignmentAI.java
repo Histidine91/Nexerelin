@@ -2,16 +2,18 @@ package exerelin.campaign.intel.specialforces;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FleetAssignment;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
@@ -51,8 +53,58 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 		if (fleet.getCurrentAssignment() == null) {
 			pickNext();
 		}
+
+		checkGateFollow();	// currently broken
 	}
-	
+
+	protected boolean checkGateFollow() {
+		try {
+			if (!intel.isPlayer()) return false;
+			if (!GateEntityPlugin.canUseGates()) return false;
+			MemoryAPI mem = fleet.getMemoryWithoutUpdate();
+			if (mem.contains(MemFlags.FLEET_BUSY)) return false;
+
+			FleetAssignmentDataAPI assign = fleet.getCurrentAssignment();
+
+			SectorEntityToken dest = null;
+			//if (assign != null) dest = assign.getTarget();
+			if (dest == null) {
+				SpecialForcesTask task = intel.routeAI.currentTask;
+				if (task != null) dest = task.getEntity();
+			}
+
+			if (dest == null) {
+				return false;
+			}
+			if (dest.getContainingLocation() == fleet.getContainingLocation()) {
+				// fix fleet sometimes trying to go back and use the gate again after jumping through
+				fleet.removeFirstAssignmentIfItIs(FleetAssignment.DELIVER_FUEL);
+				return false;
+			}
+			if (assign != null && assign.getTarget() != null && assign.getTarget().hasTag(Tags.GATE)) return false;
+
+			SectorEntityToken gateFrom = getGateInLocation(fleet.getContainingLocation());
+			if (gateFrom == null || !GateEntityPlugin.isActive(gateFrom)) return false;
+			SectorEntityToken gateTo = getGateInLocation(dest.getContainingLocation());
+			if (gateTo == null || !GateEntityPlugin.isActive(gateTo)) return false;
+
+			fleet.addAssignmentAtStart(FleetAssignment.DELIVER_FUEL, gateFrom, 30,
+					StringHelper.getFleetAssignmentString("usingGate", gateFrom.getName()), new GateTravelScript(fleet, gateFrom, gateTo));
+			return true;
+		} catch (Exception ex) {
+			if (ExerelinModPlugin.isNexDev) throw ex;
+			return false;
+		}
+	}
+
+	protected SectorEntityToken getGateInLocation(LocationAPI loc) {
+		if (loc == null) return null;
+		for (SectorEntityToken token : loc.getEntitiesWithTag(Tags.GATE)) {
+			return token;
+		}
+		return null;
+	}
+
 	/**
 	 * When having defend vs. player assignments, special task groups will try to interrogate player if seen with transponder off.
 	 * @return
@@ -261,6 +313,36 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 						task.getEntity().getName());
 			default:
 				return super.getInSystemActionText(segment);
+		}
+	}
+
+	public static class GateTravelScript implements Script {
+
+		protected CampaignFleetAPI fleet;
+		public SectorEntityToken gateFrom;
+		public SectorEntityToken gateTo;
+
+		public GateTravelScript(CampaignFleetAPI fleet, SectorEntityToken gateFrom, SectorEntityToken gateTo) {
+			//log.info("Travel script instantiated");
+			this.fleet = fleet;
+			this.gateFrom = gateFrom;
+			this.gateTo = gateTo;
+		}
+
+		protected void showGateUse(SectorEntityToken gate, float ly) {
+			if (!(gateFrom.getCustomPlugin() instanceof GateEntityPlugin)) return;
+			((GateEntityPlugin)gateFrom.getCustomPlugin()).showBeingUsed(ly);
+		}
+
+		@Override
+		public void run() {
+			//log.info("Running script");
+			JumpPointAPI.JumpDestination dest = new JumpPointAPI.JumpDestination(gateTo, null);
+			Global.getSector().doHyperspaceTransition(fleet, gateFrom, dest);
+			fleet.removeFirstAssignmentIfItIs(FleetAssignment.DELIVER_FUEL);
+			float ly = Misc.getDistanceLY(gateFrom, gateTo);
+			showGateUse(gateFrom, ly);
+			showGateUse(gateTo, ly);
 		}
 	}
 }
