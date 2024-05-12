@@ -67,7 +67,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public static final int DETAIL_LEVEL_FOR_STRENGTH_VALUES = 4;
 	
 	public static final boolean USE_REBEL_REP = false;
-	
+	public static final boolean ALLOW_NEGATIVE_REBEL_TRADE = false;
 	public static final boolean DEBUG_MODE = false;
 	
 	protected static Logger log = Global.getLogger(RebellionIntel.class);
@@ -86,6 +86,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	protected float rebelStrength = 1;
 	protected float govtTradePoints = 0;
 	protected float rebelTradePoints = 0;
+	protected float rebelTradePointsForStrength = 0;	// unlike the other values, this is modified even for player markets and can go negative
 	protected float govtTradePointsWithCurrentGovt = 0;	// reset if government changes
 	protected float rebelTradePointsWithCurrentGovt = 0;	// reset if government changes
 	
@@ -956,19 +957,52 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	{
 		return transaction.getQuantitySold(commodityId) - transaction.getQuantityBought(commodityId);
 	}
+
+	public float adjustRebelStrengthWithTradeBalance(float points) {
+		if (points == 0) return 0;
+
+		float oldTP = rebelTradePointsForStrength;
+		rebelTradePointsForStrength += points;
+		//log.info(String.format("Old points %s, new points %s", oldTP, rebelTradePointsForStrength));
+		boolean isNegative = points < 0;
+
+		if (ALLOW_NEGATIVE_REBEL_TRADE) {
+			rebelStrength += points;
+			return points;
+		}
+
+		// don't weaken the rebels if we buy more from the BM than we originally sold to them
+		float pointsAbs = Math.abs(points);
+		float portionAboveZero;
+		if (isNegative) {
+			// strength loss from trade cannot be more than what they had to lose, if any (putting them extra underwater doesn't do anything)
+			portionAboveZero = Math.min(oldTP, pointsAbs);
+		} else {
+			// strength gain from trade cannot be more than the current positive balance, if any (the rest was spent getting their head over water)
+			portionAboveZero = Math.min(rebelTradePointsForStrength, pointsAbs);
+		}
+		//log.info(String.format("Portion above zero is %s", portionAboveZero));
+		if (portionAboveZero < 0) return 0;
+
+		if (isNegative) portionAboveZero *= -1;
+		rebelStrength += portionAboveZero;
+		return portionAboveZero;
+	}
 	
 	public void modifyPoints(float points, boolean rebels)
 	{
 		boolean addTradePoints = !market.isPlayerOwned() && !market.getFaction().isPlayerFaction();
-		
+		float truePoints;
 		if (rebels)
 		{
 			points *= 2f;
-			rebelStrength += points;
+			truePoints = adjustRebelStrengthWithTradeBalance(points);
+
 			if (addTradePoints) {
 				rebelTradePoints += points;
 				rebelTradePointsWithCurrentGovt += points;
 			}
+
 			if (rebelStrength < 0) rebelStrength = 0;
 			if (rebelTradePoints < 0) rebelTradePoints = 0;
 			if (rebelTradePointsWithCurrentGovt < 0) rebelTradePointsWithCurrentGovt = 0;
@@ -984,9 +1018,11 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			if (govtStrength < 0) govtStrength = 0;
 			if (govtTradePoints < 0) govtTradePoints = 0;
 			if (govtTradePointsWithCurrentGovt < 0) govtTradePointsWithCurrentGovt = 0;
+
+			truePoints = points;
 		}
 
-		printTransactionPoints(points, rebels);
+		printTransactionPoints(truePoints, rebels);
 	}
 
 	public void printTransactionPoints(float points, boolean rebels) {
