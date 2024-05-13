@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -10,6 +11,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance;
@@ -138,7 +140,7 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 
 			ButtonAPI button = info.addButton(StringHelper.getString("accept", true), BUTTON_ACCEPT, 
 							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
-						  (int)(width), 20f, opad * 3f);
+						  (int)(width), 20f, opad * 2f);
 			ButtonAPI button2 = info.addButton(StringHelper.getString("reject", true), BUTTON_REJECT, 
 							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
 						  (int)(width), 20f, opad);
@@ -151,6 +153,11 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 			str = StringHelper.getString("exerelin_diplomacy", "intelCeasefireDescResult");
 			str = StringHelper.substituteToken(str, "$acceptedOrRejected", acceptOrReject);
 			info.addPara(str, opad, hl, acceptOrReject);
+		}
+
+		if (strategicAction != null) {
+			info.addPara(StrategicAI.getString("intelPara_actionDelegateDesc"), opad*2f, Misc.getHighlightColor(), strategicAction.getConcern().getName());
+			info.addButton(StrategicAI.getString("btnGoIntel"), StrategicActionDelegate.BUTTON_GO_INTEL, width, 24, 3);
 		}
 	}
 	
@@ -180,11 +187,15 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	
 	@Override
 	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
-		return true;
+		return buttonId != StrategicActionDelegate.BUTTON_GO_INTEL;
 	}
 	
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		if (buttonId == StrategicActionDelegate.BUTTON_GO_INTEL && strategicAction != null) {
+			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, strategicAction.getAI());
+			return;
+		}
 		if (buttonId == BUTTON_ACCEPT) {
 			accept();
 		}
