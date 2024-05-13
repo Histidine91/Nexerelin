@@ -644,7 +644,7 @@ public class BuildStation extends HubMissionWithBarEvent implements FleetEventLi
 	@Override
 	public boolean addNextStepText(TooltipMakerAPI info, Color tc, float pad) {
 		if (currentStage == Stage.DELIVER) {
-			info.addPara(StringHelper.getString("nex_buildMission", "nextStepText"), pad,
+			info.addPara(StringHelper.getString("nex_buildMission", "nextStepText"), pad, tc,
 					system.getStar().getSpec().getIconColor(), system.getNameWithLowercaseTypeShort());
 			return true;
 		}
