@@ -18,8 +18,6 @@ import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.campaign.AL_ChaosCrackFleetManager;
-import org.magiclib.terrain.MagicAsteroidBeltTerrainPlugin;
 import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
@@ -35,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.terrain.MagicAsteroidBeltTerrainPlugin;
+import originem.al.scripts.campaign.AL_ChaosCrackFleetManager;
 
 import java.awt.*;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class ExerelinProcGen {
 	
 	public static final boolean DEBUG_MODE = false;
 	
-	public static final float CORE_WIDTH = 24000;	// for comparison vanilla sector is 30,100 across from Tyle to Naraka
+	public static final float CORE_WIDTH = 24000;	// for comparison, vanilla sector is 30,100 across from Tyle to Naraka
 	public static final float CORE_HEIGHT = 12500;	// vanilla is 17,700 from Zagan to Penelope's Star
 	public static final int CORE_RECURSION_MAX_DEPTH = 6;
 	public static final float NEARBY_ENTITY_CHECK_DIST_SQ = 500 * 500;
