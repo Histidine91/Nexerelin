@@ -1,5 +1,6 @@
 package exerelin.campaign.ai.action.fleet;
 
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.concern.StrategicConcern;
@@ -19,6 +20,7 @@ public class InvasionAction extends OffensiveFleetAction {
     @Override
     public boolean canUse(StrategicConcern concern) {
         if (!NexConfig.enableInvasions) return false;
+        if (NexConfig.invasionsOnlyAfterPlayerColony && !Misc.isPlayerFactionSetUp()) return false;
 
         if (NexUtils.getTrueDaysSinceStart() < NexConfig.invasionGracePeriod) {
             //log.info("Too early: " + Tuning.getDaysSinceStart());

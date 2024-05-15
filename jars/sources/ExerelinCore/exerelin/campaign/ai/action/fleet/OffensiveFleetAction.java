@@ -73,7 +73,7 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
                 blockedByNonHostile = true;
         }
 
-        if (market != null && !blockedByNonHostile && !InvasionFleetManager.getManager().isValidInvasionOrRaidTarget(
+        if (market != null && !blockedByNonHostile && InvasionFleetManager.getManager().isValidInvasionOrRaidTarget(
                 ai.getFaction(), null, market, this.getEventType(), false)) {
             return market;
         }
