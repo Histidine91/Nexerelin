@@ -597,7 +597,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			return false;
 		}
 
-		if (!isRemnantRaid && !NexUtilsMarket.shouldTargetForInvasions(market, 0)) return false;
+		if (!isRemnantRaid && !NexUtilsMarket.shouldTargetForInvasions(market, 0, type)) return false;
 
 		if (isRemnantRaid && market.isHidden()) return false;
 
@@ -770,6 +770,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public OffensiveFleetIntel generateInvasionOrRaidFleet(FactionAPI faction, @Nullable FactionAPI targetFaction,
 			EventType type, float sizeMult, RequisitionParams rp)
 	{
+		EventType startType = type;
 		SectorAPI sector = Global.getSector();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 		
@@ -803,9 +804,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		
 		// always invade rather than raid etc. against derelicts
 		if (targetMarket.getFactionId().equals("nex_derelict") 
-				&& (type == EventType.RAID || type == EventType.SAT_BOMB) || type == EventType.BLOCKADE)
+				&& (type == EventType.RAID || type == EventType.SAT_BOMB || type == EventType.BLOCKADE))
 			type = EventType.INVASION;
-		
+
+		if (type != startType) {
+			//log.info("Types changed: " + startType + " to " + type);
+		}
+
 		return generateInvasionOrRaidFleet(originMarket, targetMarket, type, sizeMult, rp);
 	}
 	

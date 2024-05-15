@@ -20,6 +20,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.missions.ConquestMissionIntel;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
@@ -160,6 +161,10 @@ public class NexUtilsMarket {
 	{
 		return wasOriginalOwner(market, market.getFactionId());
 	}
+
+	public static boolean shouldTargetForInvasions(MarketAPI market, int minSize) {
+		return shouldTargetForInvasions(market, minSize, InvasionFleetManager.EventType.INVASION);
+	}
 	
 	/**
 	 * Can factions launch invasion fleets at <code>market</code>?
@@ -168,7 +173,7 @@ public class NexUtilsMarket {
 	 * @param minSize Minimum market size to consider for invasions
 	 * @return
 	 */
-	public static boolean shouldTargetForInvasions(MarketAPI market, int minSize)
+	public static boolean shouldTargetForInvasions(MarketAPI market, int minSize, InvasionFleetManager.EventType type)
 	{
 		if (market.getSize() < minSize) return false;
 		if (market.isHidden()) return false;
@@ -181,13 +186,18 @@ public class NexUtilsMarket {
 		
 		if (config != null && !config.playableFaction && !isIndie && !isDerelict)
 			return false;
-		
-		if (!NexConfig.allowInvadeStoryCritical && Misc.isStoryCritical(market))
-			return false;
 
-		if (!NexConfig.allowInvadeStartingMarkets && market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMKEY_MARKET_EXISTED_AT_START))
-			return false;
+		if (type == InvasionFleetManager.EventType.INVASION || type == InvasionFleetManager.EventType.RESPAWN
+				|| type == InvasionFleetManager.EventType.SAT_BOMB) {
+			if (!NexConfig.allowInvadeStoryCritical && Misc.isStoryCritical(market))
+				return false;
+
+			if (!NexConfig.allowInvadeStartingMarkets && market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMKEY_MARKET_EXISTED_AT_START))
+				return false;
+		}
+
 		
+
 		if (market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_NPC_NO_INVADE))
 			return false;
 		
