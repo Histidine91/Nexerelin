@@ -243,7 +243,8 @@ public class VanillaSystemsGenerator {
 		ancyra.addIndustry(Industries.FARMING);
 		
 		MarketAPI agreus = getMarket("agreus");
-		agreus.addIndustry(Industries.GROUNDDEFENSES);
+		if (!agreus.hasIndustry(Industries.GROUNDDEFENSES) && !agreus.hasIndustry(Industries.HEAVYBATTERIES))	// Ko Combine mod adds HB
+			agreus.addIndustry(Industries.GROUNDDEFENSES);
 		
 		MarketAPI asher = getMarket("asher");
 		asher.addIndustry(Industries.ORBITALSTATION_MID);
