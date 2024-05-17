@@ -1,6 +1,18 @@
-Version 0.11.1x
+Version 0.11.2
 
-## Gameplay ##
+### Changes from beta 0.11.1x
+* Can't weaken rebellions by buying more goods on the black market than were sold into it
+* Player special task groups will use a gate if both they and the task target are in gate systems
+* 'No invade story-critical markets' and 'no invade starting markets' settings won't affect raids or blockades
+* Fix free port crisis crash when no eligible factions
+* Fix crash on start when using ApproLight in random sector
+* Fix strategic AI ignoring 'invasions only after player colony' setting and a bug in fleet event targeting
+* Fix random sector memkey being set only after new game time pass
+* Fix blockades always being replaced by invasions with strategic AI off
+* Alliance offer intel includes relevant strategic AI info and link button if applicable
+* Don't double stack defenses on Agreus when Ko Combine mod is running
+
+### Gameplay ###
 * Alliance fixes/improvements
     * NPCs joining or merging an alliance requires player consent if player is a member
     * Fix strategic AI spamming player with invites to an existing alliance 
@@ -34,17 +46,18 @@ Version 0.11.1x
 * Increase bonus XP for agent action SP use and ground battle Inspire
 * NPC special task groups 1/13th smaller, respawn delay 30 -> 60
 * Proxy raids launched by strategic AI won't be hostile to sponsor faction
+* Base strike missions should happen half as often or less
 
-## UI ##
+### UI ###
 * Boolean settings to disable invasions/raids/sat bombs and colony expeditions
 * Faction directory won't display factions that only have hidden markets
 
-## Text ##
+### Text ###
 * Clarify intel text when tribute is cancelled by external factors
 * Fix inconsistent captain's pronouns in 'File Drawer Problem' mission
 * Market desc changer handles player colonize/abandon
 
-## Bugfixes ##
+### Bugfixes ###
 * Fix undersupplied market concern crashing on update() if no producers left
 * Fix an unusual crash with player special task group on game load
 * Fix NPC factions not invading if their invasion point capacity has reached the minimum allowed
@@ -60,7 +73,7 @@ Version 0.11.1x
 * Maybe fix prices not updating sufficiently after delivering commodities to suppress rebellion
 * NPC ground units shouldn't be able to deploy if their fleet is destroyed (if fleets were not abstracted on battle start)
 
-## Modding ##
+### Modding ###
 * Ground battle stuff
     * Add some config options for ground battle attacker and defender strengths
     * Fixes/improvements in support for custom ground unit types and Crew Replacer mod
@@ -68,7 +81,7 @@ Version 0.11.1x
     * Add handling for HMI Fang and Draco market conditions, AotD Planetary Defense Bureau industry
 * Add some relevant getters/setters for insurance intel
 
-## Misc ##
+### Misc ###
 * End vanilla faction hostilities on loading Nex into existing save
 * Update Silverlight variants for new OP costs
 
