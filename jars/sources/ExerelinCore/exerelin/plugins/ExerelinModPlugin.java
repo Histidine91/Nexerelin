@@ -54,6 +54,7 @@ import exerelin.campaign.intel.hostileactivity.NexHostileActivityManager;
 import exerelin.campaign.intel.merc.MercSectorManager;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.missions.Nex_CBHegInspector;
+import exerelin.campaign.intel.missions.remnant.RemnantLostScientist;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
@@ -231,6 +232,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
 
         if (InsuranceIntelV2.getInstance() != null) InsuranceIntelV2.getInstance().reverseCompatibility();
+
+        RemnantLostScientist.reverseCompatibilityStatic();
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();

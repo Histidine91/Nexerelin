@@ -2632,7 +2632,7 @@ $global.nex_remLostSci_ref != null
 !$global.nex_remLostSci_wantTalkToSpacer
 Call $global.nex_remLostSci_ref updateData
 $nex_remLostSci_stage == GO_TO_ACADEMY
-!$nex_remLostSci_askedAboutLiu",,,nex_remLostSci_inquireSeb:Ask about Academician Liu,
+!$entity.nex_remLostSci_askedAboutLiu",,,nex_remLostSci_inquireSeb:Ask about Academician Liu,
 nex_remLostSci_inquireSeb,DialogOptionSelected,$option == nex_remLostSci_inquireSeb,,"""Ah, Liu? They're, uh... not here any more. And, well, nobody seems to know where they've gone.""
 
 You explain what you're looking for and ask for more details. $personLastName seems to perk up at this. ""Captain, if you could find them... that would be good. Even if they never come back to the Academy, it'd be good to know they're all right.""",nex_remLostSci_inquireSeb2:Ask about the paper,
@@ -2640,8 +2640,8 @@ nex_remLostSci_inquireSeb2,DialogOptionSelected,$option == nex_remLostSci_inquir
 
 ""Anyway! Academician Liu believed they had a theoretical model for application of the phenomenon to create other effects as well. Like mitigating physical damage to the ship's hull, for one."" $personLastName shakes $hisOrHer head ruefully. ""I couldn't explain how it'd work, mind, even if I'd read the paper myself. Once you get into causality modification like that...  I don't think anything short of an alpha core could keep everything straight."" ","nex_remLostSci_inquireSeb3:""Do you have a copy?""",
 nex_remLostSci_inquireSeb3,DialogOptionSelected,$option == nex_remLostSci_inquireSeb3,,"""Well, no. Liu was the only one working on it, and while they did discuss their work with colleagues in the T-Physics department, no-one else had seen the manuscript. It was supposed to go to the reviewers around the time they, ah, left. That was around the time of the Kallichore incident, when Hegemony officers were tramping the corridors."" $personLastName winces in recollection. ""Several of the other faculty left not long after too — the ones who hadn't been arrested, at any rate — like Academician Coureuse. But none did it quite as dramatically as Liu did. Well. Dramatic isn't the right word, actually.""","nex_remLostSci_inquireSeb4:""What happened?""",
-nex_remLostSci_inquireSeb4,DialogOptionSelected,$option == nex_remLostSci_inquireSeb4,"$nex_remLostSci_askedAboutLiu = true
-$global.nex_remLostSci_wantTalkToSpacer = true
+nex_remLostSci_inquireSeb4,DialogOptionSelected,$option == nex_remLostSci_inquireSeb4,"$entity.nex_remLostSci_askedAboutLiu = true
+$entity.nex_remLostSci_wantTalkToSpacer = true
 FireAll PopulateOptions","""They just... vanished. Rumor has it they hitched a ride with one of the freelance captains who run services for the Academy, disappearing into the fringe worlds. It's possible, you know. Some of these freelancers run the trade routes with, ah,"" $heOrShe seems to color a little, ""communities outside the official Sector economy.""
 
 Decivilized worlds, $heOrShe means. A great place to hide, at the cost of losing a quality of life even the meanest core world dockworker takes for granted. You ask if this freelancer is still around.
@@ -2651,7 +2651,7 @@ Decivilized worlds, $heOrShe means. A great place to hide, at the cost of losing
 nex_remLostSci_inquireGradStudentOpt,PopulateOptions,"$id == station_galatia_academy
 $nex_remLostSci_academy_imp
 $global.nex_remLostSci_ref != null
-!$global.nex_remLostSci_wantTalkToSpacer
+!$nex_remLostSci_wantTalkToSpacer
 !$nex_remLostSci_askedAboutLiu",,,nex_remLostSci_inquireGradStudent:Call the faculty about Academician Liu,
 nex_remLostSci_inquireGradStudent,DialogOptionSelected,$option == nex_remLostSci_inquireGradStudent,,"You make a call to the Temporal Physics department. The robo-secretary confirms that Academician Liu went AWOL in c.206, and helpfully presents their CV with copies of all their publications, but cannot give any useful information on the missing paper. It looks like you'll have to resort to some old-fashioned HUMINT.",nex_remLostSci_inquireGradStudent2:Continue,
 nex_remLostSci_inquireGradStudent2,DialogOptionSelected,$option == nex_remLostSci_inquireGradStudent2,"Highlight ""temporal manipulation""","You spend several hours wandering the Academy, looking for people to question. Unfortunately almost no-one you meet seems interested in stopping to help, and indeed most of them regard you as a curious specimen escaped from the xenobiology labs. Finally, you stumble upon a grad student who's willing to be bribed with coffee and Terran croissants long enough to answer a few queries.
@@ -2659,7 +2659,7 @@ nex_remLostSci_inquireGradStudent2,DialogOptionSelected,$option == nex_remLostSc
 ""The old guy was talking about new applications of temporal manipulation technology,"" she explains between bites. ""Like the stuff Tri-Tachyon uses. They thought it could be modified to do new things, like resist explosions and energy weapons on a ship. Stuff like that. And don't ask me to explain how it works; I don't think even the T-Physics people could make sense of it.
 
 ""Anyway, though, they apparently disappeared right when the paper was due to be submitted to review. This was just after the whole thing with the Gate experiment went down, so a lot of the professors were running away at the time. Spooked by the big scary Hegemony, I suppose. Although most of the others at least submitted their resignations first.""","nex_remLostSci_inquireGradStudent3:""Where did Liu go?""",
-nex_remLostSci_inquireGradStudent3,DialogOptionSelected,$option == nex_remLostSci_inquireGradStudent3,"$global.nex_remLostSci_wantTalkToSpacer = true
+nex_remLostSci_inquireGradStudent3,DialogOptionSelected,$option == nex_remLostSci_inquireGradStudent3,"$nex_remLostSci_wantTalkToSpacer = true
 $nex_remLostSci_askedAboutLiu = true","""Who knows?"" Munch, munch, sip. ""The rumor is they stowed away with one of the freelancers who do odd jobs for the Academy, people like you. Some of them trade with the deciv worlds out in the fringes; good place to hide from the law. I could never do it, though. I like air conditioning and my TriPad too much.""
 
 You ask where you might find the freelancer in question. ""Hard to say. You could ask one of them, though. They stick together, you know; maybe they'll talk to you where others won't.""",nex_remLostSci_inquireGradStudentEnd:Thank her and leave,
@@ -2669,7 +2669,7 @@ FireAll PopulateOptions",You return to the main concourse to consider your optio
 nex_remLostSci_inquireSpacerOpt,PopulateOptions,"$id == station_galatia_academy
 $nex_remLostSci_academy_imp
 $global.nex_remLostSci_ref != null
-$global.nex_remLostSci_wantTalkToSpacer",,You could try to find the spacer who transported Academician Liu out to decivilized space.,nex_remLostSci_inquireSpacer:Try to find information about the spacer,
+$nex_remLostSci_wantTalkToSpacer",,You could try to find the spacer who transported Academician Liu out to decivilized space.,nex_remLostSci_inquireSpacer:Try to find information about the spacer,
 nex_remLostSci_inquireSpacer,DialogOptionSelected,$option == nex_remLostSci_inquireSpacer,"Call $global.nex_remLostSci_ref beginSpacerConvo
 Call $global.nex_remLostSci_ref updateData","You make your way to the lounge for outside support contractors. By luck, the spacer who (claims to have) transported Academician Liu is in town, and agrees to a bar chat.
 
@@ -2678,7 +2678,7 @@ Call $global.nex_remLostSci_ref updateData","You make your way to the lounge for
 ""As for your academician, the rad-addled fella stowed away on my ship, you know. Though I didn't know who they were, at first. Don’t interact much with the boffins; they pay me, I take out some trash for them, we shake digital hands and go our separate ways.""","nex_remLostSci_inquireSpacer2:""So what happened?""",
 nex_remLostSci_inquireSpacer2,DialogOptionSelected,$option == nex_remLostSci_inquireSpacer2,"Highlight $nex_remLostSci_planet $nex_remLostSci_system
 Call $global.nex_remLostSci_ref beginPlanetStage
-unset $global.nex_remLostSci_wantTalkToSpacer","""Well, they didn't hide very well; Ludd knows what a surprise I had when my first mate comes running to me. I would've sent them out the airlock, but they paid their fare after the fact, so it all worked out it the end. Paid me a generous tip too, to keep quiet about it.""
+unset $nex_remLostSci_wantTalkToSpacer","""Well, they didn't hide very well; Ludd knows what a surprise I had when my first mate comes running to me. I would've sent them out the airlock, but they paid their fare after the fact, so it all worked out it the end. Paid me a generous tip too, to keep quiet about it.""
 
 The spacer stops, realizing that $heOrShe is not, in fact, keeping quiet. Then $heOrShe sighs and throws back $hisOrHer beer. ""Ah, to vacuum with it. Buy me another one and I'll tell you the name of this planet.""
 

@@ -47,10 +47,19 @@ import java.util.*
 open class RemnantLostScientist : HubMissionWithBarEvent() {
 
     companion object {
-        const val REWARD = 45000;
-        const val REWARD2 = 45000;
+        const val REWARD = 45000
+        const val REWARD2 = 45000
+        const val MEMORY_KEY_ASKED_ABOUT_LIU = "\$nex_remLostSci_askedAboutLiu"
+        const val MEMORY_KEY_TALK_TO_SPACER = "\$nex_remLostSci_wantTalkToSpacer"
+
         @JvmField
         val log: Logger = Global.getLogger(RemnantLostScientist::class.java)
+
+        @JvmStatic
+        fun reverseCompatibilityStatic() {
+            val mission : RemnantLostScientist? = Global.getSector().memoryWithoutUpdate.get("\$nex_remLostSci_ref") as RemnantLostScientist?
+            mission?.reverseCompatibility()
+        }
     }
 
     enum class Stage {
@@ -131,8 +140,10 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
 
         beginStageTrigger(Stage.GO_TO_ACADEMY)
         currTrigger.id = "goToAcademy_stage"
+        // set memory values here so they'll be cleared on mission end
         triggerSetMemoryValue(planet, ColonyTargetValuator.MEM_KEY_NO_COLONIZE, false)
-        triggerSetGlobalMemoryValue("\$nex_remLostSci_wantTalkToSpacer", false)
+        triggerSetMemoryValue(academy, MEMORY_KEY_ASKED_ABOUT_LIU, false)
+        triggerSetMemoryValue(academy, MEMORY_KEY_TALK_TO_SPACER, false)
         endTrigger()
 
         beginStageTrigger(Stage.GO_TO_PLANET)
@@ -148,6 +159,18 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         }
         endTrigger()
 
+    }
+
+    fun reverseCompatibility() {
+        if (Global.getSector().memoryWithoutUpdate.getBoolean(MEMORY_KEY_TALK_TO_SPACER)) {
+            Global.getSector().memoryWithoutUpdate.unset(MEMORY_KEY_TALK_TO_SPACER)
+            academy?.memoryWithoutUpdate?.set(MEMORY_KEY_TALK_TO_SPACER, true)
+        }
+        val sebestyen = Global.getSector().importantPeople.getPerson(People.SEBESTYEN) ?: return
+        if (sebestyen.memoryWithoutUpdate.getBoolean(MEMORY_KEY_ASKED_ABOUT_LIU)) {
+            sebestyen.memoryWithoutUpdate.unset(MEMORY_KEY_ASKED_ABOUT_LIU)
+            academy?.memoryWithoutUpdate?.set(MEMORY_KEY_TALK_TO_SPACER, true)
+        }
     }
 
     open fun <T : EveryFrameScript?> getScriptsOfClass(clazz: Class<T>): List<T>? {
