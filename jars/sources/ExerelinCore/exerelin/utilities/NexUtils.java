@@ -4,9 +4,12 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.FullName;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
+import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseManager;
@@ -15,6 +18,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -444,6 +448,35 @@ public class NexUtils
 			}
 			return false;
 		}
+	}
+
+	public static PersonAPI getOrCreatePerson(String personId, @Nullable Integer officerLevel, String factionId, String firstName, String lastName,
+											  @Nullable FullName.Gender gender, @Nullable String portrait, @Nullable String rankId, @Nullable String postId,
+											  @Nullable String personality, @Nullable String voice, @Nullable PersonImportance importance, @Nullable Random random)
+	{
+		PersonAPI person = Global.getSector().getImportantPeople().getPerson(personId);
+		if (person != null) return person;
+
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		if (officerLevel != null) {
+			person = OfficerManagerEvent.createOfficer(faction, officerLevel, OfficerManagerEvent.SkillPickPreference.ANY, random);
+		} else {
+			person = faction.createRandomPerson();
+		}
+		person.setId(personId);
+		if (gender != null) person.getName().setGender(gender);
+		person.getName().setFirst(firstName);
+		person.getName().setLast(lastName);
+		if (portrait != null) person.setPortraitSprite(portrait);
+		if (rankId != null) person.setRankId(rankId);
+		if (postId != null) person.setPostId(postId);
+		if (personality != null) person.setPersonality(personality);
+		if (voice != null) person.setVoice(voice);
+		if (importance != null) person.setImportance(importance);
+
+		Global.getSector().getImportantPeople().addPerson(person);
+
+		return person;
 	}
 
 	public static class PairWithIntegerComparator implements Comparator<Pair<?, Integer>> {

@@ -14,6 +14,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.skills.NexSkills;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
@@ -35,20 +36,13 @@ public class RemnantQuestUtils {
 	));
 	
 	public static void createDissonant(MarketAPI market) {
-		PersonAPI person = Global.getFactory().createPerson();
-		person.setId(PERSON_DISSONANT);
-		person.setImportance(PersonImportance.HIGH);
-		person.setVoice(Voices.SCIENTIST);	// best I can come up with
-		person.setFaction(Factions.REMNANTS);
-		person.setGender(FullName.Gender.FEMALE);
-		person.setRankId(Ranks.SPECIAL_AGENT);
-		person.setPostId(Ranks.POST_SPECIAL_AGENT);
-		person.getName().setFirst(StringHelper.getString("nex_remnantQuest", "dissonantAlias"));
-		person.getName().setLast("");
-		person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "nex_dissonant"));
+		PersonAPI person = NexUtils.getOrCreatePerson(PERSON_DISSONANT, null, Factions.REMNANTS,
+				getString("dissonantAlias"), "", FullName.Gender.FEMALE,
+				Global.getSettings().getSpriteName("characters", "nex_dissonant"),
+				Ranks.SPECIAL_AGENT, Ranks.POST_SPECIAL_AGENT, Personalities.STEADY, Voices.SCIENTIST, PersonImportance.HIGH, null
+		);
 		person.addTag("remnant");
 		person.setAICoreId(Commodities.ALPHA_CORE);
-		Global.getSector().getImportantPeople().addPerson(person);
 		market.addPerson(person);
 	}
 
@@ -57,22 +51,14 @@ public class RemnantQuestUtils {
 	}
 
 	public static PersonAPI getOrCreateLostScientist() {
-		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_LOST_SCIENTIST);
+		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_TOWERING);
 		if (person != null) return person;
 
-		person = Global.getFactory().createPerson();
-		person.setId(PERSON_LOST_SCIENTIST);
-		person.setImportance(PersonImportance.MEDIUM);
-		person.setVoice(Voices.SCIENTIST);
-		person.setFaction(Factions.INDEPENDENT);
-		person.setGender(FullName.Gender.MALE);
-		person.setRankId(Ranks.CITIZEN);
-		person.setPostId(Ranks.POST_ACADEMICIAN);
-		person.getName().setFirst(getString("scientistName1"));
-		person.getName().setLast(getString("scientistName2"));
-		person.setPortraitSprite("graphics/portraits/portrait31.png");
-		Global.getSector().getImportantPeople().addPerson(person);
-
+		person = NexUtils.getOrCreatePerson(PERSON_LOST_SCIENTIST, null, Factions.INDEPENDENT,
+				getString("scientistName1"), getString("scientistName2"),
+				FullName.Gender.ANY, "graphics/portraits/portrait31.png",
+				Ranks.CITIZEN, Ranks.POST_ACADEMICIAN, null, Voices.SCIENTIST, PersonImportance.MEDIUM, null
+		);
 		return person;
 	}
 
@@ -80,22 +66,14 @@ public class RemnantQuestUtils {
 		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_TOWERING);
 		if (person != null) return person;
 
-		person = Global.getFactory().createPerson();
-		person.setId(PERSON_TOWERING);
-		person.setImportance(PersonImportance.VERY_HIGH);
-		person.setVoice(Voices.SOLDIER);
-		person.setFaction(Factions.REMNANTS);
-		person.setGender(FullName.Gender.MALE);
-		person.setRankId(Ranks.SPACE_ADMIRAL);
-		person.setPostId(Ranks.POST_WARLORD);
-		person.setPersonality(Personalities.RECKLESS);
-		person.getName().setFirst(getString("toweringName1"));
-		person.getName().setLast(getString("toweringName2"));
-		person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "nex_towering"));
+		person = NexUtils.getOrCreatePerson(PERSON_TOWERING, null, Factions.REMNANTS,
+				getString("toweringName1"), getString("toweringName2"),
+				FullName.Gender.MALE, Global.getSettings().getSpriteName("characters", "nex_towering"),
+				Ranks.SPACE_ADMIRAL, Ranks.POST_WARLORD, Personalities.RECKLESS, Voices.SOLDIER, PersonImportance.VERY_HIGH, null
+		);
 		person.addTag("remnant");
 		person.setAICoreId(Commodities.ALPHA_CORE);
 		person.getMemoryWithoutUpdate().set("$chatterChar", "none");	// could be acecombat_torres but meh
-		Global.getSector().getImportantPeople().addPerson(person);
 
 		person.getStats().setLevel(8);
 		person.getStats().setSkillLevel(Skills.HELMSMANSHIP, 2);
@@ -127,14 +105,11 @@ public class RemnantQuestUtils {
 		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_ARGENT);
 		if (person != null) return person;
 
-		person = Global.getSector().getFaction(Factions.LUDDIC_CHURCH).createRandomPerson(FullName.Gender.ANY);
-		person.setId(PERSON_ARGENT);
-		person.setImportance(PersonImportance.HIGH);
-		person.setVoice(Voices.FAITHFUL);
-		person.setFaction(Factions.LUDDIC_CHURCH);
-		person.setRankId(Ranks.KNIGHT_CAPTAIN);
-		person.setPostId(Ranks.POST_FLEET_COMMANDER);
-		person.setPersonality(Personalities.STEADY);
+		person = NexUtils.getOrCreatePerson(PERSON_ARGENT, null, Factions.LUDDIC_CHURCH,
+				getString("knightName1"), getString("knightName2"),
+				FullName.Gender.FEMALE, Global.getSettings().getSpriteName("characters", "nex_argent"),
+				Ranks.KNIGHT_CAPTAIN, Ranks.POST_FLEET_COMMANDER, Personalities.STEADY, Voices.FAITHFUL, PersonImportance.HIGH, null
+		);
 
 		person.getStats().setLevel(7);
 		person.getStats().setSkillLevel(Skills.HELMSMANSHIP, 2);
@@ -148,13 +123,6 @@ public class RemnantQuestUtils {
 		person.getStats().setSkillLevel(Skills.CREW_TRAINING, 1);
 		person.getStats().setSkillLevel(Skills.COORDINATED_MANEUVERS, 1);
 
-		// personal stuff; uncomment if/when we get a permanent character
-		person.setGender(FullName.Gender.FEMALE);
-		person.getName().setFirst(getString("knightName1"));
-		person.getName().setLast(getString("knightName2"));
-		person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "nex_argent"));
-
-		Global.getSector().getImportantPeople().addPerson(person);
 		return person;
 	}
 	
