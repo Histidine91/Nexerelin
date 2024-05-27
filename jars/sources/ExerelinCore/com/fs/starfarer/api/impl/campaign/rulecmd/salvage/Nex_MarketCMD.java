@@ -292,6 +292,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			//responder.setContainingLocation(entity.getContainingLocation());
 			//responder.setLocation(99999, 99999);
 			entity.getContainingLocation().addEntity(responder);
+			responder.addAssignment(FleetAssignment.HOLD, entity, 1);	// workaround for UNGP John Wick crash
 			// trying to force the responder to be afraid if appropriate, doesn't work
 			if (responder.getAI() instanceof ModularFleetAIAPI) {
 				ModularFleetAIAPI mAI = (ModularFleetAIAPI) responder.getAI();
