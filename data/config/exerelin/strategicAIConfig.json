@@ -162,6 +162,7 @@
 		},
 		"blockade":{
 			"name":"Blockade",
+			"chance":0.5,
 			"classPath":"exerelin.campaign.ai.action.fleet.BlockadeAction",
 			"tags":["military", "market", "canBlockade", "unfriendly", "aggressive", "wartime", "useIfSurplusShips", "trait_monopolist"],
 		},
