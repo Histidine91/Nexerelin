@@ -760,9 +760,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		}
 		else if (buttonId == BUTTON_RECREATE_ALL) {
 			if (isAlive) {
-				Iterator<FleetMemberAPI> iter = deadMembers.iterator();
-				while (iter.hasNext()) {
-					reviveDeadMember(iter.next());
+				for (FleetMemberAPI dead : new ArrayList<>(deadMembers)) {
+					reviveDeadMember(dead);
 				}
 			}
 			else recreate(true);
