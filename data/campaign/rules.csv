@@ -5017,7 +5017,7 @@ nex_HA_policeHassleObject,DialogOptionSelected,"$option == nex_HA_policeHassleOb
 $entity.relativeStrength >= 0",RemoveOption nex_HA_policeHassleObject,"$PersonRank $personLastName sneers, the very Platonic ideal of officiousness. ""The entire Sector is under the jurisdiction of the Persean Sector Criminal Police Commission, as laid out in the Nova Maxios Agreement of 145,"" $heOrShe says slowly, as if explaining things to a particularly dense student. ""As such, the concept of 'your territory' has no relevance or legal standing, where an ongoing Sectorpol investigation is concerned.
 
 ""Now, will you submit to a search, or do you confess to trafficking and obstruction of justice?""",,
-nex_HA_policeHassleObjectWeaker,DialogOptionSelected,"$option == nex_HA_policeHassleObjectWeaker
+nex_HA_policeHassleObjectWeaker,DialogOptionSelected,"$option == nex_HA_policeHassleObject
 $entity.relativeStrength < 0",unset $nex_HA_policeScanConv,"$PersonRank $personLastName tries to match you in a staring competition. Given the disparity in fleet strength, the outcome is a foregone conclusion.
 
 ""You'll regret your obstinacy,"" $heOrShe spits out after a while. ""Sectorpol remembers those who obstruct its justice.""",cutCommLinkNoText:Cut the comm link,

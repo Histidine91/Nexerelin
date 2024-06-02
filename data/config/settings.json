@@ -48,6 +48,7 @@
 	"nex_revengeInvasionPointsToSpawn":125,
 	# if false, other factions will not attack Templars; recommend combining with "canInvade" tag in Templars' faction config to make them not invade others
 	"nex_invade_and_raid_templars":true,
+	"nex_raidToBlockadeConversionFreq":0.2f,
 	"nex_invasionStabilizeTimeoutMult":1,
 	"nex_invasionBaseDefenseMult":1.4,	# legacy invasions only
 	"nex_useGroundBattleIndustryMap":true,	# new invasions only

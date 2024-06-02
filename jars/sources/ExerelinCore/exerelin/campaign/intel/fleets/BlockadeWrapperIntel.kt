@@ -46,7 +46,7 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
         params.factionId = faction.id
         params.source = from
         params.prepDays = this.orgDur
-        params.payloadDays = 180f
+        params.payloadDays = 120f
         params.makeFleetsHostile = false
         addFleetsToParams(params)
 

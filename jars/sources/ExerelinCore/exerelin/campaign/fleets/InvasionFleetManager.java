@@ -87,7 +87,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final float MAX_INVASION_SIZE = 2000;
 	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 6f;
 	public static final float SAT_BOMB_CHANCE = 0.4f;
-	public static final float BLOCKADE_CHANCE = 0.3f;
 	public static final float RAID_COST_MULT = 0.65f;
 	public static final boolean USE_MARKET_FLEET_SIZE_MULT = false;
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 0.9f;
@@ -797,7 +796,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			type = EventType.SAT_BOMB;
 		}
 
-		if (type == EventType.RAID && Math.random() < BLOCKADE_CHANCE)
+		float blockChance = Global.getSettings().getFloat("nex_raidToBlockadeConversionFreq");
+		if (!NexConfig.enableInvasions) blockChance /= 2;
+		if (type == EventType.RAID && Math.random() < blockChance)
 		{
 			type = EventType.BLOCKADE;
 		}
@@ -1274,7 +1275,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static float getInvasionPointCost(float basePointCost, float fp, EventType type)
 	{
 		float amount = basePointCost * Math.max(fp/BASE_INVASION_SIZE, 0.8f);
-		if (type == EventType.RAID || type == EventType.DEFENSE || type == EventType.BLOCKADE)
+		if (type == EventType.RAID || type == EventType.DEFENSE)
 			amount *= RAID_COST_MULT;
 
 		log.info("Preparing to deduct " + amount + " invasion points for event " + type);
