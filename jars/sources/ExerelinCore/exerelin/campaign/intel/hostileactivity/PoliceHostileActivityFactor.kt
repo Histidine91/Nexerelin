@@ -303,7 +303,7 @@ open class PoliceHostileActivityFactor(intel: HostileActivityEventIntel?) : Base
         params.factionId = Factions.INDEPENDENT
         params.source = source
         params.prepDays = 7f + random.nextFloat() * 14f
-        params.payloadDays = 180f
+        params.payloadDays = 15f
         params.makeFleetsHostile = false
         params.repImpact = HubMissionWithTriggers.ComplicationRepImpact.NONE
 

@@ -2,28 +2,39 @@ package exerelin.campaign.intel.hostileactivity
 
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
+import com.fs.starfarer.api.campaign.TextPanelAPI
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags
+import com.fs.starfarer.api.impl.campaign.intel.group.BaseFGAction
+import com.fs.starfarer.api.impl.campaign.intel.group.FGAction
 import com.fs.starfarer.api.impl.campaign.intel.group.GenericRaidFGI
 import com.fs.starfarer.api.impl.campaign.missions.FleetCreatorMission
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.RaidType
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD
+import com.fs.starfarer.api.ui.ButtonAPI
+import com.fs.starfarer.api.ui.IntelUIAPI
+import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.api.util.WeightedRandomPicker
+import exerelin.utilities.NexUtilsGUI
 import exerelin.utilities.NexUtilsMarket
 
-class PoliceRaidFGI(params: GenericRaidParams?) : GenericRaidFGI(params)
+open class PoliceRaidFGI(params: GenericRaidParams?) : GenericRaidFGI(params)
 {
     companion object {
         const val MEM_KEY_FLEET = "\$nex_HA_policeRaid_fleet"
         const val MEM_KEY_TARGET_MARKET = "\$nex_HA_policeRaid_targetMarket"
         const val MEM_KEY_TARGET_ON_OR_AT = "\$nex_HA_policeRaid_targetOnOrAt"
         const val CRIMINAL_DEF_PER_INDUSTRY = 100f
+        const val BUTTON_TOGGLE_RESIST = "btnToggleResist"
     }
+
+    var resist = false;
+    @Transient var resistCheckbox : ButtonAPI? = null;
 
     val factionPicker = WeightedRandomPicker<String>(this.random)
 
@@ -58,7 +69,17 @@ class PoliceRaidFGI(params: GenericRaidParams?) : GenericRaidFGI(params)
         m.triggerFleetMakeFaster(true, tugs, true)
     }
 
+    override fun configureFleet(size: Int, fleet: CampaignFleetAPI?) {
+        super.configureFleet(size, fleet)
+
+        if (shouldMakeHostile()) {
+            makeFleetHostile(fleet ?: return)
+        }
+    }
+
     override fun hasCustomRaidAction(): Boolean {
+        if (resist) return true;
+
         val market = params.raidParams.allowedTargets.first()
         val anyHostile = this.fleets.any { it.isHostileTo(market.primaryEntity) || it.isHostileTo(Global.getSector().playerFleet) }
         return !anyHostile  // if any of the fleets are hostile, do the full-up raid against defenses
@@ -113,6 +134,73 @@ class PoliceRaidFGI(params: GenericRaidParams?) : GenericRaidFGI(params)
         }
 
         market.isFreePort = false
+    }
+
+    override fun createSmallDescription(info: TooltipMakerAPI?, width: Float, height: Float) {
+        super.createSmallDescription(info, width, height)
+
+        val pad = 3f
+        val opad = 10f
+        val pf = Global.getSector().playerFaction
+        val currentlyRaiding = currentAction == raidAction
+        val hostile = faction.isHostileTo(params.raidParams.allowedTargets[0].faction)
+        if (!hostile && !isEnding && !isSucceeded) {
+            // checkbox to toggle
+            resistCheckbox = info?.addAreaCheckbox(PoliceHostileActivityFactor.getString("intelButtonTextResist"), BUTTON_TOGGLE_RESIST, pf.baseUIColor,
+                pf.darkUIColor, pf.brightUIColor, width, 24f, opad)
+            resistCheckbox?.isChecked = resist
+
+            // don't allow taking back the resist order
+            if (currentlyRaiding && resist) {
+                resistCheckbox?.isEnabled = false
+                val tooltip : String = PoliceHostileActivityFactor.getString("intelDescNoChange")
+                info?.addTooltipTo(NexUtilsGUI.createSimpleTextTooltip(tooltip, 300f), resistCheckbox, TooltipMakerAPI.TooltipLocation.BELOW)
+            }
+        }
+        if (!isEnding && !isSucceeded) {
+            if (resist || hostile) {
+                info?.addPara(PoliceHostileActivityFactor.getString("intelDescResist"), pad)
+            } else {
+                info?.addPara(PoliceHostileActivityFactor.getString("intelDescNoResist"), pad)
+            }
+        }
+    }
+
+    protected fun shouldMakeHostile() : Boolean {
+        val hostile = faction.isHostileTo(params.raidParams.allowedTargets[0].faction)
+        return currentAction == raidAction && (resist || hostile)
+    }
+
+    protected fun makeFleetsHostile() {
+        //Global.getLogger(this.javaClass).info("Making fleets hostile to player")
+        for (fleet in fleets) {
+            makeFleetHostile(fleet)
+        }
+    }
+
+    protected fun makeFleetHostile(fleet : CampaignFleetAPI) {
+        Misc.setFlagWithReason(fleet.memory, MemFlags.MEMORY_KEY_MAKE_HOSTILE + "_" + Factions.PLAYER,
+            "nex_resistPoliceRaid", true, -1f)
+        Misc.setFlagWithReason(fleet.memory, MemFlags.MEMORY_KEY_MAKE_HOSTILE, "nex_resistPoliceRaid", true, -1f)
+    }
+
+    override fun notifyActionFinished(action: FGAction?) {
+        super.notifyActionFinished(action)
+        // on completing travel action, mark police fleets as hostile if we're resisting them
+        if (shouldMakeHostile()) {
+            makeFleetsHostile()
+        }
+    }
+
+    override fun buttonPressConfirmed(buttonId: Any?, ui: IntelUIAPI?) {
+        if (buttonId == BUTTON_TOGGLE_RESIST) {
+            resist = resistCheckbox?.isChecked ?: false
+            ui?.updateUIForItem(this)
+            //Global.getLogger(this.javaClass).info("Current action: " + currentAction + "; " + (currentAction == raidAction))
+            if (shouldMakeHostile()) makeFleetsHostile()
+            return
+        }
+        super.buttonPressConfirmed(buttonId, ui)
     }
 
     /*

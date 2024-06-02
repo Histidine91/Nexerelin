@@ -1726,6 +1726,11 @@
 		"police_eventDesc3Highlight":"reputation with criminal factions",
 		"police_eventResetReq":"You remove all free ports worthy of Sectorpol's notice",
 		
+		"police_intelButtonTextResist":"Resist the raid",
+		"police_intelDescResist":"Your forces will attempt to resist the raid.",
+		"police_intelDescNoResist":"Your forces will comply with the police and allow the raid to take place.",
+		"police_intelDescNoChange":"The police forces are in-system and the order to resist cannot be rescinded.",
+		
 		"remnant_friendlyActivityCauseName":"Friendly with Remnants",
 		"remnant_friendlyActivityCauseTooltip":"Your association with the Remnants via %s leads to them grudgingly accepting your status as an uninvited neighbour.",
 	},
