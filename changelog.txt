@@ -1,6 +1,19 @@
+Version 0.11.2b
+
+* Blockade nerfs 
+    * When strategic AI is off, conversion ratio from raids 0.3 -> 0.2, further halved if invasions are disabled in config   
+        * Conversion ratio is configurable as nex_raidToBlockadeConversionFreq value in settings.json 
+    * When strategic AI is on, blockade action has 50% chance to not be considered as an action for any given concern 
+    * Remove 35% invasion point discount for blockades 
+    * Blockade period 180 -> 120 days
+* Fix a concurrent modification exception when bulk reviving ships in special task groups
+* Prevent a crash with UNGP's John Wick rule
+* Fix a dialog interaction in police colony crisis
+
+
 Version 0.11.2
 
-### Changes from beta 0.11.1x
+### Changes from beta 0.11.1x ###
 * Can't weaken rebellions by buying more goods on the black market than were sold into it
 * Player special task groups will use a gate if both they and the task target are in gate systems
 * 'No invade story-critical markets' and 'no invade starting markets' settings won't affect raids or blockades
@@ -123,8 +136,8 @@ Version 0.11.1
     * Fix transmitting update when a rebellion suppression fleet is defeated
     * Fix 'alliance offer to own commissionee' bug
     * Fix logic for when lower relations action chooses to show min relations
-	* Fix a rare crash with strategic AI raids
-	* Try to prevent cases of covert actions targeting self or friendly
+    * Fix a rare crash with strategic AI raids
+    * Try to prevent cases of covert actions targeting self or friendly
 * Salvation mission points player more directly to Arroyo
 * Wiping out independents no longer removes them from market transfer list
 * Show daily invasion point increments in diplomacy profile and strategic AI intel
@@ -262,10 +275,10 @@ Does not include changes in beta 0.10.6y-z
     * Available at cooperative relations with contact after starting mission 3
 * Hostile activity integration
     * Operatives disrupting a cell will reduce activity by -20
-	* Special task groups anywhere, and requested defense fleets in a player system, contribute to hostile activity reduction
-	    * Only largest defense fleet event counts; all STGs count but with diminishing returns from the sum of their strength
-	* Talk to an AIM representative to buy an anti-piracy patrol package (reduction equal to 15% of current hostile activity progress for 3 months)
-	* Operatives' internal security mode will find pirate bases involved in Hostile Activity
+    * Special task groups anywhere, and requested defense fleets in a player system, contribute to hostile activity reduction
+        * Only largest defense fleet event counts; all STGs count but with diminishing returns from the sum of their strength
+    * Talk to an AIM representative to buy an anti-piracy patrol package (reduction equal to 15% of current hostile activity progress for 3 months)
+    * Operatives' internal security mode will find pirate bases involved in Hostile Activity
 * Player can choose to defy the outcome of an alliance vote (ignore the vote if it passes, at a cost to relations with allies)
 * Patrols won't care about player transponder if player is system owner
 * Respawn invasion events have a 1000x revanchism mult when picking targets
@@ -305,8 +318,8 @@ Does not include changes in beta 0.10.6y-z
 * Fix various issues where ground battle unit defs were still relying on old hardcoded system
 * AIM mercenary fleets improvements
     * Merc ships can now have names specified
-	* Merc officers can have personality set
-	* Free skeleton crew is based on ship's actual min crew, not the hull spec's
+    * Merc officers can have personality set
+    * Free skeleton crew is based on ship's actual min crew, not the hull spec's
 
 ### Misc ###
 * Add a couple of Scythe of Orion interactions when player has relations with Remnants
