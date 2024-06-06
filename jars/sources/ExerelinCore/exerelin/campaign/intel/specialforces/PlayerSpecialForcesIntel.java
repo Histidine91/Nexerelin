@@ -69,7 +69,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	@Setter protected CampaignFleetAPI tempFleet;
 	protected CampaignFleetAPI fleet;
-	@Getter protected String id;
+	@Getter protected String id = UUID.randomUUID().toString();
 
 	protected transient IntervalUtil variantCheckInterval = new IntervalUtil(1, 1);
 	
