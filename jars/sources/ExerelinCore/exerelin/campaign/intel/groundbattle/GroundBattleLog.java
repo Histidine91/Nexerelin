@@ -229,6 +229,17 @@ public class GroundBattleLog {
 					label.setHighlightColors(Color.YELLOW, Color.PINK);
 				}
 				break;
+
+			default:
+			{
+				str = (String)params.get("string");
+				List<String> highlights = (List<String>)params.get("highlights");
+				if (highlights == null) highlights = new ArrayList<String>();
+				List<Color> highlightColors = (List<Color>)params.get("highlightColors");
+				if (highlightColors == null) highlightColors = new ArrayList<Color>();
+				label = tooltip.addPara(str, LOG_PADDING, h, highlights.toArray(new String[0]));
+				label.setHighlightColors(highlightColors.toArray(new Color[0]));
+			}
 		}
 	}
 	
