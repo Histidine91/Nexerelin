@@ -609,6 +609,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 			if (off instanceof RaidIntel) weight *= 0.5f;
 			
 			for (Industry ind : off.getTarget().getIndustries()) {
+				if (!ind.canBeDisrupted()) continue;
 				String id = ind.getId();
 				IndustrySpecAPI spec = ind.getSpec();
 				if (spec.hasTag(Industries.TAG_GROUNDDEFENSES)
@@ -807,6 +808,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 		{
 			if (ind.getId().equals(Industries.POPULATION))
 				continue;
+			if (!ind.canBeDisrupted()) continue;
 
 			MutableCommodityQuantity supply = ind.getSupply(target.commodityId);
 			if (supply != null && supply.getQuantity().getModifiedInt() >= target.output)

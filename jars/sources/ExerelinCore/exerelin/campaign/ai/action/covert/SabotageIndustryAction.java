@@ -50,6 +50,7 @@ public class SabotageIndustryAction extends CovertAction {
 
         if (industry == null) industry = pickTargetIndustryFallback(market);
         if (industry == null) return false;
+        if (!industry.canBeDisrupted()) return false;
 
         if (market == null) market = industry.getMarket();
         if (market == null) return false;
@@ -77,6 +78,7 @@ public class SabotageIndustryAction extends CovertAction {
             for (Industry ind : market.getIndustries()) {
                 IndustrySpecAPI spec = ind.getSpec();
                 if (ind.getId().equals(Industries.POPULATION)) continue;
+                if (!ind.canBeDisrupted()) continue;
 
                 int weight = 0;
                 if (spec.hasTag(Industries.TAG_SPACEPORT))

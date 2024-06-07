@@ -41,6 +41,12 @@ public class SabotageIndustry extends CovertActionIntel {
 	}
 	
 	@Override
+	public void activate() {
+		super.activate();
+		if (!industry.canBeDisrupted()) abort();
+	}
+
+	@Override
 	public void onSuccess() {
 		float mult = getEffectMultForLevel();
 		float effectMin = getDef().effect.one * mult;
