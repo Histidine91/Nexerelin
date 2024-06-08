@@ -1702,6 +1702,56 @@ $faction.id != sindrian_diktat
 $menuState == main
 $global.lpp_missionCompleted
 !$justVisitedShrine",,,3:lpp_volturnVisitStart:Take a shuttle to visit the Luddic shrine,
+,,,,,,
+nex_RHannanWhyHarassingOpt,PopulateOptions,"$id == reynard_hannan
+!$player.didWhyPLharassingTalk
+!$player.isLeagueMember
+Nex_HA_CMD isPLProtectingPlayerSpace",,,"RHannan_whyHarassing1:""Why are League fleets harassing my colonies?""",
+nex_LCMakeDealOpts,PopulateOptions,"$isPerson
+$personFaction.id == luddic_church
+Commission personCanGiveCommission
+!$player.madeImmigrationDealWithLuddicChurch
+!$player.brokeLuddicChurchDeal
+!$player.defeatedLuddicChurchExpedition
+Nex_HA_CMD knightsHasslingPlayerColonies",,,"lcMakeDeal:""The Knights of Ludd are essentially committing piracy in my volume and I demand it stop.""",
+nex_SDMakeDealOpt,PopulateOptions,"$isPerson
+$personFaction.id == sindrian_diktat
+$player.fcm_faction != sindrian_diktat
+Commission personCanGiveCommission
+!$player.makeDiktatDeal
+!$player.brokeDiktatDeal
+!$player.defeatedDiktatAttack
+!Nex_IsModActive PAGSM
+Nex_HA_CMD diktatConcernedByFuelProd",,,"sdMakeDeal:""The Diktat is sending attack fleets against me. Perhaps we could work out a deal?""",
+nex_SDMakeDealOptCom,PopulateOptions,"$isPerson
+$personFaction.id == sindrian_diktat
+$player.fcm_faction == sindrian_diktat
+Commission personCanGiveCommission
+!$player.makeDiktatDeal
+!$player.brokeDiktatDeal
+!$player.defeatedDiktatAttack
+!Nex_IsModActive PAGSM
+Nex_HA_CMD diktatConcernedByFuelProd",,,"sdMakeDeal:""The Diktat sends attack fleets against me despite my commission. This oversight must be corrected!""",
+nex_SDMakeDealOptPAGSM,PopulateOptions,"$isPerson
+$personFaction.id == sindrian_diktat
+$player.fcm_faction != sindrian_diktat
+Commission personCanGiveCommission
+!$player.makeDiktatDeal
+!$player.brokeDiktatDeal
+!$player.defeatedDiktatAttack
+Nex_IsModActive PAGSM
+Nex_HA_CMD diktatConcernedByFuelProd",,,"sdMakeDeal:""The Sindrian Fuel Company keeps sending attack fleets. Perhaps we could work out a deal?""",
+nex_SDMakeDealOptComPAGSM,PopulateOptions,"$isPerson
+$personFaction.id == sindrian_diktat
+$player.fcm_faction == sindrian_diktat
+Commission personCanGiveCommission
+!$player.makeDiktatDeal
+!$player.brokeDiktatDeal
+!$player.defeatedDiktatAttack
+Nex_IsModActive PAGSM
+Nex_HA_CMD diktatConcernedByFuelProd",,,"sdMakeDeal:""The Company sends attack fleets against me despite my commission. This oversight must be corrected!""",
+,,,,,,
+,,,,,,
 #END Vanilla not-quite-overrides,,,,,,
 ,,,,,,
 # Templar overrides,,,,,,
