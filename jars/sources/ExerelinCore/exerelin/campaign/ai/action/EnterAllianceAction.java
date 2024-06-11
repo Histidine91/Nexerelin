@@ -74,7 +74,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
         }
 
         if (faction != null) {
-            if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
+            if (NexConfig.getFactionConfig(faction.getId()).disableDiplomacy) return false;
             if (alliance == null) {
                 if (!AllianceManager.getManager().canAlly(ai.getFactionId(), faction.getId())) return false;
             }

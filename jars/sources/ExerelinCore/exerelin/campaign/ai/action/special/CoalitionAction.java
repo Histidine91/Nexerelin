@@ -64,7 +64,7 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             if (ofid.equals(enemyId)) continue;
 
             Alliance otherAlliance = AllianceManager.getFactionAlliance(ofid);
-            if (ourCurrAlliance == otherAlliance) continue; // already allied
+            if (otherAlliance != null && ourCurrAlliance == otherAlliance) continue; // already allied
 
             String commId = Misc.getCommissionFactionId();
             if (ofid.equals(Factions.PLAYER) && commId != null) continue;   // don't interact with player while they have a commission
