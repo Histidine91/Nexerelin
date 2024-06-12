@@ -44,7 +44,7 @@ class NexHostileActivityManager : HostileActivityManager() {
 
         @JvmStatic
         fun getString(id : String) : String {
-            return StringHelper.getString("nex_hostileActivity", id, true);
+            return StringHelper.getString("nex_hostileActivity", id, false);
         }
         @JvmStatic
         fun getString(id : String, ucFirst : Boolean) : String {
@@ -111,7 +111,7 @@ class NexHostileActivityManager : HostileActivityManager() {
 
             ha.addActivity(NexPerseanLeagueHostileActivityFactor(ha), StandardPerseanLeagueActivityCause(ha))
             ha.addActivity(NexLuddicChurchHostileActivityFactor(ha), LuddicChurchStandardActivityCause(ha))
-            ha.addActivity(NexSindrianDiktatHostileActivityFactor(ha), SindrianDiktatStandardActivityCause(ha))
+            ha.addActivity(NexSindrianDiktatHostileActivityFactor(ha), NexSindrianDiktatStandardActivityCause(ha))
         }
 
         @JvmStatic

@@ -9,6 +9,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.hostileactivity.NexLuddicChurchHostileActivityFactor;
 import exerelin.campaign.intel.hostileactivity.NexPerseanLeagueHostileActivityFactor;
 import exerelin.campaign.intel.hostileactivity.NexSindrianDiktatHostileActivityFactor;
+import exerelin.campaign.intel.hostileactivity.NexSindrianDiktatStandardActivityCause;
 
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,9 @@ public class Nex_HA_CMD extends BaseCommandPlugin {
             case "diktatConcernedByFuelProd": {
                 HostileActivityEventIntel intel = HostileActivityEventIntel.get();
                 if (intel != null) {
-                    HostileActivityCause2 cause = intel.getActivityCause(NexSindrianDiktatHostileActivityFactor.class, SindrianDiktatStandardActivityCause.class);
+                    HostileActivityCause2 cause = intel.getActivityCause(NexSindrianDiktatHostileActivityFactor.class, NexSindrianDiktatStandardActivityCause.class);
+                    if (cause != null) return cause.getProgress() > 0;
+                    cause = intel.getActivityCause(NexSindrianDiktatHostileActivityFactor.class, SindrianDiktatStandardActivityCause.class);
                     if (cause != null) return cause.getProgress() > 0;
                 }
                 return false;

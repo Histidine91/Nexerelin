@@ -24,6 +24,7 @@ import com.fs.starfarer.api.impl.campaign.intel.bar.events.BarEventManager;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseManager;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import com.fs.starfarer.api.impl.campaign.missions.cb.MilitaryCustomBounty;
@@ -152,6 +153,16 @@ public class ExerelinModPlugin extends BaseModPlugin
         Nex_PirateBaseManager.replaceManager();
         Nex_LuddicPathBaseManager.replaceManager();
         ScriptReplacer.replaceScript(sector, HostileActivityManager.class, new NexHostileActivityManager());
+        HostileActivityEventIntel ha = HostileActivityEventIntel.get();
+        if (ha != null) {
+            int prog = ha.getProgress();
+            ha.endImmediately();
+            new HostileActivityEventIntel();
+            NexHostileActivityManager.purgeOldListeners();
+            NexHostileActivityManager.replaceVanillaOverrideActivities(ha);
+            ha.setProgress(prog);
+        }
+
         //ScriptReplacer.replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());   // inspection manager no longer used
         ScriptReplacer.replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
         //ScriptReplacer.replaceMissionCreator(ProcurementMissionCreator.class, new Nex_ProcurementMissionCreator());
