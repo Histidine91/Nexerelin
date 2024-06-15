@@ -1,10 +1,23 @@
+Version 0.11.2c
+
+* Add option for player faction to automatically resist the police colony crisis
+* Fix some dialog options for vanilla colony crises being removed
+    * This bug made the negotiation options for Luddic Church and Sindrian Diktat crises inaccessible
+* Fix strategic AI not being able to form new alliances
+* Fix multiple player special task groups sharing the same financial report node until next game load
+* NPC operatives don't try to sabotage non-disruptable industries
+* Lost scientist mission should work if retried
+* Diktat colony crisis shows appropriate texts if PAGSM mod is running
+* GroundBattleLog supports custom message types
+
+
 Version 0.11.2b
 
-* Blockade nerfs 
-    * When strategic AI is off, conversion ratio from raids 0.3 -> 0.2, further halved if invasions are disabled in config   
-        * Conversion ratio is configurable as nex_raidToBlockadeConversionFreq value in settings.json 
-    * When strategic AI is on, blockade action has 50% chance to not be considered as an action for any given concern 
-    * Remove 35% invasion point discount for blockades 
+* Blockade nerfs
+    * When strategic AI is off, conversion ratio from raids 0.3 -> 0.2, further halved if invasions are disabled in config
+        * Conversion ratio is configurable as nex_raidToBlockadeConversionFreq value in settings.json
+    * When strategic AI is on, blockade action has 50% chance to not be considered as an action for any given concern
+    * Remove 35% invasion point discount for blockades
     * Blockade period 180 -> 120 days
 * Fix a concurrent modification exception when bulk reviving ships in special task groups
 * Prevent a crash with UNGP's John Wick rule
