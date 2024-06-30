@@ -2490,7 +2490,7 @@ nex_remFragments_attackerHailTTFlee,Nex_RemFragmentsHail,"$faction.id == tritach
 Call $global.nex_remFragments_ref updateData
 $nex_remFragments_stage == RETURN",$entity.ignorePlayerCommRequests = true,"""Hello, captain."" The $personRank has the smile of a sales rep about to make a pitch.
 
-""You've caused us a considerable degree of trouble, with your destruction of Company property just now. But even if you hadn't, you're an uncomfortable witness to things shich should not have been seen. 
+""You've caused us a considerable degree of trouble, with your destruction of Company property just now. But even if you hadn't, you're an uncomfortable witness to things which should not have been seen. 
 
 ""Accordingly, your termination is a regrettable necessity. The Tri-Tachyon Corporation wishes you a safe and pleasant death.""",cutCommLink:Cut the comm link,
 nex_remFragments_attackerConvoTT_rightsOpt,Nex_RemFragments_AttackerConvoOptsTT,"$faction.id == tritachyon
@@ -2728,7 +2728,7 @@ Call $global.nex_remLostSci_ref updateData","You make your way to the lounge for
 ""As for your academician, the rad-addled fella stowed away on my ship, you know. Though I didn't know who they were, at first. Don’t interact much with the boffins; they pay me, I take out some trash for them, we shake digital hands and go our separate ways.""","nex_remLostSci_inquireSpacer2:""So what happened?""",
 nex_remLostSci_inquireSpacer2,DialogOptionSelected,$option == nex_remLostSci_inquireSpacer2,"Highlight $nex_remLostSci_planet $nex_remLostSci_system
 Call $global.nex_remLostSci_ref beginPlanetStage
-unset $nex_remLostSci_wantTalkToSpacer","""Well, they didn't hide very well; Ludd knows what a surprise I had when my first mate comes running to me. I would've sent them out the airlock, but they paid their fare after the fact, so it all worked out it the end. Paid me a generous tip too, to keep quiet about it.""
+unset $nex_remLostSci_wantTalkToSpacer","""Well, they didn't hide very well; Ludd knows what a surprise I had when my first mate comes running to me. I would've sent them out the airlock, but they paid their fare after the fact, so it all worked out in the end. Paid me a generous tip too, to keep quiet about it.""
 
 The spacer stops, realizing that $heOrShe is not, in fact, keeping quiet. Then $heOrShe sighs and throws back $hisOrHer beer. ""Ah, to vacuum with it. Buy me another one and I'll tell you the name of this planet.""
 
@@ -2872,7 +2872,7 @@ nex_remLostSci_findScientist4,DialogOptionSelected,$option == nex_remLostSci_fin
 Call $global.nex_remLostSci_ref updateData","""Who's asking?""
 
 When you explain that you're a spacer looking for a certain document, the person seems to sink inwards. ""Come on in, then. Make yourself at home, what there is of it.""",nex_remLostSci_findScientist5:Enter,
-nex_remLostSci_findScientist5,DialogOptionSelected,$option == nex_remLostSci_findScientist5,,"The interior of the shack isn't quite as trashy as its outside might have led you to believe. There is a certain sense of order, of hygeine in this place; the prevailing scent is 'lived-in', not 'filthy'. A creaky ventilation fan overlays its sound over the outer room.
+nex_remLostSci_findScientist5,DialogOptionSelected,$option == nex_remLostSci_findScientist5,,"The interior of the shack isn't quite as trashy as its outside might have led you to believe. There is a certain sense of order, of hygiene in this place; the prevailing scent is 'lived-in', not 'filthy'. A creaky ventilation fan overlays its sound over the outer room.
 
 In the corner of the room, glowing lights faintly illuminate a workbench. An active computer terminal, newer and better-maintained than anything else in this dwelling, sits atop it.
 
