@@ -2872,7 +2872,7 @@ nex_remLostSci_findScientist4,DialogOptionSelected,$option == nex_remLostSci_fin
 Call $global.nex_remLostSci_ref updateData","""Who's asking?""
 
 When you explain that you're a spacer looking for a certain document, the person seems to sink inwards. ""Come on in, then. Make yourself at home, what there is of it.""",nex_remLostSci_findScientist5:Enter,
-nex_remLostSci_findScientist5,DialogOptionSelected,$option == nex_remLostSci_findScientist5,,"The interior of the shack isn't quite as trashy as its outside might have led you to believe. There is a certain sense of order, of hygeine in this place; the prevailing scent is 'lived-in', not 'filthy'. A creaky ventilation fan overlays its sound over the outer room.
+nex_remLostSci_findScientist5,DialogOptionSelected,$option == nex_remLostSci_findScientist5,,"The interior of the shack isn't quite as trashy as its outside might have led you to believe. There is a certain sense of order, of hygiene in this place; the prevailing scent is 'lived-in', not 'filthy'. A creaky ventilation fan overlays its sound over the outer room.
 
 In the corner of the room, glowing lights faintly illuminate a workbench. An active computer terminal, newer and better-maintained than anything else in this dwelling, sits atop it.
 
