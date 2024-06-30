@@ -2490,7 +2490,7 @@ nex_remFragments_attackerHailTTFlee,Nex_RemFragmentsHail,"$faction.id == tritach
 Call $global.nex_remFragments_ref updateData
 $nex_remFragments_stage == RETURN",$entity.ignorePlayerCommRequests = true,"""Hello, captain."" The $personRank has the smile of a sales rep about to make a pitch.
 
-""You've caused us a considerable degree of trouble, with your destruction of Company property just now. But even if you hadn't, you're an uncomfortable witness to things shich should not have been seen. 
+""You've caused us a considerable degree of trouble, with your destruction of Company property just now. But even if you hadn't, you're an uncomfortable witness to things which should not have been seen. 
 
 ""Accordingly, your termination is a regrettable necessity. The Tri-Tachyon Corporation wishes you a safe and pleasant death.""",cutCommLink:Cut the comm link,
 nex_remFragments_attackerConvoTT_rightsOpt,Nex_RemFragments_AttackerConvoOptsTT,"$faction.id == tritachyon
