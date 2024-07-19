@@ -322,6 +322,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
                 break;
             case "key":
                 LunaSettings.SettingsCreator.addKeybind(mid, var, name, tooltip, (int)defaultVal, tab);
+                break;
             default:
                 log.error(String.format("Setting %s has invalid type %s", var, type));
         }
