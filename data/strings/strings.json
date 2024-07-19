@@ -610,7 +610,7 @@
 		"intelDesc":"$TheFaction $isOrAre attacking and destroying $market, a $targetFaction base in the $location. The strike forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelDescUnknown":"$TheFaction $isOrAre attacking and destroying a $targetFaction base in the $location. The strike forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelStageAction":"The strike force is currently in-system.",
-		"intelStageActionSuccess":"The strike force has succesfully destroyed $market.",
+		"intelStageActionSuccess":"The strike force has successfully destroyed $market.",
 		"intelStageActionDefeated":"The strike force has been defeated by the defenders of $market.",
 		"intelStageActionAborted":"The strike mission has been aborted.",
 	},
@@ -1331,7 +1331,7 @@
 		"intelDesc_strength":"Strength: %s",
 		"intelDesc_moraleAvg":"Average morale: %s",
 		"intelDesc_otherNotes":"Other notes",
-		"intelDesc_lootAndSurvivors":"Surviving units and loot have been transfered to local storage or returned to fleet.",
+		"intelDesc_lootAndSurvivors":"Surviving units and loot have been transferred to local storage or returned to fleet.",
 		"intelDesc_lootAndSurvivorsDirect":"Surviving units and loot have been returned to fleet cargo.",
 		"intelDesc_localStorage":"Local storage",
 		"intelDesc_postVictoryOptions":"Having taken control of $market, you have a number of options.",
@@ -1677,7 +1677,7 @@
 		"cellDisruptDesc":"Your operative has infiltrated and destroyed a Luddic Path cell on one of your colonies.",
 		
 		"pirateCommissionName":"Pirate commission",
-		"pirateCommissionDesc":"Being an 'official' pirate gives you some protection from predation by fellow pirates, although honor among theives only goes so far. Effect increases with relationship level.",
+		"pirateCommissionDesc":"Being an 'official' pirate gives you some protection from predation by fellow pirates, although honor among thieves only goes so far. Effect increases with relationship level.",
 		"lpCommissionName":"Pather commission",
 		"lpCommissionDesc":"A fellow walker of the Path has a certain leeway in using the Adversary's tools against it, although other cells may not see it that way. Effect increases with relationship level.",
 		"pirateFriendlyName":"Pirate relations",
@@ -1782,14 +1782,14 @@
 		"marketDirectoryButtonShow":"show",
 		
 		"intelCaptureTitle":"Market Captured - $market",
-		"intelTransferTitle":"Market Transfered - $market",
+		"intelTransferTitle":"Market Transferred - $market",
 		"intelTransferBullet1":"Now under $faction",
 		"intelTransferBullet2":"Previously $faction",
 		"intelCaptureBulletCredits":"Lost %s",
 		
 		"intelCaptureDesc":"$NewFaction $hasOrHave captured $market (size $size) in the $location from $oldFaction.",
 		"intelCapturePlayerDesc":"$NewFaction $hasOrHave captured $market (size $size) in the $location from the $oldFaction, under the command of $player.",
-		"intelTransferDesc":"$oldFaction has transfered $market (size $size) in the $location to $newFaction.",
+		"intelTransferDesc":"$oldFaction has transferred $market (size $size) in the $location to $newFaction.",
 		"intelCaptureDescCredits":"You have lost %s credits due to looting by the invaders.",
 		"intelTransferFactionSizeHeader":"Current status",
 		"intelTransferFactionSizeEntry":"$faction: $num markets (total size $size)",
@@ -1866,7 +1866,7 @@
 		"insufficientMachineryWarning":"Your $shipOrFleet does not have enough heavy machinery to work at full capacity.",
 
 		"cacheFound":"Hidden cache found!",
-		"accidentsOccured":"Accidents occured!",
+		"accidentsOccured":"Accidents occurred!",
 		"shipDamaged":"$ship took $damage damage",
 		"shipDestroyed":"$ship destroyed",
 		"shipLostCR":"$ship lost $crLost CR",
@@ -2126,7 +2126,7 @@
 		"entryDescNewDHull":"New (D) hull: paying %s of base value",
 		"entryDescMoreDMods":"D-mod count increased: paying %s of base value",
 		"entryDescOfficerLevel":"Level %s officer",
-		"entryDescFraud":"Fraud suspected; payment witheld",
+		"entryDescFraud":"Fraud suspected; payment withheld",
 		
 		"buttonInsure":"Insure",
 		"buttonRenew":"Renew",
@@ -2324,7 +2324,7 @@
 	"nex_rebellion":{
 		"intelTitle":"Rebellion: $market",
 		
-		"intelDescPrep":"A rebellion is reportedly formenting against $govtFaction authorities $onOrAt $market. While no overt warfare has broken out yet, a large quantity of weapons are reportedly being stockpiled.",
+		"intelDescPrep":"A rebellion is reportedly fomenting against $govtFaction authorities $onOrAt $market. While no overt warfare has broken out yet, a large quantity of weapons are reportedly being stockpiled.",
 		"intelDesc":"Widespread rebellion has broken out against $theGovtFaction government $onOrAt $market.",
 		"intelDesc2":"Delivering supplies, marines and arms to a base official, or selling them on the black market, may influence the outcome of the rebellion.",
 		"intelDesc2Player":"You may wish to speak to local officials on supplies of materiel for government forces.",
@@ -2688,7 +2688,7 @@
 		"cond_tooltip3":"- Maximum colony size of %s",
 		
 		"intel_title":"Tribute Demand",
-		"intel_desc1":"$TheFaction $hasOrHave sent you a comminique regarding the status of $market in the $system, which is claimed by said faction. The text is quite needlessly verbose, but can be readily summarized as \"That's a nice colony you have there, $playerName. It would be a shame if something were to happen to it.\"",
+		"intel_desc1":"$TheFaction $hasOrHave sent you a communique regarding the status of $market in the $system, which is claimed by said faction. The text is quite needlessly verbose, but can be readily summarized as \"That's a nice colony you have there, $playerName. It would be a shame if something were to happen to it.\"",
 		"intel_desc2":"To avert an undesirable outcome, $theFaction demands a tribute equal to %s of the colony's gross income. Its population growth will also be reduced by %s, and it cannot exceed size %s.",
 		"intel_descAccepted":"You are currently paying tribute from $market.",
 		"intel_descRejected":"You have refused to pay tribute for $market.",
@@ -2738,7 +2738,7 @@
 		"apostate_intelText":"You have survived, and the Templars who hunted you as an apostate are not. This is your triumph.",
 		
 		"academy_name":"Story Victory",
-		"academy_text":"In the service of the Galatian Academy, you have travelled far, explored the reaches of the Persean Sector, and discovered wondrous secrets and sciences.\n\nOnly time will tell where all this leads. For now, this chapter of your story, and the Sector, has come to and end. But pages turn yet, with more to be told...",
+		"academy_text":"In the service of the Galatian Academy, you have traveled far, explored the reaches of the Persean Sector, and discovered wondrous secrets and sciences.\n\nOnly time will tell where all this leads. For now, this chapter of your story, and the Sector, has come to and end. But pages turn yet, with more to be told...",
 		"academy_intelText":"You have completed your Academy assignments, and with them this arc of the play on the Sector's stage. In time, there will be yet more to see.",
 	},
 	
@@ -3160,7 +3160,7 @@
 		"name_showStrategicAI":"Show strategic AI",
 		"tooltip_showStrategicAI":"If false, AI for other factions will not be shown in intel screen.",
 		"name_enableVictory":"Enable victory",
-		"tooltip_enableVictory":"If off, prevents the victory event from occuring even if conditions are met (except for story-based or other scripted victories).",
+		"tooltip_enableVictory":"If off, prevents the victory event from occurring even if conditions are met (except for story-based or other scripted victories).",
 		"name_hardModeColonyGrowthMult":"Starfarer mode colony growth mult",
 		"name_hardModeColonyIncomeMult":"Starfarer mode colony income mult",
 		"name_enablePunitiveExpeditions":"Enable punitive expeditions",
