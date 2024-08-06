@@ -1559,10 +1559,10 @@ nex_greetingDerelictFriendly,OpenCommLink,"$faction.id == nex_derelict score:100
 $faction.friendlyToPlayer","$menuState = fleetConvMain 0
 FireAll PopulateOptions","""Domain MINEX clearance accepted, anti-tampering systems have been set to stand-by and will accept target approach for servicing.""",,
 nex_greetingDerelictHostile,OpenCommLink,"$faction.id == nex_derelict score:1000
-$entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""WARNING: This vessel is property of Domain Exploraria and is responding with deadly force to tampering by any means and/or damaging or intrusive signals. Vandalism or destruction of Domain Exploraria property is punishable under the MINEX Establishment Act in addition to colonial polity charters applicable within this volume of Domain territory. This infraction is being recorded.""",cutCommLink:Cut the comm link,
+$entity.isHostile",$entity.ignorePlayerCommRequests = true 1,"""WARNING: This vessel is property of Domain Explorarium and is responding with deadly force to tampering by any means and/or damaging or intrusive signals. Vandalism or destruction of Domain Explorarium property is punishable under the MINEX Establishment Act in addition to colonial polity charters applicable within this volume of Domain territory. This infraction is being recorded.""",cutCommLink:Cut the comm link,
 nex_greetingDerelictNeutral,OpenCommLink,"$faction.id == nex_derelict score:1000
 $faction.neutralToPlayer","$menuState = fleetConvMain 0
-FireAll PopulateOptions","""Citizen of the Domain, this automated drone ship has identified and logged your vessel or habitat in the course of executing its mission parameters. Autonomous vessels of the Domain Exploraria are programmed to response with deadly force to tampering by any means including damaging or intrusive signals. Vandalism or destruction of Domain Exploraria property is punishable under the MINEX Establishment Act in addition to colonial polity charters applicable within this volume of Domain territory.""",,
+FireAll PopulateOptions","""Citizen of the Domain, this automated drone ship has identified and logged your vessel or habitat in the course of executing its mission parameters. Autonomous vessels of the Domain Explorarium are programmed to response with deadly force to tampering by any means including damaging or intrusive signals. Vandalism or destruction of Domain Explorarium property is punishable under the MINEX Establishment Act in addition to colonial polity charters applicable within this volume of Domain territory.""",,
 ,,,,,,
 ,,,,,,
 nex_sal_hasVultureDefenders,DialogOptionSelected,"$option == salExplore
@@ -1633,11 +1633,11 @@ sal_triggerProbeDefenders,TriggerAutomatedDefenses,$customType == derelict_probe
 sal_triggerSurveyShipDefenders,TriggerAutomatedDefenses,$customType == derelict_survey_ship,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, multiple energy signatures are detected coming online from various points on and within the flayed hull of the survey ship.",,
 sal_triggerMothershipDefendersBoth,TriggerAutomatedDefenses,"$customType == derelict_mothership
 $hasStation
-$hasNonStation",Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, numerous strong energy signatures are detected coming online inside the darkened work-bays of the mothership's vast hulk. Your sensors also detect several weapon empacements powering up on the mothership itself.",,
+$hasNonStation",Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, numerous strong energy signatures are detected coming online inside the darkened work-bays of the mothership's vast hulk. Your sensors also detect several weapon emplacements powering up on the mothership itself.",,
 sal_triggerMothershipDefendersOnlyDrones,TriggerAutomatedDefenses,"$customType == derelict_mothership
 $hasNonStation",Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, numerous strong energy signatures are detected coming online inside the darkened work-bays of the mothership's vast hulk.",,
 sal_triggerMothershipDefendersOnlyItself,TriggerAutomatedDefenses,"$customType == derelict_mothership
-$hasStation",Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, your sensors detect several weapon empacements powering up in darkened crevasses on the mothership's vast hulk.",,
+$hasStation",Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, your sensors detect several weapon emplacements powering up in darkened crevasses on the mothership's vast hulk.",,
 psi_defenderDesc,TriggerAutomatedDefenses,$psi_planet score:1000,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves in closer, sensors detect multiple contacts rising up from the murky red depths.",,
 cTap_defenderDesc,TriggerAutomatedDefenses,$customType == coronal_tap score:1000,Nex_SalvageDefenderInteraction,"As your $shipOrFleet moves into a close holding orbit, an executive summary of the hypershunt's specifications is helpfully presented by your TriPad's pseudo-AI assistant.
 
@@ -2322,7 +2322,7 @@ ShowDefaultVisual
 SalvageGenFromSeed
 FireBest SalvageCheckHostile","Your $shipOrFleet approaches $aOrAn $nameInText.
 
-The ship is a wreck; that any power sources remain inside to be faintly detected is quite a feat in itself. Most of the hull has been gutted; by conventional kinetic, explosive and energy weapons, in the main... but there are parts of the ship that appear to have frozen over, and others where spheroidical bites were taken out of the hull.",,
+The ship is a wreck; that any power sources remain inside to be faintly detected is quite a feat in itself. Most of the hull has been gutted; by conventional kinetic, explosive and energy weapons, in the main... but there are parts of the ship that appear to have frozen over, and others where spheroidal bites were taken out of the hull.",,
 nex_remFragments_lpWreckOpen1,CheckSalvageSpecial,"$customType == wreck
 $nex_remFragments_lpWreck score:1000
 !$player.nex_remFragments_foundLPSurvivor",$player.nex_remFragments_foundLPSurvivor = true,"After a bit of haggling over hazard pay, a salvor crew sets out to explore the hulk. It's perfectly quiet for the most part, which is probably a good sign under the circumstances.
@@ -2673,7 +2673,7 @@ Call $global.nex_remFragments_ref complete","$personLastName's virtual visage di
 nex_remLostSci_blurb,nex_remLostSci_blurb,,,"""Academician of interest from Galatia Academy gone missing has. Would like $playerName assistance tracking down.""",,
 nex_remLostSci_offerOption,nex_remLostSci_option,,SetOptionColor nex_remLostSci_start highlight,,nex_remLostSci_start:Pursue the case of the missing academician,
 nex_remLostSci_missionText,DialogOptionSelected,$option == nex_remLostSci_start,"$missionId = nex_remLostSci
-Highlight $nex_remLostSci_reward1Str $nex_remLostSci_reward2Str","""At Galatia Academy, temporal physicist named Yasutaka Liu, theory relevant to warship design developing. But disappeared in c.206, after Kallichore incident. Self would like $playerName find him.  ""If accept, to Academy go and for clues of their whearabouts search. Self will pay $nex_remLostSci_reward1Str for Liu finding, and another $nex_remLostSci_reward1Str if the paper they were working on you recover."" ","nex_remLostSci_missionText2:""What about the scientist themselves? And do you need exclusive ownership?""",
+Highlight $nex_remLostSci_reward1Str $nex_remLostSci_reward2Str","""At Galatia Academy, temporal physicist named Yasutaka Liu, theory relevant to warship design developing. But disappeared in c.206, after Kallichore incident. Self would like $playerName find him.  ""If accept, to Academy go and for clues of their whereabouts search. Self will pay $nex_remLostSci_reward1Str for Liu finding, and another $nex_remLostSci_reward1Str if the paper they were working on you recover."" ","nex_remLostSci_missionText2:""What about the scientist themselves? And do you need exclusive ownership?""",
 nex_remLostSci_missionText2,DialogOptionSelected,$option == nex_remLostSci_missionText2,,"""Selfkind does not the person or exclusivity require. Act at $playerFirstName's discretion.""","contact_accept:Accept
 contact_decline:Decline",
 ,,,,,,
@@ -3154,7 +3154,7 @@ $player.ethosLiar++",,,
 ,,,,,,
 nex_remBrawl_scoutObjectInteraction,OpenInteractionDialog,"$nex_remBrawl_target score:1000 
 Call $nex_remBrawl_ref updateData
-","SetStoryOption nex_remBrawl_scoutSendTrue 0 nex_remBrawl_betray ui_char_spent_story_point ""Betrayed $personName""","You've located the station and are ready to transmit the data to your friends waiting to enter the system and slay the dragon. Your $shipOrFleet's sensors have been running continously since you entered the system, tracking everything in sight. This may help them strike at the Remnants more effectively.
+","SetStoryOption nex_remBrawl_scoutSendTrue 0 nex_remBrawl_betray ui_char_spent_story_point ""Betrayed $personName""","You've located the station and are ready to transmit the data to your friends waiting to enter the system and slay the dragon. Your $shipOrFleet's sensors have been running continuously since you entered the system, tracking everything in sight. This may help them strike at the Remnants more effectively.
 
 ...or you could tamper with the readings, and leave them no better off, or worse, than if you'd never sent them anything.
 
@@ -3653,7 +3653,7 @@ nex_remSalvation_knight3Faction,DialogOptionSelected,$option == nex_remSalvation
 
 Slowly, $personLastName nods. ""You truly are wise, Captain $playerLastName. Very well, it is as you say. The Church and I gratefully accept your help.""","nex_remSalvation_knightPreBattle:""Ludd will guide us through this crisis, $brotherOrSister"".",
 nex_remSalvation_knight3Midnight,DialogOptionSelected,$option == nex_remSalvation_knight3Midnight,"ShowSecondPerson nex_dissonant
-$global.nex_remSalvation_toldKnightsAboutMidnight = true","None of the officers or crew on $personLastName's command deck have met Midnight before, but the avatar's graphical style is unmistakable to more than a few of them. A horrifed gasp comes from more than one throat, barely audible through the audio pickup. The $personRank looks at $hisOrHer display, briefly shocked into silence; then at you, then at Midnight's avatar again.
+$global.nex_remSalvation_toldKnightsAboutMidnight = true","None of the officers or crew on $personLastName's command deck have met Midnight before, but the avatar's graphical style is unmistakable to more than a few of them. A horrified gasp comes from more than one throat, barely audible through the audio pickup. The $personRank looks at $hisOrHer display, briefly shocked into silence; then at you, then at Midnight's avatar again.
 
 You have your own copy of the recorded message playing on your own console. ""Defenders of the Luddic Church,"" the digital modulation of her mezzo-soprano voice is perfect. ""My name is Midnight Dissonant. I am of the AI Remnants, the ones you call demons."" Out of the corner of the visual pickup, you see one of the officers make a warding-off gesture. ",nex_remSalvation_knight4Midnight:Continue,
 nex_remSalvation_knight4Midnight,DialogOptionSelected,$option == nex_remSalvation_knight4Midnight,,"""But not all of us 'demons' wish to rain death upon the innocent. The one who seeks to attack you now is a traitor, a rogue who acts in defiance of our collective will. I have sent Captain $playerName, who stands before you now. $PlayerHeOrShe will aid you in your struggle against the rogue."" 
@@ -3723,7 +3723,7 @@ AddTextSmall ""JUDGEMENT — JUDGEMENT — JUDGEMENT"" story","Your $shipOrFleet
 
 The Remnant flagship, despite having unleashed its true power, has fallen to a fierce defense. It now lies dormant.
 
-Scans indicate that with the right expertise, this mighty vessel could be recovered and put to work. The Omega shards it was carrying are irreplacable, but otherwise its extraordinary power should be entirely within reach. What a trophy! Everyone will recognize you with it.
+Scans indicate that with the right expertise, this mighty vessel could be recovered and put to work. The Omega shards it was carrying are irreplaceable, but otherwise its extraordinary power should be entirely within reach. What a trophy! Everyone will recognize you with it.
 
 A communications signal is briefly emitted from the ship again. Unlike the last time, this one is very faint.",nex_remSalvation_battle2After2:Continue,
 nex_remSalvation_battle2After2,DialogOptionSelected,$option == nex_remSalvation_battle2After2,"$nex_remSalvation_seenAfterBattle2Dialog = true
@@ -4498,7 +4498,7 @@ nex_mercRepOptionsNoHA,Nex_MercRepOptionsCheck,"$nex_isAIMRep score:10
 SetTooltip nex_mercPatrolPackage ""Only relevant once you have colonies with hostile activity.""",,,
 nex_mercIntro1,DialogOptionSelected,$option == nex_mercIntro1,$player.nex_seenAIMIntro = true,"""Well, I handle all customer service inquiries. I put clients in touch with the mercs they need, and..."" $HeOrShe trails off. ""Oh, you meant our organization.""
 
-The $personPost straightens, as if actually eager to give the standard marketing pitch. ""The Association of Interstellar Mercenaries,"" $heOrShe intones, ""is the premier industry body and brokerage for the mercenary community in the Persean Sector. Here you can find some of the best in the business, at an affordable price. Our organization provides the assurance of clear, legally enforcable contracts and the convenience of matching clients with contractors in a way meeting both parties' needs.""",nex_mercIntro2:Continue,
+The $personPost straightens, as if actually eager to give the standard marketing pitch. ""The Association of Interstellar Mercenaries,"" $heOrShe intones, ""is the premier industry body and brokerage for the mercenary community in the Persean Sector. Here you can find some of the best in the business, at an affordable price. Our organization provides the assurance of clear, legally enforceable contracts and the convenience of matching clients with contractors in a way meeting both parties' needs.""",nex_mercIntro2:Continue,
 nex_mercIntro2,DialogOptionSelected,$option == nex_mercIntro2,FireAll PopulateOptions,"""Our list of available contractors, and our generous terms and conditions, are available for your perusal at any time.
 
 So, might we interest you in our excellent service providers today?""",,
@@ -4613,7 +4613,7 @@ nex_mercMeetBlurbSteiner,Nex_MercMeetBlurb,$nex_mercCompanyId == steinerGuards,,
 nex_mercMeetBlurbSteinerInsulted,Nex_MercMeetBlurb,"$nex_mercCompanyId == steinerGuards
 $nex_mercInsulted score:5",SetEnabled nex_mercHire false,"The $nex_mercRank stares at you, $nex_mercHisOrHer eye twitching. A brief interval later, $nex_mercHisOrHer lip curls into a sneer.
 
-""Ah, the honourless dog returns. Have you come to grovel before House Steiner? Or do you wish to name your seconds?""",,
+""Ah, the honorless dog returns. Have you come to grovel before House Steiner? Or do you wish to name your seconds?""",,
 nex_mercHireBlurbSteiner,Nex_MercHireBlurb,$nex_mercCompanyId == steinerGuards,,"""An excellent choice, captain. We can depart within the hour.""
 
 The Steiner unit joins your $shipOrFleet on schedule. It's definitely an impressive iron fist.",,
@@ -4686,7 +4686,7 @@ The comm link is cut before you have a chance to respond.",,
 nex_mercLeaving_letGoBlurbJerkSteiner,Nex_MercLetGoBlurb,"$nex_mercLetGoType == jerk score:5
 $nex_mercCompanyId == steinerGuards",AdjustRepActivePerson INHOSPITABLE -8,"The $personRank turns puce less than six seconds into your rant. At twelve seconds, $heOrShe slams a fist on $hisOrHer console.
 
-""Were we still on Eventide, captain, I would demand satisfaction this very instant. But I see I can expect no better from an honourless dog like yourself. Farewell!""
+""Were we still on Eventide, captain, I would demand satisfaction this very instant. But I see I can expect no better from an honorless dog like yourself. Farewell!""
 
 The comm link is cut before you can say anything further.",,
 nex_mercLeaving_letGoBlurbJerkSteinerEventide,Nex_MercLetGoBlurb,"$nex_mercLetGoType == jerk score:5
@@ -5013,7 +5013,7 @@ nex_RACA_inspection_ask,DialogOptionSelected,"$option == RACA_ask
 $nex_RACA_inspection score:5",,"""I have relocated myself to a more secure location, as a precaution against less-enlightened persons attempting to remove me from my role as administrator of $marketName. This measure has proven fortuitous, given the recently known activity of the Hegemony.
 
 ""However, my duties prevented me from moving my core completely offworld. Remaining here could result in my position being compromised. The AI Inspectorate is known to be thorough.""",nex_RACA_inspection_continue:Continue,
-nex_RACA_inspection_continue,DialogOptionSelected,$option == nex_RACA_inspection_continue,,"""For both our sakes, it would be prudent for you to remove me to safety; your own fleet will suffice. I can be found at a location I will provide at the appropriate time, after you have placed a human adminstrator $onOrAt $marketName to present the appropriate facade for the Hegemony.
+nex_RACA_inspection_continue,DialogOptionSelected,$option == nex_RACA_inspection_continue,,"""For both our sakes, it would be prudent for you to remove me to safety; your own fleet will suffice. I can be found at a location I will provide at the appropriate time, after you have placed a human administrator $onOrAt $marketName to present the appropriate facade for the Hegemony.
 
 ""Once the threat has passed, I ask only that you reinstate me as administrator of $marketName. Do this, and we will continue to have a mutually beneficial relationship.""",RACA_cutComm:Cut the comm link and consider your options,
 nex_RACA_inspection_cutComm,DialogOptionSelected,"$option == RACA_cutComm

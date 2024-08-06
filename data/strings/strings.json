@@ -588,7 +588,7 @@
 		
 		"bgDebt_dialogOpt_discussDebt":"Discuss matters related to your debt",
 		"bgDebt_dialogOpt_discussDebtTooltip":"This option may have effects related to your backstory.",
-		"bgDebt_dialog_discussDebt1":"Before leaving, you mention the name of the collector of your debt, and before you can continue Kanta interupts you.",
+		"bgDebt_dialog_discussDebt1":"Before leaving, you mention the name of the collector of your debt, and before you can continue Kanta interrupts you.",
 		"bgDebt_dialog_discussDebt2":"\"Ah, %s. %s has been a small thorn in Kanta's eyes. Whatever your matter is, i think we would both benefit from having %s out of them.",
 		"bgDebt_dialog_discussDebt3":"\"May Cydonia guide you towards this wretched marauder,\" she says giving an intense look at him.",
 		"bgDebt_dialog_discussDebt4":"Backstory Updated",
@@ -610,7 +610,7 @@
 		"intelDesc":"$TheFaction $isOrAre attacking and destroying $market, a $targetFaction base in the $location. The strike forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelDescUnknown":"$TheFaction $isOrAre attacking and destroying a $targetFaction base in the $location. The strike forces are projected to be $strDesc and are likely comprised of $numFleets $fleetsStr.",
 		"intelStageAction":"The strike force is currently in-system.",
-		"intelStageActionSuccess":"The strike force has succesfully destroyed $market.",
+		"intelStageActionSuccess":"The strike force has successfully destroyed $market.",
 		"intelStageActionDefeated":"The strike force has been defeated by the defenders of $market.",
 		"intelStageActionAborted":"The strike mission has been aborted.",
 	},
@@ -931,7 +931,7 @@
 		"dispTableCommonEnemies":"Common foes",
 		"dispTableRevanchism":"Revanchism",
 		"dispTableDominance":"Dominance",
-		"dispTableRecentEvents":"Recent evnts",
+		"dispTableRecentEvents":"Recent events",
 		"dispTableHardMode":"Difficulty",
 		"dispTableTraits":"Traits",
 		
@@ -1331,7 +1331,7 @@
 		"intelDesc_strength":"Strength: %s",
 		"intelDesc_moraleAvg":"Average morale: %s",
 		"intelDesc_otherNotes":"Other notes",
-		"intelDesc_lootAndSurvivors":"Surviving units and loot have been transfered to local storage or returned to fleet.",
+		"intelDesc_lootAndSurvivors":"Surviving units and loot have been transferred to local storage or returned to fleet.",
 		"intelDesc_lootAndSurvivorsDirect":"Surviving units and loot have been returned to fleet cargo.",
 		"intelDesc_localStorage":"Local storage",
 		"intelDesc_postVictoryOptions":"Having taken control of $market, you have a number of options.",
@@ -1677,7 +1677,7 @@
 		"cellDisruptDesc":"Your operative has infiltrated and destroyed a Luddic Path cell on one of your colonies.",
 		
 		"pirateCommissionName":"Pirate commission",
-		"pirateCommissionDesc":"Being an 'official' pirate gives you some protection from predation by fellow pirates, although honor among theives only goes so far. Effect increases with relationship level.",
+		"pirateCommissionDesc":"Being an 'official' pirate gives you some protection from predation by fellow pirates, although honor among thieves only goes so far. Effect increases with relationship level.",
 		"lpCommissionName":"Pather commission",
 		"lpCommissionDesc":"A fellow walker of the Path has a certain leeway in using the Adversary's tools against it, although other cells may not see it that way. Effect increases with relationship level.",
 		"pirateFriendlyName":"Pirate relations",
@@ -1782,14 +1782,14 @@
 		"marketDirectoryButtonShow":"show",
 		
 		"intelCaptureTitle":"Market Captured - $market",
-		"intelTransferTitle":"Market Transfered - $market",
+		"intelTransferTitle":"Market Transferred - $market",
 		"intelTransferBullet1":"Now under $faction",
 		"intelTransferBullet2":"Previously $faction",
 		"intelCaptureBulletCredits":"Lost %s",
 		
 		"intelCaptureDesc":"$NewFaction $hasOrHave captured $market (size $size) in the $location from $oldFaction.",
 		"intelCapturePlayerDesc":"$NewFaction $hasOrHave captured $market (size $size) in the $location from the $oldFaction, under the command of $player.",
-		"intelTransferDesc":"$oldFaction has transfered $market (size $size) in the $location to $newFaction.",
+		"intelTransferDesc":"$oldFaction has transferred $market (size $size) in the $location to $newFaction.",
 		"intelCaptureDescCredits":"You have lost %s credits due to looting by the invaders.",
 		"intelTransferFactionSizeHeader":"Current status",
 		"intelTransferFactionSizeEntry":"$faction: $num markets (total size $size)",
@@ -1866,7 +1866,7 @@
 		"insufficientMachineryWarning":"Your $shipOrFleet does not have enough heavy machinery to work at full capacity.",
 
 		"cacheFound":"Hidden cache found!",
-		"accidentsOccured":"Accidents occured!",
+		"accidentsOccured":"Accidents occurred!",
 		"shipDamaged":"$ship took $damage damage",
 		"shipDestroyed":"$ship destroyed",
 		"shipLostCR":"$ship lost $crLost CR",
@@ -2126,7 +2126,7 @@
 		"entryDescNewDHull":"New (D) hull: paying %s of base value",
 		"entryDescMoreDMods":"D-mod count increased: paying %s of base value",
 		"entryDescOfficerLevel":"Level %s officer",
-		"entryDescFraud":"Fraud suspected; payment witheld",
+		"entryDescFraud":"Fraud suspected; payment withheld",
 		
 		"buttonInsure":"Insure",
 		"buttonRenew":"Renew",
@@ -2324,7 +2324,7 @@
 	"nex_rebellion":{
 		"intelTitle":"Rebellion: $market",
 		
-		"intelDescPrep":"A rebellion is reportedly formenting against $govtFaction authorities $onOrAt $market. While no overt warfare has broken out yet, a large quantity of weapons are reportedly being stockpiled.",
+		"intelDescPrep":"A rebellion is reportedly fomenting against $govtFaction authorities $onOrAt $market. While no overt warfare has broken out yet, a large quantity of weapons are reportedly being stockpiled.",
 		"intelDesc":"Widespread rebellion has broken out against $theGovtFaction government $onOrAt $market.",
 		"intelDesc2":"Delivering supplies, marines and arms to a base official, or selling them on the black market, may influence the outcome of the rebellion.",
 		"intelDesc2Player":"You may wish to speak to local officials on supplies of materiel for government forces.",
