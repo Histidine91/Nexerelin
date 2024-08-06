@@ -45,7 +45,7 @@
 			"id":"templar_apostate",
 			"name":"The Apostate",
 			"difficulty":"Hard",
-			"desc":"Once you were honored. Once you were loyal to the way of the Templars, pledged to bring the word to this godless sector. But sin infected you, and you doubted, and you succumbed to temptation.\n\nSomehow, you persuaded your crew to join you in your heresy, and fled into brigandage.\n\nYet your reckoning has only been postponed. Hunted by all parties, will you survive long enough to face judgement?",
+			"desc":"Once you were honored. Once you were loyal to the way of the Templars, pledged to bring the word to this godless sector. But sin infected you, and you doubted, and you succumbed to temptation.\n\nSomehow, you persuaded your crew to join you in your heresy, and fled into brigandage.\n\nYet your reckoning has only been postponed. Hunted by all parties, will you survive long enough to face judgment?",
 			"className":"exerelin.campaign.customstart.TemplarApostate",
 			"factionId":"player",
 			"requiredModId":"Templars",

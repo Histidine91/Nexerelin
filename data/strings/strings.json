@@ -588,7 +588,7 @@
 		
 		"bgDebt_dialogOpt_discussDebt":"Discuss matters related to your debt",
 		"bgDebt_dialogOpt_discussDebtTooltip":"This option may have effects related to your backstory.",
-		"bgDebt_dialog_discussDebt1":"Before leaving, you mention the name of the collector of your debt, and before you can continue Kanta interupts you.",
+		"bgDebt_dialog_discussDebt1":"Before leaving, you mention the name of the collector of your debt, and before you can continue Kanta interrupts you.",
 		"bgDebt_dialog_discussDebt2":"\"Ah, %s. %s has been a small thorn in Kanta's eyes. Whatever your matter is, i think we would both benefit from having %s out of them.",
 		"bgDebt_dialog_discussDebt3":"\"May Cydonia guide you towards this wretched marauder,\" she says giving an intense look at him.",
 		"bgDebt_dialog_discussDebt4":"Backstory Updated",
@@ -931,7 +931,7 @@
 		"dispTableCommonEnemies":"Common foes",
 		"dispTableRevanchism":"Revanchism",
 		"dispTableDominance":"Dominance",
-		"dispTableRecentEvents":"Recent evnts",
+		"dispTableRecentEvents":"Recent events",
 		"dispTableHardMode":"Difficulty",
 		"dispTableTraits":"Traits",
 		

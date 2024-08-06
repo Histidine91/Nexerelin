@@ -338,7 +338,7 @@
 		# disabled via min level, it kind of rekts the lore
 		"endbringer":{
 			"name":"The Bringer of End",
-			"desc":"This completely outworldly ship turned up one day and offered its services to AIM. Inquiries have suggested a relationship to the mysterious \"Omega\" revered by the AI Remnants, but why one of them would bother helping us humans is a mystery. Under the circumstances, we've decided it's better not to ask.",
+			"desc":"This completely otherworldly ship turned up one day and offered its services to AIM. Inquiries have suggested a relationship to the mysterious \"Omega\" revered by the AI Remnants, but why one of them would bother helping us humans is a mystery. Under the circumstances, we've decided it's better not to ask.",
 			"feeUpfront":200000,
 			"feeMonthly":15000,	# more since you're not paying officer salaries (but are paying for repairs)
 			"faction":"omega",
