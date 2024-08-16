@@ -1576,9 +1576,9 @@ OR
 OR
 ""This salvage does not belong to you. You'll have to fight us for it.""",cutCommLink:Cut the comm link,
 ,,,,,,
-marketOpenNotOriginalOwner,OpenInteractionDialog,"$hasMarket
+nex_marketOpenNotOriginalOwner,OpenInteractionDialog,"$hasMarket
 $market.startingFactionId != null
-$faction.id != $market.startingFactionId","ShowDefaultVisual
+$faction.id != $market.startingFactionId","ExerelinShowDefaultVisual
 Nex_PrintOriginalOwner
 PrintDescription 3
 FireBest MarketPostOpen",Your $shipOrFleet approaches $entityName.,,
