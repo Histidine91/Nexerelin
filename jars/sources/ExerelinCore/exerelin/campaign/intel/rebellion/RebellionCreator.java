@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
@@ -189,7 +190,7 @@ public class RebellionCreator implements EveryFrameScript {
 	
 	protected void processMarket(MarketAPI market, float days)
 	{
-		if (!NexUtilsMarket.canBeInvaded(market, false))
+		if (!NexUtilsMarket.shouldTargetForInvasions(market, 0))
 			return;
 		if (market.getFactionId().equals("templars"))
 			return;
@@ -217,6 +218,11 @@ public class RebellionCreator implements EveryFrameScript {
 		if (!interval.intervalElapsed()) return;
 		
 		numOngoing = Global.getSector().getIntelManager().getIntelCount(RebellionIntel.class, true);
+
+		if (NexConfig.invasionsOnlyAfterPlayerColony && !Misc.isPlayerFactionSetUp()) {
+			return;
+		}
+
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
 			processMarket(market, interval.getElapsed());
