@@ -4,12 +4,15 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
+import com.fs.starfarer.api.campaign.impl.items.WormholeScannerPlugin;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
+import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
+import com.fs.starfarer.api.impl.campaign.shared.WormholeManager;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
@@ -54,17 +57,30 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 			pickNext();
 		}
 
-		checkGateFollow();	// currently broken
+		boolean isUsingGateOrWormhole = checkGateFollow();
+		if (!isUsingGateOrWormhole) isUsingGateOrWormhole = checkWormholeFollow();
+	}
+
+	protected boolean canGateOrWormholeFollow(SectorEntityToken dest) {
+		if (!intel.isPlayer()) return false;
+		MemoryAPI mem = fleet.getMemoryWithoutUpdate();
+		if (mem.contains(MemFlags.FLEET_BUSY)) return false;
+
+		if (dest == null) {
+			return false;
+		}
+		if (dest.getContainingLocation() == fleet.getContainingLocation()) {
+			// fix fleet sometimes trying to go back and use the gate again after jumping through
+			fleet.removeFirstAssignmentIfItIs(FleetAssignment.DELIVER_FUEL);
+			return false;
+		}
+
+		return true;
 	}
 
 	protected boolean checkGateFollow() {
 		try {
-			if (!intel.isPlayer()) return false;
 			if (!GateEntityPlugin.canUseGates()) return false;
-			MemoryAPI mem = fleet.getMemoryWithoutUpdate();
-			if (mem.contains(MemFlags.FLEET_BUSY)) return false;
-
-			FleetAssignmentDataAPI assign = fleet.getCurrentAssignment();
 
 			SectorEntityToken dest = null;
 			//if (assign != null) dest = assign.getTarget();
@@ -73,20 +89,26 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 				if (task != null) dest = task.getEntity();
 			}
 
-			if (dest == null) {
-				return false;
-			}
-			if (dest.getContainingLocation() == fleet.getContainingLocation()) {
-				// fix fleet sometimes trying to go back and use the gate again after jumping through
-				fleet.removeFirstAssignmentIfItIs(FleetAssignment.DELIVER_FUEL);
-				return false;
-			}
+			if (!canGateOrWormholeFollow(dest)) return false;
+
+			FleetAssignmentDataAPI assign = fleet.getCurrentAssignment();
 			if (assign != null && assign.getTarget() != null && assign.getTarget().hasTag(Tags.GATE)) return false;
 
 			SectorEntityToken gateFrom = getGateInLocation(fleet.getContainingLocation());
 			if (gateFrom == null || !GateEntityPlugin.isActive(gateFrom)) return false;
 			SectorEntityToken gateTo = getGateInLocation(dest.getContainingLocation());
 			if (gateTo == null || !GateEntityPlugin.isActive(gateTo)) return false;
+
+			// RAT puts a gate in hyperspace and we shouldn't assume we want to use it just because we or our destination is in hyperspace
+			if (fleet.getContainingLocation().isHyperspace()) {
+				float distSq = MathUtils.getDistanceSquared(fleet.getLocation(), gateFrom.getLocation());
+				if (distSq > 5000 * 5000) return false;
+			}
+			else if (dest.getContainingLocation().isHyperspace()) {
+				float distSq = MathUtils.getDistanceSquared(dest.getLocation(), gateTo.getLocation());
+				if (distSq > 5000 * 5000) return false;
+			}
+
 
 			fleet.addAssignmentAtStart(FleetAssignment.DELIVER_FUEL, gateFrom, 30,
 					StringHelper.getFleetAssignmentString("usingGate", gateFrom.getName()), new GateTravelScript(fleet, gateFrom, gateTo));
@@ -95,6 +117,49 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 			if (ExerelinModPlugin.isNexDev) throw ex;
 			return false;
 		}
+	}
+
+	protected boolean checkWormholeFollow() {
+		try {
+			if (!WormholeScannerPlugin.canPlayerUseWormholes()) return false;
+
+			SectorEntityToken dest = null;
+			//if (assign != null) dest = assign.getTarget();
+			if (dest == null) {
+				SpecialForcesTask task = intel.routeAI.currentTask;
+				if (task != null) dest = task.getEntity();
+			}
+
+			if (!canGateOrWormholeFollow(dest)) return false;
+
+			FleetAssignmentDataAPI assign = fleet.getCurrentAssignment();
+			if (assign != null && assign.getTarget() != null && assign.getTarget().getMemoryWithoutUpdate().getBoolean(WormholeManager.WORMHOLE))
+				return false;
+
+			SectorEntityToken wormFrom = getWormholeInLocation(fleet.getContainingLocation());
+			if (wormFrom == null || isWormholeUnstable(wormFrom)) return false;
+			SectorEntityToken wormTo = getWormholeInLocation(dest.getContainingLocation());
+			if (wormTo == null || isWormholeUnstable(wormTo)) return false;
+
+			fleet.addAssignmentAtStart(FleetAssignment.DELIVER_FUEL, wormFrom, 30,
+					StringHelper.getFleetAssignmentString("usingGate", wormFrom.getName()), new GateTravelScript(fleet, wormFrom, wormTo));
+			return true;
+		} catch (Exception ex) {
+			if (ExerelinModPlugin.isNexDev) throw ex;
+			return false;
+		}
+	}
+
+	protected boolean isWormholeUnstable(SectorEntityToken worm) {
+		return worm.getMemoryWithoutUpdate().getBoolean(JumpPointInteractionDialogPluginImpl.UNSTABLE_KEY);
+	}
+
+	protected SectorEntityToken getWormholeInLocation(LocationAPI loc) {
+		if (loc == null) return null;
+		for (SectorEntityToken token : loc.getJumpPoints()) {
+			if (token.getMemoryWithoutUpdate().getBoolean(WormholeManager.WORMHOLE)) return token;
+		}
+		return null;
 	}
 
 	protected SectorEntityToken getGateInLocation(LocationAPI loc) {
@@ -330,8 +395,12 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 		}
 
 		protected void showGateUse(SectorEntityToken gate, float ly) {
-			if (!(gateFrom.getCustomPlugin() instanceof GateEntityPlugin)) return;
-			((GateEntityPlugin)gateFrom.getCustomPlugin()).showBeingUsed(ly);
+			if (gateFrom.getCustomPlugin() instanceof GateEntityPlugin) {
+				((GateEntityPlugin)gateFrom.getCustomPlugin()).showBeingUsed(ly);
+			}
+			else if (gateFrom instanceof JumpPointAPI) {
+				((JumpPointAPI)gate).open();	// no action needed?
+			}
 		}
 
 		@Override

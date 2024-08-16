@@ -1028,7 +1028,7 @@ public class SpecialForcesRouteAI {
 		int aggro = sf.faction.getDoctrine().getAggression();
 		switch (aggro) {
 			case 5:
-				if (isBusy) return 9999999;
+				if (isBusy) return 9999999;	// higher means less likely to defend
 				return 50;
 			default:
 				return 8 * aggro * (isBusy ? 2 : 1);

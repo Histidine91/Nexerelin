@@ -217,6 +217,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
 		fleet.getMemoryWithoutUpdate().set("$clearCommands_no_remove", true);		
 		fleet.getMemoryWithoutUpdate().set(FLEET_MEM_KEY_INTEL, this);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MAY_GO_INTO_ABYSS, true);
 		
 		fleet.addEventListener(new SFFleetEventListener(this));
 		
@@ -964,6 +965,9 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public void onGameLoad(boolean newGame) {
 		addListenerIfNeeded();
 		checkVariants();
+		if (fleet != null && !fleet.getMemoryWithoutUpdate().contains(MemFlags.MAY_GO_INTO_ABYSS)) {
+			fleet.getMemoryWithoutUpdate().set(MemFlags.MAY_GO_INTO_ABYSS, true);
+		}
 	}
 
 	@Override
