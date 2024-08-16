@@ -2817,7 +2817,8 @@ FireAll Nex_RemLostSci_StationKingConvoEndOpts","After you explain the matter to
 
 ""Ah, um, well... of course, of course! Anything for the, the Warlord! I'll, uh, have the boys clear you right away!""",,
 nex_remLostSci_stationKingConvoThreatenSuccess,DialogOptionSelected,"$option == nex_remLostSci_stationKingConvoThreaten
-$nex_remLostSci_playerDP > 120","$player.ethosRuthless++
+$nex_remLostSci_playerDP > 120","$player.nex_remLostSci_gotAccessRightsToPlanet = true
+$player.ethosRuthless++
 $nex_remLostSci_threatened = true
 $ignorePlayerCommRequests = true 7
 AdjustRepActivePerson HOSTILE -15
