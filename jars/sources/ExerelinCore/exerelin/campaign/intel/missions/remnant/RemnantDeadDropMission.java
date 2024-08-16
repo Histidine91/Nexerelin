@@ -1,8 +1,6 @@
 package exerelin.campaign.intel.missions.remnant;
 
 
-import org.lwjgl.util.vector.Vector2f;
-
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
@@ -10,10 +8,13 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.DeadDropMission;
 import com.fs.starfarer.api.impl.campaign.missions.DelayedFleetEncounter;
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode;
-import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 import exerelin.utilities.StringHelper;
+import org.lwjgl.util.vector.Vector2f;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 
 public class RemnantDeadDropMission extends DeadDropMission {
 
@@ -105,7 +106,7 @@ public class RemnantDeadDropMission extends DeadDropMission {
 					String.format(StringHelper.getString("exerelin_misc", "deadDropCoordsStr2"), 
 							person.getFaction().getDisplayNameWithArticle()),
 					0,
-					true, ComplicationRepImpact.FULL,
+					true, ComplicationRepImpact.LOW,
 					DelayedFleetEncounter.TRIGGER_REP_LOSS_MINOR, getPerson());
 			e.triggerSetAdjustStrengthBasedOnQuality(true, getQuality());
 			e.triggerSetPatrol();
