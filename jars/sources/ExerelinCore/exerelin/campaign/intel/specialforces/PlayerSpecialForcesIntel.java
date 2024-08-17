@@ -31,6 +31,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ModPluginEventListener;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsGUI;
 import lombok.Getter;
@@ -54,10 +55,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public static final boolean PRINT_VARIANT_WARNING = true;
 	public static final String MEM_KEY_OVER_OFFICER_LIMIT_WARN = "$nex_overOfficerLimitWarn";
 	
-	public static final float CREW_SALARY_MULT = 0.8f;	// should not be high since the utility of assets in a PSF fleet is much lower than in the player fleet
-	public static final float SUPPLY_COST_MULT = 0.8f;	// ditto, even though we're getting free combat out of the deal
-	public static final float OFFICER_SALARY_MULT = 0.8f;
-	public static final float FUEL_COST_MULT = 0.8f;
+	public static final float CREW_SALARY_MULT = 1;	// should not be high since the utility of assets in a PSF fleet is much lower than in the player fleet
+	public static final float SUPPLY_COST_MULT = 1;	// ditto, even though we're getting free combat out of the deal
+	public static final float OFFICER_SALARY_MULT = 1f;
+	public static final float FUEL_COST_MULT = 1f;
 	
 	public static final Object DESTROYED_UPDATE = new Object();	
 	protected static final Object BUTTON_COMMAND = new Object();
@@ -526,7 +527,11 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 				getString("reportNode_commander"), commander.getPortraitSprite(), commanderFee * timeMult, false);
 		
 		if (fleet == null) return;
-		
+
+		float maintMult = NexConfig.specialForcesMaintMult;
+
+		float totalMult = timeMult * maintMult;
+
 		float officerSalary = 0;
 		for (OfficerDataAPI officer : fleet.getFleetData().getOfficersCopy()) {
 			officerSalary += Misc.getOfficerSalary(officer.getPerson());
@@ -534,23 +539,23 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		officerSalary *= OFFICER_SALARY_MULT;
 		FDNode officerNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_offSal", 
 				getString("reportNode_officer"), Global.getSettings().getSpriteName("income_report", "officers"), 
-				officerSalary * timeMult, false);
+				officerSalary * totalMult, false);
 		
 		CommoditySpecAPI crewSpec = Global.getSettings().getCommoditySpec(Commodities.CREW);
 		float crew = fleet.getFleetData().getMinCrew();
 		float crewSalary = crew * Global.getSettings().getInt("crewSalary") * CREW_SALARY_MULT;
 		FDNode crewNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_crewSal", 
-				getString("reportNode_crew"), crewSpec.getIconName(), crewSalary * timeMult, false);
+				getString("reportNode_crew"), crewSpec.getIconName(), crewSalary * totalMult, false);
 		
 		float suppMaint = NexUtilsFleet.getTrueMonthlyMaintenanceCost(fleet);
 		CommoditySpecAPI suppliesSpec = Global.getSettings().getCommoditySpec(Commodities.SUPPLIES);
 		//log.info("Special task group uses " + suppMaint + " per month");
 		float maintCost = suppMaint * suppliesSpec.getBasePrice() * SUPPLY_COST_MULT;
 		FDNode maintNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_suppliesCost", 
-				getString("reportNode_supplies"), suppliesSpec.getIconName(), maintCost * timeMult, false);
+				getString("reportNode_supplies"), suppliesSpec.getIconName(), maintCost * totalMult, false);
 		
 		CommoditySpecAPI fuelSpec = Global.getSettings().getCommoditySpec(Commodities.FUEL);
-		float fuelCost = this.fuelUsedLastInterval * fuelSpec.getBasePrice() * FUEL_COST_MULT;
+		float fuelCost = this.fuelUsedLastInterval * fuelSpec.getBasePrice() * FUEL_COST_MULT * totalMult;
 		FDNode fuelNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_fuelCost", 
 				getString("reportNode_fuel"), fuelSpec.getIconName(), fuelCost, false);
 		fuelUsedLastInterval = 0;

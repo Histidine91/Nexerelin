@@ -144,6 +144,7 @@ public class NexConfig
     
     public static float specialForcesPointMult = 1;
     public static float specialForcesSizeMult = 1;
+    public static float specialForcesMaintMult = 0.75f;
     
     // Misc
     public static int directoryDialogKey = 45;  // X
@@ -287,6 +288,7 @@ public class NexConfig
             
             specialForcesPointMult = (float)settings.optDouble("specialForcesPointMult", specialForcesPointMult);
             specialForcesSizeMult = (float)settings.optDouble("specialForcesPointMult", specialForcesSizeMult);
+            specialForcesMaintMult = (float)settings.optDouble("specialForcesMaintMult", specialForcesMaintMult);
             
             baseTariffMult = (float)settings.optDouble("baseTariffMult", baseTariffMult);
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);

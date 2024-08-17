@@ -131,6 +131,7 @@
     
     "specialForcesPointMult": 1,	# rate at which factions spawn special task groups
     "specialForcesSizeMult": 1,
+	"specialForcesMaintMult": 0.75,	# multiplier for supplies/fuel/salary costs of player STGs; 1 makes it equal to what the player would pay for those ships/crew/officers in own fleet
     
     "enableAntioch": true, # adds Antioch for Templars in random mode, replacing their normal worlds
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (random mode only)

@@ -111,6 +111,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("colonyExpeditionsOnlyAfterPlayerColony", "boolean", tabFleets, NexConfig.colonyExpeditionsOnlyAfterPlayerColony);
         addSetting("specialForcesPointMult", "float", tabFleets, NexConfig.specialForcesPointMult, 0, 10);
         addSetting("specialForcesSizeMult", "float", tabFleets, NexConfig.specialForcesSizeMult, 0.2, 5);
+        addSetting("specialForcesMaintMult", "float", tabFleets, NexConfig.specialForcesMaintMult, 0, 2);
 
         addHeader("misc", null);
         addSetting("enableStrategicAI", "boolean", NexConfig.enableStrategicAI);
@@ -226,6 +227,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.colonyExpeditionsOnlyAfterPlayerColony = (boolean)loadSetting("colonyExpeditionsOnlyAfterPlayerColony", "boolean");
         NexConfig.specialForcesPointMult = (float)loadSetting("specialForcesPointMult", "float");
         NexConfig.specialForcesSizeMult = (float)loadSetting("specialForcesSizeMult", "float");
+        NexConfig.specialForcesMaintMult = (float)loadSetting("specialForcesMaintMult", "float");
 
         NexConfig.enableStrategicAI = (boolean)loadSetting("enableStrategicAI", "boolean");
         NexConfig.showStrategicAI = (boolean)loadSetting("showStrategicAI", "boolean");

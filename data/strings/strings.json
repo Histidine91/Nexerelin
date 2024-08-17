@@ -3170,6 +3170,8 @@
 		"tooltip_specialForcesPointMult":"Controls the rate at which NPC special task groups spawn and are replaced.",
 		"name_specialForcesSizeMult":"Special task group size mult",
 		"tooltip_specialForcesSizeMult":"",
+		"name_specialForcesMaintMult":"Special task group maintenance cost mult",
+		"tooltip_specialForcesMaintMult":"Modifies cost of supplies, fuel and salaries for player special task groups. At 1, the cost is equal to what would have been paid if the ships/crew/officers were in the player fleet.",
 		
 		"name_enableStrategicAI":"Enable strategic AI",
 		"tooltip_enableStrategicAI":"Toggles the new experimental strategic AI for NPC factions. This setting takes effect on [game load], adding AIs to applicable factions if enabled and purging any AIs if disabled.",
