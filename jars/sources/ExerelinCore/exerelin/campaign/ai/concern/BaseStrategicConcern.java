@@ -279,8 +279,8 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
     @Override
     public void notifyActionUpdate(StrategicAction action, StrategicActionDelegate.ActionStatus newStatus) {
-        if (action != currentAction) {
-            log.error("Received update from a strategic action other than our current action", new Throwable());
+        if (action != currentAction && currentAction != null && !currentAction.getDef().shim) {
+            log.warn("Received update from a strategic action other than our current action", new Throwable());
         }
 
         if (newStatus == StrategicActionDelegate.ActionStatus.SUCCESS || newStatus == StrategicActionDelegate.ActionStatus.FAILURE) {
