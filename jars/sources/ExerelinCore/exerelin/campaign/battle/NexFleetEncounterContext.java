@@ -399,7 +399,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 
 		Random random = new Random();
 		for (Map.Entry<FleetMemberAPI, String> entry : aiCoreshipsToLoot.entrySet()) {
-
+			if (entry.getKey().getVariant().hasTag(Tags.VARIANT_DO_NOT_DROP_AI_CORE_FROM_CAPTAIN)) continue;
 			generateAICoreDropsForRecoverableOpponents(entry.getKey(), entry.getValue(), random);
 		}
 		aiCoreshipsToLoot.clear();
