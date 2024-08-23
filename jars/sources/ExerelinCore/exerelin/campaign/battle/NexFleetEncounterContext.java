@@ -61,7 +61,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 		}
 
 
-		//TODO change this back to super.getRecoverableShips() override past 0.97a - Lukas04
+		//TODO change this back to super.getRecoverableShips() override past 0.97a, also remove the generatePlayerLoot() override and the methods below it - Lukas04
 		//List<FleetMemberAPI> result = super.getRecoverableShips(battle, winningFleet, otherFleet);
 		List<FleetMemberAPI> result = getVanillaRecoverableShips(battle, winningFleet, otherFleet);
 
