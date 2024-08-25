@@ -21,7 +21,7 @@ public class Nex_LuddicPathBaseManager extends LuddicPathBaseManager {
 	
 	@Override
 	protected StarSystemAPI pickSystemForLPBase() {
-		if (!SectorManager.isFactionAlive(Factions.LUDDIC_PATH))
+		if (Global.getSettings().getBoolean("nex_pirateBasesRequireLivePirateFaction") && !SectorManager.isFactionAlive(Factions.LUDDIC_PATH))
 			return null;
 		
 		return super.pickSystemForLPBase();

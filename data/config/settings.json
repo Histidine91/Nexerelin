@@ -56,6 +56,8 @@
 	"nex_gbTurnDaysPlayer":1,	# when player is participating
 	"nex_gbTurnDaysNPC":1,	# when player is not participating
 	
+	"nex_pirateBasesRequireLivePirateFaction":true,	# pirate/Pather bases stop spawning if their faction has been eliminated (i.e. due to no non-hidden markets)
+	
 	"nex_disruptMissionRewardMult":25000,	# no longer used
 	
 	"nex_transferMarket_valueDivisor":100000,

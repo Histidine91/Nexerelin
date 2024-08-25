@@ -19,7 +19,7 @@ public class Nex_PirateBaseManager extends PirateBaseManager {
 		
 	@Override
 	protected StarSystemAPI pickSystemForPirateBase() {
-		if (!SectorManager.isFactionAlive(Factions.PIRATES))
+		if (Global.getSettings().getBoolean("nex_pirateBasesRequireLivePirateFaction") && !SectorManager.isFactionAlive(Factions.PIRATES))
 			return null;
 		
 		return super.pickSystemForPirateBase();
