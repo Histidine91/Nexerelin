@@ -1382,8 +1382,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				admin.setFaction(oldOwner.getId());
 			}
 
+			boolean adminWasOnCommBoard = market.getCommDirectory().getEntryForPerson(admin) != null;
 			reassignAdminIfNeeded(market, oldOwner, newOwner);
-			replaceDisappearedAdmin(market, admin);
+			if (adminWasOnCommBoard) replaceDisappearedAdmin(market, admin);
 			numStashed++;
 		}
 
@@ -1625,14 +1626,15 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				processNPCConstruction(market);
 			}
 		}
-		
+
+		// do this before admin change, to handle AI admins
+		coreStashCheck(market, oldOwner, newOwner);
+
 		// reassign admins on market capture
 		reassignAdminIfNeeded(market, oldOwner, newOwner);
 		setGrowthRate(market);
 		
 		checkGatheringPoint(market);
-		
-		coreStashCheck(market, oldOwner, newOwner);
 		
 		checkFactionMarketCondition(market);
 		
