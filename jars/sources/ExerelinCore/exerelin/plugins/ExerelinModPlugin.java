@@ -457,6 +457,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
 
         Global.getSector().getListenerManager().addListener(new MiningCooldownDrawerV2(), true);
+
+        Global.getSector().addTransientScript(new BattleForceJoinHelper());
     }
     
     @Override

@@ -20,15 +20,11 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.battle.NexFleetEncounterContext.EscapedOfficerData;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 /*
 Changes from vanilla:
@@ -39,7 +35,7 @@ Changes from vanilla:
 public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogPluginImpl {
 
 	public static Logger log = Global.getLogger(NexFleetInteractionDialogPluginImpl.class);
-	public static final boolean MODIFIED_PULL_IN = true;
+	public static final boolean MODIFIED_PULL_IN = true;	// there's an every frame script version in case this plugin isn't running
 	
 	protected static final String STRING_HELPER_CAT = "exerelin_officers";
 	protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
@@ -336,7 +332,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		conversationDelegate.fireAll("UpdateEngagementChoice");
 	}	
 	
-	protected void addMemoryFlagIfNotSet(CampaignFleetAPI fleet, String memFlag)
+	protected static void addMemoryFlagIfNotSet(CampaignFleetAPI fleet, String memFlag)
 	{
 		if (!fleet.getMemoryWithoutUpdate().contains(memFlag))
 			fleet.getMemoryWithoutUpdate().set(memFlag, true, 0);
@@ -351,7 +347,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	 * @param actualOther Fleet fighting player (i.e. interaction dialog target)
 	 * @return
 	 */
-	protected boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet, 
+	public static boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet,
 			CampaignFleetAPI playerFleet, CampaignFleetAPI actualOther)
 	{
 		if (battle == fleet.getBattle()) return false;

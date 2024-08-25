@@ -1026,7 +1026,9 @@
 
 		"supportingYourForces":"supporting your forces.",
 		"joiningTheEnemy":"joining the enemy.",
-		"supportingOpposingSide":"supporting the opposing side."
+		"supportingOpposingSide":"supporting the opposing side.",
+		
+		"forceJoinMsg":"[Nexerelin] Force-joining %s eligible fleet(s)",
 	},
 	"nex_fleetIntel":{
 		"title":"$Action: $market",

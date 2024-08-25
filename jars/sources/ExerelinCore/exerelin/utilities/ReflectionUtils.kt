@@ -6,6 +6,7 @@ import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
 import java.net.URL
 import java.net.URLClassLoader
+import kotlin.reflect.jvm.internal.impl.load.java.structure.JavaClass
 
 // by Lukas22041 from Random Assortment of Things (RAT)
 // https://github.com/Lukas22041/Random-Assortment-of-Things/blob/main/src/assortment_of_things/misc/ReflectionUtils.kt
@@ -101,6 +102,29 @@ object ReflectionUtils {
         }
         else  {
             method = clazz.getDeclaredMethod(methodName, *methodType.parameterArray())
+        }
+
+        return invokeMethodHandle.invoke(method, instance, arguments)
+    }
+
+    @JvmStatic fun <T> invokeIncludingSuperclasses(methodName: String, instance: Any, clazz: Class<T>, vararg arguments: Any?, declared: Boolean = false) : Any?
+    {
+        var method: Any? = null
+
+        val args = arguments.map { it!!::class.javaPrimitiveType ?: it::class.java }
+        val methodType = MethodType.methodType(Void.TYPE, args)
+
+        try {
+            if (!declared) {
+                method = clazz.getMethod(methodName, *methodType.parameterArray())
+            } else {
+                method = clazz.getDeclaredMethod(methodName, *methodType.parameterArray())
+            }
+        } catch (ex: NoSuchMethodException) {}
+
+        if (method == null) {
+            if (clazz!!.superclass == null) return null;
+            return invokeIncludingSuperclasses(methodName, instance, clazz!!.superclass, arguments, declared)
         }
 
         return invokeMethodHandle.invoke(method, instance, arguments)
