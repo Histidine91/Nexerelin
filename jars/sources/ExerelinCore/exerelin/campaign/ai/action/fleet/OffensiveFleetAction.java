@@ -2,6 +2,7 @@ package exerelin.campaign.ai.action.fleet;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.BaseStrategicAction;
 import exerelin.campaign.ai.concern.ImportDependencyConcern;
@@ -96,7 +97,13 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
 
         String aifid = ai.getFactionId();
 
-        // modify priority based on fleet pool/invasion points available
+        // TODO: modify priority based on fleet pool/invasion points available
+        float fpRequiredForTarget = 0;
+        if (concern.getMarket() != null) {
+            fpRequiredForTarget = InvasionFleetManager.getWantedFleetSize(ai.getFaction(), concern.getMarket(), 0, true);
+        }
+        float fpMult = 1;
+
         if (FleetPoolManager.USE_POOL) {
             float curPool = FleetPoolManager.getManager().getCurrentPool(aifid);
             float max = FleetPoolManager.getManager().getMaxPool(aifid);
@@ -108,16 +115,25 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
             if (max <= 0 || curPool <= 0) proportion = 0;
             if (ratio > 0.75f) proportion = Math.max(proportion, 1);
 
+            fpMult = curPool/fpRequiredForTarget;
+
             priority.modifyMult("fleetPool", proportion, StrategicAI.getString("statFleetPool", true));
         } else {
             float invPoints = InvasionFleetManager.getManager().getSpawnCounter(aifid);
             float baseline = NexConfig.pointsRequiredForInvasionFleet;
+            float ratio = invPoints/baseline;
 
-            float mult = invPoints/baseline * 0.5f + 0.5f;
+            float mult = ratio * 0.5f + 0.5f;
             if (mult < 0.5f) mult = 0.5f;
             else if (mult > 1.5f) mult = 1.5f;
             priority.modifyMult("invPoints", mult, StrategicAI.getString("statInvPoints", true));
 
+            fpMult = ratio * InvasionFleetManager.BASE_INVASION_SIZE / fpRequiredForTarget;
+        }
+
+        if (fpMult < SAIConstants.MIN_FP_RATIO_THRESHOLD) fpMult = 0;
+        if (fpMult < 1) {
+            priority.modifyMult("lowResources", fpMult, StrategicAI.getString("statTargetTooLarge", true));
         }
     }
 

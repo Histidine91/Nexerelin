@@ -20,6 +20,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.*;
+import exerelin.campaign.ai.SAIConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
@@ -79,7 +80,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final int MAX_SIMULTANEOUS_EVENTS_PER_SYSTEM = 3;
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
 	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
-	public static final float POINTS_MAX_MULT = 180;	// half a year of points
+	public static final float POINTS_MAX_MULT = 360;	// a year of points
 	public static final float PATROL_ESTIMATION_MULT = 0.7f;
 	public static final float DEFENCE_ESTIMATION_MULT = 0.75f;
 	public static final float STATION_OFFICER_STRENGTH_MULT = 0.25f;
@@ -281,7 +282,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	}
 	
 	/**
-	 * Get the desired scaling fleet size for the specified attacker and target.
+	 * Get the desired scaling fleet size for the specified attacker and target, in fleet points.
 	 * @param attacker
 	 * @param target
 	 * @param variability Used to multiply the estimated strength by a random Gaussian value.
@@ -698,6 +699,25 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			float defStr = getWantedFleetSize(faction, market, 1.1f, false);
 			weight *= 10000/defStr;
 			weight *= market.getSize();
+
+			// try not to target markets larger than our invasion pool/fleet points
+			float fpMult = 1;
+			if (FleetPoolManager.USE_POOL) {
+				float curPool = FleetPoolManager.getManager().getCurrentPool(factionId);
+				fpMult = curPool/defStr;
+			} else {
+				float invPoints = getSpawnCounter(factionId);
+				float baseline = NexConfig.pointsRequiredForInvasionFleet;
+				float ratio = invPoints/baseline;
+				fpMult = ratio * BASE_INVASION_SIZE / defStr;
+			}
+
+			if (fpMult < SAIConstants.MIN_FP_RATIO_THRESHOLD) {
+				continue;	// we're too weak to attack this target
+			}
+			if (fpMult < 1) {
+				weight *= fpMult * fpMult;
+			}
 			
 			//weight *= market.getSize() * market.getStabilityValue();	// try to go after high value targets
 			if (NexUtilsFaction.isFactionHostileToAll(marketFactionId) || isPirateFaction)

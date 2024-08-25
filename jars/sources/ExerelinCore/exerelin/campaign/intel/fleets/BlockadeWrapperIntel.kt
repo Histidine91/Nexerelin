@@ -178,6 +178,6 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
     }
 
     companion object {
-        @JvmField val BLOCKADE_FP_BONUS_MULT = 2f
+        @JvmField val BLOCKADE_FP_BONUS_MULT = 1.5f
     }
 }

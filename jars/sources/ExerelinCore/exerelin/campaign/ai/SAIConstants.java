@@ -17,6 +17,11 @@ public class SAIConstants {
     public static float STRENGTH_MULT_FOR_CONCERN = 1f;
 
     /**
+     * Offensive fleet actions: If the ratio of FP available to FP required for target is less than this ratio, action priority is zero.
+     */
+    public static float MIN_FP_RATIO_THRESHOLD = 0.4f;
+
+    /**
      * For things like the vulnerable faction concern. Try not to be wildly lower than MIN_CONCERN_PRIORITY_TO_ACT to avoid it sitting unattended indefinitely.
      */
     public static float MIN_FACTION_PRIORITY_TO_CARE = 60;

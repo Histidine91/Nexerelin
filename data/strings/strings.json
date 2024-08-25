@@ -2632,6 +2632,7 @@
 		"statDiplomacyChanceNegative":"negative diplomacy chance",
 		"statInvPoints":"invasion point stockpile",
 		"statFleetPool":"fleet pool proportion",
+		"statTargetTooLarge":"target requires more assets than available",
 		"statPriorityOverTime":"priority over time",
 		"statDispositionPositive":"high disposition",
 		"statDispositionNegative":"low disposition",
