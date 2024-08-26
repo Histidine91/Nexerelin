@@ -797,7 +797,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		}
 
 		float blockChance = Global.getSettings().getFloat("nex_raidToBlockadeConversionFreq");
-		if (!NexConfig.enableInvasions) blockChance /= 2;
+		if (!NexConfig.enableInvasions)
+		{	
+			blockChance /= 2;
+			if (type == EventType.INVASION) type = EventType.RAID;
+		}
+		
 		if (type == EventType.RAID && Math.random() < blockChance)
 		{
 			type = EventType.BLOCKADE;
