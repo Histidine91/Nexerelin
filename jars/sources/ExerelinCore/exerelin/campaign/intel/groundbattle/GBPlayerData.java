@@ -35,6 +35,8 @@ public class GBPlayerData {
 	protected Float governorshipPrice;
 	protected boolean autoMoveAtEndTurn;
 	protected boolean autoMoveAllowDrop;
+	protected float playerDamageDealt;
+	protected float damageDealtByPlayerSide;
 
 	/**
 	 * Ratio of friend strength to enemy strength at the time of joining an ongoing battle.

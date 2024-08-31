@@ -439,6 +439,13 @@ public class GroundBattleRoundResolve {
 			printDebug(String.format("    Unit %s (%s) contributing attack strength: %.2f", 
 					unit.name, unit.getUnitDef().name, contrib));
 			str += contrib;
+
+			if (unit.isPlayer) {
+				intel.getPlayerData().playerDamageDealt += contrib;
+			}
+			if (attacker == intel.playerIsAttacker) {
+				intel.getPlayerData().damageDealtByPlayerSide += contrib;
+			}
 		}
 		
 		return str;

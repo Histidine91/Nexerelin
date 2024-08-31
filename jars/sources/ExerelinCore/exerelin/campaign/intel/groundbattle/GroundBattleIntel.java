@@ -942,7 +942,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (inStorage == null) inStorage = 0;
 
 		float total = inFleet + inStorage;
-		if (total == 0) {
+		if (total == 0 || playerData.playerDamageDealt == 0) {
 			log.info(String.format("No XP action to take"));
 			return;
 		}
@@ -950,7 +950,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		// calc XP to apply
 		float sizeFactor = (float)Math.pow(2, market.getSize());
 		float xp = GBConstants.XP_MARKET_SIZE_MULT * sizeFactor;
-		log.info(String.format("%s xp from market size", xp));
+		float playerContribMult = playerData.playerDamageDealt/playerData.damageDealtByPlayerSide;
+		if (playerContribMult > 1) playerContribMult = 1;
+		xp *= playerContribMult;
+
+		log.info(String.format("%s xp from market size (player contribution mult %.0f%%)", xp, playerContribMult * 100));
 		float xpFromLosses = losses * GBConstants.XP_CASUALTY_MULT;
 		log.info(String.format("%s xp from losses", xpFromLosses));
 		xp += xpFromLosses;
