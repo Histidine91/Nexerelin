@@ -1,6 +1,5 @@
 package exerelin.campaign.ai.concern;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ShipQuality;
@@ -39,14 +38,14 @@ public class LowShipQualityConcern extends BaseStrategicConcern implements HasIn
     public void update() {
         float qual = getQualityFromIndustry();
         float wanted = getWantedQualityFromIndustry();
-        Global.getLogger(this.getClass()).info(String.format("Quality %s, wanted %s", qual, wanted));
+        //Global.getLogger(this.getClass()).info(String.format("Quality %s, wanted %s", qual, wanted));
         if (qual >= wanted) {
             end();
             return;
         }
         float delta = wanted - qual * 400;
 
-        priority.modifyFlat("base", BASE_PRIORITY, StrategicAI.getString("statBase", true));
+        super.update();
         priority.modifyFlat("delta", delta, StrategicAI.getString("statQualityDeficit", true));
     }
 
@@ -81,6 +80,7 @@ public class LowShipQualityConcern extends BaseStrategicConcern implements HasIn
         if (numWars == 0) return;
         float warMult = 1 + (.2f * numWars);
 
+        priority.modifyFlat("base", BASE_PRIORITY, StrategicAI.getString("statBase", true));
         priority.modifyMult("wars", warMult, StrategicAI.getString("statNumWars", true));
     }
 

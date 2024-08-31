@@ -64,7 +64,6 @@ public class HostileInSharedSystemConcern extends MarketRelatedConcern {
         if (chosen != null) {
             market = chosen.one;
             priority.modifyFlat("value", chosen.two, StrategicAI.getString("statValue", true));
-            reapplyPriorityModifiers();
         }
 
         return market != null;

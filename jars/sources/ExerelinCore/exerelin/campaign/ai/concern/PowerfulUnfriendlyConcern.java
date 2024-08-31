@@ -40,7 +40,6 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
         }
         faction = picker.pick();
         priority.modifyFlat("power", picker.getWeight(faction), StrategicAI.getString("statFactionPower", true));
-        reapplyPriorityModifiers();
 
         return faction != null;
     }

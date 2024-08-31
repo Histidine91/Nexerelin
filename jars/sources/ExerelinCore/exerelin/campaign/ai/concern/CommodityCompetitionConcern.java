@@ -97,7 +97,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
 
         this.competitorShare = result.two;
         faction = result.one;
-        updatePriority();
+        reapplyPriorityModifiers();
         return priority.getModifiedValue() >= SAIConstants.MIN_CONCERN_PRIORITY_TO_ACT;
     }
 
@@ -110,16 +110,17 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
             end();
             return;
         }
-        updatePriority();
+        reapplyPriorityModifiers();
         if (priority.getModifiedValue() < SAIConstants.MIN_CONCERN_PRIORITY_TO_ACT) {
             end();
             return;
         }
     }
 
-    protected void updatePriority() {
+    @Override
+    public void reapplyPriorityModifiers() {
         priority.modifyFlat("competingShare", competitorShare * 5, StrategicAI.getString("statCompetingShare", true));
-        reapplyPriorityModifiers();
+        super.reapplyPriorityModifiers();
     }
 
     /**

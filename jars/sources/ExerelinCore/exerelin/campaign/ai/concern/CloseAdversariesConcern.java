@@ -83,7 +83,6 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
         faction2 = factions.two;
 
         priority.modifyFlat("power", weight, StrategicAI.getString("statFactionPower", true));
-        reapplyPriorityModifiers();
 
         return faction != null;
     }

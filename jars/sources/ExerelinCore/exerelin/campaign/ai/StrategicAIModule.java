@@ -79,6 +79,7 @@ public abstract class StrategicAIModule {
             boolean have = concern.generate();
             have &= SAIUtils.allowConcern(ai, concern);
             if (have) {
+                concern.reapplyPriorityModifiers();
                 addConcern(concern);
                 newConcerns.add(concern);
             }
