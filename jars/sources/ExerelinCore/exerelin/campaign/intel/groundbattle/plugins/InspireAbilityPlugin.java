@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -15,6 +16,7 @@ import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
 import exerelin.campaign.intel.groundbattle.dialog.AbilityDialogPlugin;
 import exerelin.utilities.StringHelper;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,6 +102,9 @@ public class InspireAbilityPlugin extends AbilityPlugin {
 	
 	public int getLeadershipSkill(PersonAPI person) {
 		if (person == null) return 0;
+		if (Global.getSettings().getModManager().isModEnabled("second_in_command")) {
+			return 999;
+		}
 		int level = 0;
 		for (SkillLevelAPI skill : person.getStats().getSkillsCopy()) {
 			if (!skill.getSkill().getGoverningAptitudeId().equals(Skills.APT_LEADERSHIP))
