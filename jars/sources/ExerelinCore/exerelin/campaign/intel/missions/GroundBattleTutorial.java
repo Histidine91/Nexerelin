@@ -287,8 +287,7 @@ public class GroundBattleTutorial extends HubMissionWithSearch implements Ground
 	@Override
 	public void reportBattleEnded(GroundBattleIntel battle) {
 		if (battle != this.battle) return;
-		
-		// TODO: make stage progress based on outcome
+
 		if (battle.getOutcome() == BattleOutcome.DEFENDER_VICTORY) {
 			setCurrentStage(Stage.TALK_TO_CONTACT_AFTER, null, null);
 		} else {

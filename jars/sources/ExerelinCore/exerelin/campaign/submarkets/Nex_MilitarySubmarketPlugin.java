@@ -6,7 +6,6 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.NexConfig;
 
-// TODO: should also sell relevant package blueprints
 public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 	
 	@Override

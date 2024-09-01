@@ -297,7 +297,8 @@ public class Nex_PunitiveExpeditionManager extends PunitiveExpeditionManager {
 			if (industry == null) return;
 		}
 		
-		// TODO: send agent instead of expedition
+		// scrapped idea: send agent instead of expedition (maybe only once we implement counterintelligence
+		// since we no longer have economic punex, no longer needed
 		boolean covertAction = false;
 		if (false) {	//(Global.getSettings().getBoolean("nex_allowReplaceExpeditionWithCovertAction")) {
 			covertAction = Math.random() < 0.5f;

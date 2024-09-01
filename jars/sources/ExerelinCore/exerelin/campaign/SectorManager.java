@@ -524,7 +524,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     @Override
     public void reportFleetSpawned(CampaignFleetAPI fleet) {
         if (fleet.getFaction().getId().equals("nex_derelict")) {
-            // TODO: comment this out after hotfix release? don't need encounter loot handler for AI core drops any more
+            // keep them from retreating
             fleet.getMemoryWithoutUpdate().set(EncounterLootHandler.FLEET_MEMORY_KEY, "derelict");
             fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN, 
                    new RemnantRaidFleetInteractionConfigGen());

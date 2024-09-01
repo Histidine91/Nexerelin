@@ -202,7 +202,7 @@ public class ProcureShip extends CovertActionIntel {
 	 * when the delivery is made.
 	 */
 	protected void createDerelict() {
-		if (ship.isFighterWing()) {	// TODO
+		if (ship.isFighterWing()) {	// not supported
 			return;
 		}
 		

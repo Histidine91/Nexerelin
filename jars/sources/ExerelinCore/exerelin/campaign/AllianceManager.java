@@ -614,14 +614,14 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     public static boolean canMerge(Alliance first, Alliance second) {
         for (String newMemberId : second.getMembersCopy()) {
             if (!isAlignmentCompatible(newMemberId, first)) {
-                log.info(String.format("%s incompatible allignment with %s", newMemberId, first.getName()));
+                //log.info(String.format("%s incompatible allignment with %s", newMemberId, first.getName()));
                 return false;
             }
             
             FactionAPI newMember = Global.getSector().getFaction(newMemberId);
             for (String existingMemberId : first.getMembersCopy()) {
                 if (newMember.isHostileTo(existingMemberId)) {
-                    log.info(String.format("%s hostile to existing member %s", newMemberId, existingMemberId));
+                    //log.info(String.format("%s hostile to existing member %s", newMemberId, existingMemberId));
                     return false;
                 }
             }
@@ -629,7 +629,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             boolean enoughAvgRep = first.getAverageRelationshipWithFaction(newMemberId) 
                     >= AllianceManager.MIN_RELATIONSHIP_TO_JOIN;
             if (!enoughAvgRep) {
-                log.info(String.format("%s insufficient average reputation with %s", newMemberId, first.getName()));
+                //log.info(String.format("%s insufficient average reputation with %s", newMemberId, first.getName()));
                 return false;
             }
         }    

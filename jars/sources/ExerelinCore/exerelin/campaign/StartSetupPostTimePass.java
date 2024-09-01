@@ -25,7 +25,6 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.templars.TEM_Antioch;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.customstart.Nex_SpacerObligation;
 import exerelin.campaign.intel.Nex_GalatianAcademyStipend;
 import exerelin.campaign.ui.OwnFactionSetupScript;

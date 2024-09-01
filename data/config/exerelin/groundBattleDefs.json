@@ -208,9 +208,9 @@
 			"order":4,
 		},
 	},
-	
+
 	#"items":{
-	#	# TODO
+	#	# currently hardcoded in GroundDefensePlugin
 	#	"drone_replicator":{
 	#		"troopCounts":{
 	#			"militia":0.5,
@@ -219,7 +219,7 @@
 	#		},
 	#	},
 	#},
-	
+
 	"unitTypes":{
 		# note on unit mults: it may be best if the personnel mult for infantry units, and equipment mult for mechanized units, is 1 if possible
 		# otherwise unusual behavior may occur
