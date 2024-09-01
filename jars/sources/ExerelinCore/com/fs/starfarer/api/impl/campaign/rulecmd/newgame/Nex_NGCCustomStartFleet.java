@@ -1,7 +1,10 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.CustomDialogDelegate;
+import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
+import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
@@ -12,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_VisualCustomPanel;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
@@ -29,8 +33,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 @Log4j
 public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
@@ -253,6 +257,8 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
         @Override
         public void customDialogConfirm() {
             if (!haveAnyShips()) return;
+            
+            Nex_VisualCustomPanel.clearPanel(dialog, memoryMap);
 
             new NGCClearStartingGear().execute(null, dialog, new ArrayList<Token>(), memoryMap);
             addStartingShips();
@@ -262,8 +268,6 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
             ExerelinSetupData.getInstance().startFleetType = NexFactionConfig.StartFleetType.CUSTOM;
             FireBest.fire(null, dialog, memoryMap, "ExerelinNGCStep4");
             FireBest.fire(null, dialog, memoryMap, "ExerelinNGCStep4Plus");
-
-            //cleanup();
         }
 
         @Override
@@ -336,13 +340,6 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
 
             shipPanel.addUIElement(tooltip).inTL(0, 0);
             return shipPanel;
-        }
-
-        // [test pending] removes an extra campaign instance leaking on new game
-        public void cleanup() {
-            faction = null;
-            memoryMap = null;
-            mem = null;
         }
     }
 
