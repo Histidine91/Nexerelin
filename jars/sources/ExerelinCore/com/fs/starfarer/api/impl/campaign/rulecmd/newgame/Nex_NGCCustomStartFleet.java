@@ -17,6 +17,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.ui.CPButtonPressRelayPlugin;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.campaign.ui.ProgressBar;
 import exerelin.utilities.NexFactionConfig;
@@ -75,7 +76,7 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
     public static class CustomStartFleetDelegate implements CustomDialogDelegate {
 
         protected InteractionDialogAPI dialog;
-        protected InteractionDialogCustomPanelPlugin plugin = new InteractionDialogCustomPanelPlugin(0, false);
+        protected InteractionDialogCustomPanelPlugin plugin;
         protected Map<String, Integer> ships;
         protected FactionAPI faction;
         protected MemoryAPI mem;
@@ -98,6 +99,9 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
                 ships = new LinkedHashMap<>();
                 mem.set(MEMORY_KEY_SHIP_MAP, ships, 0);
             }
+
+            plugin = new InteractionDialogCustomPanelPlugin(0, false);
+            plugin.isCheckButtonsEveryFrame = false;
         }
 
         public float updateCost() {
@@ -258,11 +262,13 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
             ExerelinSetupData.getInstance().startFleetType = NexFactionConfig.StartFleetType.CUSTOM;
             FireBest.fire(null, dialog, memoryMap, "ExerelinNGCStep4");
             FireBest.fire(null, dialog, memoryMap, "ExerelinNGCStep4Plus");
+
+            //cleanup();
         }
 
         @Override
         public void customDialogCancel() {
-
+            //cleanup();
         }
 
         @Override
@@ -293,7 +299,7 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
 
             tooltip.addPara(Misc.getDGSCredits(member.getBaseValue()), Misc.getHighlightColor(), 0).setAlignment(Alignment.MID);
 
-            CustomPanelAPI countPanel = outer.createCustomPanel(SHIP_PANEL_WIDTH, 16, null);
+            CustomPanelAPI countPanel = outer.createCustomPanel(SHIP_PANEL_WIDTH, 16, new CPButtonPressRelayPlugin(plugin));
             TooltipMakerAPI countHolder = countPanel.createUIElement(SHIP_PANEL_WIDTH - 16 - 16, 12, false);
             final LabelAPI count = countHolder.addPara(currCount + "", 0);
             count.setAlignment(Alignment.MID);
@@ -330,6 +336,13 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
 
             shipPanel.addUIElement(tooltip).inTL(0, 0);
             return shipPanel;
+        }
+
+        // [test pending] removes an extra campaign instance leaking on new game
+        public void cleanup() {
+            faction = null;
+            memoryMap = null;
+            mem = null;
         }
     }
 

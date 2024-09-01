@@ -11,6 +11,7 @@ import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.Misc;
 import lombok.RequiredArgsConstructor;
+import org.magiclib.util.MagicTxt;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class NexUtilsGUI {
 
 			@Override
 			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-				tooltip.addPara(str, 0);
+				MagicTxt.addPara(tooltip, str, 0, Misc.getTextColor(), Misc.getHighlightColor());
 			}
 		};
 	}

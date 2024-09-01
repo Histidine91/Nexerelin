@@ -1,9 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -19,16 +16,19 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.ui.CustomPanelPluginWithInput.ButtonEntry;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
-import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.ButtonEntry;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.StartFleetType;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
+import org.lwjgl.input.Keyboard;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.lwjgl.input.Keyboard;
+import java.util.List;
+import java.util.Map;
 
 
 public class Nex_NGCStartFleetOptionsV2 extends BaseCommandPlugin {

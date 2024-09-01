@@ -270,7 +270,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 			TooltipMakerAPI btnHolder = row.createUIElement(100, BTN_HEIGHT, false);
 			ButtonAPI selButton = btnHolder.addButton(StringHelper.getString("nex_specialForces", "dialogButtonAssign"), 
 					"assign_" + officer.getId(), 80, BTN_HEIGHT, 0);
-			plugin.addButton(new InteractionDialogCustomPanelPlugin.ButtonEntry(
+			plugin.addButton(new CustomPanelPluginWithInput.ButtonEntry(
 					selButton, "nex_assignOfficer_" + officer.getId()) 
 			{
 				@Override
@@ -278,8 +278,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 					assignOfficerToShip(dialog, fleet, officer);
 				}
 			});
-			
-			// todo: use radio button system for this?
+
 			ButtonAPI comButton = btnHolder.addAreaCheckbox(getString("dialog_commander", true), 
 					"commander_" + officer.getId(), 
 					player.getBaseUIColor(), player.getDarkUIColor(), player.getBrightUIColor(), 

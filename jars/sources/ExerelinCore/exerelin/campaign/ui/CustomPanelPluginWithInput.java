@@ -4,6 +4,8 @@ import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.PositionAPI;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import java.util.*;
@@ -14,11 +16,14 @@ public abstract class CustomPanelPluginWithInput extends BaseCustomUIPanelPlugin
     protected PositionAPI pos;
     protected boolean lmbDown;
     protected boolean rmbDown;
+    public boolean isCheckButtonsEveryFrame = true;
 
     protected List<ButtonEntry> buttons = new LinkedList<>();
     protected Map<Object, ButtonEntry> buttonsById = new HashMap<>();
 
     protected Set<CustomUIPanelInputListener> listeners = new HashSet<>();
+
+    @Getter @Setter CustomPanelPluginWithInput buttonPressHandler;
 
     @Override
     public void positionChanged(PositionAPI pos) {
@@ -34,7 +39,7 @@ public abstract class CustomPanelPluginWithInput extends BaseCustomUIPanelPlugin
 
     @Override
     public void advance(float amount) {
-        checkAllButtons();
+        if (isCheckButtonsEveryFrame) checkAllButtons();
     }
 
     @Override
@@ -79,12 +84,15 @@ public abstract class CustomPanelPluginWithInput extends BaseCustomUIPanelPlugin
 
     @Override
     public void buttonPressed(Object buttonId) {
-        // doesn't get called if the button is inside a CustomPanelAPI without a plugin
-        /*
+        if (isCheckButtonsEveryFrame) return;
+        if (buttonPressHandler != null) {
+            buttonPressHandler.buttonPressed(buttonId);
+            return;
+        }
+        // note: doesn't get called if the button is inside a CustomPanelAPI without a plugin
         if (buttonsById.containsKey(buttonId)) {
             buttonsById.get(buttonId).checkButton();
         }
-         */
     }
 
     public static abstract class ButtonEntry {

@@ -13,9 +13,9 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.ui.CustomPanelPluginWithInput;
 import exerelin.campaign.ui.FieldOptionsScreenScript.FactionDirectoryDialog;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
-import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin.ButtonEntry;
 import exerelin.utilities.*;
 import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
 import org.lwjgl.input.Keyboard;
@@ -438,7 +438,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			ButtonAPI button = buttonHolder.addButton(StringHelper.getString("exerelin_markets", "marketDirectoryButtonShow", true), 
 					"nex_showMarket_" + market.getId(), buttonWidth, 24, 3);
 
-			plugin.addButton(new ButtonEntry(button, "nex_showMarket_" + market.getId()) {
+			plugin.addButton(new CustomPanelPluginWithInput.ButtonEntry(button, "nex_showMarket_" + market.getId()) {
 				@Override
 				public void onToggle() {
 					dialog.getVisualPanel().removeMapMarkerFromPersonInfo();

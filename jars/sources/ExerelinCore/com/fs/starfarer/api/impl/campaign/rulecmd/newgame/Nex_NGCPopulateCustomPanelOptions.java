@@ -361,7 +361,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 			InteractionDialogCustomPanelPlugin plugin) 
 	{
 		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionStartingDMods"),
-			"graphics/hullmods/illadvised.png", plugin,
+			"graphics/hullmods/illadvised.png", null,
 			createTooltip(getString("tooltipStartingDMods"), null, null));
 		
 		final List<ButtonAPI> buttons = new ArrayList<>();
@@ -396,7 +396,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		int NUM_OPTS = 3;
 		
 		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionHomeworldPick"),
-			"graphics/icons/intel/stars.png", plugin,
+			"graphics/icons/intel/stars.png", null,
 			createTooltip(getString("tooltipHomeworldPick"), null, null));
 				
 		final List<ButtonAPI> buttons = new ArrayList<>();
@@ -448,6 +448,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 	 * @param buttonPanel
 	 * @param rightOf
 	 * @param buttons List of buttons to which the generated {@code ButtonAPI} should be added.
+	 *                This list is shared between multiple radio buttons so they can turn each other off.
 	 * @return The {@code TooltipMakerAPI} holding the button.
 	 */
 	public static TooltipMakerAPI initRadioButton(String id, String name, boolean checked,
@@ -468,14 +469,17 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		}
 		return holder;
 	}
-	
+
+	/**
+	 * Adds an option with a single enable/disable checkbox.
+	 */
 	public static void addCheckboxOption(CustomPanelAPI panel, TooltipMakerAPI info, String name,
 			String buttonId, boolean initSetting, String imagePath, 
 			InteractionDialogCustomPanelPlugin plugin, ButtonEntry be, TooltipCreator tooltip) 
 	{
 		FactionAPI faction = Global.getSector().getPlayerFaction();
 		
-		CustomPanelAPI buttonHolder = prepOption(panel, info, name, imagePath, plugin, tooltip);
+		CustomPanelAPI buttonHolder = prepOption(panel, info, name, imagePath, null, tooltip);
 				
 		// checkbox
 		TooltipMakerAPI checkboxHolder = buttonHolder.createUIElement(BUTTON_WIDTH, ITEM_HEIGHT, false);
@@ -496,13 +500,6 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 	
 	/**
 	 * Generates a {@code CustomPanelAPI} containing the GUI elements of the option, except the button(s).
-	 * @param panel
-	 * @param info
-	 * @param name
-	 * @param imagePath
-	 * @param textColor
-	 * @param plugin
-	 * @param tooltip
 	 * @return A {@code CustomPanelAPI} to which buttons may be added.
 	 */
 	public static CustomPanelAPI prepOption(CustomPanelAPI panel, TooltipMakerAPI info, String name,
@@ -513,7 +510,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		float opad = 10;
 		
 		CustomPanelGenResult panelGen = NexUtilsGUI.addPanelWithFixedWidthImage(panel, 
-				null, ITEM_WIDTH, ITEM_HEIGHT, name, TEXT_WIDTH, X_PADDING * 3, 
+				plugin, ITEM_WIDTH, ITEM_HEIGHT, name, TEXT_WIDTH, X_PADDING * 3,
 				imagePath, ITEM_HEIGHT, pad, textColor, true, tooltip);
 		CustomPanelAPI row = panelGen.panel;
 		TooltipMakerAPI title = (TooltipMakerAPI)panelGen.elements.get(panelGen.elements.size() - 1);

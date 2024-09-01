@@ -37,15 +37,15 @@ open class Nex_PrintMiningInfoV2 : BaseCommandPlugin() {
     companion object {
         @JvmField val log: Logger = Global.getLogger(Nex_PrintMiningInfoV2.javaClass)
 
-        @JvmField val STRING_CATEGORY = "exerelin_mining"
+        const val STRING_CATEGORY = "exerelin_mining"
         @JvmField val WING = Misc.ucFirst(StringHelper.getString("fighterWingShort"))
-        @JvmField val MEMORY_KEY_MINING_HULLS = "\$nex_miningHulls"
-        @JvmField val MEMORY_KEY_MINING_WINGS = "\$nex_miningWings"
-        @JvmField val MEMORY_KEY_MINING_WEAPONS = "\$nex_miningWeapons"
-        @JvmField val COST_HEIGHT = 67f
-        @JvmField val SHIP_PANEL_HEIGHT = 48f
-        @JvmField val SHIP_PANEL_HEIGHT_SMALL = 36f
-        @JvmField val TEXT_HEIGHT = 24f
+        const val MEMORY_KEY_MINING_HULLS = "\$nex_miningHulls"
+        const val MEMORY_KEY_MINING_WINGS = "\$nex_miningWings"
+        const val MEMORY_KEY_MINING_WEAPONS = "\$nex_miningWeapons"
+        const val COST_HEIGHT = 67f
+        const val SHIP_PANEL_HEIGHT = 48f
+        const val SHIP_PANEL_HEIGHT_SMALL = 36f
+        const val TEXT_HEIGHT = 24f
         @JvmField val SHIP_WING_COLUMN_WIDTHS = arrayOf(160f, 48f, 72f, 160f, 48f)
         @JvmField val WEAPON_COLUMN_WIDTHS = arrayOf(160f, 48f, 72f, 60f, 100f, 48f)
 
