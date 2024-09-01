@@ -51,7 +51,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				return true;
 			
 			case "other":
-				addOtherOptions(memoryMap);
+				addOtherOptions(dialog, memoryMap);
 				return true;		
 		}
 				
@@ -213,7 +213,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		}
 	}
 	
-	public void addOtherOptions(final Map<String, MemoryAPI> memoryMap) {
+	public void addOtherOptions(final InteractionDialogAPI dialog, final Map<String, MemoryAPI> memoryMap) {
 		CustomPanelAPI panel = Nex_VisualCustomPanel.getPanel();
 		TooltipMakerAPI info = Nex_VisualCustomPanel.getTooltip();
 		InteractionDialogCustomPanelPlugin plugin = Nex_VisualCustomPanel.getPlugin();
@@ -338,19 +338,26 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		}
 		
 		// skip story
-		if (data.corvusMode) {
-			addCheckboxOption(panel, info, getString("optionSkipStory"), "nex_skipStory", 
-					data.skipStory, "graphics/icons/missions/ga_intro.png", 
-					plugin, new ButtonEntry() {
-							@Override
-							public void onToggle() {
-								data.skipStory = button.isChecked();
-							}
-					}, 
-					createTooltip(getString("tooltipSkipStory"), highlights, null));
+		if (true || data.corvusMode) {
+			CustomPanelAPI buttonPanel = Nex_NGCPopulateCustomPanelOptions.prepOption(panel, info, getString("optionSkipStory"),
+					"graphics/icons/missions/ga_intro.png", null, createTooltip(getString("tooltipSkipStory"), highlights, null));
+
+			TooltipMakerAPI holder = buttonPanel.createUIElement(BUTTON_WIDTH, ITEM_HEIGHT, false);
+			FactionAPI faction = Global.getSector().getPlayerFaction();
+
+			ButtonAPI button = holder.addButton(StringHelper.getString("configure", true),
+					"skipStory_settings", faction.getBaseUIColor(), faction.getDarkUIColor(),
+					BUTTON_WIDTH, ITEM_HEIGHT, 0);
+			buttonPanel.addUIElement(holder).inTL(0, 0);
+
+			plugin.addButton(new ButtonEntry(button, "skipStory_settings") {
+				@Override
+				public void onToggle() {
+					//Global.getLogger(this.getClass()).info("Skip story button pressed");
+					dialog.showCustomDialog(Nex_NGCCustomStartFleet.PANEL_WIDTH, Nex_NGCCustomStartFleet.PANEL_HEIGHT, new Nex_NGCQuestSkipPanel.QuestSkipDelegate());
+				}
+			});
 		}
-		
-		
 		
 		info.addPara(getString("infoCustomPanel"), 10);
 		

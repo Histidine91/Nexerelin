@@ -40,7 +40,6 @@ import com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript;
 import com.fs.starfarer.api.impl.campaign.velfield.SlipstreamManager;
 import com.fs.starfarer.api.impl.campaign.velfield.SlipstreamVisibilityManager;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
-import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.colony.NexAbandonMarketPlugin;
 import exerelin.campaign.colony.NexStabilizeMarketPlugin;
@@ -235,9 +234,8 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 	public void markStoryCriticalMarketsEtc() {
 		if (!SectorManager.getManager().isCorvusMode())
 			return;
-		if (Global.getSettings().getBoolean("nex_noStoryCriticalMarkets") || ExerelinSetupData.getInstance().skipStory) 
+		if (Global.getSettings().getBoolean("nex_noStoryCriticalMarkets"))
 		{
-			Global.getSector().getMemoryWithoutUpdate().set("$interactedWithGABarEvent", true);
 			return;
 		}
 		

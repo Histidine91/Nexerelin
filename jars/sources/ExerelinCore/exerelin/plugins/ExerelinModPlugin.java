@@ -59,6 +59,7 @@ import exerelin.campaign.intel.missions.remnant.RemnantLostScientist;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
+import exerelin.campaign.questskip.QuestChainSkipEntry;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.ui.PlayerFactionSetupNag;
@@ -285,9 +286,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         new MercSectorManager().init();
         
         addBarEvents();
-        
-        if (!ExerelinSetupData.getInstance().skipStory)
-            new AcademyStoryVictoryScript().init();
 
         if (isNexDev) {
             //DebugIntel.createIntel();
@@ -625,6 +623,10 @@ public class ExerelinModPlugin extends BaseModPlugin
             data.backgroundId = null;
             data.selectedFactionForBackground = null;
         }
+
+        for (QuestChainSkipEntry chain : QuestChainSkipEntry.getEntries()) {
+            chain.onNewGame();
+        }
     }
     
     @Override
@@ -726,6 +728,10 @@ public class ExerelinModPlugin extends BaseModPlugin
             BaseCharacterBackground background = CharacterBackgroundUtils.getBackgroundPluginByID(backgroundID);
             background.onNewGameAfterEconomyLoad(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID));
         }
+
+        for (QuestChainSkipEntry chain : QuestChainSkipEntry.getEntries()) {
+            chain.onNewGameAfterEconomyLoad();
+        }
     }
     
     @Override
@@ -776,6 +782,10 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (backgroundID != null && factionID != null) {
             BaseCharacterBackground background = CharacterBackgroundUtils.getBackgroundPluginByID(backgroundID);
             background.onNewGameAfterTimePass(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID));
+        }
+
+        for (QuestChainSkipEntry chain : QuestChainSkipEntry.getEntries()) {
+            chain.onNewGameAfterTimePass();
         }
     }
 

@@ -11,6 +11,7 @@
 		"colonies":"colonies",
 		"commodity":"commodity",
 		"conquest":"conquest",
+		"configure":"configure",
 		"continue":"continue",
 		"cost":"cost",
 		"CR":"CR",
@@ -1992,7 +1993,10 @@
 		"tooltipHomeworldPick":"Start in a core system, non-core system, or either when using the own faction start.\nIn random sector, 'Any' mode is the same as 'Core'.",
 		"optionRandomAntioch":"Antioch in random sector",
 		"optionSkipStory":"Skip story",
-		"tooltipSkipStory":"Marks the Academy missions as completed, and grant gate travel, Transverse Jump and Neutrino Detector at start.",
+		"tooltipSkipStory":"Allows the player to skip certain base game and mod missions as if they had been completed.",
+		
+		"panelHeaderSkipStory":"Set completed quests",
+		"msgSkipStoryScythe":"do not fear, human, we have merely removed the scythe",
 		
 		"recommendedSizeMsg1":"Non-independent factions enabled: %s",
 		"recommendedSizeMsg2":"Auto-configuring sector size: %s systems, %s planets, %s stations",

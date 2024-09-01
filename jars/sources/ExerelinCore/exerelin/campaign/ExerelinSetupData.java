@@ -56,10 +56,14 @@ public class ExerelinSetupData
 	public int numStartingOfficers = 0;
 	@Deprecated public boolean randomStartShips = false;
 	public int dModLevel = 0;
-	public boolean skipStory = Global.getSettings().getBoolean("nex_skipStoryDefault");
 	public boolean enableStipend = true;
 	public String backgroundId = null;
 	public String selectedFactionForBackground = null;
+
+	/**
+	 * Replaced by quest-specific handling.
+	 */
+	@Deprecated public boolean skipStory = false;
 	
 	/**
 	 * Can be null with special starts.

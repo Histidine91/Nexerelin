@@ -1,8 +1,5 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -10,8 +7,12 @@ import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.questskip.QuestChainSkipEntry;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
+
+import java.util.List;
+import java.util.Map;
 
 
 public class NGCGetExerelinDefaults extends BaseCommandPlugin {
@@ -47,6 +48,9 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		
 		String str = ExerelinSetupData.getDModCountText(setupData.dModLevel);
 		map.set("$nex_ngcDModsString", str);
+
+		if (QuestChainSkipEntry.getEntries() == null)
+			QuestChainSkipEntry.initEntries();
 		
 		return true;
 	}

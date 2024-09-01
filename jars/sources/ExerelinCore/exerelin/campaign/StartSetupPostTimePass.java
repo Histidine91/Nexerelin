@@ -10,7 +10,6 @@ import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
@@ -161,31 +160,12 @@ public class StartSetupPostTimePass {
 			Global.getSector().getPlayerFleet().getCargo().addSpecial(new SpecialItemData(Items.JANUS, null), 1);
 			MemoryAPI mem = Global.getSector().getMemoryWithoutUpdate();
 			MemoryAPI playMem = Global.getSector().getCharacterData().getMemoryWithoutUpdate();
-
-			mem.set(GateEntityPlugin.CAN_SCAN_GATES, true);
-			mem.set(GateEntityPlugin.GATES_ACTIVE, true);
-			Global.getSector().getCharacterData().addAbility(Abilities.TRANSVERSE_JUMP);
-			Global.getSector().getCharacterData().addAbility(Abilities.GRAVITIC_SCAN);
 			
 			mem.set("$interactedWithGABarEvent", true);
 			playMem.set("$metBaird", true);
 			
 			if (corvusMode) {
-				playMem.set("$metDaud", true);
-				playMem.set("$gaveDaudYaribayContact", true);
-				playMem.set("$metBrotherCotton", true);
-				playMem.set("$satWithCottonCount", 1);	// assume met once during gaATG
-				mem.set("$gaATG_missionCompleted", true);
-				mem.set("$gaATG_missionGiven", true);
-				mem.set("$gaFC_missionCompleted", true);
-				mem.set("$gaKA_missionCompleted", true);
-				mem.set("$gaPZ_missionCompleted", true);
-				
-				addStoryContact(People.ARROYO);
-				//addStoryContact(People.HEGEMONY_GA_OFFICER);
-				addStoryContact(People.HORUS_YARIBAY);
-				addStoryContact(People.IBRAHIM);
-				handleAcademyVars();
+				// moved to new quest skip system
 			} else {
 				mem.set("$gaIntro2found", true);
 				mem.set("$lpp_missionCompleted", true);
@@ -195,36 +175,7 @@ public class StartSetupPostTimePass {
 			}
 			
 			// alpha site location intel?
-			FleetLogIntel intel = new FleetLogIntel() {
-								
-				@Override
-				public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-					info.addImage(getIcon(), 0);
-					info.addPara(StringHelper.getString("exerelin_misc", "alphaSiteIntelDesc"), 
-							3, Misc.getHighlightColor(), getSite().getName());
-					this.addDeleteButton(info, width);
-				}
-				
-				protected SectorEntityToken getSite() {
-					return Global.getSector().getEntityById("site_alpha");
-				}
-				
-				@Override
-				protected String getName() {
-					return getSite().getName();
-				}
-				
-				@Override
-				public String getIcon() {
-					return "graphics/icons/missions/project_ziggurat.png";
-				}
-				
-				@Override
-				public SectorEntityToken getMapLocation(SectorMapAPI map) {
-					return getSite();
-				}
-			};
-			Global.getSector().getIntelManager().addIntel(intel);
+			generateAlphaSiteIntel();
 		}
 
 		// fix post-Ziggurat encounter crash and some other issues
@@ -244,6 +195,41 @@ public class StartSetupPostTimePass {
 		if (clock.getDay() == 1 && clock.getMonth() == 1) {
 			Global.getSector().getMemoryWithoutUpdate().set("$nex_startOn1Jan", true);
 		}
+	}
+
+	public static FleetLogIntel generateAlphaSiteIntel() {
+		FleetLogIntel intel = new FleetLogIntel() {
+
+			@Override
+			public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+				info.addImage(getIcon(), 0);
+				info.addPara(StringHelper.getString("exerelin_misc", "alphaSiteIntelDesc"),
+						3, Misc.getHighlightColor(), getSite().getName());
+				this.addDeleteButton(info, width);
+			}
+
+			protected SectorEntityToken getSite() {
+				return Global.getSector().getEntityById("site_alpha");
+			}
+
+			@Override
+			protected String getName() {
+				return getSite().getName();
+			}
+
+			@Override
+			public String getIcon() {
+				return "graphics/icons/missions/project_ziggurat.png";
+			}
+
+			@Override
+			public SectorEntityToken getMapLocation(SectorMapAPI map) {
+				return getSite();
+			}
+		};
+		Global.getSector().getIntelManager().addIntel(intel);
+
+		return intel;
 	}
 
 	// runcode exerelin.campaign.StartSetupPostTimePass.createImportantPeopleInRandomSector()
@@ -318,41 +304,7 @@ public class StartSetupPostTimePass {
 			ip.addPerson(person);
 		}
 	}
-	
-	public static void handleAcademyVars() {
-		SectorEntityToken academy = Global.getSector().getEntityById("station_galatia_academy");
-		academy.getMemoryWithoutUpdate().set("$metProvost", true);
-		
-		MarketAPI market = academy.getMarket();
-		
-		PersonAPI seb = Global.getSector().getImportantPeople().getPerson(People.SEBESTYEN);
-		PersonAPI cour = Global.getSector().getImportantPeople().getPerson(People.COUREUSE);
-		PersonAPI baird = Global.getSector().getImportantPeople().getPerson(People.BAIRD);
-		PersonAPI garg = Global.getSector().getImportantPeople().getPerson(People.GARGOYLE);
-		
-		seb.getRelToPlayer().setLevel(RepLevel.COOPERATIVE);
-		seb.getMemoryWithoutUpdate().set("$gotGAATGpay", true);
-		seb.getMemoryWithoutUpdate().set("$askedProvostUpset", true);
-		seb.getMemoryWithoutUpdate().set("$metAlready", true);
-		Global.getSector().getCharacterData().getMemoryWithoutUpdate().set("$metSebestyen", true);
-		
-		market.getCommDirectory().getEntryForPerson(baird).setHidden(false);
-		market.getCommDirectory().getEntryForPerson(seb).setHidden(false);
-		
-		cour.getMarket().getCommDirectory().removePerson(cour);
-		cour.getMarket().removePerson(cour);
-		market.addPerson(cour);
-		market.getCommDirectory().addPerson(cour);
-		cour.getMemoryWithoutUpdate().set("$askedAboutBaird", true);
-		cour.getMemoryWithoutUpdate().set("$askedAboutGargoyle", true);
-		
-		garg.getMarket().getCommDirectory().removePerson(garg);
-		garg.getMarket().removePerson(garg);
-		market.addPerson(garg);
-		market.getCommDirectory().addPerson(garg);
-		garg.getMemoryWithoutUpdate().set("$askedProvostThrown", true);
-	}
-	
+
 	public static void addStoryContact(String id) {
 		PersonAPI person = Global.getSector().getImportantPeople().getPerson(id);
 		ContactIntel.addPotentialContact(1, person, person.getMarket(), null);
