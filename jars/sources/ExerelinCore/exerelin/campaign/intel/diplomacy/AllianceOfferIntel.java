@@ -5,23 +5,16 @@ import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.SectorManager;
-import exerelin.campaign.ai.StrategicAI;
-import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance;
-import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -29,20 +22,14 @@ import java.util.Map;
 import java.util.Set;
 
 // largely a copypaste of CeasefirePromptIntel
-public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActionDelegate {
+public class AllianceOfferIntel extends TimedDiplomacyIntel {
 
-	public static final Object EXPIRED_UPDATE = new Object();
-	public static final String BUTTON_ACCEPT = "Accept";
-	public static final String BUTTON_REJECT = "Reject";
 	public static final float COOLDOWN = 60;	// tripled if player rejects offer or it expires
 	public static final String MEM_KEY_COOLDOWN = "$nex_allianceOffer_cooldown";
 
-	protected String factionId;
-	protected int state = 0;	// 0 = pending, 1 = accepted, -1 = rejected
-	protected float daysRemaining = MathUtils.getRandomNumberInRange(20, 30);
-	@Getter	@Setter	protected StrategicAction strategicAction;
 	@Nullable @Getter protected Alliance alliance;
 	@Nullable @Getter protected Alliance alliance2;
+	protected boolean applyExtendedCooldown;
 
 	//runcode new exerelin.campaign.intel.diplomacy.AllianceOfferIntel("luddic_church", null).init();
 	public AllianceOfferIntel(String offeringFactionId, @Nullable Alliance alliance, @Nullable Alliance alliance2)
@@ -77,28 +64,19 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 			NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
 		}
 	}
-	
+
 	@Override
-	public Color getTitleColor(ListInfoMode mode) {
-		return state == 0 ? Misc.getBasePlayerColor() : Misc.getGrayColor();
-	}
-	
-	// text sidebar
-	@Override
-	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-		float opad = 10f;
-		
+	public void createGeneralDescription(TooltipMakerAPI info, float width, float opad) {
 		Color h = Misc.getHighlightColor();
-		
+
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		FactionAPI faction2 = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
-		
+
 		info.addImages(width, 96, opad, opad, faction.getLogo(), faction2.getLogo());
-		
+
 		Map<String, String> replace = new HashMap<>();
-		
+
 		String factionName = faction.getDisplayNameWithArticle();
-		String days = Math.round(DiplomacyBrain.CEASEFIRE_LENGTH) + "";
 		//replace.put("$days", days);
 		replace.put("$theFaction", factionName);
 		replace.put("$TheFaction", Misc.ucFirst(factionName));
@@ -123,63 +101,63 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 		if (alliance2 != null) {
 			replace.put("$otherAlliance", alliance2.getName());
 		}
-		
+
 		String str = StringHelper.getStringAndSubstituteTokens("exerelin_diplomacy", strId, replace);
 		LabelAPI label = info.addPara(str, opad);
 		label.setHighlight(faction.getDisplayNameWithArticleWithoutArticle(), alliance != null ? alliance.getName() : "", alliance2 != null ? alliance2.getName() : "");
 		label.setHighlightColors(faction.getBaseUIColor(), h);
-		
-		if (state == 0) {
-			replace.clear();
-			days = Math.round(daysRemaining) + "";
-			String daysStr = getDaysString(daysRemaining);
-			replace.put("$timeLeft", days);
-			replace.put("$days", daysStr);
-			str = StringHelper.getStringAndSubstituteTokens("exerelin_diplomacy", "intelCeasefireDescTime", replace);
-			info.addPara(str, opad, Misc.getHighlightColor(), days);
+	}
 
-			ButtonAPI button = info.addButton(StringHelper.getString("accept", true), BUTTON_ACCEPT, 
-							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
-						  (int)(width), 20f, opad * 2f);
-			ButtonAPI button2 = info.addButton(StringHelper.getString("reject", true), BUTTON_REJECT, 
-							getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
-						  (int)(width), 20f, opad);
-		} else {
-			info.addSectionHeading(StringHelper.getString("result", true), getFactionForUIColors().getBaseUIColor(), 
-					getFactionForUIColors().getDarkUIColor(), Alignment.MID, opad);
-			boolean accepted = state == 1;
-			String acceptOrReject = accepted ? StringHelper.getString("accepted") : StringHelper.getString("rejected");
-			Color hl = accepted ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor();
-			str = StringHelper.getString("exerelin_diplomacy", "intelCeasefireDescResult");
-			str = StringHelper.substituteToken(str, "$acceptedOrRejected", acceptOrReject);
-			info.addPara(str, opad, hl, acceptOrReject);
-		}
+	@Override
+	public void createPendingDescription(TooltipMakerAPI info, float width, float opad) {
+		Map<String, String> replace = new HashMap<>();
+		String days = Math.round(daysRemaining) + "";
+		String daysStr = getDaysString(daysRemaining);
+		replace.put("$timeLeft", days);
+		replace.put("$days", daysStr);
+		String str = StringHelper.getStringAndSubstituteTokens("exerelin_diplomacy", "intelCeasefireDescTime", replace);
+		info.addPara(str, opad, Misc.getHighlightColor(), days);
 
-		if (strategicAction != null) {
-			info.addPara(StrategicAI.getString("intelPara_actionDelegateDesc"), opad*2f, Misc.getHighlightColor(), strategicAction.getConcern().getName());
-			info.addButton(StrategicAI.getString("btnGoIntel"), StrategicActionDelegate.BUTTON_GO_INTEL, width, 24, 3);
-		}
+		ButtonAPI button = info.addButton(StringHelper.getString("accept", true), BUTTON_ACCEPT,
+				getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
+				(int)(width), 20f, opad * 2f);
+		ButtonAPI button2 = info.addButton(StringHelper.getString("reject", true), BUTTON_REJECT,
+				getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
+				(int)(width), 20f, opad);
+	}
+
+	@Override
+	public void createOutcomeDescription(TooltipMakerAPI info, float width, float opad) {
+		boolean accepted = state == 1;
+		String acceptOrReject = accepted ? StringHelper.getString("accepted") : StringHelper.getString("rejected");
+		Color hl = accepted ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor();
+		String str = StringHelper.getString("exerelin_diplomacy", "intelCeasefireDescResult");
+		str = StringHelper.substituteToken(str, "$acceptedOrRejected", acceptOrReject);
+		info.addPara(str, opad, hl, acceptOrReject);
 	}
 	
-	public void accept() {
-		if (state == 1) return;
-
+	@Override
+	public void acceptImpl() {
 		if (alliance2 != null) AllianceManager.getManager().mergeAlliance(alliance, alliance2);
 		else {
 			// don't try to remove player from existing alliance before joining new one, it'll break the "other faction joins us" case
 			alliance = AllianceManager.createAlliance(factionId, PlayerFactionStore.getPlayerFactionId());
 		}
-		state = 1;
 	}
 
-	public void reject(boolean applyExtendedCooldown) {
-		state = -1;
+	public void rejectImpl() {
 		if (applyExtendedCooldown) {
 			PlayerFactionStore.getPlayerFaction().getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN * 3);
 			Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN * 3);
 		}
 	}
-	
+
+	@Override
+	public void onExpire() {
+		applyExtendedCooldown = true;
+		reject();
+	}
+
 	@Override
 	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
 		prompt.addPara(StringHelper.getString("exerelin_diplomacy", "intelCeasefireConfirm"), 0);
@@ -196,14 +174,11 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, strategicAction.getAI());
 			return;
 		}
-		if (buttonId == BUTTON_ACCEPT) {
-			accept();
-		}
-		else if (buttonId == BUTTON_REJECT) {
-			reject(true);
+
+		if (buttonId == BUTTON_REJECT) {
+			applyExtendedCooldown = true;
 		}
 
-		endAfterDelay();
 		super.buttonPressConfirmed(buttonId, ui);
 	}
 	
@@ -211,28 +186,15 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	protected void advanceImpl(float amount) {
 		if (isEnding() || isEnded())
 			return;
-		
-		if (!SectorManager.isFactionAlive(factionId)) {
-			reject(false);
-			sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
-			endAfterDelay();
-			return;
-		}
 
 		// auto-reject if relations become too poor
 		if (Global.getSector().getPlayerFaction().isAtBest(factionId, RepLevel.NEUTRAL)) {
-			reject(false);
+			reject();
 			endAfterDelay();
 			return;
 		}
 		
-		daysRemaining -= Global.getSector().getClock().convertToDays(amount);
-		
-		if (daysRemaining <= 0) {
-			reject(true);
-			sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
-			endAfterDelay();
-		}
+		super.advanceImpl(amount);
 	}
 
 	@Override
@@ -288,32 +250,6 @@ public class AllianceOfferIntel extends BaseIntelPlugin implements StrategicActi
 	@Override
 	public FactionAPI getFactionForUIColors() {
 		return Global.getSector().getFaction(factionId);
-	}
-
-	@Override
-	public ActionStatus getStrategicActionStatus() {
-		switch (state) {
-			case 0:
-				return ActionStatus.IN_PROGRESS;
-			case 1:
-				return ActionStatus.SUCCESS;
-			case -1:
-				return ActionStatus.FAILURE;
-			default:
-				return ActionStatus.CANCELLED;
-		}
-	}
-
-	@Override
-	public float getStrategicActionDaysRemaining() {
-		return daysRemaining;
-	}
-
-	@Override
-	public void abortStrategicAction() {
-		state =-1;
-		sendUpdateIfPlayerHasIntel(EXPIRED_UPDATE, false);
-		endAfterDelay();
 	}
 
 	@Override
