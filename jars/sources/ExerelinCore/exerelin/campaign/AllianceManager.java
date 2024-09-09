@@ -980,17 +980,23 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         return alliance;
     }
-    
+
     /**
      * Are these two factions allied?<br/>
-     * Note: A faction is considered allied to itself here, even if not a member of an alliance.
+     * Note: In this overload a faction is considered allied to itself here, even if not a member of an alliance.
      * @param factionId1
      * @param factionId2
      * @return
      */
     public static boolean areFactionsAllied(String factionId1, String factionId2)
     {
-        if (factionId1.equals(factionId2)) return true;
+        return areFactionsAllied(factionId1, factionId2, true);
+    }
+    
+
+    public static boolean areFactionsAllied(String factionId1, String factionId2, boolean countSelfAsAlly)
+    {
+        if (factionId1.equals(factionId2)) return countSelfAsAlly;
         Alliance alliance1 = getFactionAlliance(factionId1);
         if (alliance1 == null) return false;
         Alliance alliance2 = getFactionAlliance(factionId2);

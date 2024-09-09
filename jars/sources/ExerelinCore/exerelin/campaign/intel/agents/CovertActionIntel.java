@@ -460,31 +460,39 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	}
 	
 	/**
-	 * Returns true if this is NOT an allow-own-market action, and we meet certain conditions. 
-	 * Normally the condition is just "agent faction == market faction", 
-	 * but actions like Raise/Lower Relations should also check for e.g. market faction = third faction.
+	 * Returns true if this action involves our own market. Used to determine if some agent actions should be aborted.
 	 * @return
 	 */
-	public boolean shouldAbortIfOwnMarket() {
-		if (agent != null && (market.getFaction() == agent.faction)) {
+	public boolean isOwnMarket() {
+		if (market.getFaction() == agentFaction) {
 			return true;
 		}
-		else {
-			return false;
+		return false;
+	}
+
+	public boolean isAlliedMarket() {
+		if (AllianceManager.areFactionsAllied(market.getFactionId(), agentFaction.getId(), false)) {
+			return true;
 		}
+		return false;
 	}
 	
 	@Override
 	public void advanceImpl(float amount) {
 		super.advanceImpl(amount);
-		
-		if (agent != null && !allowOwnMarket() && shouldAbortIfOwnMarket() && canAbort())
-		{
-			abort();
-			agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
-			return;
+
+		boolean needAbort = false;
+		if (!allowOwnMarket() && isOwnMarket())	{
+			needAbort = true;
 		}
-		if (market != null && !market.isInEconomy() && canAbort()) {
+		else if (!allowAlliedMarket() && isAlliedMarket()) {
+			needAbort = true;
+		}
+		else if (market != null && !market.isInEconomy()) {
+			needAbort = true;
+		}
+
+		if (needAbort && canAbort()) {
 			abort();
 			if (agent != null) agent.sendUpdateIfPlayerHasIntel(AgentIntel.UPDATE_ABORTED, false);
 			return;
@@ -555,6 +563,11 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	
 	public boolean allowOwnMarket() {
 		return false;
+	}
+
+	public boolean allowAlliedMarket() {
+		return playerInvolved
+				|| !getDef().useAlertLevel;	// easy shorthand for 'hostile' actions
 	}
 	
 	public boolean showSuccessChance() {

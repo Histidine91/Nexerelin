@@ -55,8 +55,8 @@ public class RaiseRelations extends CovertActionIntel {
 	}
 	
 	@Override
-	public boolean shouldAbortIfOwnMarket() {
-		return super.shouldAbortIfOwnMarket() || market.getFaction() == thirdFaction;
+	public boolean isOwnMarket() {
+		return super.isOwnMarket() || market.getFaction() == thirdFaction;
 	}
 	
 	@Override

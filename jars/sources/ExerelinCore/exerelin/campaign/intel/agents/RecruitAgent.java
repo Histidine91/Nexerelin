@@ -117,8 +117,8 @@ public class RecruitAgent extends CovertActionIntel {
 	}
 
 	@Override
-	public boolean shouldAbortIfOwnMarket() {
-		return false;
+	public boolean allowOwnMarket() {
+		return true;
 	}
 
 	@Override
