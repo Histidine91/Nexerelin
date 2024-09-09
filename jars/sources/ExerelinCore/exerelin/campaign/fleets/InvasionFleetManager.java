@@ -810,7 +810,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		
 		// sat bomb
 		// note: don't sat bomb own originally-owned markets
-		if (NexConfig.allowNPCSatBomb && type == EventType.INVASION && Math.random() < SAT_BOMB_CHANCE
+		boolean canConvertToSatBomb;
+		if (NexConfig.enableInvasions) canConvertToSatBomb = type == EventType.INVASION;
+		else canConvertToSatBomb = type == EventType.RAID;
+
+		if (NexConfig.allowNPCSatBomb && canConvertToSatBomb && Math.random() < SAT_BOMB_CHANCE
 				&& canSatBomb(faction, targetMarket))
 		{
 			type = EventType.SAT_BOMB;
