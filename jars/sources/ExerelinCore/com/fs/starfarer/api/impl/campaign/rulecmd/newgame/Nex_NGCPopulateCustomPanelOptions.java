@@ -85,7 +85,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 	{
 		int NUM_OPTS = 3;
 		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionStartingRelations"),
-				"graphics/icons/intel/peace.png", plugin, 
+				"graphics/icons/intel/peace.png", null,
 				createTooltip(getString("tooltipStartingRelations"), null, null));
 		
 		final List<ButtonAPI> buttons = new ArrayList<>();
@@ -141,7 +141,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				highlights, null);
 		
 		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionFactionRespawn"),
-				"graphics/exerelin/icons/intel/invasion.png", plugin, tooltip);
+				"graphics/exerelin/icons/intel/invasion.png", null, tooltip);
 		
 		final List<ButtonAPI> buttons = new ArrayList<>();
 		TooltipMakerAPI lastHolder = null;
