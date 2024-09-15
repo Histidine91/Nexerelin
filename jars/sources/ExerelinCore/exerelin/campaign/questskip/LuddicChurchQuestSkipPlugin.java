@@ -12,10 +12,9 @@ public class LuddicChurchQuestSkipPlugin extends BaseQuestSkipPlugin {
 
     @Override
     public void onNewGameAfterTimePass() {
-        boolean pilgrim = chain.getEnabledQuestMap().get("pilgrimsPath");
-        boolean knight = chain.getEnabledQuestMap().get("knightErrant");
+        if (!ExerelinSetupData.getInstance().corvusMode) return;
 
-        if (pilgrim) {
+        if (chain.isQuestEnabled("pilgrimsPath")) {
             addShrineIntelAndMarkVisited("beholder_station");
             addShrineIntelAndMarkVisited("hesperus");
             addShrineIntelAndMarkVisited("gilead");
@@ -30,7 +29,7 @@ public class LuddicChurchQuestSkipPlugin extends BaseQuestSkipPlugin {
             makeNonStoryCritical("volturn", id);
         }
 
-        if (knight) {
+        if (chain.isQuestEnabled("knightErrant")) {
             String id = Missions.KNIGHT_ERRANT;
             makeNonStoryCritical("gilead", id);
             makeNonStoryCritical("chalcedon", id);

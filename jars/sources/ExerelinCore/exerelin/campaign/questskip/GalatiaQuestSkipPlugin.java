@@ -3,20 +3,18 @@ package exerelin.campaign.questskip;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
+import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Missions;
 import com.fs.starfarer.api.impl.campaign.ids.People;
-import com.fs.starfarer.api.impl.campaign.missions.hub.BaseMissionHub;
-import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionCreator;
 import exerelin.campaign.AcademyStoryVictoryScript;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.StartSetupPostTimePass;
-import exerelin.utilities.ReflectionUtils;
 
-import java.util.List;
 import java.util.Map;
 
 public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
@@ -35,26 +33,25 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
         PersonAPI baird = Global.getSector().getImportantPeople().getPerson(People.BAIRD);
         PersonAPI garg = Global.getSector().getImportantPeople().getPerson(People.GARGOYLE);
         PersonAPI zal = Global.getSector().getImportantPeople().getPerson(People.ZAL);
+        PersonAPI cotton = Global.getSector().getImportantPeople().getPerson(People.COTTON);
 
-        if (Boolean.TRUE.equals(quests.get("transverseJump"))) {
+        boolean tj = chain.isQuestEnabled("transverseJump", quests);
+        boolean kallichore = chain.isQuestEnabled("kallichore", quests);
+        boolean coureuse = chain.isQuestEnabled("coureuse", quests);
+
+        if (tj) {
             market.getCommDirectory().getEntryForPerson(baird).setHidden(false);
             market.getCommDirectory().getEntryForPerson(seb).setHidden(false);
             seb.getMemoryWithoutUpdate().set("$metAlready", true);
             seb.getRelToPlayer().setLevel(RepLevel.FRIENDLY);
 
-            // mark Transverse Jump as already done
-            BaseMissionHub hub = (BaseMissionHub)BaseMissionHub.get(seb);
-            hub.updateMissionCreatorsFromSpecs();
-            List<HubMissionCreator> creators = (List<HubMissionCreator>) ReflectionUtils.getIncludingSuperclasses("creators", hub, hub.getClass());
-            for (HubMissionCreator creator : creators) {
-                if ("gaTJ".equals(creator.getSpecId())) {
-                    creator.setNumCompleted(1);
-                    break;
-                }
+            setMissionDone("gaTJ", seb);
+            if (!kallichore && !coureuse) {
+                Global.getSector().getMemoryWithoutUpdate().set("$asebSayBairdWantsToTalk", true);  // enable meeting with Baird
             }
         }
 
-        if (Boolean.TRUE.equals(quests.get("kallichore"))) {
+        if (kallichore) {
             garg.getMarket().getCommDirectory().removePerson(garg);
             garg.getMarket().removePerson(garg);
             market.addPerson(garg);
@@ -62,7 +59,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             StartSetupPostTimePass.addStoryContact(People.ARROYO);
         }
 
-        if (Boolean.TRUE.equals(quests.get("coureuse"))) {
+        if (coureuse) {
             cour.getMarket().getCommDirectory().removePerson(cour);
             cour.getMarket().removePerson(cour);
             market.addPerson(cour);
@@ -70,14 +67,15 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             zal.getMemoryWithoutUpdate().set("$metAlready", true);
         }
 
-        if (Boolean.TRUE.equals(quests.get("ziggurat"))) {
+        if (chain.isQuestEnabled("ziggurat", quests)) {
             seb.getRelToPlayer().setLevel(RepLevel.COOPERATIVE);
             cour.getMemoryWithoutUpdate().set("$askedAboutBaird", true);
             cour.getMemoryWithoutUpdate().set("$askedAboutGargoyle", true);
+            cour.getRelToPlayer().adjustRelationship(0.05f, RepLevel.COOPERATIVE);
             StartSetupPostTimePass.addStoryContact(People.IBRAHIM);
         }
 
-        if (Boolean.TRUE.equals(quests.get("atTheGates"))) {
+        if (chain.isQuestEnabled("atTheGates", quests)) {
             int cottonCount = 0;
             if (player.contains("$satWithCottonCount")) cottonCount = player.getInt("$satWithCottonCount");
             player.set("$satWithCottonCount", cottonCount + 1);
@@ -85,14 +83,22 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             seb.getMemoryWithoutUpdate().set("$gotGAATGpay", true);
             seb.getMemoryWithoutUpdate().set("$askedProvostUpset", true);
             garg.getMemoryWithoutUpdate().set("$askedProvostThrown", true);
+            cour.getMemoryWithoutUpdate().set("$askedAboutZal", true);
+            cour.getRelToPlayer().adjustRelationship(0.25f, RepLevel.COOPERATIVE);
+            cour.getMarket().getCommDirectory().getEntryForPerson(cour).setHidden(true);
+            cotton.getRelToPlayer().setRel(0.01f);
+            zal.getRelToPlayer().setRel(0.2f);
+            Global.getSector().getImportantPeople().getPerson(People.KANTA).getRelToPlayer().setRel(-0.15f);
 
             StartSetupPostTimePass.addStoryContact(People.HORUS_YARIBAY);
+
+            Global.getSector().getPlayerFleet().getCargo().addSpecial(new SpecialItemData(Items.JANUS, null), 1);
         }
     }
 
     public void processStoryProtection(Map<String, Boolean> quests) {
         String id;
-        if (Boolean.TRUE.equals(quests.get("kallichore"))) {
+        if (chain.isQuestEnabled("kallichore", quests)) {
             id = Missions.KALLICHORE;
             makeNonStoryCritical("eochu_bres", id);
             makeNonStoryCritical("port_tse", id);
@@ -100,7 +106,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             makeNonStoryCritical("coatl", id);
         }
 
-        if (Boolean.TRUE.equals(quests.get("coureuse"))) {
+        if (chain.isQuestEnabled("coureuse", quests)) {
             id = Missions.COUREUSE;
             makeNonStoryCritical("laicaille_habitat", id);
             makeNonStoryCritical("eochu_bres", id);
@@ -108,7 +114,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             makeNonStoryCritical("station_kapteyn", id);
         }
 
-        if (Boolean.TRUE.equals(quests.get("ziggurat"))) {
+        if (chain.isQuestEnabled("ziggurat", quests)) {
             id = Missions.ZIGGURAT;
             makeNonStoryCritical("culann", id);
             makeNonStoryCritical("donn", id);
@@ -117,7 +123,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             makeNonStoryCritical("port_tse", id);
         }
 
-        if (Boolean.TRUE.equals(quests.get("atTheGates"))) {
+        if (chain.isQuestEnabled("atTheGates", quests)) {
             id = Missions.GATES;
             makeNonStoryCritical("kazeron", id);
             makeNonStoryCritical("chicomoztoc", id);
@@ -128,7 +134,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
     }
 
     public void processOtherSettings(Map<String, Boolean> quests) {
-        if (Boolean.TRUE.equals(quests.get("transverseJump"))) {
+        if (chain.isQuestEnabled("transverseJump", quests)) {
             Global.getSector().getCharacterData().addAbility(Abilities.TRANSVERSE_JUMP);
             Global.getSector().getCharacterData().addAbility(Abilities.GRAVITIC_SCAN);
         }
@@ -137,7 +143,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             new AcademyStoryVictoryScript().init();
         }
 
-        if (Boolean.TRUE.equals(quests.get("ziggurat"))) {
+        if (chain.isQuestEnabled("ziggurat", quests)) {
             StartSetupPostTimePass.generateAlphaSiteIntel();
         }
     }

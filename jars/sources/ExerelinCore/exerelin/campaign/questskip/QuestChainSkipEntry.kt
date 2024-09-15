@@ -77,6 +77,14 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
         return map
     }
 
+    fun isQuestEnabled(id : String) : Boolean {
+        return isQuestEnabled(id, getEnabledQuestMap())
+    }
+
+    fun isQuestEnabled(id : String, map : Map<String, Boolean>) : Boolean {
+        return map[id] == true;
+    }
+
     fun onNewGame() {
         this.plugin?.onNewGame();
         for (quest in quests) {
@@ -147,8 +155,8 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
                     val chain = QuestChainSkipEntry(id, name, image, sortKey)
                     chain.tooltip = chainJson.optString("tooltip", null)
                     chain.tooltipCreatorClass = chainJson.optString("tooltipCreator", null)
-                    chain.setPluginClass(chainJson.optString("plugin", null))
                     chain.addQuestsById(*NexUtils.JSONArrayToArrayList(chainJson.getJSONArray("quests")).toTypedArray())
+                    chain.setPluginClass(chainJson.optString("plugin", null))
 
                     (entries as ArrayList<QuestChainSkipEntry>).add(chain)
                 }

@@ -78,8 +78,7 @@ public class GalatiaAcademy extends BaseLandmarkDef {
 		
 		People.createAcademyPersonnel(market);
 		market.getCommDirectory().getEntryForPerson(People.SEBESTYEN).setHidden(false);
-		
-		galatiaAcademy.getMemoryWithoutUpdate().set("$metProvost", true);
+
 		// cockblock the Extract Researcher mission so Academy quest chain can't progress
 		Global.getSector().getMemoryWithoutUpdate().set("$gaTJ_ref", false);
 

@@ -68,23 +68,37 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         GO_TO_BASE, INVESTIGATE_LEADS, RETURN_TO_MIDNIGHT, DEFEND_PLANET, EPILOGUE, COMPLETED, FAILED, BAD_END
     }
 
-    @Getter protected var base: MarketAPI? = null
-    @Getter protected var remnantSystem: StarSystemAPI? = null
-    @Getter protected var target: MarketAPI? = null
-    @Getter protected var arroyoMarket: MarketAPI? = null
-    @Getter protected var fleet1: CampaignFleetAPI? = null
-    @Getter protected var fleet2: CampaignFleetAPI? = null
-    @Getter protected var knightFleet: CampaignFleetAPI? = null
+    var base: MarketAPI? = null
+        protected set
+    var remnantSystem: StarSystemAPI? = null
+        protected set
+    var target: MarketAPI? = null
+        protected set
+    var arroyoMarket: MarketAPI? = null
+        protected set
+    var fleet1: CampaignFleetAPI? = null
+        protected set
+    var fleet2: CampaignFleetAPI? = null
+        protected set
+    var knightFleet: CampaignFleetAPI? = null
+        protected set
 
-    @Getter protected var defeatedFleet1 = false
-    @Getter protected var defeatedFleet2 = false
-    protected var talkedToArroyo = false
-    protected var talkedToTowering1 = false
-    @Getter protected var targetPKed = false
-    protected var hiredEndbringer = false
+    var defeatedFleet1 = false
+        protected set
+    var defeatedFleet2 = false
+        protected set
+    var talkedToArroyo = false
+        protected set
+    var talkedToTowering1 = false
+        protected set
+    var targetPKed = false
+        protected set
+    var hiredEndbringer = false
+        protected set
 
     @Deprecated("Unused") protected var warpFleet2Delay = 0.2f;
-    @Getter protected var timerToPK : Float = 30f;
+    var timerToPK : Float = 30f
+        protected set
 
     companion object {
         @JvmField var SALVATION_ENABLED = true;
@@ -122,6 +136,9 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         if (!setGlobalReference("\$nex_remSalvation_ref")) {
             return false
         }
+        // non-retryable
+        if (Global.getSector().memoryWithoutUpdate.getBoolean("\$nex_remSalvation_missionDone")) return false
+
         val madeira = Global.getSector().economy.getMarket("madeira")
         base = if (madeira != null && madeira.factionId == Factions.PERSEAN) madeira else {
             requireMarketFaction(Factions.PERSEAN)

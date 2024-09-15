@@ -1,8 +1,18 @@
 package exerelin.campaign.questskip;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.combat.ShipVariantAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.missions.hub.BaseMissionHub;
+import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionCreator;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.ReflectionUtils;
+
+import java.util.List;
 
 public abstract class BaseQuestSkipPlugin implements QuestSkipPlugin {
 
@@ -59,5 +69,35 @@ public abstract class BaseQuestSkipPlugin implements QuestSkipPlugin {
         MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
         if (market == null) return;
         Misc.makeNonStoryCritical(market, reason);
+    }
+
+    protected FleetMemberAPI addShipToPlayerFleet(String variantId) {
+        ShipVariantAPI variant = Global.getSettings().getVariant(variantId).clone();
+        return addShipToPlayerFleet(variant);
+    }
+
+    protected FleetMemberAPI addShipToPlayerFleet(ShipVariantAPI variant) {
+        CampaignFleetAPI pf = Global.getSector().getPlayerFleet();
+        FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variant);
+        pf.getFleetData().addFleetMember(member);
+
+        float crew = member.getMinCrew();
+        float supplies = member.getCargoCapacity() * 0.5f;
+        pf.getCargo().addCrew((int)crew);
+        pf.getCargo().addSupplies(supplies);
+        member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
+        return member;
+    }
+
+    protected void setMissionDone(String missionId, PersonAPI hubPerson) {
+        BaseMissionHub hub = (BaseMissionHub)BaseMissionHub.get(hubPerson);
+        hub.updateMissionCreatorsFromSpecs();
+        List<HubMissionCreator> creators = (List<HubMissionCreator>) ReflectionUtils.getIncludingSuperclasses("creators", hub, hub.getClass());
+        for (HubMissionCreator creator : creators) {
+            if (missionId.equals(creator.getSpecId())) {
+                creator.setNumCompleted(1);
+                break;
+            }
+        }
     }
 }

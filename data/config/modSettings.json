@@ -89,7 +89,8 @@
 			"nex_remnant":{
 				"name":"Dissonance",
 				"image":"graphics/factions/crest_ai_remnant.png",
-				"quests":[],	#["nex_captiveCores", "nex_fragments", "nex_lostSci", "nex_showdown", "nex_salvation"],
+				"quests":["nex_captiveCores", "nex_fragments", "nex_lostSci", "nex_showdown", "nex_salvation"],
+				"plugin":"exerelin.campaign.questskip.RemnantQuestSkipPlugin",
 			},
 		},
 		
@@ -114,8 +115,6 @@
 				"name":"Kallichore Arc.",
 				"tooltip":"The player recovers the archive of the previous Galatian Academy provost, Tomas Kallichore, from the Academy.",
 				"idsToForceOnWhenEnabled":["transverseJump"],
-				"idsToForceOffWhenEnabled":[],
-				"idsToForceOnWhenDisabled":[],
 				"idsToForceOffWhenDisabled":["ziggurat", "atTheGates"],
 				"sectorMemFlags":{
 					"$gaKA_missionCompleted":true,
@@ -128,8 +127,6 @@
 				"name":"Finding Coureuse",
 				"tooltip":"The player finds the missing Academician Scylla Coureuse and invites her back to the Academy.",
 				"idsToForceOnWhenEnabled":["transverseJump"],
-				"idsToForceOffWhenEnabled":[],
-				"idsToForceOnWhenDisabled":[],
 				"idsToForceOffWhenDisabled":["ziggurat", "atTheGates"],
 				"sectorMemFlags":{
 					"$gaFC_missionCompleted":true,
@@ -144,8 +141,6 @@
 				"name":"Proj. Ziggurat",
 				"tooltip":"The player tracks down a Tri-Tachyon project lead and finds the mysterious Ziggurat.\n\nThe Ziggurat will remain at Alpha Site, ready to be fought.",
 				"idsToForceOnWhenEnabled":["transverseJump", "kallichore", "coureuse"],
-				"idsToForceOffWhenEnabled":[],
-				"idsToForceOnWhenDisabled":[],
 				"idsToForceOffWhenDisabled":["atTheGates"],
 				"sectorMemFlags":{
 					"$gaPZ_missionCompleted":true,
@@ -154,11 +149,8 @@
 			},
 			"atTheGates":{
 				"name":"At the Gates",
-				"tooltip":"The player unlocks the Gates with the power of the Janus Device.\n\nClone Loke will be ==spared==.",
+				"tooltip":"The player unlocks the Gates with the power of the Janus Device.",
 				"idsToForceOnWhenEnabled":["transverseJump", "kallichore", "coureuse", "ziggurat"],
-				"idsToForceOffWhenEnabled":[],
-				"idsToForceOnWhenDisabled":[],
-				"idsToForceOffWhenDisabled":[],
 				"sectorMemFlags":{
 					"$gaATG_missionGiven":true,
 					"$gaATG_missionCompleted":true,
@@ -199,9 +191,11 @@
 				"name":"Knight-Errant",
 				"tooltip":"The player finds a missing Luddic novice.\n\nJethro Bornanew will be ==returned== to Archcurate Jaspis.",
 				"idsToForceOnWhenEnabled":["pilgrimsPath"],
+				"peopleToUnhide":["virens"],
 				"sectorMemFlags":{
 					"$lke_completed":true,
-					"$lke_sedgeDrankYourTea":true
+					"$lke_sedgeDrankYourTea":true,
+					"$jaspisMadeOffer":false
 				},
 				"playerMemFlags":{
 					"$metBornanew":true
@@ -237,7 +231,6 @@
 				"name":"A New Hope",
 				"tooltip":"The player transports two unusual passengers to Volturn.",
 				"sectorMemFlags":{
-					"$anh_completed":true,
 					"$anh_missionCompleted":true
 				},
 				"playerMemFlags":{
@@ -272,33 +265,53 @@
 			"nex_captiveCores":{
 				"name":"Captive Cores",
 				"tooltip":"The player recovers two Beta Cores for a Remnant contact.",
-				"sectorMemFlags":{},
-				"playerMemFlags":{}
+				"idsToForceOffWhenDisabled":["nex_fragments", "nex_lostSci", "nex_showdown", "nex_salvation"],
+				"sectorMemFlags":{
+					"$nex_remM1_missionCompleted":true,
+					"$nex_remM1_completed":true,
+					"$nex_remM1_seenMission":true,
+				},
 			},
 			"nex_fragments":{
 				"name":"Fragments",
-				"tooltip":"The player tracks down a salvager contact of Midnight. Will grant ==random Omega weapons==.",
-				"sectorMemFlags":{},
-				"playerMemFlags":{}
+				"tooltip":"The player tracks down a salvager contact of Midnight.\n\nWill grant ==random Omega weapons==.",
+				"idsToForceOnWhenEnabled":["nex_captiveCores"],
+				"idsToForceOffWhenDisabled":["nex_showdown", "nex_salvation"],
+				"sectorMemFlags":{
+					"$nex_remFragments_missionCompleted":true,
+				},
 			},
 			"nex_lostSci":{
 				"name":"Lost Scientist",
 				"tooltip":"The player locates a missing Galatia Academician.",
-				"sectorMemFlags":{},
-				"playerMemFlags":{}
+				"idsToForceOnWhenEnabled":["nex_captiveCores"],
+				"idsToForceOffWhenDisabled":["nex_showdown", "nex_salvation"],
+				"playerMemFlags":{
+					"$nex_remLostSci_destroyedPaper":false,
+					"$nex_remLostSci_returnedScientist":true
+				},				
+				"sectorMemFlags":{
+					"$nex_remLostSci_missionCompleted":true,
+				}
 			},
 			"nex_showdown":{
 				"name":"Showdown",
 				"tooltip":"The player faces off a mass Hegemony and Luddic Church assault on a Remnant nexus.",
-				"sectorMemFlags":{},
-				"playerMemFlags":{}
+				"idsToForceOnWhenEnabled":["nex_captiveCores", "nex_fragments", "nex_lostSci"],
+				"idsToForceOffWhenDisabled":["nex_salvation"],
+				"sectorMemFlags":{
+					"$nex_remBrawl_missionCompleted":true,
+				}
 			},
 			"nex_salvation":{
 				"name":"Salvation",
 				"tooltip":"The player confronts a conspiracy among the Remnants.\n\nWill grant a ==Planetkiller== and the ==Silverlight-class capital ship==.",
-				"sectorMemFlags":{},
-				"playerMemFlags":{}
-			},
+				"idsToForceOnWhenEnabled":["nex_captiveCores", "nex_fragments", "nex_lostSci", "nex_showdown"],
+				"sectorMemFlags":{
+					"$nex_remSalvation_missionCompleted":true,
+					#"$nex_remSalvation_missionDone":true,	# we'll need this to be false for a bit
+				}
+			}
 		},
 		
 		# currently unused

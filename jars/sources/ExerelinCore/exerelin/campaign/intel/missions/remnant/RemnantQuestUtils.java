@@ -35,7 +35,7 @@ public class RemnantQuestUtils {
 			//"sitm"	// blueprint location; next time maybe?
 	));
 	
-	public static void createDissonant(MarketAPI market) {
+	public static PersonAPI createDissonant(MarketAPI market) {
 		PersonAPI person = NexUtils.getOrCreatePerson(PERSON_DISSONANT, null, Factions.REMNANTS,
 				getString("dissonantAlias"), "", FullName.Gender.FEMALE,
 				Global.getSettings().getSpriteName("characters", "nex_dissonant"),
@@ -44,6 +44,7 @@ public class RemnantQuestUtils {
 		person.addTag("remnant");
 		person.setAICoreId(Commodities.ALPHA_CORE);
 		market.addPerson(person);
+		return person;
 	}
 
 	public static PersonAPI getDissonant() {
