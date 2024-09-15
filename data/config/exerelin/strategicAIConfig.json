@@ -92,6 +92,13 @@
 			"tags":["diplomacy", "military", "canDiplomacy", "diplomacy_positive", "diplomacy_negative", "canDeclareWar", "trait_predatory"],
 			"module":DIPLOMATIC
 		},
+		"interventionConcern":{
+			"name":"Intervene in Conflict",
+			"desc":"Our ally $theFaction is at war with $theOtherFaction. We should intercede on their behalf.",
+			"classPath":"exerelin.campaign.ai.concern.InterventionConcern",
+			"tags":["diplomacy", "military", "diplomacy_positive", "diplomacy_negative", "canDeclareWar", "trait_helps_allies"],
+			"module":DIPLOMATIC
+		},
 		"commodityCompetition":{
 			"name":"Competition",
 			"desc":"$TheFaction competes with us in the production of $commodity (market share $theirShare%%). We should secure our commercial interests.",
@@ -191,6 +198,12 @@
 			"classPath":"exerelin.campaign.ai.action.MakePeaceAction",
 			"tags":["diplomacy", "canMakePeace", "friendly"],
 		},
+		"interventionAction":{
+			"name":"Intervene in Conflict",
+			"classPath":"exerelin.campaign.ai.action.InterventionAction",
+			"tags":["diplomacy"],
+		},
+		
 		# currently should only be called by the Form Coalition shim action
 		"enterAlliance":{
 			"name":"Enter Alliance",

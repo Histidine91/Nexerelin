@@ -894,6 +894,9 @@
 		"dialogCeasefireText":"You have received a $ceasefireOrPeaceTreaty offer from $theFaction. A response is required in $timeLeft $days.",
 		"dialogCeasefireText2":"You can disable this popup in the %s settings file.",
 		"dialogCeasefireOptionGotoIntel":"Open intel screen",
+		
+		"intelInterveneTitle":"Intervention Warning",
+		"intelInterveneDesc":"$TheFaction is issuing us a warning regarding our ongoing war against their ally, $theFriendName. They will join the conflict against us if we do not make peace.",
 	},
 	"nex_diplomacyProfile":{
 		"title":"Diplomacy Profile",

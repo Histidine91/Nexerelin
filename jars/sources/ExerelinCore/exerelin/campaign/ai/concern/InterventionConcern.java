@@ -1,4 +1,4 @@
-package exerelin.campaign.ai.concern.special;
+package exerelin.campaign.ai.concern;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -11,8 +11,6 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.StrategicAI;
-import exerelin.campaign.ai.concern.DiplomacyConcern;
-import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.NexConfig;
