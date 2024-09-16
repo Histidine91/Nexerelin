@@ -2,6 +2,7 @@ package exerelin.campaign.questskip;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
@@ -83,8 +84,10 @@ public abstract class BaseQuestSkipPlugin implements QuestSkipPlugin {
 
         float crew = member.getMinCrew();
         float supplies = member.getCargoCapacity() * 0.5f;
+        float fuel = member.getFuelCapacity();
         pf.getCargo().addCrew((int)crew);
         pf.getCargo().addSupplies(supplies);
+        pf.getCargo().addFuel(fuel);
         member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
         return member;
     }
@@ -98,6 +101,21 @@ public abstract class BaseQuestSkipPlugin implements QuestSkipPlugin {
                 creator.setNumCompleted(1);
                 break;
             }
+        }
+    }
+
+    /**
+     * Fixed version of {@code getRelToPlayer().setLevel()}. See https://fractalsoftworks.com/forum/index.php?topic=5061.msg449203#msg449203
+     * @param person
+     * @param level
+     */
+    protected void setRepLevelFixed(PersonAPI person, RepLevel level) {
+        if (level == RepLevel.NEUTRAL) {
+            person.getRelToPlayer().setRel(0);
+        } else if (level.isPositive()) {
+            person.getRelToPlayer().setRel(level.getMin() + 0.01f);
+        } else {
+            person.getRelToPlayer().setRel(-level.getMin() - 0.01f);
         }
     }
 }

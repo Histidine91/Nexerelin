@@ -43,7 +43,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             market.getCommDirectory().getEntryForPerson(baird).setHidden(false);
             market.getCommDirectory().getEntryForPerson(seb).setHidden(false);
             seb.getMemoryWithoutUpdate().set("$metAlready", true);
-            seb.getRelToPlayer().setLevel(RepLevel.FRIENDLY);
+            setRepLevelFixed(seb, RepLevel.FRIENDLY);
 
             setMissionDone("gaTJ", seb);
             if (!kallichore && !coureuse) {
@@ -67,12 +67,16 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             zal.getMemoryWithoutUpdate().set("$metAlready", true);
         }
 
+        if (kallichore || coureuse) {
+            setRepLevelFixed(seb, RepLevel.COOPERATIVE);
+        }
+
         if (chain.isQuestEnabled("ziggurat", quests)) {
-            seb.getRelToPlayer().setLevel(RepLevel.COOPERATIVE);
+            seb.getRelToPlayer().setRel(1);
             cour.getMemoryWithoutUpdate().set("$askedAboutBaird", true);
             cour.getMemoryWithoutUpdate().set("$askedAboutGargoyle", true);
             cour.getRelToPlayer().adjustRelationship(0.05f, RepLevel.COOPERATIVE);
-            StartSetupPostTimePass.addStoryContact(People.IBRAHIM);
+            //StartSetupPostTimePass.addStoryContact(People.IBRAHIM);   // normally she only becomes available after returning the Hamatsu, which isn't skipped
         }
 
         if (chain.isQuestEnabled("atTheGates", quests)) {

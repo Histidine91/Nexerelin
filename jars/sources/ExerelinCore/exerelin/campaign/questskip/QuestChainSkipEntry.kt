@@ -123,6 +123,10 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
         return this.sortKey.compareTo(o.sortKey)
     }
 
+    override fun toString(): String {
+        return this.id + " " + this.quests
+    }
+
     companion object {
         @JvmField val log: Logger = Global.getLogger(QuestChainSkipEntry.javaClass)
         const val CHAIN_SETTINGS_KEY = "skippableQuestChains"

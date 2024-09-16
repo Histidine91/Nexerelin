@@ -48,21 +48,21 @@ public class RemnantQuestSkipPlugin extends BaseQuestSkipPlugin {
         }
 
         if (chain.isQuestEnabled("nex_fragments", quests)) {
-            RemnantQuestUtils.getDissonant().getRelToPlayer().setLevel(RepLevel.WELCOMING);
+            setRepLevelFixed(RemnantQuestUtils.getDissonant(), RepLevel.WELCOMING);
             addRandomOmegaWeapons();
             setMissionDone("nex_remFragments", dissonant);
             remnants.setRelationship(Factions.PLAYER, RepLevel.INHOSPITABLE);
             dissonant.getMemoryWithoutUpdate().set("$nex_convo1seen", true);
         }
         if (chain.isQuestEnabled("nex_lostSci", quests)) {
-            RemnantQuestUtils.getDissonant().getRelToPlayer().setLevel(RepLevel.WELCOMING);
+            setRepLevelFixed(RemnantQuestUtils.getDissonant(), RepLevel.WELCOMING);
             setMissionDone("nex_remLostSci", dissonant);
             remnants.setRelationship(Factions.PLAYER, RepLevel.INHOSPITABLE);
             dissonant.getMemoryWithoutUpdate().set("$nex_convo1Seen", true);
         }
 
         if (chain.isQuestEnabled("nex_showdown", quests)) {
-            RemnantQuestUtils.getDissonant().getRelToPlayer().setLevel(RepLevel.FRIENDLY);
+            setRepLevelFixed(RemnantQuestUtils.getDissonant(), RepLevel.FRIENDLY);
             setMissionDone("nex_remBrawl", dissonant);
             dissonant.setImportance(PersonImportance.VERY_HIGH);
             remnants.setRelationship(Factions.PLAYER, RepLevel.SUSPICIOUS);
@@ -70,7 +70,7 @@ public class RemnantQuestSkipPlugin extends BaseQuestSkipPlugin {
         }
 
         if (chain.isQuestEnabled("nex_salvation", quests)) {
-            RemnantQuestUtils.getDissonant().getRelToPlayer().setLevel(RepLevel.COOPERATIVE);
+            setRepLevelFixed(RemnantQuestUtils.getDissonant(), RepLevel.COOPERATIVE);
             PersonAPI towering = RemnantQuestUtils.getOrCreateTowering();
             RemnantQuestUtils.enhanceTowering();
             addKnight();
@@ -79,8 +79,8 @@ public class RemnantQuestSkipPlugin extends BaseQuestSkipPlugin {
             CargoAPI player = Global.getSector().getPlayerFleet().getCargo();
             player.addSpecial(new SpecialItemData(haveBoggled ? "boggled_planetkiller" : Items.PLANETKILLER, null), 1f);
 
-            addSilverlightOmegaWeapons();
-            String variantId = "nex_silverlight_Hull";
+            //addSilverlightOmegaWeapons();
+            String variantId = "nex_silverlight_Ascendant";
             FleetMemberAPI member = addShipToPlayerFleet(variantId);
             ShipVariantAPI variant = member.getVariant();
             variant.getStationModules().clear();

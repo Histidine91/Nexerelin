@@ -513,22 +513,34 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 			String imagePath, Color textColor, InteractionDialogCustomPanelPlugin plugin, 
 			TooltipCreator tooltip) 
 	{
+		return (CustomPanelAPI) prepOptionGetPanelGen(panel, info, name, imagePath, textColor, plugin, tooltip).elements.get(2);
+	}
+
+	/**
+	 * Generates a {@code CustomPanelAPI} containing the GUI elements of the option, except the button(s).
+	 * @return A {@code CustomPanelGenResult} specifying the outer panel and the contained elements<br/>
+	 * (two {@code TooltipMakerAPI}s to hold the image and text, and a {@code CustomPanelAPI} to hold the buttons, in that order.
+	 */
+	public static CustomPanelGenResult prepOptionGetPanelGen(CustomPanelAPI panel, TooltipMakerAPI info, String name,
+											String imagePath, Color textColor, InteractionDialogCustomPanelPlugin plugin,
+											TooltipCreator tooltip)
+	{
 		float pad = 3;
 		float opad = 10;
-		
-		CustomPanelGenResult panelGen = NexUtilsGUI.addPanelWithFixedWidthImage(panel, 
+
+		CustomPanelGenResult panelGen = NexUtilsGUI.addPanelWithFixedWidthImage(panel,
 				plugin, ITEM_WIDTH, ITEM_HEIGHT, name, TEXT_WIDTH, X_PADDING * 3,
 				imagePath, ITEM_HEIGHT, pad, textColor, true, tooltip);
 		CustomPanelAPI row = panelGen.panel;
-		TooltipMakerAPI title = (TooltipMakerAPI)panelGen.elements.get(panelGen.elements.size() - 1);
-				
+		TooltipMakerAPI title = (TooltipMakerAPI)panelGen.elements.get(1);
+
 		// button holder
 		CustomPanelAPI buttonRow = row.createCustomPanel(ITEM_WIDTH - ITEM_HEIGHT - TEXT_WIDTH - X_PADDING * 5, ITEM_HEIGHT, null);
 		row.addComponent(buttonRow).rightOfTop(title, X_PADDING);
-		
-		info.addCustom(row, opad);
-		
-		return buttonRow;
+		if (info != null) info.addCustom(row, opad);
+		panelGen.elements.add(buttonRow);
+
+		return panelGen;
 	}
 	
 	public static TooltipCreator createTooltip(final String text, 

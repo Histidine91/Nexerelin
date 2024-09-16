@@ -30,4 +30,9 @@ public class UsurpersQuestSkipPlugin extends BaseQuestSkipPlugin {
         makeNonStoryCritical("volturn", id);
         makeNonStoryCritical("umbra", id);
     }
+
+    @Override
+    public boolean shouldShow() {
+        return ExerelinSetupData.getInstance().corvusMode;
+    }
 }

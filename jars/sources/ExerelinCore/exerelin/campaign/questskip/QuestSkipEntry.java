@@ -69,4 +69,9 @@ public class QuestSkipEntry {
             pers.getMarket().getCommDirectory().getEntryForPerson(pers).setHidden(false);
         }
     }
+
+    @Override
+    public String toString() {
+        return this.id;
+    }
 }

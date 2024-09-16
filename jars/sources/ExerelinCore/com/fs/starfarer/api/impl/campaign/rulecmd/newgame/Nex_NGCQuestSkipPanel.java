@@ -1,7 +1,9 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CustomDialogDelegate;
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -23,6 +25,10 @@ import static com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation;
 
 public class Nex_NGCQuestSkipPanel {
 
+    public static final float BUTTON_WIDTH = Math.round(Nex_NGCPopulateCustomPanelOptions.BUTTON_WIDTH * 1.8f);
+    public static final float BUTTON_HEIGHT = Nex_NGCPopulateCustomPanelOptions.ITEM_HEIGHT;
+    public static final float BUTTON_SECTION_WIDTH = Nex_NGCCustomStartFleet.PANEL_WIDTH - Nex_NGCPopulateCustomPanelOptions.TEXT_WIDTH - BUTTON_HEIGHT;
+
     public static class QuestSkipDelegate implements CustomDialogDelegate {
 
         FramedCustomPanelPlugin plugin = new FramedCustomPanelPlugin(0.25f, Misc.getBasePlayerColor(), true);
@@ -37,25 +43,44 @@ public class Nex_NGCQuestSkipPanel {
                 tooltip = NexUtilsGUI.createSimpleTextTooltip(chain.tooltip, 450);
             }
 
-            CustomPanelAPI buttonPanel = Nex_NGCPopulateCustomPanelOptions.prepOption(outer, scrollable, chain.name, chain.image, null, tooltip);
+            NexUtilsGUI.CustomPanelGenResult panelGen = Nex_NGCPopulateCustomPanelOptions.prepOptionGetPanelGen(outer,
+                    null, chain.name, chain.image, null, null, tooltip);
+            CustomPanelAPI buttonPanel = (CustomPanelAPI)panelGen.elements.get(2);
 
             final List<ButtonAPI> buttons = new ArrayList<>();
             TooltipMakerAPI lastHolder = null;
 
+            List<QuestSkipEntry> toDisplay = new ArrayList<>();
             for (QuestSkipEntry entry : chain.quests) {
                 if (entry.plugin != null && !entry.plugin.shouldShow()) continue;
+                toDisplay.add(entry);
+            }
+            int numButtons = toDisplay.size();
 
+            NexUtilsGUI.RowSortCalc rowSortInfo = new NexUtilsGUI.RowSortCalc(numButtons, BUTTON_SECTION_WIDTH,
+                    BUTTON_WIDTH, BUTTON_HEIGHT);
+            //Global.getLogger(this.getClass()).info(String.format("Row count %s (%s per row)", rowSortInfo.numRows, rowSortInfo.numPerRow));
+            panelGen.panel.getPosition().setSize(panelGen.panel.getPosition().getWidth(), rowSortInfo.height);
+            buttonPanel.getPosition().setSize(rowSortInfo.width, rowSortInfo.height);
+
+            List<TooltipMakerAPI> existingButtonHolders = new ArrayList<>();
+
+            for (QuestSkipEntry entry : toDisplay) {
                 String name = entry.name;
+                String id = "nex_skipQuest_" + entry.id;
 
-                lastHolder = Nex_NGCPopulateCustomPanelOptions.initRadioButton("nex_skipQuest_" + entry.id, name,
-                        false, buttonPanel, lastHolder, buttons);
-                // bigger buttons
-                float width = Math.round(Nex_NGCPopulateCustomPanelOptions.BUTTON_WIDTH * 1.8f);
-                float height = Nex_NGCPopulateCustomPanelOptions.ITEM_HEIGHT;
-                lastHolder.getPosition().setSize(width, height);
-                ButtonAPI button = buttons.get(buttons.size() - 1);
-                button.getPosition().setSize(width, height);
+                // adapted from Nex_NGCPopulateCustomPanelOptions.initRadioButton
+                lastHolder = buttonPanel.createUIElement(BUTTON_WIDTH, BUTTON_HEIGHT, false);
+                FactionAPI faction = Global.getSector().getPlayerFaction();
+
+                ButtonAPI button = lastHolder.addAreaCheckbox(name,
+                        id, faction.getBaseUIColor(),	faction.getDarkUIColor(),
+                        faction.getBrightUIColor(), BUTTON_WIDTH, BUTTON_HEIGHT, 0);
                 button.setChecked(entry.isEnabled);
+                buttons.add(button);
+
+                NexUtilsGUI.placeElementInRows(buttonPanel, lastHolder, existingButtonHolders, rowSortInfo.numPerRow, 3);
+                existingButtonHolders.add(lastHolder);
 
                 // add button tooltip if needed
                 TooltipCreator tooltip2 = null;
@@ -69,6 +94,7 @@ public class Nex_NGCQuestSkipPanel {
                     lastHolder.addTooltipToPrevious(tooltip2, TooltipLocation.BELOW);
                 }
             }
+
             final List<SkipQuestButtonEntry> buttonEntries = new ArrayList<>();
 
             int index = 0;
@@ -80,6 +106,8 @@ public class Nex_NGCQuestSkipPanel {
 
                 index++;
             }
+
+            scrollable.addCustom(panelGen.panel, 10f);
         }
 
         @Override
