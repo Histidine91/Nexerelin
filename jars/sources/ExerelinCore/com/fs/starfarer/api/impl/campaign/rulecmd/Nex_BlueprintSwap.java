@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.loading.Description;
@@ -85,7 +87,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 				break;
 			case "buy":
 				int index = Integer.parseInt(memoryMap.get(MemKeys.LOCAL).getString("$option").substring(DIALOG_OPTION_PREFIX.length()));
-				showBlueprintInfoAndPreparePurchase(index, dialog.getTextPanel());
+				showBlueprintInfoAndPreparePurchase(index, dialog);
 				break;
 			case "confirmPurchase":
 				purchase();
@@ -300,12 +302,13 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	
 	/**
 	 * Prints the description of the selected blueprint and marks it as the desired purchase.
-	 * @param index Index of the desired {@code BlueprintInfo} within the bluepritn info array
-	 * @param text
+	 * @param index Index of the desired {@code BlueprintInfo} within the blueprint info array
 	 */
-	protected void showBlueprintInfoAndPreparePurchase(int index, TextPanelAPI text)
+	protected void showBlueprintInfoAndPreparePurchase(int index, InteractionDialogAPI dialog)
 	{
+		TextPanelAPI text = dialog.getTextPanel();
 		Description desc;
+		FleetMemberAPI temp;
 		String designType = "";
 		toPurchase = getBlueprintStock(market.getMemoryWithoutUpdate()).get(index);
 		switch (toPurchase.type) {
@@ -313,11 +316,17 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 				ShipHullSpecAPI hull = Global.getSettings().getHullSpec(toPurchase.id);
 				desc = Global.getSettings().getDescription(hull.getDescriptionId(), Description.Type.SHIP);
 				designType = hull.getManufacturer();
+
+				temp = Global.getFactory().createFleetMember(FleetMemberType.SHIP, hull.getHullId() + "_Hull");
+				dialog.getVisualPanel().showFleetMemberInfo(temp);
 				break;
 			case FIGHTER:
 				FighterWingSpecAPI wing = Global.getSettings().getFighterWingSpec(toPurchase.id);
 				desc = Global.getSettings().getDescription(wing.getVariant().getHullSpec().getDescriptionId(), Description.Type.SHIP);
 				designType = wing.getVariant().getHullSpec().getManufacturer();
+
+				temp = Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, toPurchase.id);
+				dialog.getVisualPanel().showFleetMemberInfo(temp);
 				break;
 			case WEAPON:
 				WeaponSpecAPI wep = Global.getSettings().getWeaponSpec(toPurchase.id);

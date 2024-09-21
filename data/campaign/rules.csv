@@ -883,7 +883,8 @@ nex_supplyCounterInsurgencyBack,DialogOptionSelected,$option == nex_supplyCounte
 nex_blueprintSwapOption,PopulateOptions,"Nex_IsBaseOfficial admin
 Nex_BlueprintSwap hasOption",,,nex_blueprintSwapMenu:Exchange blueprints,
 nex_blueprintSwapMenuSel,DialogOptionSelected,$option == nex_blueprintSwapMenu,FireAll Nex_BlueprintSwapMenu,"""Ah, good. Looking to buy or sell?""",,
-nex_blueprintSwapMenuReturnSel,DialogOptionSelected,$option == nex_blueprintSwapMenuReturn,FireAll Nex_BlueprintSwapMenu,,,
+nex_blueprintSwapMenuReturnSel,DialogOptionSelected,$option == nex_blueprintSwapMenuReturn,"FireAll Nex_BlueprintSwapMenu
+ShowPersonVisual",,,
 nex_blueprintSwapMenu,Nex_BlueprintSwapMenu,,"AddTextSmall ""You have $nex_BPSwap_pointsStr points.""
 SetTextHighlights $nex_BPSwap_pointsStr
 SetShortcut nex_blueprintSwapExit ""ESCAPE""",,"nex_blueprintSwapBuy:Purchase blueprints
@@ -899,7 +900,8 @@ nex_blueprintSwapBuy:Go back",
 nex_blueprintSwapBuyConfirm,DialogOptionSelected,$option == nex_blueprintSwapConfirmPurchase,"Nex_BlueprintSwap confirmPurchase
 Nex_BlueprintSwap getForSale
 AddTextSmall ""You have $nex_BPSwap_pointsStr points.""
-SetTextHighlights $nex_BPSwap_pointsStr","""Thank you for your business.""",,
+SetTextHighlights $nex_BPSwap_pointsStr
+ShowPersonVisual","""Thank you for your business.""",,
 nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,FireAll PopulateOptions,,,
 #END Blueprint swap options,,,,,,
 ,,,,,,
