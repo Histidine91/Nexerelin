@@ -1,13 +1,14 @@
 {
     "playableFaction":false,
+    "startingFaction":true,
+    "spawnAsFactionId":"pirates",
+    "ngcTooltip":"With the right connections, an ordinary pirate may discover the flashy lifestyle offered by a Starlight Cabal fleet.",
     "pirateFaction":true,
     "corvusCompatible":true,
     "noHomeworld":true,
     "showIntelEvenIfDead":true,
     
     "spawnPatrols":true,
-    
-    "baseFleetCostMultiplier":1.0,
     
     "rebelFleetSuffix":"Splinter Group",
     
@@ -24,6 +25,19 @@
     },
     
     "freeMarket":true,
+    
+    "startShipsSolo":[
+        ["uw_tempest_cabal_cus"],
+    ],
+    "startShipsCombatSmall":[
+        ["uw_shrike_cabal_cus", "uw_afflictor_cabal_cus", "uw_wolf_cabal_cus"],
+    ],
+    "startShipsCombatLarge":[
+        ["uw_fury_cabal_cus", "uw_medusa_cabal_cus", "uw_tempest_cabal_tri"]
+    ],    
+    "startShipsCarrierLarge":[
+        ["uw_eos_cabal_cus", "uw_starscream_cus", "uw_wolf_cabal_tri"]
+    ],
     
     "vengeanceLevelNames":["Grudge", "Elimination"],
     "vengeanceFleetNames":["Executors", "Kill-Fleet"],
