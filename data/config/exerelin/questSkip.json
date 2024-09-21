@@ -1,0 +1,256 @@
+{
+	"questChains":{
+		"galatiaAcademy":{
+			"name":"Galatia Academy",
+			"image":"graphics/icons/missions/ga_intro.png",
+			"sortKey":"AAAA_academy",
+			"quests":["transverseJump", "kallichore", "coureuse", "ziggurat", "atTheGates"],
+			"plugin":"exerelin.campaign.questskip.GalatiaQuestSkipPlugin",
+		},
+		"luddicChurch":{
+			"name":"Luddic Church",
+			"image":"graphics/icons/missions/pilgrims_path.png",
+			"sortKey":"AAAA_luddicChurch",
+			"quests":["pilgrimsPath", "knightErrant"],
+			"plugin":"exerelin.campaign.questskip.LuddicChurchQuestSkipPlugin",
+		},
+		"sindrianDiktat":{
+			"name":"Sindrian Diktat",
+			"image":"graphics/icons/missions/the_usurpers.png",
+			"sortKey":"AAAA_sindrianDiktat",
+			"quests":["usurpers"],
+		},
+		"misc":{
+			"name":"Misc. vanilla",
+			"image":"graphics/icons/missions/eventide.png",
+			"sortKey":"AAAA_zz_misc",
+			"quests":["anh", "princess_persea", "scytheOfOrion"],
+		},
+		"nex_remnant":{
+			"name":"Dissonance",
+			"image":"graphics/factions/crest_ai_remnant.png",
+			"quests":["nex_captiveCores", "nex_fragments", "nex_lostSci", "nex_showdown", "nex_salvation"],
+			"plugin":"exerelin.campaign.questskip.RemnantQuestSkipPlugin",
+		},
+	},
+
+	"quests":{
+		"transverseJump":{
+			"name":"Extract Researcher",
+			"tooltip":"The player extracts a Galatian academician from a Tri-Tachyon blacksite.",
+			"idsToForceOnWhenEnabled":[],
+			"idsToForceOffWhenEnabled":[],
+			"idsToForceOnWhenDisabled":[],
+			"idsToForceOffWhenDisabled":["kallichore", "coureuse", "ziggurat", "atTheGates"],
+			"peopleToUnhide":["sebestyen", "baird"],
+			"sectorMemFlags":{
+				"$interactedWithGABarEvent":true
+			},
+			"playerMemFlags":{
+				"$metBaird":true,
+				"$metSebestyen":true,
+			}
+		},
+		"kallichore":{
+			"name":"Kallichore Arc.",
+			"tooltip":"The player recovers the archive of the previous Galatian Academy provost, Tomas Kallichore, from the Academy.",
+			"idsToForceOnWhenEnabled":["transverseJump"],
+			"idsToForceOffWhenDisabled":["ziggurat", "atTheGates"],
+			"sectorMemFlags":{
+				"$gaKA_missionCompleted":true,
+			},
+			"playerMemFlags":{
+				"$metCloneLoke":true
+			}
+		},
+		"coureuse":{
+			"name":"Finding Coureuse",
+			"tooltip":"The player finds the missing Academician Scylla Coureuse and invites her back to the Academy.",
+			"idsToForceOnWhenEnabled":["transverseJump"],
+			"idsToForceOffWhenDisabled":["ziggurat", "atTheGates"],
+			"sectorMemFlags":{
+				"$gaFC_missionCompleted":true,
+			},				
+			"playerMemFlags":{
+				"$metCavin":true,
+				"$metSiyavong":true,
+				"$metZal":true
+			}
+		},
+		"ziggurat":{
+			"name":"Proj. Ziggurat",
+			"tooltip":"The player tracks down a Tri-Tachyon project lead and finds the mysterious Ziggurat.\n\nThe Ziggurat will remain at Alpha Site, ready to be fought.",
+			"idsToForceOnWhenEnabled":["transverseJump", "kallichore", "coureuse"],
+			"idsToForceOffWhenDisabled":["atTheGates"],
+			"sectorMemFlags":{
+				"$gaPZ_missionCompleted":true,
+				"$gaPZ_scannedZiggurat":true
+			}
+		},
+		"atTheGates":{
+			"name":"At the Gates",
+			"tooltip":"The player unlocks the Gates with the power of the Janus Device.",
+			"idsToForceOnWhenEnabled":["transverseJump", "kallichore", "coureuse", "ziggurat"],
+			"sectorMemFlags":{
+				"$gaATG_missionGiven":true,
+				"$gaATG_missionCompleted":true,
+				"$canScanGates":true,
+				"$gatesActive":true
+			},
+			"playerMemFlags":{
+				"$gaveDaudYaribayContact":true,
+				"$gotYaribayCredentials":true,
+				"$knowsCottonHearsSong":true,
+				"$knowsZalHeldBack":true,
+				"$metBrotherCotton":true,
+				"$metCydonia":true,
+				"$metDaud":true,
+				"$metHorusYaribay":true,
+				"$metKanta":true
+			}
+		},
+		
+		"pilgrimsPath":{
+			"name":"Pilgrim's Path",
+			"tooltip":"The player visits the six Luddic shrines of the Sector.",
+			"idsToForceOffWhenDisabled":["knightErrant"],
+			"peopleToUnhide":["standfast", "jaspis", "oak"],
+			"sectorMemFlags":{
+				"$lpp_missionCompleted":true,
+				"$jaspisMadeOffer":true,
+				"$lpp_didJangalaProtest":true,
+				"$lpp_receivedVolturnCurateBlessing":true
+			},
+			"playerMemFlags":{
+				"$metGideonOak":true,
+				"$metJaspis":true,
+				"$metStandfast":true
+			}
+		},
+		"knightErrant":{
+			"name":"Knight-Errant",
+			"tooltip":"The player finds a missing Luddic novice.\n\nJethro Bornanew will be ==returned== to Archcurate Jaspis.",
+			"idsToForceOnWhenEnabled":["pilgrimsPath"],
+			"peopleToUnhide":["virens"],
+			"sectorMemFlags":{
+				"$lke_completed":true,
+				"$lke_sedgeDrankYourTea":true,
+				"$jaspisMadeOffer":false
+			},
+			"playerMemFlags":{
+				"$metBornanew":true
+			}
+		},
+		"usurpers":{
+			"name":"The Usurpers",
+			"tooltip":"The player explores the shadows of Diktat politics.\n\nThis will grant three ==Kinetic Blasters==, a ==Gigacannon==, and an ==Executor-class battleship==.",
+			"plugin":"exerelin.campaign.questskip.UsurpersQuestSkipPlugin",
+			"peopleToUnhide":["macario"],
+			"sectorMemFlags":{
+				"$sdtu_ramDidProposal":true,
+				"$sdtu_missionCompleted":true,
+				
+				# arbitrary set of flags that a player might reasonably pick up
+				"$sdtu_HyderBlamedMacarioForSupplyProblem":true,
+				"$sdtu_HyderBlamedMacarioForResistance":true,
+				"$sdtu_knowHyderHeldBackFromPromotion":true,
+				"$sdtu_knowHyderIsAFollower":true,
+				"$sdtu_knowHyderWontBackCaden":true,
+				"$sdtu_gotMacarioOpinionOfCaden":true,
+				"$sdtu_sdtu_gaveDoubleAgentToSD":true,
+			},
+			"playerMemFlags":{
+				"$metCaden":true,
+				"$metHyder":true,
+				"$metMacario":true,
+				"$metRam":true
+			}
+		},
+		
+		"anh":{
+			"name":"A New Hope",
+			"tooltip":"The player transports two unusual passengers to Volturn.",
+			"sectorMemFlags":{
+				"$anh_missionCompleted":true
+			},
+			"playerMemFlags":{
+				"$metANHRobedMan":true
+			}
+		},
+		"princess_persea":{
+			"name":"Princess of Persea",
+			"tooltip":"The player attends a ball on Eventide.",
+			"plugin":"exerelin.campaign.questskip.SOEQuestSkipPlugin",
+			"playerMemFlags":{
+				"$bladeSkill":true,
+				"$metCardona":true,
+				"$metCaspianSang":true,
+				"$metNeriene":true,
+				"$sawCaspian":true,
+				"$soe_wonDuel":true
+			}
+		},
+		"scytheOfOrion":{
+			"name":"Scythe of Orion",
+			"tooltip":"The player tracks down a long-lost planetkiller.\n\nThis will convert ==Sentinel== into a ==Hegemony colony==, and stand down ==Task Force Safeguard==.",
+			"plugin":"exerelin.campaign.questskip.ScytheQuestSkipPlugin",
+			"sectorMemFlags":{
+				"$discoveredSentinel":true,
+				"$pk_recovered":true
+			},
+			"playerMemFlags":{
+				"$encounteredPKDefenderFleet":true
+			}
+		},
+		"nex_captiveCores":{
+			"name":"Captive Cores",
+			"tooltip":"The player recovers two Beta Cores for a Remnant contact.",
+			"idsToForceOffWhenDisabled":["nex_fragments", "nex_lostSci", "nex_showdown", "nex_salvation"],
+			"sectorMemFlags":{
+				"$nex_remM1_missionCompleted":true,
+				"$nex_remM1_completed":true,
+				"$nex_remM1_seenMission":true,
+			},
+		},
+		"nex_fragments":{
+			"name":"Fragments",
+			"tooltip":"The player tracks down a salvager contact of Midnight.\n\nWill grant ==random Omega weapons==.",
+			"idsToForceOnWhenEnabled":["nex_captiveCores"],
+			"idsToForceOffWhenDisabled":["nex_showdown", "nex_salvation"],
+			"sectorMemFlags":{
+				"$nex_remFragments_missionCompleted":true,
+			},
+		},
+		"nex_lostSci":{
+			"name":"Lost Scientist",
+			"tooltip":"The player locates a missing Galatia Academician.",
+			"idsToForceOnWhenEnabled":["nex_captiveCores"],
+			"idsToForceOffWhenDisabled":["nex_showdown", "nex_salvation"],
+			"playerMemFlags":{
+				"$nex_remLostSci_destroyedPaper":false,
+				"$nex_remLostSci_returnedScientist":true
+			},				
+			"sectorMemFlags":{
+				"$nex_remLostSci_missionCompleted":true,
+			}
+		},
+		"nex_showdown":{
+			"name":"Showdown",
+			"tooltip":"The player faces off a mass Hegemony and Luddic Church assault on a Remnant nexus.",
+			"idsToForceOnWhenEnabled":["nex_captiveCores", "nex_fragments", "nex_lostSci"],
+			"idsToForceOffWhenDisabled":["nex_salvation"],
+			"sectorMemFlags":{
+				"$nex_remBrawl_missionCompleted":true,
+			}
+		},
+		"nex_salvation":{
+			"name":"Salvation",
+			"tooltip":"The player confronts a conspiracy among the Remnants.\n\nWill grant a ==Planetkiller== and the ==Silverlight-class capital ship==.",
+			"idsToForceOnWhenEnabled":["nex_captiveCores", "nex_fragments", "nex_lostSci", "nex_showdown"],
+			"sectorMemFlags":{
+				"$nex_remSalvation_missionCompleted":true,
+				#"$nex_remSalvation_missionDone":true,	# we'll need this to be false for a bit
+			}
+		}
+	}
+}

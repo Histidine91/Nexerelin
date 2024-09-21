@@ -1,6 +1,7 @@
 package exerelin.campaign.questskip
 
 import com.fs.starfarer.api.Global
+import exerelin.ExerelinConstants
 import exerelin.utilities.NexUtils
 import org.apache.log4j.Logger
 import org.json.JSONArray
@@ -39,11 +40,12 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
 
     fun addQuestsById(vararg questIds: String?) {
         var id: String? = null
-        val emptyArray : JSONArray = JSONArray()
-        val emptyMap : JSONObject = JSONObject()
+        val emptyArray = JSONArray()
+        val emptyMap = JSONObject()
 
         try {
-            val allQuestsJson = MagicSettings.modSettings.getJSONObject("nexerelin").getJSONObject(QUEST_SETTINGS_KEY)
+            val fileJson = Global.getSettings().getMergedJSONForMod(SETTINGS_FILE_PATH, ExerelinConstants.MOD_ID)
+            val allQuestsJson = fileJson.getJSONObject(QUEST_SETTINGS_KEY)
             for (questId in questIds) {
                 id = questId
                 val questJson = allQuestsJson.getJSONObject(questId)
@@ -129,8 +131,9 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
 
     companion object {
         @JvmField val log: Logger = Global.getLogger(QuestChainSkipEntry.javaClass)
-        const val CHAIN_SETTINGS_KEY = "skippableQuestChains"
-        const val QUEST_SETTINGS_KEY = "skippableQuests"
+        const val CHAIN_SETTINGS_KEY = "questChains"
+        const val QUEST_SETTINGS_KEY = "quests"
+        const val SETTINGS_FILE_PATH = "data/config/exerelin/questSkip.json"
 
         @JvmField var entries: List<QuestChainSkipEntry>? = null
 
@@ -145,10 +148,8 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
             entries = ArrayList<QuestChainSkipEntry>()
             var id: String? = null
             try {
-                if (MagicSettings.modSettings == null) MagicSettings.loadModSettings()
-                val allChainsJson = MagicSettings.modSettings.getJSONObject("nexerelin").getJSONObject(
-                    CHAIN_SETTINGS_KEY
-                )
+                val fileJson = Global.getSettings().getMergedJSONForMod(SETTINGS_FILE_PATH, ExerelinConstants.MOD_ID)
+                val allChainsJson = fileJson.getJSONObject(CHAIN_SETTINGS_KEY)
                 val keys: MutableIterator<Any?> = allChainsJson.keys()
                 while (keys.hasNext()) {
                     id = keys.next() as String
