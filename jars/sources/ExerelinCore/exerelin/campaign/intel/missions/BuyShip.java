@@ -24,6 +24,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.missions.BuyShipRule.*;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 
@@ -47,7 +48,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 		AVAILABLE_RULES.add(SModRule.class);
 	}
 
-	public static float BASE_PRICE_MULT = 1.6f;
+	public static float BASE_PRICE_MULT = NexConfig.buyShipBasePriceMult;
 
 	public enum Variation {
 		MILITARY, COLLECTOR

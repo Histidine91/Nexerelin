@@ -177,6 +177,7 @@ public class NexConfig
     public static boolean allyVictories = true;
     public static boolean updateMarketDescOnCapture = true;
     public static boolean enableNexColonyCrises = true;
+    public static float buyShipBasePriceMult = 1.6f;
 
     public static void loadSettings()
     {
@@ -323,6 +324,7 @@ public class NexConfig
             enableStrategicAI = settings.optBoolean("enableStrategicAI", enableStrategicAI);
             showStrategicAI = settings.optBoolean("showStrategicAI", showStrategicAI);
             enableVictory = settings.optBoolean("enableVictory", enableVictory);
+            buyShipBasePriceMult = (float) settings.optDouble("buyShipBasePriceMult", buyShipBasePriceMult);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             
