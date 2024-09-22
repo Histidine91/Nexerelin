@@ -47,9 +47,9 @@ ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOption
 7:exerelinNGCSectorOptions:Sector generation
 8:exerelinNGCFactionOptions:Faction settings
 9:exerelinNGCOtherOptions:Other options",
-ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems. The Academy storyline will be disabled in random sector, and some features from the base game or other mods may not be usable.""
+ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems. The Academy storyline will be disabled in random sector, and some features (such as missions or Colony Crises) from the base game or other mods may not be usable.""
 SetTooltipHighlights exerelinNGCEnableCorvusMode ""Academy storyline"" disabled features ""not be usable""",,exerelinNGCEnableCorvusMode:Disable random core worlds,
-ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems. The Academy storyline will be disabled in random sector, and some features from the base game or other mods may not be usable.""
+ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems. The Academy storyline will be disabled in random sector, and some features (such as missions or Colony Crises) from the base game or other mods may not be usable.""
 SetTooltipHighlights exerelinNGCDisableCorvusMode ""Academy storyline"" disabled features ""not be usable""",,exerelinNGCDisableCorvusMode:Enable random core worlds,
 ,,,,,,
 ExerelinNewGameFactionConfig,ExerelinNGCFactionOptions,,"SetEnabled nex_NGCFactionToggleMenu true

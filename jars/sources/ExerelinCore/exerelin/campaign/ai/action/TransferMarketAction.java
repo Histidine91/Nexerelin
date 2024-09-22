@@ -3,6 +3,7 @@ package exerelin.campaign.ai.action;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.StrategicAI;
@@ -13,7 +14,7 @@ public class TransferMarketAction extends BaseStrategicAction implements Strateg
     @Override
     public boolean generate() {
         MarketAPI market = concern.getMarket();
-        if (market.getFaction().isPlayerFaction()) {
+        if (Nex_IsFactionRuler.isRuler(market.getFaction())) {
             // TODO: offer to buy the market
             return false;
         }

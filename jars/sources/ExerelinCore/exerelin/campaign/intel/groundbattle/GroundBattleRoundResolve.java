@@ -443,7 +443,7 @@ public class GroundBattleRoundResolve {
 			if (unit.isPlayer) {
 				intel.getPlayerData().playerDamageDealt += contrib;
 			}
-			if (attacker == intel.playerIsAttacker) {
+			if (((Boolean)attacker).equals(intel.playerIsAttacker)) {
 				intel.getPlayerData().damageDealtByPlayerSide += contrib;
 			}
 		}

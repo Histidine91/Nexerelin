@@ -3,6 +3,7 @@ package exerelin.campaign.intel.missions;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
@@ -154,7 +155,9 @@ public abstract class BuyShipRule {
 		protected List<FleetMemberAPI> getShipsAtMarket() {
 			List<FleetMemberAPI> ships = new ArrayList<>();
 			try {
-				MarketAPI market = Global.getSector().getCampaignUI().getCurrentInteractionDialog().getInteractionTarget().getMarket();
+				InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+				if (dialog == null) return ships;
+				MarketAPI market = dialog.getInteractionTarget().getMarket();
 				for (SubmarketAPI sub : market.getSubmarketsCopy()) {
 					//if (sub.getPlugin() == null || sub.getCargo() == null) continue;
 					if (sub.getPlugin().isFreeTransfer()) continue;

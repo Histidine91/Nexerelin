@@ -861,12 +861,13 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public static float getReviveSupplyCost(FleetMemberAPI member) {
 		if (member == null) return 0;
 		float deployCost = member.getDeployCost();
-		if (deployCost <= 0) {
-			log.error(String.format("Ship %s has zero or negative deployment cost, applying safety", member.getShipName()));
-			deployCost = 0.1f;
+		if (deployCost <= 1) {
+			log.error(String.format("Ship %s has <1 deployment cost, applying safety", member.getShipName()));
+			deployCost = 1f;
 		}
 		float suppliesPerCRPoint = member.getDeploymentCostSupplies()/deployCost;
 		float suppliesPerDay = suppliesPerCRPoint * member.getRepairTracker().getRecoveryRate();
+		//member.getRepairTracker().setSuspendRepairs(false);
 		float daysToRepair = member.getRepairTracker().getRemainingRepairTime();
 
 		float suppliesNeeded = daysToRepair * suppliesPerDay;

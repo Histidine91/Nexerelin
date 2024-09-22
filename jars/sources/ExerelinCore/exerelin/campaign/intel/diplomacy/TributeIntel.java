@@ -271,7 +271,7 @@ public class TributeIntel extends TimedDiplomacyIntel {
 		String str = StringHelper.getString("nex_tribute", "intel_title");
 		if (listInfoParam == EXPIRED_UPDATE)
 			str += " - " + StringHelper.getString("expired");
-		if (listInfoParam == CANCELLED_UPDATE)
+		else if (listInfoParam == CANCELLED_UPDATE)
 			str += " - " + StringHelper.getString("cancelled");
 		else if (status == TributeStatus.ACTIVE)
 			str += " - " + StringHelper.getString("accepted");

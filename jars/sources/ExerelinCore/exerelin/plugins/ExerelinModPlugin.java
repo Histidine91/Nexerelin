@@ -27,6 +27,7 @@ import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityManager;
 import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
+import com.fs.starfarer.api.impl.campaign.missions.RecoverAPlanetkiller;
 import com.fs.starfarer.api.impl.campaign.missions.cb.MilitaryCustomBounty;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.StarSystemType;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
@@ -44,6 +45,7 @@ import exerelin.campaign.backgrounds.CharacterBackgroundIntel;
 import exerelin.campaign.backgrounds.CharacterBackgroundLoader;
 import exerelin.campaign.backgrounds.CharacterBackgroundUtils;
 import exerelin.campaign.battle.EncounterLootHandler;
+import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.campaign.econ.*;
 import exerelin.campaign.fleets.*;
 import exerelin.campaign.graphics.MiningCooldownDrawerV2;
@@ -340,13 +342,16 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
     }
     
-    protected void alphaSiteWorkaround() {
+    protected void alphaSiteAndSentinelWorkaround() {
         // workaround for blacksite NPE that some mods have
         StarSystemAPI sys = Global.getSector().getStarSystem("Unknown Location");
         if (sys != null && sys.getType() != StarSystemType.NEBULA) {
             log.info("Fixing secret location");
             sys.setType(StarSystemType.NEBULA);
         }
+
+        PlanetAPI sentinel = RecoverAPlanetkiller.getTundra();
+        if (sentinel != null) sentinel.getMarket().getMemoryWithoutUpdate().set(ColonyTargetValuator.MEM_KEY_NO_COLONIZE, true);
     }
     
     public static void modifySynchrotronAndCatCore() {
@@ -495,7 +500,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             StrategicAI.removeAIs();
         }
         
-        alphaSiteWorkaround();
+        alphaSiteAndSentinelWorkaround();
 
         if (PersonalConfigIntel.get() == null) {
             PersonalConfigIntel.create();
@@ -643,7 +648,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onNewGameAfterProcGen() {
         log.info("New game after proc gen; " + isNewGame);
         
-        alphaSiteWorkaround();
+        alphaSiteAndSentinelWorkaround();
         
         // random sector: populate the sector
         if (!SectorManager.getManager().isCorvusMode()) {

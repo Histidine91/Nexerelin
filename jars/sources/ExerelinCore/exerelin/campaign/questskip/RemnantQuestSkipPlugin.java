@@ -44,6 +44,7 @@ public class RemnantQuestSkipPlugin extends BaseQuestSkipPlugin {
             dissonant = RemnantQuestUtils.getDissonant();
             dissonant.getRelToPlayer().setRel(0.07f);
             setMissionDone("nex_remM1", dissonant);
+            remnants.setRelationship(Factions.PLAYER, RepLevel.INHOSPITABLE);
             remnants.setRelationship(Factions.PLAYER, -0.49f);
         }
 
@@ -51,13 +52,11 @@ public class RemnantQuestSkipPlugin extends BaseQuestSkipPlugin {
             setRepLevelFixed(RemnantQuestUtils.getDissonant(), RepLevel.WELCOMING);
             addRandomOmegaWeapons();
             setMissionDone("nex_remFragments", dissonant);
-            remnants.setRelationship(Factions.PLAYER, RepLevel.INHOSPITABLE);
             dissonant.getMemoryWithoutUpdate().set("$nex_convo1seen", true);
         }
         if (chain.isQuestEnabled("nex_lostSci", quests)) {
             setRepLevelFixed(RemnantQuestUtils.getDissonant(), RepLevel.WELCOMING);
             setMissionDone("nex_remLostSci", dissonant);
-            remnants.setRelationship(Factions.PLAYER, RepLevel.INHOSPITABLE);
             dissonant.getMemoryWithoutUpdate().set("$nex_convo1Seen", true);
         }
 

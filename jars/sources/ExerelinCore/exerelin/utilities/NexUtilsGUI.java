@@ -20,12 +20,7 @@ import java.util.List;
 public class NexUtilsGUI {
 		
 	public static TooltipCreator createSimpleTextTooltip(final String str, final float width) {
-		return new TooltipCreator() {
-			@Override
-			public boolean isTooltipExpandable(Object tooltipParam) {
-				return false;
-			}
-
+		return new BaseTooltipCreator() {
 			@Override
 			public float getTooltipWidth(Object tooltipParam) {
 				return width;

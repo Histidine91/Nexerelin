@@ -51,10 +51,11 @@
 				"$metSebestyen":true,
 			}
 		},
+		# technically it should be possible to skip Kallichore and Coureuse separately, but I would rather not have to figure out the handling for that
 		"kallichore":{
 			"name":"Kallichore Arc.",
 			"tooltip":"The player recovers the archive of the previous Galatian Academy provost, Tomas Kallichore, from the Academy.",
-			"idsToForceOnWhenEnabled":["transverseJump"],
+			"idsToForceOnWhenEnabled":["transverseJump", "coureuse"],
 			"idsToForceOffWhenDisabled":["ziggurat", "atTheGates"],
 			"sectorMemFlags":{
 				"$gaKA_missionCompleted":true,
@@ -66,7 +67,7 @@
 		"coureuse":{
 			"name":"Finding Coureuse",
 			"tooltip":"The player finds the missing Academician Scylla Coureuse and invites her back to the Academy.",
-			"idsToForceOnWhenEnabled":["transverseJump"],
+			"idsToForceOnWhenEnabled":["transverseJump", "kallichore"],
 			"idsToForceOffWhenDisabled":["ziggurat", "atTheGates"],
 			"sectorMemFlags":{
 				"$gaFC_missionCompleted":true,
@@ -147,6 +148,7 @@
 			"plugin":"exerelin.campaign.questskip.UsurpersQuestSkipPlugin",
 			"peopleToUnhide":["macario"],
 			"sectorMemFlags":{
+				"$didSDBarRaid":true,
 				"$sdtu_ramDidProposal":true,
 				"$sdtu_missionCompleted":true,
 				

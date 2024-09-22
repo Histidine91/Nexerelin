@@ -83,13 +83,13 @@ public class AllianceVoter {
 				Alliance pAlly = AllianceManager.getFactionAlliance(playerFacId);
 				if (pAlly != null && (pAlly == ally1 || pAlly == ally2))
 				{
-					log.info("Triggering alliance vote as " + playerFacId);
+					//log.info("Triggering alliance vote as " + playerFacId);
 					Global.getSector().addTransientScript(new AllianceVoteScreenScript(faction1Id, faction2Id, isWar));
 					return;
 				}
 			}
 		}
-		log.info("No alliance vote for " + playerFacId);
+		//log.info("No alliance vote for " + playerFacId);
 		allianceVote(faction1Id, faction2Id, isWar, null, null);	
 	}
 	
