@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory.PatrolType;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
@@ -63,7 +64,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final String MANAGER_MAP_KEY = "exerelin_invasionFleetManager";
 	public static final String MEM_KEY_FACTION_TARGET_COOLDOWN = "$nex_recentlyTargetedMilitary";
 	public static final String MEMORY_KEY_POINTS_LAST_TICK = "$nex_invasionPointsLastTick";
+	public static final String MEMORY_KEY_POINTS_LAST_TICK_STAT = "$nex_invasionPointsLastTickStat";
 	public static final String MEMORY_KEY_BASE_POINTS_LAST_TICK = "$nex_invasionPointsLastTickBase";
+	public static final String MEMORY_KEY_REVANCHE = "$nex_invasionPointsDecayingRevancheBonus";
 	
 	public static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
 	public static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
@@ -97,7 +100,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final int ATTACK_PLAYER_COOLDOWN = 60;
 	public static final boolean PREFER_MILITARY_FOR_ORIGIN = false;
 	public static final boolean USE_HOSTILE_TO_ALL_HANDLING = true;
-	
+	public static final float REVANCHE_MARKET_SIZE_MULT = 5;
+	public static final float REVANCHE_CONVERSION_RATIO = 0.5f;
+
 	public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.08f;
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
 	
@@ -962,6 +967,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			nextIsRaid.put(factionId, Math.random() > 0.5f);
 		return nextIsRaid.get(factionId);
 	}
+
+	protected String getPointSourceDesc(String source) {
+		return StringHelper.getString("exerelin_invasion", "invPointStats_" + source);
+	}
 	
 	/**
 	 * Generates invasion points for all applicable markets and factions,
@@ -1039,9 +1048,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 						PlayerFactionStore.getPlayerFactionId());
 			if (!allowPirates && isPirateFaction) continue;
 			
-			float mult = 0f;
+			float mult = 0.5f;
 			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, allowPirates, false, false);
-			if (enemies.isEmpty()) continue;
+			//if (enemies.isEmpty()) continue;
 			
 			if (USE_HOSTILE_TO_ALL_HANDLING && NexUtilsFaction.isFactionHostileToAll(factionId))
 			{
@@ -1079,19 +1088,30 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 				pointsPerFaction.put(factionId, 0f);
 			
 			float currCounter = getSpawnCounter(factionId);
-			float increment = pointsPerFaction.get(factionId);
-			if (!faction.isPlayerFaction() || NexConfig.followersInvasions) {
-				increment += NexConfig.baseInvasionPointsPerFaction;
-				increment += NexConfig.invasionPointsPerPlayerLevel * playerLevel;
-			}
 
-			increment *= config.invasionPointMult;
-			float baseIncrement = increment;
+			MutableStat incrementStat = new MutableStat(0);
+
+
+
+			if (!faction.isPlayerFaction() || NexConfig.followersInvasions) {
+				incrementStat.modifyFlat("base", NexConfig.baseInvasionPointsPerFaction, getPointSourceDesc("base"));
+				incrementStat.modifyFlat("playerLevel", NexConfig.invasionPointsPerPlayerLevel * playerLevel, getPointSourceDesc("playerLevel"));
+			}
+			incrementStat.modifyFlat("markets", pointsPerFaction.get(factionId), getPointSourceDesc("markets"));
+
+			incrementStat.modifyMult("factionConfig", config.invasionPointMult, getPointSourceDesc("factionMult"));
+
+			float baseIncrement = incrementStat.getModifiedValue();
 			faction.getMemoryWithoutUpdate().set(MEMORY_KEY_BASE_POINTS_LAST_TICK, baseIncrement, 3);
 
-			increment *= mult;
-			increment *= ongoingMod;
-			
+			incrementStat.modifyMult("ongoingMod", ongoingMod, getPointSourceDesc("ongoingEvents"));
+
+			float revanche = getDecayingRevancheBonus(factionId);
+			incrementStat.modifyFlat("revanche", revanche * REVANCHE_CONVERSION_RATIO, getPointSourceDesc("revanche"));
+
+			incrementStat.modifyMult("enemiesMult", mult, getPointSourceDesc("numberEnemies"));
+
+			float increment = incrementStat.getModifiedValue();
 			currCounter += increment;
 
 			float max = getMaxInvasionPoints(faction);
@@ -1099,6 +1119,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 
 			//log.info(String.format("Adding %s invasion points for %s", increment, factionId));
 			faction.getMemoryWithoutUpdate().set(MEMORY_KEY_POINTS_LAST_TICK, increment, 3);
+			faction.getMemoryWithoutUpdate().set(MEMORY_KEY_POINTS_LAST_TICK_STAT, incrementStat, 3);
 			
 			float pointsRequired = NexConfig.pointsRequiredForInvasionFleet;
 			boolean canSpawn = currCounter >= pointsRequired;
@@ -1327,6 +1348,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			spawnCounter.put(factionId, 0f);
 		return spawnCounter.get(factionId);
 	}
+
+	public static float getDecayingRevancheBonus(String factionId) {
+		float revanche = 0;
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		if (faction.getMemoryWithoutUpdate().contains(MEMORY_KEY_REVANCHE)) {
+			revanche = faction.getMemoryWithoutUpdate().getExpire(MEMORY_KEY_REVANCHE);
+		}
+		return revanche;
+	}
 	
 	public static float getPointsLastTick(MarketAPI market) {
 		return market.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_POINTS_LAST_TICK);
@@ -1334,6 +1364,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	
 	public static float getPointsLastTick(FactionAPI faction) {
 		return faction.getMemoryWithoutUpdate().getFloat(MEMORY_KEY_POINTS_LAST_TICK);
+	}
+
+	public static MutableStat getPointsLastTickStat(FactionAPI faction) {
+		return (MutableStat)faction.getMemoryWithoutUpdate().get(MEMORY_KEY_POINTS_LAST_TICK_STAT);
 	}
 
 	public static float getBasePointsLastTick(FactionAPI faction) {
@@ -1607,7 +1641,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	@Override
 	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved,
 									   boolean isCapture, List<String> factionsToNotify, float repChangeStrength) {
+		if (isCapture) {
+			float curr = InvasionFleetManager.getDecayingRevancheBonus(oldOwner.getId());
+			float increment = market.getSize() * market.getSize() * REVANCHE_MARKET_SIZE_MULT;
 
+			oldOwner.getMemoryWithoutUpdate().set(MEMORY_KEY_REVANCHE, Global.getSector().getClock().getTimestamp(), increment + curr);
+		}
 	}
 
 	public enum EventType { INVASION, RAID, RESPAWN, BASE_STRIKE, SAT_BOMB, BLOCKADE, DEFENSE, OTHER };

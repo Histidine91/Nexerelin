@@ -1316,6 +1316,14 @@
 		"dialogNoEngage_avoid":"The defenders are refusing to give battle to defend the colony.",
 		
 		"captureAntiExploitMsg":"Due to %s being captured again by player in a short span of time, industry construction/upgrades have been cancelled",
+		
+		"invPointStats_base":"Base",
+		"invPointStats_playerLevel":"Player level",
+		"invPointStats_markets":"Markets",
+		"invPointStats_factionMult":"Faction mult",
+		"invPointStats_ongoingEvents":"Ongoing events count",
+		"invPointStats_revanche":"Decaying revanche bonus",
+		"invPointStats_numberEnemies":"Number of enemies",
 	},
 	"nex_industry":{
 		"effect_synchrotron":"Increases fuel production output by %s units.",
@@ -2612,8 +2620,8 @@
 		"intelPara_daysToNextMeeting":"%s days to next strategy meeting",
 		"intelPara_income":"Our factionwide monthly income from markets is %s",
 		"intelPara_competitors":"Other factions with significant commodity competition:",
-		"intelPara_fleetPool":"Fleet pool at %s / %s  (%s/day)",
-		"intelPara_invasionPoints":"Invasion points: %s / %s  (%s/day)",
+		"intelPara_fleetPool":"Fleet pool: %s / %s  (%s/day)",
+		"intelPara_invasionPoints":"Invasion points: %s / %s  (%s/day) [?]",
 		"intelPara_recentActions":"Concerns recently acted on",
 		"intelPara_actionDelegateDesc":"This action was taken due to the strategic concern %s.",
 		

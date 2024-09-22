@@ -163,27 +163,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	}
 
 	protected void addFleetPoolAndInvasionPoints(TooltipMakerAPI tooltip, float pad) {
-		Color hl = Misc.getHighlightColor();
-		String factionId = faction.getId();
-
-		float nextPad = pad;
-		if (FleetPoolManager.USE_POOL) {
-			float pool = FleetPoolManager.getManager().getCurrentPool(factionId);
-			float poolMax = FleetPoolManager.getManager().getMaxPool(factionId);
-			float poolIncr = FleetPoolManager.getManager().getPointsLastTick(faction);
-			String poolIncrStr = String.format("%.1f", poolIncr);
-			tooltip.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "", poolIncrStr);
-			nextPad = 3;
-		}
-		{
-			float points = InvasionFleetManager.getManager().getSpawnCounter(factionId);
-			float pointsMax = InvasionFleetManager.getMaxInvasionPoints(faction);
-			float pointsIncr = InvasionFleetManager.getPointsLastTick(faction);
-			String pointsStr = Misc.getWithDGS(points);
-			String pointsMaxStr = Misc.getWithDGS(pointsMax);
-			String pointsIncrStr = "" + Math.round(pointsIncr);  //String.format("%.1f", pointsIncr);
-			tooltip.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, pointsStr, pointsMaxStr, pointsIncrStr);
-		}
+		addInvasionPointStats(tooltip, faction);
 	}
 	
 	protected void addDispositionInfo(TooltipMakerAPI tooltip, float pad) {
@@ -680,5 +660,39 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		Global.getSector().getIntelManager().addIntel(profile, true);
 		profile.setNew(false);
 		return profile;
+	}
+
+	public static void addInvasionPointStats(TooltipMakerAPI tt, FactionAPI faction) {
+		float pad = 3, opad = 10;
+		Color hl = Misc.getHighlightColor();
+		String factionId = faction.getId();
+
+		float nextPad = opad;
+		if (FleetPoolManager.USE_POOL) {
+			float pool = FleetPoolManager.getManager().getCurrentPool(factionId);
+			float poolMax = FleetPoolManager.getManager().getMaxPool(factionId);
+			float poolIncr = FleetPoolManager.getManager().getPointsLastTick(faction);
+			String poolIncrStr = String.format("%.1f", poolIncr);
+			tt.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "", poolIncrStr);
+			nextPad = pad;
+		}
+		{
+			float points = InvasionFleetManager.getManager().getSpawnCounter(faction.getId());
+			float pointsMax = InvasionFleetManager.getMaxInvasionPoints(faction);
+			float pointsIncr = InvasionFleetManager.getPointsLastTick(faction);
+			String pointsStr = Misc.getWithDGS(points);
+			String pointsMaxStr = Misc.getWithDGS(pointsMax);
+			String pointsIncrStr = "" + Math.round(pointsIncr);  //String.format("%.1f", pointsIncr);
+			tt.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, pointsStr, pointsMaxStr, pointsIncrStr);
+
+			final MutableStat pointsStat = InvasionFleetManager.getPointsLastTickStat(faction);
+			if (pointsStat == null) return;
+			tt.addTooltipToPrevious(new BaseTooltipCreator() {
+				@Override
+				public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+					tooltip.addStatModGrid(350, 50, 10, 0, pointsStat, false, NexUtils.getStatModValueGetter(true, 0));
+				}
+			}, TooltipMakerAPI.TooltipLocation.BELOW);
+		}
 	}
 }

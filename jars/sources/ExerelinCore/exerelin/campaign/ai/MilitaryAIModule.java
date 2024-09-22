@@ -17,7 +17,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.econ.FleetPoolManager;
-import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.RaidListener;
 import exerelin.plugins.ExerelinModPlugin;
@@ -43,28 +43,7 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener,
 
     @Override
     public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder, float width) {
-        float pad = 3, opad = 10;
-        Color hl = Misc.getHighlightColor();
-        String factionId = ai.getFactionId();
-
-        float nextPad = opad;
-        if (FleetPoolManager.USE_POOL) {
-            float pool = FleetPoolManager.getManager().getCurrentPool(factionId);
-            float poolMax = FleetPoolManager.getManager().getMaxPool(factionId);
-            float poolIncr = FleetPoolManager.getManager().getPointsLastTick(ai.getFaction());
-            String poolIncrStr = String.format("%.1f", poolIncr);
-            tooltip.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "", poolIncrStr);
-            nextPad = pad;
-        }
-        {
-            float points = InvasionFleetManager.getManager().getSpawnCounter(factionId);
-            float pointsMax = InvasionFleetManager.getMaxInvasionPoints(ai.getFaction());
-            float pointsIncr = InvasionFleetManager.getPointsLastTick(ai.getFaction());
-            String pointsStr = Misc.getWithDGS(points);
-            String pointsMaxStr = Misc.getWithDGS(pointsMax);
-            String pointsIncrStr = "" + Math.round(pointsIncr);  //String.format("%.1f", pointsIncr);
-            tooltip.addPara(StrategicAI.getString("intelPara_invasionPoints"), nextPad, hl, pointsStr, pointsMaxStr, pointsIncrStr);
-        }
+        DiplomacyProfileIntel.addInvasionPointStats(tooltip, ai.getFaction());
 
         super.generateReport(tooltip, holder, width);
     }
