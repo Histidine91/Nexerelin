@@ -15,7 +15,7 @@ public class InterventionAction extends DeclareWarAction {
     @Override
     public boolean generate() {
         faction = concern.getFaction();
-        InterventionIntel intel = new InterventionIntel(ai.getFactionId(), faction.getId(), ((InterventionConcern)concern).getOtherFaction().getId());
+        InterventionIntel intel = new InterventionIntel(this, ai.getFactionId(), faction.getId(), ((InterventionConcern)concern).getFriendFaction().getId());
         delegate = intel;
         if (delegate == null) return false;
         intel.init();
@@ -25,6 +25,12 @@ public class InterventionAction extends DeclareWarAction {
             end(StrategicActionDelegate.ActionStatus.SUCCESS);
         }
         return true;
+    }
+
+    @Override
+    public void applyPriorityModifiers() {
+        super.applyPriorityModifiers();
+        priority.unmodifyMult("targetWarDecisionRating");   // don't allow zeroing out decision rating
     }
 
     @Override
@@ -44,7 +50,7 @@ public class InterventionAction extends DeclareWarAction {
 
         // can't intervene if ceasefired
         DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(ai.getFactionId());
-        if (brain != null && brain.getCeasefires().containsKey(ic.getOtherFaction().getId())) {
+        if (brain != null && brain.getCeasefires().containsKey(ic.getFaction().getId())) {
             return false;
         }
 

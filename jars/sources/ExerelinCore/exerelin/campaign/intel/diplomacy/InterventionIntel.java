@@ -9,11 +9,9 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsReputation;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
 import lombok.Getter;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -27,10 +25,11 @@ public class InterventionIntel extends TimedDiplomacyIntel {
     @Getter protected String friendId;
     @Getter protected DiplomacyIntel diploEvent;
 
-    public InterventionIntel(String factionId, String recipientFactionId, String friendId) {
+    public InterventionIntel(StrategicAction action, String factionId, String recipientFactionId, String friendId) {
         this.factionId = factionId;
         this.recipientFactionId = recipientFactionId;
         this.friendId = friendId;
+        this.strategicAction = action;
     }
 
     public void init() {
@@ -47,7 +46,10 @@ public class InterventionIntel extends TimedDiplomacyIntel {
                 makePeace();
                 this.state = 1;
             }
-            if (strategicAction != null) strategicAction.setDelegate(diploEvent);
+            if (strategicAction != null) {
+                diploEvent.setStrategicAction(strategicAction);
+                //strategicAction.setDelegate(diploEvent);
+            }
         }
     }
 
@@ -57,7 +59,6 @@ public class InterventionIntel extends TimedDiplomacyIntel {
         diploEvent = DiplomacyManager.createDiplomacyEventV2(us, recipient, "declare_war", null);
         if (diploEvent != null) {
             repResult = diploEvent.reputation;
-            diploEvent.setStrategicAction(this.strategicAction);
         }
         else repResult = new ExerelinReputationAdjustmentResult(0);
     }
@@ -77,7 +78,6 @@ public class InterventionIntel extends TimedDiplomacyIntel {
         diploEvent = DiplomacyManager.createDiplomacyEventV2(recipient, friend, eventId, null);
         if (diploEvent != null) {
             repResult = diploEvent.reputation;
-            diploEvent.setStrategicAction(this.strategicAction);
         }
         else repResult = new ExerelinReputationAdjustmentResult(0);
     }
@@ -86,6 +86,10 @@ public class InterventionIntel extends TimedDiplomacyIntel {
      * @return True if the recipient faction decides to resist, false otherwise.
      */
     public boolean pickAIResponse() {
+        if (!NexFactionConfig.canCeasefire(recipientFactionId, friendId)) {
+            return true;
+        }
+
         float warDecisionRating = DiplomacyManager.getManager().getDiplomacyBrain(recipientFactionId).getWarDecisionRating(factionId);
         if (warDecisionRating > DiplomacyBrain.DECISION_RATING_FOR_WAR + MathUtils.getRandomNumberInRange(-5, 5)) {
             return true;
@@ -176,6 +180,31 @@ public class InterventionIntel extends TimedDiplomacyIntel {
             // days ago
             info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
         }
+    }
+
+    @Override
+    protected String getName() {
+        String str = StringHelper.getString("exerelin_diplomacy", "intelInterveneTitle");
+        if (listInfoParam == EXPIRED_UPDATE)
+            str += " - " + StringHelper.getString("expired");
+        else if (state == 1)
+            str += " - " + StringHelper.getString("accepted");
+        else if (state == -1)
+            str += " - " + StringHelper.getString("rejected");
+
+        return str;
+    }
+
+    @Override
+    public String getIcon() {
+        if (state == 1) return Global.getSettings().getSpriteName("intel", "peace");
+        if (state == -1) return Global.getSettings().getSpriteName("intel", "war");
+        return getFactionForUIColors().getCrest();
+    }
+
+    @Override
+    public FactionAPI getFactionForUIColors() {
+        return Global.getSector().getFaction(factionId);
     }
 
     @Override

@@ -4,6 +4,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -15,6 +18,7 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.StringHelper;
 import lombok.Getter;
 
 import java.util.HashSet;
@@ -25,8 +29,7 @@ public class InterventionConcern extends DiplomacyConcern {
 
     protected boolean isFriendOrAlly;
 
-    // first faction will be our ally if applicable, this will be whoever they're fighting with
-    @Getter protected FactionAPI otherFaction;
+    @Getter protected FactionAPI friendFaction;
 
 
     @Override
@@ -38,7 +41,16 @@ public class InterventionConcern extends DiplomacyConcern {
         FactionAPI aif = ai.getFaction();
 
         Set<String> friendsToCheck = new LinkedHashSet<>();
+
+        // process existing concerns set
         Set existingConcerns = getExistingConcernItems();
+        Set<String> existingConcerns2 = new HashSet<>();
+        for (Object obj : existingConcerns) {
+            FactionAPI faction = (FactionAPI)obj;
+            Alliance all = AllianceManager.getFactionAlliance(faction.getId());
+            if (all != null) existingConcerns2.addAll(all.getMembersCopy());
+            else existingConcerns2.add(faction.getId());
+        }
 
         Alliance all = AllianceManager.getFactionAlliance(aiid);
         if (all != null) friendsToCheck.addAll(all.getMembersCopy());
@@ -59,7 +71,7 @@ public class InterventionConcern extends DiplomacyConcern {
         for (String friendId : friendsToCheck) {
             Set<String> nonCommonEnemies = getNonCommonEnemies(friendId);
             for (String potentialEnemy : nonCommonEnemies) {
-                if (existingConcerns.contains(potentialEnemy)) continue;
+                if (existingConcerns2.contains(potentialEnemy)) continue;
                 if (aif.getRelationshipLevel(potentialEnemy).isAtWorst(RepLevel.FRIENDLY)) continue;
                 if (NexFactionConfig.getMinRelationship(aiid, potentialEnemy) > -0.5) continue;
                 
@@ -72,23 +84,24 @@ public class InterventionConcern extends DiplomacyConcern {
         Pair<String, String> intervention = picker.pick();
         if (intervention == null) return false;
 
-        faction = Global.getSector().getFaction(intervention.one);
-        otherFaction = Global.getSector().getFaction(intervention.two);
+        faction = Global.getSector().getFaction(intervention.two);
+        friendFaction = Global.getSector().getFaction(intervention.one);
 
         return true;
     }
 
     @Override
     public void update() {
-        if (!faction.isHostileTo(otherFaction)) {
+        if (friendFaction == null) return;
+        if (!faction.isHostileTo(friendFaction)) {
             end();
             return;
         }
-        if (ai.getFaction().isHostileTo(otherFaction)) {
+        if (ai.getFaction().isHostileTo(faction)) {
             end();
             return;
         }
-        if (isFactionCommissionedPlayer(otherFaction)) {
+        if (isFactionCommissionedPlayer(faction)) {
             end();
             return;
         }
@@ -96,12 +109,21 @@ public class InterventionConcern extends DiplomacyConcern {
         super.update();
     }
 
+    public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {
+        LabelAPI label = super.createTooltipDesc(tooltip, holder, pad);
+        label.setText(StringHelper.substituteFactionTokens(label.getText(), "other", friendFaction));
+        label.setHighlight(friendFaction.getDisplayNameWithArticleWithoutArticle(), faction.getDisplayNameWithArticleWithoutArticle());
+        label.setHighlightColors(friendFaction.getBaseUIColor(), faction.getBaseUIColor());
+
+        return label;
+    }
+
     @Override
     public void reapplyPriorityModifiers() {
+        priority.modifyFlat("base", 100, StrategicAI.getString("statBase", true));
         super.reapplyPriorityModifiers();
-
-        float relationshipMod = ai.getFaction().getRelationship(otherFaction.getId()) * 100;
-        String desc = String.format(StrategicAI.getString("statRelationship", true), otherFaction.getDisplayName());
+        float relationshipMod = ai.getFaction().getRelationship(friendFaction.getId()) * 100;
+        String desc = String.format(StrategicAI.getString("statRelationship", true), friendFaction.getDisplayName());
         priority.modifyFlat("otherFactionRel", relationshipMod, desc);
     }
 
@@ -122,8 +144,13 @@ public class InterventionConcern extends DiplomacyConcern {
             // if a potential enemy faction is already in another concern, we'll likely intervene against it there, no need anything here
             if (!(concern instanceof InterventionConcern)) continue;
             InterventionConcern ic = (InterventionConcern)concern;
-            factions.add(ic.otherFaction);
+            factions.add(ic.faction);
         }
         return factions;
+    }
+
+    @Override
+    public String getIcon() {
+        return faction.getCrest();
     }
 }

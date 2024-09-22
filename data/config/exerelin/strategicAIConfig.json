@@ -94,9 +94,9 @@
 		},
 		"interventionConcern":{
 			"name":"Intervene in Conflict",
-			"desc":"Our ally $theFaction is at war with $theOtherFaction. We should intercede on their behalf.",
+			"desc":"Our ally $theOtherFaction is at war with $theFaction. We should intercede on their behalf.",
 			"classPath":"exerelin.campaign.ai.concern.InterventionConcern",
-			"tags":["diplomacy", "military", "diplomacy_positive", "diplomacy_negative", "canDeclareWar", "trait_helps_allies"],
+			"tags":["diplomacy", "military", "trait_helps_allies"],
 			"module":DIPLOMATIC
 		},
 		"commodityCompetition":{

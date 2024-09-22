@@ -1,10 +1,12 @@
 package exerelin.campaign.ai;
 
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.utilities.NexUtils;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import java.util.*;
@@ -16,7 +18,8 @@ public class ExecutiveAIModule extends StrategicAIModule {
         This should make the actual decisions
      */
 
-    public Map<String, Float> recentActionsForAntiRepetition = new HashMap<>();
+    @Getter protected Map<String, Float> recentActionsForAntiRepetition = new HashMap<>();
+    @Getter protected MutableStat maxActionsStat = new MutableStat(0);
 
     public ExecutiveAIModule(StrategicAI ai) {
         super(ai, null);
@@ -88,6 +91,7 @@ public class ExecutiveAIModule extends StrategicAIModule {
             }
         }
 
+        int max = getMaxActionsPerMeeting();
         for (StrategicConcern concern : concerns) {
             if (numOngoingActions > SAIConstants.MAX_SIMULTANEOUS_ACTIONS) break;
 
@@ -104,7 +108,7 @@ public class ExecutiveAIModule extends StrategicAIModule {
             currentConcerns.add(concern);
             actionsTakenThisMeeting++;
             numOngoingActions++;
-            if (actionsTakenThisMeeting >= SAIConstants.ACTIONS_PER_MEETING) break;
+            if (actionsTakenThisMeeting >= max) break;
         }
     }
 
@@ -113,5 +117,10 @@ public class ExecutiveAIModule extends StrategicAIModule {
         String str = StrategicAI.getString("intelPara_recentActions");
         tooltip.addPara(str, 10);
         super.generateReport(tooltip, holder, width);
+    }
+
+    public int getMaxActionsPerMeeting() {
+        if (maxActionsStat == null) maxActionsStat = new MutableStat(0);
+        return SAIConstants.ACTIONS_PER_MEETING + maxActionsStat.getModifiedInt();
     }
 }
