@@ -92,7 +92,10 @@ public class InterventionConcern extends DiplomacyConcern {
 
     @Override
     public void update() {
-        if (friendFaction == null) return;
+        if (!SectorManager.isFactionAlive(friendFaction.getId()) || !SectorManager.isFactionAlive(faction.getId())) {
+            end();
+            return;
+        }
         if (!faction.isHostileTo(friendFaction)) {
             end();
             return;
