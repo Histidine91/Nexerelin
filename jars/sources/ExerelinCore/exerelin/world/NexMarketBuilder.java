@@ -11,7 +11,6 @@ import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.UnderworldModPlugin;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
@@ -194,7 +193,16 @@ public class NexMarketBuilder
 		// add Cabal submarkets
 		if (ExerelinModPlugin.HAVE_UNDERWORLD)
 		{
-			if (!UnderworldModPlugin.isStarlightCabalEnabled()) return;
+			Boolean enabled = false;
+			try {
+				String execute = "return data.scripts.UnderworldModPlugin.isStarlightCabalEnabled();";
+				enabled = (Boolean)NexUtils.runCode(execute, null, Boolean.class);
+			} catch (Exception ex) {
+				log.error("Failed to read Starlight Cabal enabled state", ex);
+			}
+			log.info("Cabal is enabled?: " + enabled);
+
+			if (!Boolean.TRUE.equals(enabled)) return;
 			List<MarketAPI> cabalCandidates = new ArrayList<>();
 			List<MarketAPI> cabalCandidatesBackup = new ArrayList<>();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())

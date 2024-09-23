@@ -18,7 +18,6 @@ import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
@@ -34,7 +33,6 @@ import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 import org.magiclib.terrain.MagicAsteroidBeltTerrainPlugin;
-import originem.al.scripts.campaign.AL_ChaosCrackFleetManager;
 
 import java.awt.*;
 import java.io.IOException;
@@ -1468,7 +1466,14 @@ public class ExerelinProcGen {
 	{
 		SectorEntityToken chaosCrack = system.addCustomEntity("chaosCrack", null, "Chaos_Crack_type", Factions.NEUTRAL);
 		chaosCrack.getLocation().set(-10000f, 12000f);
-		chaosCrack.addScript(new AL_ChaosCrackFleetManager(chaosCrack));
+		String toExecute = "chaosCrack.addScript(new originem.al.scripts.campaign.AL_ChaosCrackFleetManager(chaosCrack));";
+		String[] paramNames = {"chaosCrack"};
+		try {
+			NexUtils.runCode(toExecute, paramNames, null, chaosCrack);
+		} catch (Exception ex) {
+			log.error("Failed to add fleet manager to Chaos rift", ex);
+		}
+
 		SectorEntityToken prime_field1 = system.addTerrain(Terrain.MAGNETIC_FIELD,
 		  new MagneticFieldTerrainPlugin.MagneticFieldParams(chaosCrack.getRadius() + 1000f, // terrain effect band width 
 			chaosCrack.getRadius() + 1600f, // terrain effect middle radius
@@ -1532,7 +1537,13 @@ public class ExerelinProcGen {
 	
 	protected void addAntiochPart2(SectorAPI sector)
 	{
-		TEM_Antioch.generatePt2(sector);
+		String toExecute = "data.scripts.world.templars.TEM_Antioch.generatePt2(sector)";
+		String[] paramNames = {"sector"};
+		try {
+			NexUtils.runCode(toExecute, paramNames, null, sector);
+		} catch (Exception ex) {
+			log.error("Failed to add Antioch to random sector", ex);
+		}
 	}
 	
 	protected void handleHQSpecials(SectorAPI sector, String factionId, ProcGenEntity data)

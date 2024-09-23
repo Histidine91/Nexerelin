@@ -23,7 +23,6 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.world.templars.TEM_Antioch;
 import exerelin.campaign.customstart.Nex_SpacerObligation;
 import exerelin.campaign.intel.Nex_GalatianAcademyStipend;
 import exerelin.campaign.ui.OwnFactionSetupScript;
@@ -379,8 +378,13 @@ public class StartSetupPostTimePass {
 			}
 		}
 		else {
-			if (ExerelinSetupData.getInstance().randomAntiochEnabled && factionId.equals("templars"))
-				entity = TEM_Antioch.getAscalon();
+			if (ExerelinSetupData.getInstance().randomAntiochEnabled && factionId.equals("templars")) {
+				String toExecute = "data.scripts.world.templars.TEM_Antioch.getAscalon()";
+				try {
+					entity = (SectorEntityToken)NexUtils.runCode(toExecute, null, SectorEntityToken.class);
+				} catch (Exception ex) {}
+			}
+
 			else if (!SectorManager.getManager().isFreeStart())
 				entity = SectorManager.getHomeworld();
 		}

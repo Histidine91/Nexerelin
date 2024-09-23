@@ -11,9 +11,9 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.skills.NexSkills;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
-import org.codehaus.janino.ScriptEvaluator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,21 +35,16 @@ public class VanillaSystemsGenerator {
 			inputList.add(entry);
 		}
 		
-		ScriptEvaluator eval = new ScriptEvaluator();
-		eval.setReturnType(void.class);
-		eval.setParentClassLoader(Global.getSettings().getScriptClassLoader());
-		
 		StringBuilder sb = new StringBuilder();
 		for (String input : inputList) sb.append(input);
 		//Global.getLogger(VanillaSystemsGenerator.class).info("Output: " + sb.toString());
 		try
 		{
-			eval.cook(sb.toString());
-			eval.evaluate(null);
+			NexUtils.runCode(sb.toString(), null, null, null);
 		}
 		catch (Exception ex)
 		{
-			throw new RuntimeException(ex);
+			throw new RuntimeException("Failed to generate vanilla star systems", ex);
 		}
 	}
 	

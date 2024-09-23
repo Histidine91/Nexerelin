@@ -83,20 +83,18 @@ Have fun helping us debug the code :)
 ### Required Libraries ###
 These are all the external libraries and referenced mods required to locally build Nexerelin:
 
-- [ApproLight](https://fractalsoftworks.com/forum/index.php?topic=9688.0)
+- [Project Lombok](https://projectlombok.org/)
+- [GraphicsLib](https://fractalsoftworks.com/forum/index.php?topic=10982)
 - [Lazylib](https://fractalsoftworks.com/forum/index.php?topic=5444.0)
-- [Console Commands](https://fractalsoftworks.com/forum/index.php?topic=4106.0)
+- [LunaLib](https://github.com/Lukas22041/LunaLib/)
 - [MagicLib](https://fractalsoftworks.com/forum/index.php?topic=13718.0)
+- [Console Commands](https://fractalsoftworks.com/forum/index.php?topic=4106.0)
+- [Crew Replacer](https://fractalsoftworks.com/forum/index.php?topic=24249.0)
+- [Second in Command](https://fractalsoftworks.com/forum/index.php?topic=30407.0)
 - [Ship/Weapon Pack](https://fractalsoftworks.com/forum/index.php?topic=11018.0)
-- [The Knights Templar](https://fractalsoftworks.com/forum/index.php?topic=8095.0)
-- [Underworld](https://fractalsoftworks.com/forum/index.php?topic=11002.0)
 - [Unofficial New Game Plus](https://fractalsoftworks.com/forum/index.php?topic=16680.0)
 - [Vayra's Sector](https://fractalsoftworks.com/forum/index.php?topic=16058.0)
 - [Volkov Industrial Conglomerate](https://fractalsoftworks.com/forum/index.php?topic=19603.0)
-- [Crew Replacer](https://fractalsoftworks.com/forum/index.php?topic=24249.0)
-- [LunaLib](https://github.com/Lukas22041/LunaLib/)
-- [GraphicsLib](https://fractalsoftworks.com/forum/index.php?topic=10982)
-- [Project Lombok](https://projectlombok.org/)
 
 ## License ##
 The Prism Freeport code and art assets are taken or adapted from the [Scy Nation mod](http://fractalsoftworks.com/forum/index.php?topic=8010.0) by Tartiflette and licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-nc-sa/4.0/).

@@ -18,6 +18,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import org.apache.log4j.Logger;
+import org.codehaus.janino.ScriptEvaluator;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -477,6 +478,29 @@ public class NexUtils
 		Global.getSector().getImportantPeople().addPerson(person);
 
 		return person;
+	}
+
+	public static Object runCode(String input, @Nullable String[] paramNames, @Nullable Class<?> returnType, Object... params) throws Exception {
+		ScriptEvaluator eval = new ScriptEvaluator();
+		if (returnType == null) eval.setReturnType(void.class);
+		else eval.setReturnType(returnType);
+
+		eval.setParentClassLoader(Global.getSettings().getScriptClassLoader());
+		if (paramNames != null) {
+			Class<?>[] paramTypes = new Class<?>[params.length];
+			for (int i=0; i<params.length; i++) {
+				paramTypes[i] = params[i].getClass();
+			}
+			eval.setParameters(paramNames, paramTypes);
+		}
+
+		if (!input.endsWith(";"))
+		{
+			input += ";";
+		}
+
+		eval.cook(input);
+		return eval.evaluate(params);
 	}
 
 	public static class PairWithIntegerComparator implements Comparator<Pair<?, Integer>> {

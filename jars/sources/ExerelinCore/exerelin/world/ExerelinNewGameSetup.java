@@ -19,7 +19,6 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.CustomCons
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.StarCoronaTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.*;
 import exerelin.plugins.ExerelinCampaignPlugin;
@@ -256,7 +255,14 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 	{
 		ProcgenUsedNames.notifyUsed("Antioch");
 		ProcgenUsedNames.notifyUsed("Ascalon");
-		new TEM_Antioch().generate(sector);
+		String className = "data.scripts.world.templars.TEM_Antioch";
+		String toExecute = className + ".generatePt1(sector)";
+		String[] paramNames = {"sector"};
+		try {
+			NexUtils.runCode(toExecute, paramNames, null, sector);
+		} catch (Exception ex) {
+			log.error("Failed to add Antioch to random sector", ex);
+		}
 	}
 	
 	@Override
