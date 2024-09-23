@@ -657,6 +657,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public boolean isFleetInRange(CampaignFleetAPI fleet) {
 		if (fleet == null) return true;
+		if (fleet.getContainingLocation() != market.getContainingLocation()) return false;
 		return MathUtils.getDistance(fleet, 
 				market.getPrimaryEntity()) <= GBConstants.MAX_SUPPORT_DIST;
 	}
