@@ -48,8 +48,6 @@ public class BuyShip extends HubMissionWithBarEvent {
 		AVAILABLE_RULES.add(SModRule.class);
 	}
 
-	public static float BASE_PRICE_MULT = NexConfig.buyShipBasePriceMult;
-
 	public enum Variation {
 		MILITARY, COLLECTOR
 	}
@@ -190,7 +188,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 
 	protected float getPrice() {
 		if (member == null) return 0;
-		return member.getBaseBuyValue() * BASE_PRICE_MULT;
+		return member.getBaseBuyValue() * NexConfig.buyShipBasePriceMult;
 	}
 
 	protected void afterSale(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {

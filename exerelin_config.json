@@ -80,7 +80,7 @@
     "useRelationshipBounds": true,		# if false, disregard min/max faction relationships in faction config
     
     "enableAlliances": true,	# will not dissolve existing alliances if changed, or affect scripted alliances (e.g. Iron Shell with Hegemony)
-    "allianceGracePeriod": 120,  # no alliances can form for this long at start
+    "allianceGracePeriod": 120,	# no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
     "ignoreAlignmentForAlliances": false,
     "predefinedAllianceNameChance": 1,	# use one of two pre-written names for alliances based on the two founding factions (currently only vanilla factions are supported)
@@ -89,6 +89,7 @@
     "baseTariffMult": 0.6,  # 1.0 = base tariff (usually 30%)
     "freeMarketTariffMult": 0.5,    # 0.5 = halved tariffs
     "doubleSubmarketWeapons": false,	# if true, double the amount of weapons generated on most submarkets (old behavior)
+    "buyShipBasePriceMult": 1.6,	# in mission with NPCs buying one of your ships
     
     #"prismInHyperspace": false,	# if false, Prism will get its own star system. Setting to true is likely to crash, not recommended
     "prismMaxWeapons": 27,
