@@ -1629,6 +1629,7 @@
 		"ability_inspire_blurb":"An inspiring battle speech by the leader at the right time can turn the tide of battle.",
 		"ability_inspire_tooltip":"Raises morale of all units by %s, and removes one turn of the reorganizing state. Can be used once per battle.",
 		"ability_inspire_prereq":"Requires %s skill points in Leadership",
+		"ability_inspire_prereq_sic":"[SiC] Requires player level %s",
 		"ability_inspire_prevented":"Inspire prevented",
 		
 		"ability_ew_blurb":"Broad-spectrum EW attack on enemy C3, sensors and intelligence systems disrupts their ability to organize or fight.",

@@ -24,6 +24,7 @@ public class InspireAbilityPlugin extends AbilityPlugin {
 
 	public static float MORALE_BOOST = 0.4f;
 	public static int MIN_LEADERSHIP_SKILLS = 2;
+	public static int SIC_MIN_LEVEL = 5;	// when having Second in Command mod
 	
 	@Override
 	public void activate(InteractionDialogAPI dialog, PersonAPI user) {
@@ -46,17 +47,15 @@ public class InspireAbilityPlugin extends AbilityPlugin {
 	
 	@Override
 	public Pair<String, Map<String, Object>> getDisabledReason(PersonAPI user) {
+		Map<String, Object> params = new HashMap<>();
+
 		if (side.getData().containsKey(GBConstants.TAG_PREVENT_INSPIRE)) {
-			Map<String, Object> params = new HashMap<>();
-			
 			String id = "inspirePrevented";
 			String desc = GroundBattleIntel.getString("ability_inspire_prevented");
 			params.put("desc", desc);
 			return new Pair<>(id, params);
 		}
 		if (Boolean.TRUE.equals(side.getData().get("usedInspire"))) {
-			Map<String, Object> params = new HashMap<>();
-			
 			String id = "alreadyUsed";
 			String desc = GroundBattleIntel.getString("ability_alreadyUsed");
 			params.put("desc", desc);
@@ -64,11 +63,16 @@ public class InspireAbilityPlugin extends AbilityPlugin {
 		}
 		int leadership = getLeadershipSkill(user);
 		if (leadership < MIN_LEADERSHIP_SKILLS) {
-			Map<String, Object> params = new HashMap<>();
-			
 			String id = "prerequisitesNotMet";
 			String desc = GroundBattleIntel.getString("ability_inspire_prereq");
 			desc = String.format(desc, MIN_LEADERSHIP_SKILLS);
+			params.put("desc", desc);
+			return new Pair<>(id, params);
+		}
+		else if (user == Global.getSector().getPlayerPerson() && user.getStats().getLevel() < 5) {
+			String id = "prerequisitesNotMet";
+			String desc = GroundBattleIntel.getString("ability_inspire_prereq_sic");
+			desc = String.format(desc, SIC_MIN_LEVEL);
 			params.put("desc", desc);
 			return new Pair<>(id, params);
 		}
