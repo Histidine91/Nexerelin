@@ -2885,7 +2885,6 @@
 		"brawl_foundStagingAreaNextStep2":"Or negotiate with Hegemony commander before attack commences",
 		"brawl_scoutNextStep":"Go to specified location in %s",
 		"brawl_battleNextStep":"Defend Remnant station in %s",
-		"brawl_battleNextStepUnknown":"Defend Remnant station in unknown location",
 		"brawl_battleBetrayNextStep":"Destroy Remnant station in %s",
 		
 		"brawl_msg_disableWatchtowers":"Artillery network in %s disabled!",

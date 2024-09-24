@@ -407,7 +407,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		float mult = patrolCount/medianPatrolCount;
 		mult = (mult+1)/2;
 		mult *= 2;	// compensate for not using market size mult
-		log.info("Size multiplier for attack fleets based on defender strength: mult");
+		log.info("Size multiplier for attack fleets based on defender strength: " + mult);
 
 		fp = Math.round(fp * mult);
 		fp += playerPower/40f;
@@ -594,6 +594,9 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	
 	public void orderAttack() {
 		if (launchedAttack) return;
+
+		// make sure attack fleets are always spawned
+		spawnAttackFleets();
 		
 		stationToken = station.getContainingLocation().createToken(station.getLocation().x, station.getLocation().y);
 		station.getContainingLocation().addEntity(stationToken);
@@ -728,10 +731,13 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		LocationAPI loc = station.getContainingLocation();
 		if (loc.hasTag("IndEvo_SystemHasArtillery")) {
 			Misc.setFlagWithReason(loc.getMemoryWithoutUpdate(), "$IndEvo_SystemDisableWatchtowers", "nex_remnantBrawl", true, BATTLE_MAX_DAYS);
-			String msg = String.format(getString("brawl_msg_disableWatchtowers"), loc.getNameWithLowercaseType());
-			Global.getSector().getCampaignUI().addMessage(msg, Misc.getHighlightColor(), loc.getNameWithLowercaseType(),
+			String sysName = loc.getNameWithLowercaseType();
+			if (!knowStagingArea) {
+				sysName = StringHelper.getString("unknownLocation");
+			}
+			String msg = String.format(getString("brawl_msg_disableWatchtowers"), sysName);
+			Global.getSector().getCampaignUI().addMessage(msg, Misc.getHighlightColor(), sysName,
 					"", station.getFaction().getBaseUIColor(), Color.WHITE);
-
 		}
 	}
 	
@@ -992,14 +998,23 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		info.addPara(str, opad);
 		
 		if (ExerelinModPlugin.isNexDev) {
-			info.addPara("[debug] We are now in stage: " + currentStage, opad);
+			info.addPara("DEBUG INFO", Misc.getHighlightColor(), opad);
+			bullet(info);
+			info.addPara("We are now in stage: " + currentStage, opad);
 			//info.addPara("[debug] Staging area found: " + knowStagingArea, opad);
-			info.addPara("[debug] Station is in: " + station.getContainingLocation().getNameWithLowercaseTypeShort(), 0);
-			info.addPara("[debug] Staging area: " + stagingArea.getNameWithLowercaseTypeShort(), 0);
+			info.addPara("Station is in: " + station.getContainingLocation().getNameWithLowercaseTypeShort(), 0);
+			info.addPara("Staging area: " + stagingArea.getNameWithLowercaseTypeShort(), 0);
 			info.addPara(String.format("[debug] Straggler origin: %s in %s", stragglerOrigin.getName(), stragglerOrigin.getContainingLocation().getName()), 0);
 			if (straggler != null && straggler.isAlive()) {
-				info.addPara("[debug] Straggler currently in " + straggler.getContainingLocation().getNameWithLowercaseTypeShort(), 0);
+				info.addPara("Straggler currently in " + straggler.getContainingLocation().getNameWithLowercaseTypeShort(), 0);
+			} else {
+				info.addPara("Straggler is ded (or not yet spawned)", 0);
 			}
+			if (currentStage == Stage.BATTLE) {
+				String elapsed = String.format("%.1f", battleTimer);
+				info.addPara("Battle time elapsed: " + elapsed, 0, Misc.getHighlightColor(), elapsed);
+			}
+			unindent(info);
 		}
 		Color col = station.getStarSystem().getStar().getSpec().getIconColor();
 		String sysName = station.getContainingLocation().getNameWithLowercaseTypeShort();
@@ -1033,6 +1048,10 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	public boolean addNextStepText(TooltipMakerAPI info, Color tc, float pad) {
 		Color col = station.getStarSystem().getStar().getSpec().getIconColor();
 		String sysName = station.getContainingLocation().getNameWithLowercaseTypeShort();
+		if (!knowStagingArea) {
+			sysName = StringHelper.getString("unknownLocation");
+			col = Misc.getHighlightColor();
+		}
 		
 		//info.addPara("[debug] Current stage: " + currentStage, tc, pad);
 		
@@ -1051,7 +1070,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			info.addPara(getString("brawl_scoutNextStep"), 0, tc, col, sysName);
 		}
 		else if (currentStage == Stage.BATTLE) {
-			info.addPara(getString("brawl_battleNextStep" + (knowStagingArea ? "" : "Unknown")), 0, tc, col, sysName);
+			info.addPara(getString("brawl_battleNextStep"), 0, tc, col, sysName);
 		}
 		else if (currentStage == Stage.BATTLE_DEFECTED) {
 			info.addPara(getString("brawl_battleBetrayNextStep"), 0, tc, col, sysName);

@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.characters.SkillSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.DerelictShipData;
@@ -36,10 +37,13 @@ import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+import second_in_command.SCData;
+import second_in_command.SCUtils;
+import second_in_command.specs.SCOfficer;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 
@@ -49,6 +53,19 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 	public static final int REQUIRED_HACK_SCORE = 5;
 	public static final int MAX_SHARDS = 6;
 	public static final float MOTHERSHIP_ORBIT_DIST = 12000;
+
+	public static final Map<String, Integer> SKILL_HACK_SCORES = new HashMap<>();
+	static {
+		SKILL_HACK_SCORES.put(Skills.APT_TECHNOLOGY, 1);
+		SKILL_HACK_SCORES.put(Skills.ELECTRONIC_WARFARE, 3);
+		SKILL_HACK_SCORES.put(Skills.AUTOMATED_SHIPS, 3);
+		SKILL_HACK_SCORES.put(Skills.CYBERNETIC_AUGMENTATION, 3);
+		SKILL_HACK_SCORES.put(Skills.GUNNERY_IMPLANTS, 2);
+
+		SKILL_HACK_SCORES.put("sc_technology", 5);
+		SKILL_HACK_SCORES.put("sc_automated", 5);
+		SKILL_HACK_SCORES.put("sc_dustkeeper", 5);
+	}
 	
 	public enum Stage {
 		GO_TO_SYSTEM,
@@ -470,29 +487,36 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		}
 	}
 	
-	public int getSkillValueForHack(SkillLevelAPI skill) {
-		if (!skill.getSkill().getGoverningAptitudeId().equals(Skills.APT_TECHNOLOGY)) return 0;
-		if (skill.getLevel() <= 0) return 0;
-		switch (skill.getSkill().getId()) {
-			case Skills.ELECTRONIC_WARFARE:
-			case Skills.AUTOMATED_SHIPS:
-				return 3;
-			case Skills.CYBERNETIC_AUGMENTATION:
-				return 2;
-			case Skills.GUNNERY_IMPLANTS:
-				if (skill.getLevel() >= 2) return 2; 
-				else return 1;
-			default:
-				return 1;
+	public int getSkillValueForHack(String skillId) {
+		if (SKILL_HACK_SCORES.containsKey(skillId)) {
+			return SKILL_HACK_SCORES.get(skillId);
 		}
+		SkillSpecAPI spec = Global.getSettings().getSkillSpec(skillId);
+		if (spec != null && SKILL_HACK_SCORES.containsKey(spec.getGoverningAptitudeId())) {
+			return SKILL_HACK_SCORES.get(spec.getGoverningAptitudeId());
+		}
+
+		return 0;
 	}
 	
 	public int getHackScore() {
 		int score = 0;
-		for (SkillLevelAPI skill : Global.getSector().getCharacterData().getPerson().getStats().getSkillsCopy())
-		{
-			score += getSkillValueForHack(skill);
+		Set<String> skills = new HashSet<>();
+		if (Global.getSettings().getModManager().isModEnabled("second_in_command")) {
+			SCData data = SCUtils.getFleetData(Global.getSector().getPlayerFleet());
+			for (SCOfficer active : data.getActiveOfficers()) {
+				score += getSkillValueForHack(active.getAptitudeId());
+			}
 		}
+		else {
+			for (SkillLevelAPI skill : Global.getSector().getCharacterData().getPerson().getStats().getSkillsCopy())
+			{
+				if (skill.getLevel() <= 0) return 0;
+				skills.add(skill.getSkill().getId());
+			}
+		}
+		for (String skillId : skills) score += getSkillValueForHack(skillId);
+
 		return score;
 	}
 	
@@ -566,7 +590,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 				return true;
 			case "setHackOptions":
 				MemoryAPI mem = memoryMap.get(MemKeys.LOCAL);
-				mem.set("$nex_remFragments_canHack", getHackScore() > REQUIRED_HACK_SCORE, 0);
+				mem.set("$nex_remFragments_canHack", getHackScore() >= REQUIRED_HACK_SCORE, 0);
 				dialog.getOptionPanel().setEnabled("nex_remFragments_engineerConvoHackAI", haveAICore(null));
 				return true;
 			case "setAIOptions":
