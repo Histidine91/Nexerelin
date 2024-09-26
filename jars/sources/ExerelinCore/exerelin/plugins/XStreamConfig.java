@@ -33,6 +33,7 @@ import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
 import exerelin.campaign.intel.diplomacy.TributeIntel;
 import exerelin.campaign.intel.fleets.*;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
+import exerelin.campaign.intel.hostileactivity.NexHostileActivityEventIntel;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.invasion.InvAssembleStage;
 import exerelin.campaign.intel.invasion.InvasionIntel;
@@ -55,6 +56,9 @@ public class XStreamConfig {
 	
 	public static void configureXStream(com.thoughtworks.xstream.XStream x)
 	{
+		// vanilla overrides
+		x.alias("HostileActivityEventIntel", NexHostileActivityEventIntel.class);
+
 		/*
 		x.alias("AllianceMngr", AllianceManager.class);
 		x.alias("CovertOpsMngr", CovertOpsManager.class);

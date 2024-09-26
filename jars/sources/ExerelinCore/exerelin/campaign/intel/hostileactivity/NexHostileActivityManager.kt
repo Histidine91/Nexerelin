@@ -22,7 +22,7 @@ class NexHostileActivityManager : HostileActivityManager() {
         if (tracker.intervalElapsed()) {
             val playerHasColonies = !NexUtilsFaction.getPlayerMarkets(INCLUDE_AUTONOMOUS, false).isEmpty()
             if (HostileActivityEventIntel.get() == null && playerHasColonies) {
-                val ha = HostileActivityEventIntel()
+                val ha = NexHostileActivityEventIntel()
                 purgeOldListeners()
                 replaceVanillaOverrideActivities(ha)
 
