@@ -146,11 +146,6 @@ public class CeasefirePromptIntel extends TimedDiplomacyIntel implements PopupDi
 	}
 
 	@Override
-	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
-		prompt.addPara(StringHelper.getString("exerelin_diplomacy", "intelCeasefireConfirm"), 0);
-	}
-
-	@Override
 	protected void advanceImpl(float amount) {
 		if (this.isEnding() || this.isEnded())
 			return;

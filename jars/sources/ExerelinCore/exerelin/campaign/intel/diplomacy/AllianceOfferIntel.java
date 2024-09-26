@@ -15,6 +15,7 @@ import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ public class AllianceOfferIntel extends TimedDiplomacyIntel {
 		this.factionId = offeringFactionId;
 		this.alliance = alliance;
 		this.alliance2 = alliance2;
+		daysRemaining = MathUtils.getRandomNumberInRange(20, 30);
 	}
 	
 	public void init() {
@@ -156,16 +158,6 @@ public class AllianceOfferIntel extends TimedDiplomacyIntel {
 	public void onExpire() {
 		applyExtendedCooldown = true;
 		reject();
-	}
-
-	@Override
-	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
-		prompt.addPara(StringHelper.getString("exerelin_diplomacy", "intelCeasefireConfirm"), 0);
-	}
-	
-	@Override
-	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
-		return buttonId != StrategicActionDelegate.BUTTON_GO_INTEL;
 	}
 	
 	@Override

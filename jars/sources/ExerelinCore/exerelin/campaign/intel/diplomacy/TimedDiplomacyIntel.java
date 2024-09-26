@@ -142,7 +142,12 @@ public abstract class TimedDiplomacyIntel extends BaseIntelPlugin implements Str
 
     @Override
     public boolean doesButtonHaveConfirmDialog(Object buttonId) {
-        return true;
+        return buttonId != StrategicActionDelegate.BUTTON_GO_INTEL;
+    }
+
+    @Override
+    public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+        prompt.addPara(StringHelper.getString("exerelin_diplomacy", "intelCeasefireConfirm"), 0);
     }
 
     @Override

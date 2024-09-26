@@ -202,11 +202,6 @@ public class TributeIntel extends TimedDiplomacyIntel {
 		endEvent();
 		setImportant(false);
 	}
-	
-	@Override
-	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
-		prompt.addPara(StringHelper.getString("nex_tribute", "intel_dialogConfirm"), 0);
-	}
 
 	@Override
 	protected boolean endOnAccept() {

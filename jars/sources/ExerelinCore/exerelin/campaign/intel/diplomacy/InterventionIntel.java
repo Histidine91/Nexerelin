@@ -3,8 +3,10 @@ package exerelin.campaign.intel.diplomacy;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
@@ -18,6 +20,7 @@ import org.lazywizard.lazylib.MathUtils;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class InterventionIntel extends TimedDiplomacyIntel {
 
@@ -36,7 +39,9 @@ public class InterventionIntel extends TimedDiplomacyIntel {
         // if recipient is not a player-ruled faction, an AI method handles response
         // else, add this intel to intel manager and let player decide
         if (Nex_IsFactionRuler.isRuler(recipientFactionId)) {
+            daysRemaining = MathUtils.getRandomNumberInRange(20, 30);
             Global.getSector().getIntelManager().addIntel(this);
+            Global.getSector().addScript(this);
         } else {
             boolean resist = pickAIResponse();
             if (resist) {
@@ -119,6 +124,13 @@ public class InterventionIntel extends TimedDiplomacyIntel {
     }
 
     @Override
+    protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate,
+                                   Color tc, float initPad) {
+        NexUtilsFaction.addFactionNamePara(info, initPad, tc, getFactionForUIColors());
+        NexUtilsFaction.addFactionNamePara(info, 0, tc, Global.getSector().getFaction(friendId));
+    }
+
+    @Override
     public void createGeneralDescription(TooltipMakerAPI info, float width, float opad) {
         Color h = Misc.getHighlightColor();
 
@@ -127,7 +139,7 @@ public class InterventionIntel extends TimedDiplomacyIntel {
         FactionAPI friend = Global.getSector().getFaction(friendId);
 
         // image
-        info.addImages(width, 128, opad, opad, issuer.getCrest(), recipient.getCrest(), friend.getCrest());
+        info.addImages(width, 96, opad, opad, issuer.getCrest(), recipient.getCrest(), friend.getCrest());
 
         Map<String, String> replace = new HashMap<>();
 
@@ -205,6 +217,17 @@ public class InterventionIntel extends TimedDiplomacyIntel {
     @Override
     public FactionAPI getFactionForUIColors() {
         return Global.getSector().getFaction(factionId);
+    }
+
+    @Override
+    public Set<String> getIntelTags(SectorMapAPI map) {
+        Set<String> tags = super.getIntelTags(map);
+        tags.add(Tags.INTEL_AGREEMENTS);
+        tags.add(StringHelper.getString("diplomacy", true));
+        tags.add(factionId);
+        tags.add(recipientFactionId);
+        tags.add(friendId);
+        return tags;
     }
 
     @Override
