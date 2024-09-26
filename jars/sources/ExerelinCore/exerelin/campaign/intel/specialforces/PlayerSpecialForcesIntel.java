@@ -30,14 +30,13 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.ModPluginEventListener;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtilsFleet;
-import exerelin.utilities.NexUtilsGUI;
+import exerelin.utilities.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+import second_in_command.SCData;
+import second_in_command.SCUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -224,6 +223,10 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		fleet.setAIMode(AI_MODE);
 		fleet.setTransponderOn(false);
+
+		if (Global.getSettings().getModManager().isModEnabled("second_in_command")) {
+			handleSecondInCommand(fleet);
+		}
 		
 		isAlive = true;
 		waitingForSpawn = false;
@@ -232,6 +235,13 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		tempFleet = null;
 		
 		return fleet;
+	}
+
+	protected void handleSecondInCommand(CampaignFleetAPI fleet) {
+		// manually generate our own, maxed-out XO set
+		fleet.addTag("sc_do_not_generate_skills");
+		SCData data = SCUtils.getFleetData(fleet);
+		NexUtilsSIC.generateRandomXOs(data, fleet, 3, 15);
 	}
 	
 	public float getMonthsSuppliesRemaining() {
