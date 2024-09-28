@@ -9,7 +9,7 @@
 	"collisionClassByFighter":"PROJECTILE_FIGHTER",
 	
 	"onHitEffect":"exerelin.combat.weapons.AlicornEffect",
-	"width":30,
+	"width":45,
 	"fringeColor":[0,0,255,255],
 	"coreColor":[100,160,192,255],
 	"useHitGlowWhenDealingDamage":false, # using the scripted explosion instead
@@ -31,18 +31,7 @@
 									 "sound":"nex_alicorn_impact_light"},
 					},
 	
-	## missile values, can remove if we're going back to regular projectiles
-	"missileType":"PHASE_CHARGE",
-	"sprite":"graphics/missiles/rift_torpedo.png",
-	"size":[14,16],	
-	"center":[7,8],
-	"collisionRadius":10,
-	"armingTime":0,	
 	"fadeTime":10, # fadeout duration
-	"flameoutTime":10, # total time from flameout to full fadeout
-	"dudProbabilityOnFlameout":0,
-	"noEngineGlowTime":0, # time spent without the engine glow being rendered
-	#"fizzleOnReachingWeaponRange":false,
 	
 	"engineSpec":{"turnAcc":0,
 				  "turnRate":0,
