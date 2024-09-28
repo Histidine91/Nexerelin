@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Missions;
 import com.fs.starfarer.api.impl.campaign.ids.People;
+import com.fs.starfarer.api.impl.campaign.missions.academy.GAFCReplaceArchon;
 import exerelin.campaign.AcademyStoryVictoryScript;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.StartSetupPostTimePass;
@@ -65,6 +66,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             market.addPerson(cour);
             market.getCommDirectory().addPerson(cour);
             zal.getMemoryWithoutUpdate().set("$metAlready", true);
+            new GAFCReplaceArchon().run();  // archon replacement
         }
 
         if (kallichore || coureuse) {
