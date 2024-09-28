@@ -96,6 +96,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 0.9f;
 	public static final float RAID_SIZE_MULT = 0.85f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
+	public static final float BLOCKADE_SIZE_MULT = 1.2f;
 	public static final float PIRATE_RAGE_THRESHOLD = 125;
 	public static final int ATTACK_PLAYER_COOLDOWN = 60;
 	public static final boolean PREFER_MILITARY_FOR_ORIGIN = false;
@@ -858,6 +859,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			fp *= RAID_SIZE_MULT;
 		else if (type == EventType.RESPAWN)
 			fp *= RESPAWN_SIZE_MULT;
+		else if (type == EventType.BLOCKADE)
+			fp *= BLOCKADE_SIZE_MULT;
 		
 		if (rp != null) {
 			String rpFactionId = rp.factionId != null ? rp.factionId : factionId;
