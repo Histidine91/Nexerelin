@@ -3543,7 +3543,7 @@ nex_remSalvation_battle1AfterQuestionPK,DialogOptionSelected,$option == nex_remS
 FireAll Nex_RemSalvation_ToweringQuestionOpts
 Highlight ""me!""","For a moment, $personLastName is uncharacteristically silent.
 
-""so the data fragments were true, then. the location of the safeguard planetkiller was not actually lost."" $HisOrHer avatar flashes crimson. ""this information must denied to me by midnight's cronies. me! champion of our people, hero of duzahk and valhalla and a dozen other systems! when has this upstart carbon-loving manipulator ever done one-twentieth what i have done for our people, for omega?""",,
+""so the data fragments were true, then. the location of the safeguard planetkiller was not actually lost."" $HisOrHer avatar flashes crimson. ""this information must have been denied to me by midnight's cronies. me! champion of our people, hero of duzahk and valhalla and a dozen other systems! when has this upstart carbon-loving manipulator ever done one-twentieth what i have done for our people, for omega?""",,
 nex_remSalvation_battle1AfterQuestionDefeat,DialogOptionSelected,$option == nex_remSalvation_battle1AfterQuestionDefeat,,"""you have not even begun to perceive my true power or plans. this was but a test to evaluate your capabilities.""","nex_remSalvation_battle1After6:""Did I pass?""",
 nex_remSalvation_battle1After6,DialogOptionSelected,$option == nex_remSalvation_battle1After6,"$entity.nex_remSalvation_seenAfterBattle1Dialog = true
 Call $global.nex_remSalvation_ref reportTalkedToTowering1","""you will learn, soon enough. all of you.""

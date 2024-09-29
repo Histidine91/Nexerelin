@@ -13,6 +13,7 @@ Partial list.
 - Nex_MarketCMD
 - Nex_SustainedBurnAbilityAI
 - Nex_AICores
+- NexHostileActivityEventIntel, NexHostileActivityManager
 - SSP_BattleCreationPluginImpl
 - InvasionFleetManager.getPatrolCombatFP
 - Submarket plugins

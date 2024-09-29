@@ -61,6 +61,9 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
         if (!NexConfig.enableAlliances) return false;
         if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
 
+        if (!ALLIANCE_DEBUGGING && NexUtils.getTrueDaysSinceStart() < NexConfig.allianceGracePeriod) return false;
+        if (!concern.getDef().hasTag("canAlly") && !concern.getDef().hasTag("canCoalition")) return false;
+
         if (!ALLIANCE_DEBUGGING && Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_GLOBAL_COOLDOWN))
             return false;
         if (ai.getFaction().getMemoryWithoutUpdate().getBoolean(MEMKEY_ANTISPAM)) return false;
@@ -84,11 +87,15 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
             if (faction.isPlayerFaction() && comm != null) return false;    // don't deal with player while commissioned
             boolean playerRuled = Nex_IsFactionRuler.isRuler(faction);
             if (playerRuled && !NexConfig.npcAllianceOffers) return false;
-            if (!ALLIANCE_DEBUGGING && playerRuled && ai.getFaction().getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN)) return false;
+
+            // don't send offers while cooldown
+            if (!ALLIANCE_DEBUGGING && playerRuled) {
+                if (ai.getFaction().getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN) || faction.getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN))
+                return false;
+            }
         }
 
-        if (!ALLIANCE_DEBUGGING && NexUtils.getTrueDaysSinceStart() < NexConfig.allianceGracePeriod) return false;
-        return concern.getDef().hasTag("canAlly") || concern.getDef().hasTag("canCoalition");
+        return true;
     }
 
     @Override

@@ -3085,7 +3085,7 @@
 		"name_allowInvadeStartingMarkets":"Allow invasion of markets existing at start",
 		"tooltip_allowInvadeStartingMarkets":"If false, markets that were present at the start of the game will not be invaded by NPC factions (does not affect player).",
 		"name_followersInvasions":"Player faction launches invasions",
-		"tooltip_followersInvasions":"If true, player invasion will launch invasion events of its own. (Autonomous colonies can do this regardless of this setting, but very infrequently.)",
+		"tooltip_followersInvasions":"If true, player faction will launch invasion events of its own. (Autonomous colonies can do this regardless of this setting, but very infrequently.)",
 		"name_allowPirateInvasions":"Allow pirate invasions",
 		"tooltip_allowPirateInvasions":"Allow pirate-type factions to invade and be invaded. This also applies to player colonies with a pirate commission.",
 		"name_retakePirateMarkets":"Retake pirate conquests",
@@ -3213,5 +3213,8 @@
 		
 		"name_skipStoryDefault":"Default \"skip story\" option",
 		"tooltip_skipStoryDefault":"Default setting for the \"skip story\" toggle in new game setup dialog.",
+		
+		"name_buyShipBasePriceMult":"NPC buy ship price mult",
+		"tooltip_buyShipBasePriceMult":"For bar and contact missions where an NPC offers to buy one of your ships.",
 	}
 }
