@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.ButtonAPI;
@@ -25,6 +26,7 @@ public abstract class TimedDiplomacyIntel extends BaseIntelPlugin implements Str
     public static final Object EXPIRED_UPDATE = new Object();
     public static final String BUTTON_ACCEPT = "Accept";
     public static final String BUTTON_REJECT = "Reject";
+    public static final float DEFAULT_TIMEOUT = 30;
 
     protected String factionId;
     @Getter @Setter protected int state = 0;	// 0 = pending, 1 = accepted, -1 = rejected
@@ -34,6 +36,14 @@ public abstract class TimedDiplomacyIntel extends BaseIntelPlugin implements Str
     protected float storedRelation;
 
     @Getter @Setter protected StrategicAction strategicAction;
+
+    public TimedDiplomacyIntel() {
+        this(DEFAULT_TIMEOUT);
+    }
+
+    public TimedDiplomacyIntel(float timeout) {
+        this.daysRemaining = timeout;
+    }
 
     protected boolean endOnAccept() {
         return true;
@@ -112,9 +122,18 @@ public abstract class TimedDiplomacyIntel extends BaseIntelPlugin implements Str
     public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
         if (buttonId == BUTTON_ACCEPT) {
             accept();
+            ui.updateUIForItem(this);
+            return;
         }
         else if (buttonId == BUTTON_REJECT) {
             reject();
+            ui.updateUIForItem(this);
+            return;
+        }
+
+        else if (buttonId == StrategicActionDelegate.BUTTON_GO_INTEL && strategicAction != null) {
+            Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, strategicAction.getAI());
+            return;
         }
         super.buttonPressConfirmed(buttonId, ui);
     }

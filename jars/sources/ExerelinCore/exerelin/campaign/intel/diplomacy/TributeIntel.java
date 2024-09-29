@@ -51,9 +51,9 @@ public class TributeIntel extends TimedDiplomacyIntel {
 	
 	public TributeIntel(String factionId, MarketAPI market)
 	{
+		super(MathUtils.getRandomNumberInRange(14, 21));
 		this.factionId = factionId;
 		this.market = market;
-		daysRemaining = MathUtils.getRandomNumberInRange(14, 21);
 	}
 	
 	public void init() {

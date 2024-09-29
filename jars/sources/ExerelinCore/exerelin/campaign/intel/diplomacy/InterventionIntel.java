@@ -29,6 +29,7 @@ public class InterventionIntel extends TimedDiplomacyIntel {
     @Getter protected DiplomacyIntel diploEvent;
 
     public InterventionIntel(StrategicAction action, String factionId, String recipientFactionId, String friendId) {
+        super(MathUtils.getRandomNumberInRange(20, 30));
         this.factionId = factionId;
         this.recipientFactionId = recipientFactionId;
         this.friendId = friendId;
@@ -39,7 +40,6 @@ public class InterventionIntel extends TimedDiplomacyIntel {
         // if recipient is not a player-ruled faction, an AI method handles response
         // else, add this intel to intel manager and let player decide
         if (Nex_IsFactionRuler.isRuler(recipientFactionId)) {
-            daysRemaining = MathUtils.getRandomNumberInRange(20, 30);
             Global.getSector().getIntelManager().addIntel(this);
             Global.getSector().addScript(this);
         } else {
@@ -94,6 +94,12 @@ public class InterventionIntel extends TimedDiplomacyIntel {
         if (!NexFactionConfig.canCeasefire(recipientFactionId, friendId)) {
             return true;
         }
+        float friendWeariness = DiplomacyManager.getWarWeariness(friendId, true);
+        if (friendWeariness < NexConfig.minWarWearinessForPeace)
+            return true;
+        float enemyWeariness = DiplomacyManager.getWarWeariness(recipientFactionId, true);
+        if (enemyWeariness < NexConfig.minWarWearinessForPeace)
+            return true;
 
         float warDecisionRating = DiplomacyManager.getManager().getDiplomacyBrain(recipientFactionId).getWarDecisionRating(factionId);
         if (warDecisionRating > DiplomacyBrain.DECISION_RATING_FOR_WAR + MathUtils.getRandomNumberInRange(-5, 5)) {

@@ -3,7 +3,9 @@ package exerelin.campaign.intel.diplomacy;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.ui.*;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.SectorMapAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
@@ -37,9 +39,9 @@ public class CeasefirePromptIntel extends TimedDiplomacyIntel implements PopupDi
 	
 	public CeasefirePromptIntel(String factionId, boolean isPeaceTreaty)
 	{
+		super(MathUtils.getRandomNumberInRange(5, 7));
 		this.factionId = factionId;
 		this.isPeaceTreaty = isPeaceTreaty;
-		daysRemaining = MathUtils.getRandomNumberInRange(5, 7);
 	}
 	
 	public void init() {

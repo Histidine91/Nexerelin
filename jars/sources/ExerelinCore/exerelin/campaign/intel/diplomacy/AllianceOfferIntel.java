@@ -1,7 +1,6 @@
 package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -9,7 +8,6 @@ import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -22,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-// largely a copypaste of CeasefirePromptIntel
 public class AllianceOfferIntel extends TimedDiplomacyIntel {
 
 	public static final float COOLDOWN = 60;	// tripled if player rejects offer or it expires
@@ -32,13 +29,13 @@ public class AllianceOfferIntel extends TimedDiplomacyIntel {
 	@Nullable @Getter protected Alliance alliance2;
 	protected boolean applyExtendedCooldown;
 
-	//runcode new exerelin.campaign.intel.diplomacy.AllianceOfferIntel("luddic_church", null).init();
+	//runcode new exerelin.campaign.intel.diplomacy.AllianceOfferIntel("hegemony", null, null).init();
 	public AllianceOfferIntel(String offeringFactionId, @Nullable Alliance alliance, @Nullable Alliance alliance2)
 	{
+		super(MathUtils.getRandomNumberInRange(20, 30));
 		this.factionId = offeringFactionId;
 		this.alliance = alliance;
 		this.alliance2 = alliance2;
-		daysRemaining = MathUtils.getRandomNumberInRange(20, 30);
 	}
 	
 	public void init() {
@@ -162,11 +159,6 @@ public class AllianceOfferIntel extends TimedDiplomacyIntel {
 	
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
-		if (buttonId == StrategicActionDelegate.BUTTON_GO_INTEL && strategicAction != null) {
-			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, strategicAction.getAI());
-			return;
-		}
-
 		if (buttonId == BUTTON_REJECT) {
 			applyExtendedCooldown = true;
 		}
@@ -179,8 +171,9 @@ public class AllianceOfferIntel extends TimedDiplomacyIntel {
 		if (isEnding() || isEnded())
 			return;
 
-		// auto-reject if relations become too poor
-		if (Global.getSector().getPlayerFaction().isAtBest(factionId, RepLevel.NEUTRAL)) {
+		// auto-reject if relations become too poor to form new alliance
+		boolean bad = alliance == null && alliance2 == null && Global.getSector().getPlayerFaction().isAtBest(factionId, RepLevel.NEUTRAL);
+		if (bad) {
 			reject();
 			endAfterDelay();
 			return;
