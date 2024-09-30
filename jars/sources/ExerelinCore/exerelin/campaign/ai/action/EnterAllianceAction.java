@@ -90,7 +90,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
 
             // don't send offers while cooldown
             if (!ALLIANCE_DEBUGGING && playerRuled) {
-                if (ai.getFaction().getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN) || faction.getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN))
+                if (ai.getFaction().getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN))
                 return false;
             }
         }

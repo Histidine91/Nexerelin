@@ -62,6 +62,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.4f;
     public static final float STARTING_RELATIONSHIP_WELCOMING = 0.4f;
     public static final float STARTING_RELATIONSHIP_FRIENDLY = 0.6f;
+    public static final float RELATIONSHIP_HOSTILE_WITH_MARGIN = -0.6f;
     public static final float WAR_WEARINESS_INTERVAL = 3f;
     public static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
     public static final float WAR_WEARINESS_ENEMY_COUNT_MULT = 0.25f;
@@ -374,6 +375,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     {
         return adjustRelations(faction1, faction2, delta, ensureAtBest, ensureAtWorst, limit, false);
     }
+
+    public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
+                                                                     RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit, boolean isAllianceAction) {
+        return adjustRelations(faction1, faction2, delta, ensureAtBest, ensureAtWorst, 0, limit, isAllianceAction);
+    }
     
     /**
      * Complicated stuff for setting relationships between two factions
@@ -388,7 +394,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      * @return
      */
     public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
-            RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit, boolean isAllianceAction)
+            RepLevel ensureAtBest, RepLevel ensureAtWorst, float postEnsureDelta, RepLevel limit, boolean isAllianceAction)
     {
         float before = faction1.getRelationship(faction2.getId());
         boolean wasHostile = faction1.isHostileTo(faction2);
@@ -413,6 +419,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (ensureAtWorst != null) {
                 faction1.ensureAtWorst(faction2Id, ensureAtWorst);
         }
+        if (postEnsureDelta != 0) {
+            if (limit != null)
+                faction1.adjustRelationship(faction2Id, postEnsureDelta, limit);
+            else
+                faction1.adjustRelationship(faction2Id, postEnsureDelta);
+        }
+
         boolean playerWasHostile1 = faction1.isHostileTo(Factions.PLAYER);
         boolean playerWasHostile2 = faction2.isHostileTo(Factions.PLAYER);
         
@@ -456,10 +469,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         boolean playerIsHostile1 = faction1.isHostileTo(Factions.PLAYER);
         boolean playerIsHostile2 = faction2.isHostileTo(Factions.PLAYER);
-        if (playerIsHostile1 != playerWasHostile1)
+        if (playerIsHostile1 != playerWasHostile1) {
             printPlayerHostileStateMessage(faction1, playerIsHostile1, false);
-        if (playerIsHostile2 != playerWasHostile2)
+        }
+        if (playerIsHostile2 != playerWasHostile2) {
             printPlayerHostileStateMessage(faction2, playerIsHostile2, false);
+        }
         
         // TODO: display specific reputation change in message field if it affects player?
         if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))

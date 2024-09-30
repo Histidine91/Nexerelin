@@ -17,6 +17,7 @@ import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,8 +44,20 @@ public class AllianceOfferIntel extends TimedDiplomacyIntel {
 		Global.getSector().getIntelManager().addIntel(this);
 		Global.getSector().addScript(this);
 
-		PlayerFactionStore.getPlayerFaction().getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN);
-		Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN);
+		saveCooldown(COOLDOWN);
+	}
+
+	public void saveCooldown(float duration) {
+		Set<String> factionsToApply = new HashSet<>();
+		factionsToApply.add(PlayerFactionStore.getPlayerFactionId());
+		factionsToApply.add(factionId);
+
+		Alliance all = AllianceManager.getFactionAlliance(factionId);
+		if (all != null) factionsToApply.addAll(all.getMembersCopy());
+
+		for (String f : factionsToApply) {
+			Global.getSector().getFaction(f).getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, duration);
+		}
 	}
 	
 	@Override
@@ -146,8 +159,7 @@ public class AllianceOfferIntel extends TimedDiplomacyIntel {
 
 	public void rejectImpl() {
 		if (applyExtendedCooldown) {
-			PlayerFactionStore.getPlayerFaction().getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN * 3);
-			Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN * 3);
+			saveCooldown(COOLDOWN * 3);
 		}
 	}
 

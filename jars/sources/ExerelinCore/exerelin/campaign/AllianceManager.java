@@ -16,6 +16,7 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.alliances.AllianceVoter.VoteResult;
+import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
 import exerelin.campaign.intel.diplomacy.AllianceOfferIntel;
@@ -773,6 +774,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         // declare war on/make peace with the other faction/alliance
         float delta = isWar ? -0.1f : 0.3f;
+        float postEnsureDelta = -0.05f;
         RepLevel ensureAtBest = isWar ? RepLevel.HOSTILE : null;
         RepLevel ensureAtWorst = isWar ? null : RepLevel.INHOSPITABLE;
         RepLevel limit = faction1.getRelationshipLevel(faction2);
@@ -802,7 +804,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                         }
                 
                         DiplomacyManager.adjustRelations(a1Member, otherMember, delta, 
-                                ensureAtBest, ensureAtWorst, limit, true);
+                                ensureAtBest, ensureAtWorst, postEnsureDelta, limit, true);
                         
                         boolean m2VotedYes = vote2.yesVotes.contains(a2MemberId);
                         
@@ -825,7 +827,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                         continue;
                     }
                     DiplomacyManager.adjustRelations(a1Member, faction2, delta, 
-                            ensureAtBest, ensureAtWorst, limit, true);
+                            ensureAtBest, ensureAtWorst, postEnsureDelta, limit, true);
                     if (m1VotedYes)
                             manager.getDiplomacyBrain(a1MemberId).reportDiplomacyEvent(faction2Id, delta);
                     
@@ -848,7 +850,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 }
                 
                 DiplomacyManager.adjustRelations(a2Member, faction1, delta, 
-                            ensureAtBest, ensureAtWorst, limit, true);
+                            ensureAtBest, ensureAtWorst, postEnsureDelta, limit, true);
                 if (m2VotedYes)
                     manager.getDiplomacyBrain(a2MemberId).reportDiplomacyEvent(faction1Id, delta);
                 
@@ -910,6 +912,28 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         ui.addMessage(messageStr, Color.WHITE, highlightOrdered1, highlightOrdered2, highlightColor, highlightColor);
         
         SectorManager.checkForVictory();
+    }
+
+    /**
+     * After an alliance vote for war, apply ceasefires to anyone choosing not to participate in the war.
+     * This is so the non-participants don't join the war immediately after with a strategy AI intervention action
+     * @param vote
+     * @param opposing
+     */
+    public static void applyCeasefireOnNoVote(VoteResult vote, Set<String> opposing) {
+        DiplomacyManager manager = DiplomacyManager.getManager();
+        Set<String> toCeasefire = new HashSet<>();
+        toCeasefire.addAll(vote.defied);
+        if (!vote.success) toCeasefire.addAll(vote.noVotes);
+
+        for (String fid : toCeasefire) {
+            FactionAPI faction = Global.getSector().getFaction(fid);
+            DiplomacyBrain brain = manager.getDiplomacyBrain(fid);
+            for (String oid : opposing) {
+                if (faction.isHostileTo(oid)) continue;
+                brain.addCeasefire(oid);
+            }
+        }
     }
     
     public static void setPlayerInteractionTarget(SectorEntityToken interactionTarget) {

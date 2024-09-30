@@ -118,6 +118,14 @@ public class AllianceVoter {
 		Set<String> defyingFactions = new HashSet<>();
 		if (vote1 != null) defyingFactions.addAll(vote1.defied);
 		if (vote2 != null) defyingFactions.addAll(vote2.defied);
+
+		Set<String> side1 = new HashSet<>();
+		side1.add(faction1Id);
+		if (ally1 != null) side1.addAll(ally1.getMembersCopy());
+
+		Set<String> side2 = new HashSet<>();
+		side2.add(faction2Id);
+		if (ally2 != null) side2.addAll(ally2.getMembersCopy());
 		
 		// handle vote results
 		if (vote1 != null && vote1.success)
@@ -130,6 +138,17 @@ public class AllianceVoter {
 		else if (vote2 != null && vote2.success)
 		{
 			AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, null, ally2, null, vote2, isWar, defyingFactions);
+		}
+
+		// after a war vote, add ceasefires to factions choosing not to participate
+		// this is so they don't join the war immediately after with a strategy AI intervention action
+		if (isWar) {
+			if (vote1 != null) {
+				AllianceManager.applyCeasefireOnNoVote(vote1, side2);
+			}
+			if (vote2 != null) {
+				AllianceManager.applyCeasefireOnNoVote(vote2, side1);
+			}
 		}
 		
 		// report intel
