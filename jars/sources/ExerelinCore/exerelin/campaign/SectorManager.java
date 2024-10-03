@@ -1060,6 +1060,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for (SectorEntityToken entity : linkedEntities)
         {
             entity.setFaction(newOwnerId);
+            CampaignFleetAPI statFleet = Misc.getStationBaseFleet(entity);
+            if (statFleet != null) statFleet.setFaction(newOwnerId, true);
+            statFleet = Misc.getStationFleet(entity);
+            if (statFleet != null) statFleet.setFaction(newOwnerId, true);
         }
         
         // Use comm board people instead of market people, 
@@ -1076,16 +1080,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         market.setFactionId(newOwnerId);
         market.setPlayerOwned(newOwnerId.equals(Factions.PLAYER));
-        
-        // transfer defense station
-        if (Misc.getStationFleet(market) != null)
-        {
-            Misc.getStationFleet(market).setFaction(newOwnerId, true);
-        }
-        if (Misc.getStationBaseFleet(market) != null)
-        {
-            Misc.getStationBaseFleet(market).setFaction(newOwnerId, true);
-        }
         
         // don't lock player out of freshly captured market
         if (!newOwner.isHostileTo(Factions.PLAYER))
