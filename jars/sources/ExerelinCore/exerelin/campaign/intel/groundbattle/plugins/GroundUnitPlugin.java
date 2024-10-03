@@ -118,12 +118,12 @@ public class GroundUnitPlugin extends BaseGroundBattlePlugin {
         if (unit.getFleet() != null && unit.isFleetInRange()) {
             bonus = NexUtils.cloneStatBonus(unit.getFleet().getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD));
         }
-        // attacker unit not from a fleet (usually a rebel?)
-        // do nothing
-        else if (unit.isAttacker()) {
+
+        // attacker unit, no non-fleet bonuses
+        if (unit.isAttacker()) {
 
         }
-        // defender unit not from a fleet
+        // defender unit
         else {
             // start by applying vanilla-type ground defense stat bonuses
             bonus = NexUtils.cloneStatBonus(intel.getMarket().getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD));
