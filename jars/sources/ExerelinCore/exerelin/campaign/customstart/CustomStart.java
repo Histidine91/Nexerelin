@@ -12,6 +12,18 @@ import java.util.Map;
 // Custom starting fleet; e.g. spacer start
 public abstract class CustomStart {
 	public abstract void execute(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap);
+
+	public boolean shouldShow() {
+		return true;
+	}
+
+	/**
+	 * Will disable the custom start if this returns a non-null value.
+	 * @return
+	 */
+	public String getDisabledTooltip() {
+		return null;
+	}
 	
 	protected String getShip(FactionAPI faction, String role) {
 		List<ShipRolePick> roles = faction.pickShip(role, ShipPickParams.all());

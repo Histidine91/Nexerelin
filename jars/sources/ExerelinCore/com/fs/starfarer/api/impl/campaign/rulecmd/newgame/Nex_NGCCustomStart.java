@@ -10,8 +10,10 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.customstart.CustomStart;
 import exerelin.campaign.customstart.CustomStartDefs;
 import exerelin.campaign.customstart.CustomStartDefs.CustomStartDef;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import org.lwjgl.input.Keyboard;
 
@@ -126,6 +128,9 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 		{
 			if (def.requiredModId != null && !Global.getSettings().getModManager().isModEnabled(def.requiredModId))
 				continue;
+
+			CustomStart script = (CustomStart) NexUtils.instantiateClassByName(def.className);
+			if (!script.shouldShow()) continue;
 			
 			String option = CUSTOM_START_OPTION_PREFIX + def.id;
 			
@@ -144,6 +149,10 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 			if (!valid) {
 				disabled.add(option);
 			}
+			String disableTT = script.getDisabledTooltip();
+			if (disableTT != null) {
+				disabled.add(option);
+			}
 			
 			StringBuilder tb = new StringBuilder();
 			if (!valid) {
@@ -156,6 +165,10 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 			}
 			else if (disabledNonRandom) {
 				tb.append(tooltipDisabledNonRandom);
+				tb.append("\n\n");
+			}
+			else if (disableTT != null) {
+				tb.append(disableTT);
 				tb.append("\n\n");
 			}
 			FactionAPI faction = Global.getSettings().createBaseFaction(def.factionId);
@@ -179,6 +192,9 @@ public class Nex_NGCCustomStart extends PaginatedOptions {
 				hlColors.add(0, Misc.getNegativeHighlightColor());
 			} else if (disabledNonRandom) {
 				hl.add(0, tooltipDisabledNonRandom);
+				hlColors.add(0, Misc.getNegativeHighlightColor());
+		} else if (disableTT != null) {
+				hl.add(0, disableTT);
 				hlColors.add(0, Misc.getNegativeHighlightColor());
 			}
 			
