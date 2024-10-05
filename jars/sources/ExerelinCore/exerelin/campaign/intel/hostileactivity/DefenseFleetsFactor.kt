@@ -34,7 +34,7 @@ class DefenseFleetsFactor(intel: HostileActivityEventIntel?) : BaseHostileActivi
         const val DEBUG_MODE = false
     }
 
-    override fun getDesc(intel: BaseEventIntel): String {
+    override fun getDesc(intel: BaseEventIntel?): String {
         return NexHostileActivityManager.getString("defensiveFleetName");
     }
 
@@ -42,7 +42,7 @@ class DefenseFleetsFactor(intel: HostileActivityEventIntel?) : BaseHostileActivi
         return ""
     }
 
-    override fun getDescColor(intel: BaseEventIntel): Color {
+    override fun getDescColor(intel: BaseEventIntel?): Color {
         return if (getProgress(intel) >= 0) {
             Misc.getGrayColor()
         } else Global.getSector().playerFaction.baseUIColor
