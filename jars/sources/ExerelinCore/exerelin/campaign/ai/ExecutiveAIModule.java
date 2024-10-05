@@ -1,6 +1,7 @@
 package exerelin.campaign.ai;
 
-import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import exerelin.campaign.ai.action.StrategicAction;
@@ -17,9 +18,9 @@ public class ExecutiveAIModule extends StrategicAIModule {
 	/*
         This should make the actual decisions
      */
+    public static final String ACTIONS_BONUS_MEM_KEY = "$nex_strategicAI_actionsPerTurnBonus";
 
     @Getter protected Map<String, Float> recentActionsForAntiRepetition = new HashMap<>();
-    @Getter protected MutableStat maxActionsStat = new MutableStat(0);
 
     public ExecutiveAIModule(StrategicAI ai) {
         super(ai, null);
@@ -120,7 +121,14 @@ public class ExecutiveAIModule extends StrategicAIModule {
     }
 
     public int getMaxActionsPerMeeting() {
-        if (maxActionsStat == null) maxActionsStat = new MutableStat(0);
-        return SAIConstants.ACTIONS_PER_MEETING + maxActionsStat.getModifiedInt();
+        return Math.round(getMaxActionsBonus().computeEffective(SAIConstants.ACTIONS_PER_MEETING));
+    }
+
+    public StatBonus getMaxActionsBonus() {
+        MemoryAPI mem = ai.getFaction().getMemoryWithoutUpdate();
+        if (!mem.contains(ACTIONS_BONUS_MEM_KEY)) {
+            mem.set(ACTIONS_BONUS_MEM_KEY, new StatBonus());
+        }
+        return (StatBonus)mem.get(ACTIONS_BONUS_MEM_KEY);
     }
 }
