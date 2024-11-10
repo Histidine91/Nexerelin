@@ -70,7 +70,7 @@
 	
 	"nex_governorship_maxSize":4,	# tooltip will not be updated to reflect changes to this
 	"nex_governorship_industryValueMult":0.8,
-	"nex_autonomousIncomeMult":0.2,
+	"nex_autonomousIncomeMult":0.25,
 	"nex_rulerIncomeMult":0.2,	# making it same as autonomous income mult saves me the trouble of rewriting the tooltip for it
 	"nex_xpPerProfitMargin":4000,	# passive XP income from profitable colonies administered by player
 	

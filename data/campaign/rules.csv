@@ -971,7 +971,7 @@ $faction.id == player
 Nex_GrantAutonomy isAutonomous
 !$market.nex_autonomySuspended",,,nex_revokeAutonomy:Revoke autonomy,
 nex_grantAutonomy,DialogOptionSelected,$option == nex_grantAutonomy,"Nex_GrantAutonomy init
-AddTextSmall ""An autonomous market will only generate 20% of its usual profit or loss, and will not count towards the player's colony or admin limits. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. Tech-mining will not produce items.""
+AddTextSmall ""An autonomous market will only generate 20% of its usual profit or loss, and will not consume the player's admin capacity. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. Tech-mining will not produce items.""
 SetTextHighlightColors hColor
 SetTextHighlights 20%
 AddTextSmall ""Revoking autonomy later will cause $nex_revokeAutonomyUnrest points of recent unrest.""
@@ -1003,7 +1003,7 @@ FireAll PopulateOptions","Autonomy suspended. Perform the desired operations $on
 ,,,,,,
 nex_suspendAutonomyRemoteOption,ExerelinMarketSpecial,,,,8:nex_suspendAutonomyRemote:Take temporary control of autonomous colonies,
 nex_suspendAutonomyRemoteMenu,DialogOptionSelected,$option == nex_suspendAutonomyRemote,FireAll Nex_RemoteSuspendAutonomy,,,
-nex_suspendAutonomyRemoteMenuByTrigger,Nex_RemoteSuspendAutonomy,,Nex_RemoteSuspendAutonomy menu,"Temporarily removes the autonomous state from the selected colony, allowing you to build or remove industries and add/remove special objects. Colony reverts to being autonomous after undocking. There is no stability penalty.",,
+nex_suspendAutonomyRemoteMenuByTrigger,Nex_RemoteSuspendAutonomy,,Nex_RemoteSuspendAutonomy menu,,,
 nex_suspendAutonomyRemote,DialogOptionSelected,Nex_OptionStartsWith nex_suspendAutonomyRemote_,Nex_RemoteSuspendAutonomy select,,,
 #END Grant autonomy,,,,,,
 ,,,,,,
@@ -2739,7 +2739,7 @@ nex_remLostSci_inquireSpacerEnd,DialogOptionSelected,$option == nex_remLostSci_i
 ShowDefaultVisual
 FireAll PopulateOptions","On your way out, you notice someone leaving the room in a hurry.",,
 ,,,,,,
-nex_remLostSci_planetDialog,OpenInteractionDialog,"$nex_remLostSci_planet_imp
+nex_remLostSci_planetDialog,OpenInteractionDialog,"$nex_remLostSci_planet_imp score:1000
 $global.nex_remLostSci_ref != null","ShowDefaultVisual
 PrintDescription 3
 Call $global.nex_remLostSci_ref updateData

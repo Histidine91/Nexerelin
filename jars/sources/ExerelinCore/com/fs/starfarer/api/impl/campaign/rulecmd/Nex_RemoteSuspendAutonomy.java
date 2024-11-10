@@ -1,6 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -11,12 +12,12 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.intel.PlayerOutpostIntel;
 import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsGUI.NullCoreInteractionListener;
 import exerelin.utilities.StringHelper;
+import org.lwjgl.input.Keyboard;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.lwjgl.input.Keyboard;
 
 public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus {
 	
@@ -27,7 +28,7 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus {
 	protected boolean special;	// from special menu (i.e. FieldOptionsScreenScript)
 	
 	@Override
-	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
+	public boolean execute(final String ruleId, InteractionDialogAPI dialog, List<Token> params, final Map<String, MemoryAPI> memoryMap) {
 		String arg = params.get(0).getString(memoryMap);
 		
 		switch (arg)
@@ -43,7 +44,12 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus {
 				String marketId = memoryMap.get(MemKeys.LOCAL).getString("$option").substring(PREFIX_LENGTH);
 				MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
 				Nex_GrantAutonomy.suspendAutonomy(market);
-				dialog.getVisualPanel().showCore(CoreUITabId.OUTPOSTS, null, new NullCoreInteractionListener());
+				dialog.getVisualPanel().showCore(CoreUITabId.OUTPOSTS, null, new CoreInteractionListener() {
+					@Override
+					public void coreUIDismissed() {
+						FireBest.fire(ruleId, Global.getSector().getCampaignUI().getCurrentInteractionDialog(), memoryMap, "Nex_RemoteSuspendAutonomy");
+					}
+				});
 				return true;
 		}
 		
