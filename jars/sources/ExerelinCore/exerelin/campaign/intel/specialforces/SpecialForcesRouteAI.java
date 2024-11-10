@@ -770,7 +770,8 @@ public class SpecialForcesRouteAI {
 		sf.debugMsg("Route finished, looking for new task", false);
 		
 		if (currentTask == null) {
-			pickTask(false);
+			SpecialForcesTask task = pickTask(false);
+			if (task != null) assignTask(task);
 			return;
 		}
 		
@@ -798,7 +799,8 @@ public class SpecialForcesRouteAI {
 		}
 		
 		currentTask = null;
-		pickTask(false);
+		SpecialForcesTask task = pickTask(false);
+		if (task != null) assignTask(task);
 	}
 	
 	public void advance(float amount) {
@@ -1079,7 +1081,7 @@ public class SpecialForcesRouteAI {
 		public TaskType type;
 		public float priority;
 		public IntelInfoPlugin raid;
-		public float time = 45;	// controls how long the action segment lasts
+		public float time = 45f;	// controls how long the action segment lasts
 		@Getter private MarketAPI market;
 		@Getter @Setter private SectorEntityToken entity;
 		public StarSystemAPI system;
