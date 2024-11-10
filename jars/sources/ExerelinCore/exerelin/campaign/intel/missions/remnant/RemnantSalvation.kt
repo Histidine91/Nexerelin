@@ -152,7 +152,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         if (base == null) return false
 
         arroyoMarket = Global.getSector().importantPeople.getPerson(People.ARROYO)?.market;
-        if (arroyoMarket == null) {
+        if (arroyoMarket == null || !arroyoMarket!!.isInEconomy) {
             requireMarketFaction(Factions.TRITACHYON)
             requireMarketNotHidden()
             requireMarketNotInHyperspace()
@@ -913,7 +913,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
     protected fun haveArroyoComms(): Boolean {
         val arroyo = Global.getSector().importantPeople.getPerson(People.ARROYO) ?: return false
-        return !arroyoMarket!!.commDirectory.getEntryForPerson(arroyo).isHidden;
+        val entry = arroyoMarket!!.commDirectory.getEntryForPerson(arroyo) ?: return false
+        return entry.isHidden
     }
 
     protected fun getCombatSkillLevel(): Float {
