@@ -22,6 +22,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.*;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.agents.AgentIntel;
@@ -807,6 +808,15 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			markets = AllianceManager.getFactionAlliance(govtFaction.getId()).getAllianceMarkets();
 		else
 			markets = NexUtilsFaction.getFactionMarkets(govtFaction.getId());
+
+		Set<String> alliesOfRebels = new HashSet<>();
+		Alliance rebelAlliance = AllianceManager.getFactionAlliance(rebelFaction.getId());	// lol
+		if (rebelAlliance != null) {
+			alliesOfRebels.addAll(rebelAlliance.getMembersCopy());
+		} else {
+			alliesOfRebels.add(rebelFaction.getId());
+		}
+
 		for (MarketAPI maybeSource : markets)
 		{
 			if (maybeSource == this.market)
@@ -815,6 +825,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			if (!maybeSource.hasSpaceport()) continue;
 			
 			if (RebellionIntel.isOngoing(maybeSource)) continue;
+
+			if (maybeSource.getFaction().isPlayerFaction() || maybeSource.isPlayerOwned()) continue;
+
+			if (alliesOfRebels.contains(maybeSource.getFaction().getId())) continue;
 			
 			float dist = Misc.getDistance(maybeSource.getLocationInHyperspace(), targetLoc);
 			if (dist < 5000.0f) {
