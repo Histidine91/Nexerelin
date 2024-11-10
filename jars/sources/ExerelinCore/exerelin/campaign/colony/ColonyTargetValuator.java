@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.*;
@@ -217,6 +218,12 @@ public class ColonyTargetValuator {
 		}
 		
 		if (market.getPrimaryEntity().hasTag(Tags.NOT_RANDOM_MISSION_TARGET)) {
+			return false;
+		}
+		if (market.isInvalidMissionTarget()) {
+			return false;
+		}
+		if (Misc.doesMarketHaveMissionImportantPeopleOrIsMarketMissionImportant(market.getPrimaryEntity())) {
 			return false;
 		}
 		
