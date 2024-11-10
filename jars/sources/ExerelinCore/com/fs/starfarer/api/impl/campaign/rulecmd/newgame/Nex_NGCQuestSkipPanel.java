@@ -56,6 +56,7 @@ public class Nex_NGCQuestSkipPanel {
                 toDisplay.add(entry);
             }
             int numButtons = toDisplay.size();
+            if (numButtons == 0) return;
 
             NexUtilsGUI.RowSortCalc rowSortInfo = new NexUtilsGUI.RowSortCalc(numButtons, BUTTON_SECTION_WIDTH,
                     BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -99,7 +100,7 @@ public class Nex_NGCQuestSkipPanel {
 
             int index = 0;
             CustomPanelPluginWithInput plugin = (CustomPanelPluginWithInput)this.getCustomPanelPlugin();
-            for (QuestSkipEntry entry : chain.quests) {
+            for (QuestSkipEntry entry : toDisplay) {
                 SkipQuestButtonEntry button = new SkipQuestButtonEntry(buttons.get(index), entry, chain, buttonEntries);
                 buttonEntries.add(button);
                 plugin.addButton(button);
