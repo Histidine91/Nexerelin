@@ -2,7 +2,7 @@ mission id,person id,tagsAll,tagsAny,tagsNotAny,tags,freq,min timeout,max timeou
 nex_dcom,,,trade,,,10,30,60,FAVORABLE,,MEDIUM,,,,graphics/icons/missions/disrupt_competitor.png,exerelin.campaign.intel.missions.Nex_DisruptIndustry
 nex_gbTut,,,,,"priority, non_repeatable",,,,,,,,,,graphics/exerelin/icons/missions/gb_tutorial.png,exerelin.campaign.intel.missions.GroundBattleTutorial
 nex_buildStation,,,"remnant, underworld",,,5,120,180,,,MEDIUM,,,,graphics/icons/markets/pirate_base.png,exerelin.campaign.intel.missions.BuildStation
-nex_bShip,,,"military, trade, underworld",,,,60,90,,,,,,,,exerelin.campaign.intel.missions.BuyShip
+nex_bShip,,,"military, trade, underworld",,,5,60,90,,,,,,,,exerelin.campaign.intel.missions.BuyShip
 nex_conquest,,,military,,,5,45,90,WELCOMING,,HIGH,,,,graphics/exerelin/icons/intel/invasion.png,exerelin.campaign.intel.missions.ConquestMissionContact
 nex_msb,,,"military, remnant",,,,,,FAVORABLE,,LOW,,,,graphics/icons/missions/military_bounty.png,exerelin.campaign.intel.missions.MilitarySystemBounty
 nex_supReb,,,"military, underworld",,,,,,WELCOMING,,HIGH,,,,graphics/exerelin/icons/intel/rebellion.png,exerelin.campaign.intel.missions.SupplyRebellion

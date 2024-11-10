@@ -1,6 +1,6 @@
 bar event id,tags,freq,prob,min dur,max dur,min timeout,max timeout,min accepted timeout,max accepted timeout,plugin
 nex_dcom,,2,1,30,40,15,20,60,90,exerelin.campaign.intel.missions.Nex_DisruptIndustry
-nex_bShip,,2,1,30,40,15,20,60,90,exerelin.campaign.intel.missions.BuyShip
+nex_bShip,,1,0.8,30,40,20,30,80,120,exerelin.campaign.intel.missions.BuyShip
 nex_msb,,1,0.8,30,40,20,30,80,120,exerelin.campaign.intel.missions.MilitarySystemBounty
 # vanilla override,,,,,,,,,,
 tabo,,1,1,30,40,15,20,120,180,exerelin.campaign.intel.missions.Nex_TacticallyBombardColony
