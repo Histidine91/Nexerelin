@@ -1,35 +1,27 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.characters.AdminData;
 import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
+import com.fs.starfarer.api.impl.campaign.econ.impl.PopulationAndInfrastructure;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_GrantAutonomy;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.groundbattle.GBConstants;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtils;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import exerelin.utilities.*;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.util.*;
 
 /**
  *
@@ -440,6 +432,26 @@ public class InvasionRound {
 		
 		// perform actual transfer
 		SectorManager.transferMarket(market, attackerFaction, defenderFaction, playerInvolved, true, factionsToNotify, repChangeStrength);
+		if (market.getFaction().isPlayerFaction() && !playerInvolved) {
+			makeAutonomousIfNeeded(market);
+		}
+	}
+
+	protected static void makeAutonomousIfNeeded(MarketAPI market) {
+		if (playerHasFreeGoverningCapacity()) return;
+		Nex_GrantAutonomy.grantAutonomy(market);
+		Nex_GrantAutonomy.setNoStabLossOnRevokeAutonomy(market);
+	}
+
+	protected static boolean playerHasFreeGoverningCapacity() {
+		int capacity = 0;
+		for (AdminData data : Global.getSector().getCharacterData().getAdmins()) {
+			if (data.getMarket() == null) capacity++;
+		}
+		// FIXME: will probably count wrong if the per-colony stability penalty is >1
+		int overLimit = PopulationAndInfrastructure.getMismanagementPenalty();
+		capacity -= overLimit;
+		return capacity >= 0;	// check is done after we're already admining the new market, so if it's at zero it means we had/have just enough
 	}
 	
 	public static boolean canInvade(SectorEntityToken entity)

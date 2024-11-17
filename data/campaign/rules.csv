@@ -971,23 +971,22 @@ $faction.id == player
 Nex_GrantAutonomy isAutonomous
 !$market.nex_autonomySuspended",,,nex_revokeAutonomy:Revoke autonomy,
 nex_grantAutonomy,DialogOptionSelected,$option == nex_grantAutonomy,"Nex_GrantAutonomy init
-AddTextSmall ""An autonomous market will only generate 20% of its usual profit or loss, and will not consume the player's admin capacity. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. Tech-mining will not produce items.""
-SetTextHighlightColors hColor
-SetTextHighlights 20%
-AddTextSmall ""Revoking autonomy later will cause $nex_revokeAutonomyUnrest points of recent unrest.""
-SetTextHighlightColors bad
-SetTextHighlights $nex_revokeAutonomyUnrest
+FireAll Nex_AutonomyHelpText
 Nex_AddOptionConfirmation nex_grantAutonomy_confirm ""Confirm?"" ""Yes"" ""No""","""So you wish to grant autonomy to $marketName?""","nex_grantAutonomy_confirm:Proceed
 nex_grantAutonomy_cancel:Cancel",
 nex_revokeAutonomy,DialogOptionSelected,$option == nex_revokeAutonomy,"Nex_GrantAutonomy init
-AddTextSmall ""An autonomous market will only generate 20% of its usual profit or loss, and will not count towards the player's colony or admin limits. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. Tech-mining will not produce items.""
-SetTextHighlightColors hColor
-SetTextHighlights 20%
-AddTextSmall ""Revoking autonomy will cause $nex_revokeAutonomyUnrest points of recent unrest.""
-SetTextHighlightColors bad
-SetTextHighlights $nex_revokeAutonomyUnrest
+FireAll Nex_AutonomyHelpText
 Nex_AddOptionConfirmation nex_revoketAutonomy_confirm ""Confirm?"" ""Yes"" ""No""","""This is... quite concerning. Do you wish to reassume direct administration of $marketName?""","nex_revokeAutonomy_confirm:Proceed
 nex_grantAutonomy_cancel:Cancel",
+nex_printAutonomyHelpText,Nex_AutonomyHelpText,,"AddTextSmall ""An autonomous market will only generate 25% of its usual profit or loss, and will not consume the player's admin capacity. Heavy industry here will not contribute to the player's personal production capacity, although the faction will still benefit from its ship quality bonuses. Tech-mining will not produce items.""
+SetTextHighlightColors hColor
+SetTextHighlights 25%
+AddTextSmall ""Revoking autonomy later will cause $nex_revokeAutonomyUnrest points of recent unrest.""
+SetTextHighlightColors bad
+SetTextHighlights $nex_revokeAutonomyUnrest",,,
+nex_printAutonomyHelpTextNoPenalty,Nex_AutonomyHelpText,$market.nex_noStabilityLossOnRevokeAutonomy,"AddTextSmall ""The stability penalty for removing autonomy from this colony is currently waived (one-time offer).""
+SetTextHighlightColors good
+SetTextHighlights waived",,,
 nex_grantAutonomyConfirm,DialogOptionSelected,$option == nex_grantAutonomy_confirm,"Nex_GrantAutonomy grant
 FireAll PopulateOptions","""$marketName is now under autonomous administration. Thank you, $playerName.""",,
 nex_revokeAutonomyConfirm,DialogOptionSelected,$option == nex_revokeAutonomy_confirm,"Nex_GrantAutonomy revoke

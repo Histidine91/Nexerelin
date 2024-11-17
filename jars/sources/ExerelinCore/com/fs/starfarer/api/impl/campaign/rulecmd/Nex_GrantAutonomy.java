@@ -2,9 +2,6 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -15,10 +12,14 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ColonyManager;
 import exerelin.utilities.StringHelper;
 
+import java.util.List;
+import java.util.Map;
+
 
 public class Nex_GrantAutonomy extends BaseCommandPlugin {
 	
 	public static final String MEMORY_KEY_SUSPEND = "$nex_autonomySuspended";
+	public static final String MEMORY_KEY_NO_STAB_LOSS = "$nex_noStabilityLossOnRevokeAutonomy";
 	public static final int REVOKE_UNREST = 2;
 	
 	@Override
@@ -58,11 +59,20 @@ public class Nex_GrantAutonomy extends BaseCommandPlugin {
 	
 	public static void revokeAutonomy(MarketAPI market) {
 		market.setPlayerOwned(true);
-		RecentUnrest.get(market, true).add(REVOKE_UNREST, 
-				StringHelper.getString("nex_colonies", "autonomyRevoked"));
+
+		if (market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_NO_STAB_LOSS)) {
+			market.getMemoryWithoutUpdate().unset(MEMORY_KEY_NO_STAB_LOSS);
+		} else {
+			RecentUnrest.get(market, true).add(REVOKE_UNREST,
+					StringHelper.getString("nex_colonies", "autonomyRevoked"));
+		}
 		FactionAPI player = Global.getSector().getPlayerFaction();
 		ColonyManager.reassignAdminIfNeeded(market, player, player);
 		market.getMemoryWithoutUpdate().unset(MEMORY_KEY_SUSPEND);
+	}
+
+	public static void setNoStabLossOnRevokeAutonomy(MarketAPI market) {
+		market.getMemoryWithoutUpdate().set(MEMORY_KEY_NO_STAB_LOSS, true);
 	}
 	
 	public static void suspendAutonomy(final MarketAPI market) {
