@@ -157,8 +157,11 @@ public class MiningHelperLegacy {
 					if (id.isEmpty()) continue;
 
 					Map<String, Float> resources = new HashMap<>();
-					for (String commodityId : OUTPUT_COMMODITIES)
+					Iterator keys = row.keys();
+					while (keys.hasNext())
 					{
+						String commodityId = (String)keys.next();
+						if ("id".equals(commodityId) || "cache".equals(commodityId)) continue;
 						float value = (float)row.optDouble(commodityId, 0);
 						if (value > 0) resources.put(commodityId, value);
 					}
