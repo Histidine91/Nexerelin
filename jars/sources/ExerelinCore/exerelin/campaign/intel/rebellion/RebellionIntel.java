@@ -592,12 +592,13 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		}
 		else {
 			// faction hands over planet to rebels, this is also a liberation
+			// FIXME has wrong text e.g. "Player forces have removed the player government on X"
 			if (newOwner == rebelFaction)
 			{
 				if (started) {
 					liberatorFaction = oldOwner;
 					endEvent(RebellionResult.LIBERATED);
-					DiplomacyManager.adjustRelations(oldOwner, rebelFaction, market.getSize() * 2, null, null, null);
+					DiplomacyManager.adjustRelations(oldOwner, rebelFaction, market.getSize() * 0.02f, null, null, null);
 				}
 				else endEvent(RebellionResult.OTHER);
 			}
