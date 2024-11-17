@@ -9,11 +9,13 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.*;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
 import com.fs.starfarer.api.campaign.listeners.ColonyPlayerHostileActListener;
+import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.AdminData;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.econ.FreeMarket;
+import com.fs.starfarer.api.impl.campaign.econ.LuddicMajority;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.*;
@@ -295,7 +297,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			Global.getSector().getCampaignUI().addMessage(intel, 
 					market.isPlayerOwned() ? MessageClickAction.COLONY_INFO : MessageClickAction.NOTHING, 
 					market);
-		
+
+		// get any Luddic Majority in before the AI decides to start building mining or something
+		if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) {
+			applyLuddicMajority(market);
+		}
+
 		if (!market.isPlayerOwned()) {
 			buildIndustries(market);
 			processNPCConstruction(market);
@@ -303,6 +310,19 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			{
 				market.setImmigrationIncentivesOn(null);
 			}
+		}
+
+		ListenerUtil.reportColonySizeChanged(market, oldSize);
+	}
+
+	// same as the LuddicChurchHostileActivityFactorOne but without the colony size check
+	public void applyLuddicMajority(MarketAPI market) {
+		boolean matches = LuddicMajority.matchesBonusConditions(market);
+
+		if (market.hasCondition(Conditions.LUDDIC_MAJORITY) && !matches) {
+			market.removeCondition(Conditions.LUDDIC_MAJORITY);
+		} else if (!market.hasCondition(Conditions.LUDDIC_MAJORITY) && matches) {
+			market.addCondition(Conditions.LUDDIC_MAJORITY);
 		}
 	}
 	
