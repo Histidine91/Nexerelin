@@ -1676,6 +1676,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				}
 			}			
 		}
+
+		if (oldOwner != newOwner) market.removeCondition(Conditions.BLOCKADED);
 	}
 	
 	/**

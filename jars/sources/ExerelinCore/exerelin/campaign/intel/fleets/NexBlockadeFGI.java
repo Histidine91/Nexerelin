@@ -22,6 +22,14 @@ public class NexBlockadeFGI extends BlockadeFGI {
     }
 
     @Override
+    protected void periodicUpdate() {
+        if (Misc.getMarketsInLocation(getTargetSystem(), blockadeParams.targetFaction).isEmpty()) {
+            setFailedButNotDefeated(true);
+            abort();
+        }
+    }
+
+    @Override
     public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
         super.createSmallDescription(info, width, height);
         Global.getLogger(this.getClass()).info("wololo");
