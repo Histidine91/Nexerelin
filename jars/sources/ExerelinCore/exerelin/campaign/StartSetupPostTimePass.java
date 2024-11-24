@@ -133,7 +133,7 @@ public class StartSetupPostTimePass {
 			new Nex_GalatianAcademyStipend();
 		}
 		
-		// Starting blueprints
+		// remove debt in own faction start
 		if (selectedFactionId.equals(Factions.PLAYER)) {
 			if (!freeStart) {
 				// clear player debt from colony being unprofitable during new game time pass (if any)
@@ -147,6 +147,7 @@ public class StartSetupPostTimePass {
 				Global.getSector().addScript(new OwnFactionSetupScript());
 			}
 		}
+		// Starting blueprints
 		else {
 			for (SpecialItemSet set : conf.startSpecialItems) {
 				set.pickItemsAndAddToCargo(Global.getSector().getPlayerFleet().getCargo(), 

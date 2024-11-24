@@ -1,17 +1,9 @@
 package exerelin.campaign.ui;
 
-import java.util.Map;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CoreInteractionListener;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.RuleBasedDialog;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
@@ -22,6 +14,8 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import org.lwjgl.input.Keyboard;
+
+import java.util.Map;
 
 // adapted from UpdateNotificationScript in LazyWizard's Version Checker
 public class FieldOptionsScreenScript implements EveryFrameScript
@@ -71,6 +65,7 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 		}
 	}
 
+	// now handled via rules
 	@Deprecated
 	public static class FactionDirectoryDialog implements InteractionDialogPlugin, CoreInteractionListener
 	{

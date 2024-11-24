@@ -896,7 +896,7 @@
 		"dialogCeasefireOptionGotoIntel":"Open intel screen",
 		
 		"intelInterveneTitle":"Intervention Warning",
-		"intelInterveneDesc":"$TheFaction is issuing us a warning regarding our ongoing war against their ally, $theFriendName. They will join the conflict against us if we do not make peace.",
+		"intelInterveneDesc":"$TheFaction is issuing us a warning regarding our ongoing war against their ally, $theFriend. They will join the conflict against us if we do not make peace.",
 	},
 	"nex_diplomacyProfile":{
 		"title":"Diplomacy Profile",
