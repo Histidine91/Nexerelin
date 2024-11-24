@@ -324,6 +324,8 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 
 	@Override
 	protected int getDesiredNumFleetsForSpawnLocation() {
+		if (!Global.getSettings().getBoolean("nex_enableMiningFleets")) return 0;
+
 		StarSystemAPI system = currSpawnLoc;
 		return Global.getSector().getEconomy().getMarkets(system).size();
 	}

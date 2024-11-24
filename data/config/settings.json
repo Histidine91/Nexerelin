@@ -36,7 +36,9 @@
 	
 	"nex_keepSModsForRecoveredShips":true,	# note: only affects enemy ships, friendly ships already keep their mods
 	
-	"nex_enableMiningHarass":true,
+	"nex_enableMiningFleets":"true",
+	
+	"nex_enableMiningHarass":true,	# raiders bother a mining player
 	"nex_miningHarassThreshold": 11,
 	
 	"nex_conquestMissionIntervalRateMult":0.05,
