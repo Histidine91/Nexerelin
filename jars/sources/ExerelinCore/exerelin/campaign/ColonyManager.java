@@ -78,6 +78,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	
 	public static final String PERSISTENT_KEY = "nex_colonyManager";
 	public static final String MEMORY_KEY_GROWTH_LIMIT = "$nex_colony_growth_limit";
+	public static final String MEMORY_KEY_WANT_FREE_PORT = "$nex_wantFreePort";
 	public static final String MEMORY_KEY_STASHED_CORES = "$nex_stashed_ai_cores";
 	public static final String MEMORY_KEY_STASHED_CORE_ADMIN = "$nex_stashed_ai_core_admin";
 	public static final String MEMORY_KEY_RULER_TEMP_OWNERSHIP = "$nex_ruler_temp_owner";
@@ -435,7 +436,12 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		// keep the cond check; motherfuckers can't be trusted to have the right settting
 		boolean isFreePort = market.isFreePort() || market.hasCondition(Conditions.FREE_PORT);
 		boolean wantFreePort;
-		if (!SectorManager.getManager().isCorvusMode())
+
+		if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_WANT_FREE_PORT))
+		{
+			wantFreePort = market.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_WANT_FREE_PORT);
+		}
+		else if (!SectorManager.getManager().isCorvusMode())
 		{
 			wantFreePort = newOwnerConfig.freeMarket || market.getId().equals("nex_prismFreeport");
 		}
@@ -1850,7 +1856,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 		
 		// if market was player-controlled or administered by a faction leader, pick a new admin from comm board
-		boolean reassign = oldOwner.isPlayerFaction() || market.isPlayerOwned() 
+		boolean reassign = currAdmin == null || currAdmin.isDefault() || oldOwner.isPlayerFaction() || market.isPlayerOwned()
 				|| Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId())
 				|| hasFactionLeaderOrPreferredAdmin(market);
 		if (!reassign)

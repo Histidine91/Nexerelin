@@ -135,16 +135,19 @@ public class KantasDen extends BaseLandmarkDef {
 		market.addIndustry(Industries.BATTLESTATION);
 		market.addIndustry(Industries.COMMERCE);
 		market.addIndustry(Industries.LIGHTINDUSTRY);
+		//market.addCondition(Conditions.STEALTH_MINEFIELDS);	// for extra stability; not needed since we're taking away the free port
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 
-		market.setFreePort(true);
+		market.getMemoryWithoutUpdate().set(ColonyManager.MEMORY_KEY_WANT_FREE_PORT, false);
+
 		Global.getSector().getEconomy().addMarket(market, true);
 
 		NexUtilsMarket.addMarketPeople(market);
 		FactionAPI pirate = Global.getSector().getFaction(Factions.PIRATES);
 		ColonyManager.reassignAdminIfNeeded(market, pirate, pirate);
+		if (market.getAdmin() != null) market.getAdmin().getStats().setSkillLevel(Skills.INDUSTRIAL_PLANNING, 1);
 
 		Global.getSector().getMemoryWithoutUpdate().set("$nex_randomSector_kantasDen", market);
 	}
