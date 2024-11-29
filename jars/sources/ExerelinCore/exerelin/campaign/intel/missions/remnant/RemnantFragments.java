@@ -283,6 +283,7 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 		}
 				
 		float dist = player.getMaxSensorRangeToDetect(fleet);
+		if (dist > 2000) dist = 2000;
 		system.addEntity(fleet);
 		
 		Vector2f pos;
