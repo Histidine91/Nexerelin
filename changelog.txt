@@ -1,12 +1,10 @@
 Version 0.11.3
 
 ### Changes from beta 0.11.2x ###
+* Blockades will end if no markets of the target faction remain in system; capturing a blockaded market will remove the blockade condition
 * Player-requested invasion fleets will make the captured markets autonomous if player has no free admins or governing capacity left
     * Revoking this autonomy will not cause unrest (once per market)
-* Blockades will end if no markets of the target faction remain in system; capturing a blockaded market will remove the blockade condition
-* Autonomous colonies:
-    * Default income mult 0.2 -> 0.25
-    * Fix temporary control menu breaking in certain cases with multiple pages
+* Autonomous colony default income mult 0.2 -> 0.25
 * Factions don't send suppression fleets if allied with the rebels' sponsor faction
     * Player faction (and governed colonies) also don't send any suppression fleets
 * Player's autonomous and governed colonies can get Luddic Majority on upsize
@@ -37,7 +35,6 @@ Version 0.11.3
 * Marine XP gain from ground battles now based on share of damage dealt
 * Change some handling of invasion points to avoid large overdrafts
 * Fighting in a system with player outpost doesn't reduce colony crisis points any more
-* Remove EMP that doesn't actually work from Silverlight's Alicorn
 * Added config option for price multiplier in NPC 'buy ships' mission
 * Add a settings.json option for pirate/Pather bases to spawn even when their factions are dead
 
@@ -60,7 +57,9 @@ Version 0.11.3
 * Fix improper behavior of AI admins when market is captured
 * Fix memory leak with custom start fleet
 * Remnant dead drop complication fleets are low rep impact, like vanilla
-* Some agent actions will auto-abort if target faction is now an ally (unless action is by player)
+* Some operative actions will auto-abort if target faction is now an ally (unless action is by player)
+* Autonomous colonies: Fix temporary control menu breaking in certain cases with multiple pages
+* Remove EMP that doesn't actually work from Silverlight's Alicorn
 
 ### Misc. ###
 * Add projectile trails to Silverlight's Alicorn
