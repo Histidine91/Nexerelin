@@ -23,6 +23,8 @@ class TransponderCheckBlockScript : EveryFrameScript, CurrentLocationChangedList
             script.reportCurrentLocationChanged(null, Global.getSector().currentLocation)
             return script
         }
+
+        const val IGNORE_TRANSPONDER_CHECK_BLOCK = "\$nex_ignoreTransponderBlockCheck"
     }
 
     fun setNoTransponderCheckIfNeeded(loc: LocationAPI?) {
@@ -31,6 +33,7 @@ class TransponderCheckBlockScript : EveryFrameScript, CurrentLocationChangedList
 
             if (fleet.faction.isPlayerFaction) continue
             if (!fleet.memoryWithoutUpdate.getBoolean(MemFlags.MEMORY_KEY_PATROL_FLEET)) continue
+            if (fleet.memoryWithoutUpdate.getBoolean(IGNORE_TRANSPONDER_CHECK_BLOCK)) continue
             Misc.setFlagWithReason(
                 fleet.memoryWithoutUpdate,
                 MemFlags.MEMORY_KEY_PATROL_ALLOW_TOFF,
