@@ -64,7 +64,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 					orbitDistance = radius + 2500;
 				}
 			}
-			prismEntity = toOrbit.getContainingLocation().addCustomEntity("nex_prismFreeport", name, "exerelin_freeport_type", "independent");
+			prismEntity = toOrbit.getContainingLocation().addCustomEntity("nex_prismFreeport", name, "exerelin_freeport_type", Factions.INDEPENDENT);
 			prismEntity.setCircularOrbitPointingDown(toOrbit, 343, orbitDistance, NexUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
 		else if (!NexConfig.prismInHyperspace)
@@ -264,19 +264,15 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			log.error("Failed to add Antioch to random sector", ex);
 		}
 	}
-	
-	@Override
-	public void generate(SectorAPI sector)
-	{
-		log.info("Starting sector generation...");
-		
+
+	public void generateStarSystems(SectorAPI sector) {
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		boolean corvusMode = setupData.corvusMode;
 		boolean grandSector = Global.getSettings().getModManager().isModEnabled("ZGrand Sector");
 		boolean adjustedSector = Global.getSettings().getModManager().isModEnabled("Adjusted Sector");
 
 		Global.getSector().getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_RANDOM_SECTOR, !corvusMode);
-		
+
 		// use vanilla hyperspace map
 		String hyperMap = "data/campaign/terrain/hyperspace_map.png";
 		if (Global.getSettings().getModManager().isModEnabled("Vast Expanse")) {
@@ -299,13 +295,13 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 				//hyperMap = "data/campaign/terrain/no_storms.png";
 			}
 		}
-		
+
 		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
-			  0, 0, // center of nebula
-			  sector.getHyperspace(), // location to add to
-			  "terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
-			  4, 4, Terrain.HYPERSPACE, StarAge.ANY); // number of cells in texture
-		
+				0, 0, // center of nebula
+				sector.getHyperspace(), // location to add to
+				"terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
+				4, 4, Terrain.HYPERSPACE, StarAge.ANY); // number of cells in texture
+
 		// make Prism before core systems, unless we're in random sector with one system
 		// in which case we'll need to populate that system and then put Prism in it
 		// FIXME: this is not actually implemented
@@ -314,7 +310,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		if (setupData.prismMarketPresent && prismBeforeSystems) {
 			prism = addPrismMarket(sector, true);
 		}
-		
+
 		if (corvusMode)
 		{
 			VanillaSystemsGenerator.generate(sector);
@@ -342,40 +338,46 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			if (max > 24) max = 24;
 			if (min > max - 3) min = max - 3;
 			if (min < 12) min = 12;
-			
+
 			log.info(String.format("Generating system with %s min, %s max stars", min, max));
-			
+
 			params.minStars = min;
 			params.maxStars = max;
 			params.location = SECTOR_CENTER;
 			ExerelinCoreSystemGenerator gen = new ExerelinCoreSystemGenerator(params);
 			gen.generate();
-			
+
 			//SectorEntityToken coreLabel = Global.getSector().getHyperspace().addCustomEntity("core_label_id", null, "core_label", null);
 			//coreLabel.setFixedLocation(SECTOR_CENTER.getX(), SECTOR_CENTER.getY());
-			
-			if (ExerelinSetupData.getInstance().randomAntiochEnabled && (setupData.factions.containsKey("templars") 
+
+			if (ExerelinSetupData.getInstance().randomAntiochEnabled && (setupData.factions.containsKey("templars")
 					&& setupData.factions.get("templars")))
 				addAntiochPart1(sector);
-			
+
 			if (setupData.prismMarketPresent && !prismBeforeSystems) {
 				prism = addPrismMarket(sector, true);
 			}
 		}
-		
+
 		if (prism != null && prism.getStarSystem() != null) {
 			validateLocation(sector, prism.getStarSystem(), PRISM_LOC);
-		}		
-		
+		}
+	}
+
+	public void setupPlugins(SectorAPI sector) {
 		log.info("Adding scripts and plugins");
+
+		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
+		boolean corvusMode = setupData.corvusMode;
+
 		sector.registerPlugin(new CoreCampaignPluginImpl());
 		sector.registerPlugin(new ExerelinCampaignPlugin());
 		sector.addScript(new CoreScript());
 		sector.addScript(new CoreEventProbabilityManager());
 		sector.addScript(new EconomyFleetRouteManager());
-		
+
 		//sector.addScript(new PatrolFleetManagerReplacer());
-		
+
 		if (ExerelinModPlugin.HAVE_DYNASECTOR)
 		{
 			// TODO if DS ever comes back
@@ -393,19 +395,19 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			sector.addScript(new DisposableLuddicPathFleetManager());
 			//sector.addScript(new BountyPirateFleetManager());
 		}
-		
+
 		ExerelinModPlugin.addScripts();
-		
+
 		StatsTracker.getOrCreateTracker();
-		
+
 		DiplomacyManager.getManager().setStartRelationsMode(setupData.startRelationsMode);
 		DiplomacyManager.getManager().setApplyStartRelationsModeToPirates(setupData.applyStartRelationsModeToPirates);
 		DiplomacyManager.initFactionRelationships(false);
-		
+
 		SectorManager.getManager().setCorvusMode(corvusMode);
 		SectorManager.getManager().setHardMode(setupData.hardMode);
 		SectorManager.getManager().setFreeStart(setupData.freeStart);
-		
+
 		String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
 		sector.getCharacterData().getMemoryWithoutUpdate().set(PlayerFactionStore.STARTING_FACTION_ID_MEMKEY, factionId);
 		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
@@ -413,11 +415,20 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		{
 			factionId = conf.spawnAsFactionId;
 		}
-		
+
 		// commission
 		if (!factionId.equals(Factions.PLAYER)) {
 			NexUtilsFaction.grantCommission(factionId);
 		}
+	}
+	
+	@Override
+	public void generate(SectorAPI sector)
+	{
+		log.info("Starting sector generation...");
+		
+		generateStarSystems(sector);
+		setupPlugins(sector);
 				
 		log.info("Finished sector generation");
 	}
