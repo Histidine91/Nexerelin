@@ -45,6 +45,12 @@ public class LuddicChurchQuestSkipPlugin extends BaseQuestSkipPlugin {
         return ExerelinSetupData.getInstance().corvusMode;
     }
 
+    @Override
+    public void applyMemKeys() {
+        if (!ExerelinSetupData.getInstance().corvusMode) return;
+        super.applyMemKeys();
+    }
+
     protected static void addShrineIntelAndMarkVisited(String entityId) {
         SectorEntityToken entity = LuddicShrineIntel.getEntity(entityId);
         LuddicShrineIntel.addShrineIntelIfNeeded(entity, null, true);

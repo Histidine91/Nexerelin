@@ -20,4 +20,6 @@ public interface QuestSkipPlugin {
     QuestSkipEntry getQuest();
     void setQuestChain(QuestChainSkipEntry chain);
     QuestChainSkipEntry getQuestChain();
+
+    void applyMemKeys();
 }

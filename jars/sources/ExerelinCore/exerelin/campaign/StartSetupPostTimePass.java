@@ -10,6 +10,7 @@ import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
@@ -172,6 +173,10 @@ public class StartSetupPostTimePass {
 				mem.set("$lpp_didHookStart", true);
 				mem.set("$didSDBarRaid", true);
 				mem.set("$sdtu_ramDidProposal", true);
+				mem.set(GateEntityPlugin.CAN_SCAN_GATES, true);
+				mem.set(GateEntityPlugin.GATES_ACTIVE, true);
+				Global.getSector().getCharacterData().addAbility(Abilities.TRANSVERSE_JUMP);
+				Global.getSector().getCharacterData().addAbility(Abilities.GRAVITIC_SCAN);
 			}
 			
 			// alpha site location intel?
