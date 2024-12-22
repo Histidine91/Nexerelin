@@ -630,9 +630,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		if (type == EventType.INVASION && GroundBattleIntel.getOngoing(market) != null)
 			return false;
 
-		boolean revanchist = NexUtilsMarket.wasOriginalOwner(market, factionId)
-				&& type == EventType.INVASION;
-		if (!revanchist && NexConfig.getFactionConfig(factionId).invasionOnlyRetake)
+		boolean revanchist = NexUtilsMarket.wasOriginalOwner(market, factionId);
+		if (!revanchist && type == EventType.INVASION && NexConfig.getFactionConfig(factionId).invasionOnlyRetake)
 		{
 			return false;
 		}
@@ -1150,6 +1149,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 				boolean shouldRaid = shouldRaid(factionId);
 				OffensiveFleetIntel intel = generateInvasionOrRaidFleet(faction, null, 
 						shouldRaid ? EventType.RAID : EventType.INVASION, new RequisitionParams());
+
+				// safety so invasionOnlyRetake factions don't get stuck if no valid invasion targets
+				if (intel == null && !shouldRaid && config.invasionOnlyRetake) {
+					intel = generateInvasionOrRaidFleet(faction, null, EventType.INVASION, new RequisitionParams());
+				}
+
 				if (intel != null)
 				{
 					currCounter -= getInvasionPointCost(intel);
