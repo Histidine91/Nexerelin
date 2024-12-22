@@ -421,7 +421,7 @@ public class NexUtils
 			ClassLoader loader = Global.getSettings().getScriptClassLoader();
 			Class<?> clazz = loader.loadClass(className);
 			object = clazz.newInstance();
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoClassDefFoundError ex) {
 			Global.getLogger(NexUtils.class).error("Class load-by-name failure: " + className, ex);
 		}
 
