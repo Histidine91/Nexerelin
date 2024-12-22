@@ -22,6 +22,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.ui.CPButtonPressRelayPlugin;
+import exerelin.campaign.ui.CustomPanelPluginWithInput;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 import exerelin.campaign.ui.ProgressBar;
 import exerelin.utilities.NexFactionConfig;
@@ -316,7 +317,7 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
             String btnId = "minus_" + hullId;
             final ButtonAPI btnMinus = btnMinusHolder.addButton("-", btnId, 16, 12, pad);
             if (currCount <= 0) btnMinus.setEnabled(false);
-            plugin.addButton(new InteractionDialogCustomPanelPlugin.ButtonEntry(btnMinus, btnId) {
+            plugin.addButton(new CustomPanelPluginWithInput.ButtonEntry(btnMinus, btnId) {
                 @Override
                 public void onToggle() {
                     modifyShipCount(hullId, -1, count);
@@ -328,7 +329,7 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
             TooltipMakerAPI btnPlusHolder = countPanel.createUIElement(16, 12, false);
             btnId = "plus_" + hullId;
             final ButtonAPI btnPlus = btnPlusHolder.addButton("+", btnId, 16, 12, pad);
-            plugin.addButton(new InteractionDialogCustomPanelPlugin.ButtonEntry(btnPlus, btnId) {
+            plugin.addButton(new CustomPanelPluginWithInput.ButtonEntry(btnPlus, btnId) {
                 @Override
                 public void onToggle() {
                     modifyShipCount(hullId, 1, count);

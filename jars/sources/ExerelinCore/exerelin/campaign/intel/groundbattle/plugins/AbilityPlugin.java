@@ -350,8 +350,10 @@ public abstract class AbilityPlugin {
 	
 	public static AbilityPlugin loadPlugin(GroundBattleSide side, String defId) 
 	{
-		String className = GBDataManager.getAbilityDef(defId).plugin;
+		AbilityDef def = GBDataManager.getAbilityDef(defId);
+		String className = def.plugin;
 		AbilityPlugin plugin = (AbilityPlugin)NexUtils.instantiateClassByName(className);
+		if (plugin == null) throw new RuntimeException("Failed to load ability plugin " + def.id + ", class name " + def.plugin);
 		plugin.init(defId, side);
 		
 		return plugin;
