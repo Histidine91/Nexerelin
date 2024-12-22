@@ -107,7 +107,7 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
         this.plugin?.onNewGameAfterEconomyLoad();
         for (quest in quests) {
             if (!quest.isEnabled) continue;
-            quest.applyMemKeys()
+            quest.plugin?.applyMemKeys()
             quest.plugin?.onNewGameAfterEconomyLoad()
         }
     }

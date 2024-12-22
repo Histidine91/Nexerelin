@@ -35,4 +35,10 @@ public class UsurpersQuestSkipPlugin extends BaseQuestSkipPlugin {
     public boolean shouldShow() {
         return ExerelinSetupData.getInstance().corvusMode;
     }
+
+    @Override
+    public void applyMemKeys() {
+        if (!ExerelinSetupData.getInstance().corvusMode) return;
+        super.applyMemKeys();
+    }
 }

@@ -66,6 +66,11 @@ public abstract class BaseQuestSkipPlugin implements QuestSkipPlugin {
         return chain;
     }
 
+    @Override
+    public void applyMemKeys() {
+        if (quest != null) quest.applyMemKeys();
+    }
+
     protected void makeNonStoryCritical(String marketId, String reason) {
         MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
         if (market == null) return;

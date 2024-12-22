@@ -155,6 +155,12 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
     }
 
     @Override
+    public void applyMemKeys() {
+        if (!ExerelinSetupData.getInstance().corvusMode) return;
+        super.applyMemKeys();
+    }
+
+    @Override
     public void onNewGameAfterTimePass() {
         if (!ExerelinSetupData.getInstance().corvusMode) return;
 
