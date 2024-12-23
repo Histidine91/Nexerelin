@@ -1431,6 +1431,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			PersonAPI currAdmin = market.getAdmin();
 			market.setAdmin(aiAdmin);
 			replaceDisappearedAdmin(market, currAdmin);
+			replaceDisappearedAdmin(market, aiAdmin);
 			market.getMemoryWithoutUpdate().unset(MEMORY_KEY_STASHED_CORE_ADMIN);
 			//market.getCommDirectory().addPerson(aiAdmin);
 
@@ -1839,9 +1840,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 */
 	public static void reassignAdminIfNeeded(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner) {
 		
-		// do nothing if admin is AI core (unless it's a faction ruler, e.g. II)
-		// or if the new owner hates AI
-		if (market.getAdmin().isAICore() && !Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId()) && !doesFactionAllowAI(newOwner))
+		// do nothing if admin is AI core (unless it's a faction ruler, e.g. II; or if the new owner hates AI)
+		if (market.getAdmin().isAICore() && !Ranks.POST_FACTION_LEADER.equals(market.getAdmin().getPostId()) && doesFactionAllowAI(newOwner))
 		{
 			return;
 		}
