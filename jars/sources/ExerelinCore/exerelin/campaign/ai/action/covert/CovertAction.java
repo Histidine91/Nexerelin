@@ -1,5 +1,6 @@
 package exerelin.campaign.ai.action.covert;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.CovertOpsManager;
@@ -64,6 +65,12 @@ public abstract class CovertAction extends BaseStrategicAction {
 
     protected boolean beginAction(CovertActionIntel intel) {
         if (intel == null) return false;
+        if (intel.getMarket() == null) {
+            String str = String.format("Strategic AI attempted to generate covert action with no market; faction %s, target faction %s",
+                    ai.getFactionId(), faction.getId());
+            Global.getLogger(this.getClass()).error(str, new Throwable());
+            return false;
+        }
         delegate = intel;
         intel.activate();
         //intel.execute();
