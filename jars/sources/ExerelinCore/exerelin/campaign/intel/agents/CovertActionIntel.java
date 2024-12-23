@@ -464,6 +464,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	 * @return
 	 */
 	public boolean isOwnMarket() {
+		if (market == null) return false;
 		if (market.getFaction() == agentFaction) {
 			return true;
 		}
@@ -471,6 +472,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	}
 
 	public boolean isAlliedMarket() {
+		if (market == null) return false;
 		if (AllianceManager.areFactionsAllied(market.getFactionId(), agentFaction.getId(), false)) {
 			return true;
 		}
