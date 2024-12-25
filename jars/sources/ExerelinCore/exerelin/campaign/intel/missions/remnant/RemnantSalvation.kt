@@ -508,7 +508,6 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         val capBonus = Math.round(NexUtilsFleet.getPlayerLevelFPBonus())
         var fp = (playerStr / 4 * 0.55f)
         fp += capBonus - 50
-        //if (hiredEndbringer) fp -= 20;  // don't scale to Endbringer's Facet
         fp = fp.coerceAtMost(300f)
         fp += 120f
 
@@ -644,6 +643,10 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
      * Generates the Knights of Ludd fleet.
      */
     protected fun setupKnightFleet(): CampaignFleetAPI {
+        // unrelatedly, first we un-disrupt Gilead station to guarantee it appears in the fight
+        val ind = Misc.getStationIndustry(target);
+        ind?.setDisrupted(0f);
+
         var fp = 100f * 2.5f;   // approximate fleet size mult of Gilead
 
         var params = FleetParamsV3(target!!, target!!.locationInHyperspace, Factions.LUDDIC_CHURCH, null, FleetTypes.TASK_FORCE,
@@ -977,12 +980,10 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     }
 
     protected fun applyStationMalfunction() {
-        val desc = RemnantQuestUtils.getString("salvation_statDescSabotage")
+        //val desc = RemnantQuestUtils.getString("salvation_statDescSabotage")
+
         val fleet = Misc.getStationFleet(target)
         if (fleet != null) {
-            for (member in fleet.fleetData.membersListCopy) {
-                //fleet.removeFleetMemberWithDestructionFlash(member)
-            }
             fleet.memoryWithoutUpdate.set(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT, 0.25f, 20f);
             //fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true, 2f)  // not needed
             fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true, 2f)
