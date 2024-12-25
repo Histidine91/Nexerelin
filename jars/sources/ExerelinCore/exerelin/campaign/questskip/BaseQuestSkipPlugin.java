@@ -69,6 +69,11 @@ public abstract class BaseQuestSkipPlugin implements QuestSkipPlugin {
     @Override
     public void applyMemKeys() {
         if (quest != null) quest.applyMemKeys();
+        if (chain != null) {
+            for (QuestSkipEntry quest : chain.quests) {
+                quest.applyMemKeys();
+            }
+        }
     }
 
     protected void makeNonStoryCritical(String marketId, String reason) {

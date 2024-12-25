@@ -104,9 +104,10 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
     }
 
     fun onNewGameAfterEconomyLoad() {
-        this.plugin?.onNewGameAfterEconomyLoad();
+        this.plugin?.onNewGameAfterEconomyLoad()
+        this.plugin?.applyMemKeys()
         for (quest in quests) {
-            if (!quest.isEnabled) continue;
+            if (!quest.isEnabled) continue
             quest.plugin?.applyMemKeys()
             quest.plugin?.onNewGameAfterEconomyLoad()
         }
@@ -116,7 +117,7 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
         this.plugin?.onNewGameAfterTimePass()
         for (quest in quests) {
             quest.unhidePeople()
-            if (!quest.isEnabled) continue;
+            if (!quest.isEnabled) continue
             quest.plugin?.onNewGameAfterTimePass()
         }
     }
