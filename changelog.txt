@@ -1,3 +1,15 @@
+Version 0.11.3b
+
+* New game setup fixes 
+    * Make sure gate memflags and transverse jump + neutrino detector are added properly in random sector 
+    * Don't apply quest skip memory keys to random sector if inappropriate
+* Fix + log recent crashes from operative actions on null market
+* Fix AI admin handling on market transfer or granting autonomy
+* Fix `invasionOnlyRetake` factions sometimes never launching raids
+* Display refund amount if a player fleet request is cancelled
+* Final Remnant mission: Un-disrupt Gilead station if needed for final battle
+
+
 Version 0.11.3
 
 ### Changes from beta 0.11.2x ###
