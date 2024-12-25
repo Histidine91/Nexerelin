@@ -1,7 +1,7 @@
 Version 0.11.3b
 
-* New game setup fixes 
-    * Make sure gate memflags and transverse jump + neutrino detector are added properly in random sector 
+* Random sector new game setup fixes
+    * Make sure gate memflags and transverse jump + neutrino detector are added properly
     * Don't apply quest skip memory keys to random sector if inappropriate
 * Fix + log recent crashes from operative actions on null market
 * Fix AI admin handling on market transfer or granting autonomy
