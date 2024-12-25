@@ -104,7 +104,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		}
 
 		public boolean isCancelled() {
-			return this == MARKET_NO_LONGER_EXISTS || this == NOT_ENOUGH_REACHED || this == NO_LONGER_HOSTILE || this == OTHER;
+			return this == MARKET_NO_LONGER_EXISTS || this == NOT_ENOUGH_REACHED || this == NO_LONGER_HOSTILE
+					|| this == RETREAT_BEFORE_ACTION || this == OTHER;
 		}
 	}
 	
@@ -438,6 +439,14 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		str = StringHelper.substituteToken(str, "$forceType", getForceType(), true);
 		str = StringHelper.substituteToken(str, "$action", getActionName(), true);
 		info.addPara(str, color, pad);
+
+		if (outcome != null && outcome.isCancelled() && playerFee > 0) {
+			float refundMult = getCreditRefundMult();
+			if (refundMult <= 0) return;
+			int refund = Math.round(playerFee * refundMult);
+			str = StringHelper.getString("nex_fleetRequest", "intelBulletRefund");
+			info.addPara(str, pad, color, Misc.getHighlightColor(), Misc.getDGSCredits(refund), Math.round(refundMult * 100) + "%");
+		}
 	}
 	
 	protected void addETABullet(TooltipMakerAPI info, Color color, Color hl, float pad) 
@@ -562,15 +571,20 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		}
 	}
 
+	protected float getCreditRefundMult() {
+		if (currentStage <= 1) return 1;
+		else if (currentStage == 2) return 0.67f;
+		else if (currentStage == 3) return 0.33f;
+
+		return 0;
+	}
+
 	protected void refundPlayerFeeIfNeeded() {
 		// 0 = organize; 1 = assemble; 2 = travel, 3 = action
 		if (playerFee <= 0) return;
 		if (outcome != null && !outcome.isCancelled()) return;
 
-		float refundMult = 0;
-		if (currentStage <= 1) refundMult = 1;
-		else if (currentStage == 2) refundMult = 0.67f;
-		else if (currentStage == 3) refundMult = 0.33f;
+		float refundMult = getCreditRefundMult();
 
 		if (refundMult <= 0) return;
 		int refund = Math.round(playerFee * refundMult);

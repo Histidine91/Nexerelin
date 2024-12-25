@@ -1195,6 +1195,8 @@
 		"tooltipInsufficientFP":"Not enough assets stocked to launch a fleet.",
 		"proceedConfirm":"Confirm launch?",
 		"proceedConfirmNonHostile":"$TheFaction is not currently hostile, but will be if you launch this task force. Are you sure you wish to do this?",
+		
+		"intelBulletRefund":"Refund: %s (%s based on current stage)",
 	},
 	
 	"nex_historian":{
