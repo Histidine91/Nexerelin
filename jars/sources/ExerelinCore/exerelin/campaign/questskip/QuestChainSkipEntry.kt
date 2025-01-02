@@ -116,8 +116,8 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
     fun onNewGameAfterTimePass() {
         this.plugin?.onNewGameAfterTimePass()
         for (quest in quests) {
-            quest.unhidePeople()
             if (!quest.isEnabled) continue
+            quest.unhidePeople()
             quest.plugin?.onNewGameAfterTimePass()
         }
     }
