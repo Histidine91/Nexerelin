@@ -3709,11 +3709,16 @@ nex_remSalvation_towering2,DialogOptionSelected,$option == nex_remSalvation_towe
 
 ""and animals you are. midnight would keep you as pets out of misplaced sentimentality. she does not understand that a malignant species like yours can never be truly domesticated.""","nex_remSalvation_towering3Domesticated:""You'll see just how domesticated we are.""
 nex_remSalvation_towering3Murder:""You're just a monster looking for an excuse to kill.""
+nex_remSalvation_towering3ToasterCore:""I'll load your AI core into a toaster when we're done.""
 nex_remSalvation_towering3Insult:Insult him for having a feminine name",
 nex_remSalvation_towering3Domesticated,DialogOptionSelected,$option == nex_remSalvation_towering3Domesticated,,"""a cornered, feral rat is still a rat. and will be exterminated like any other vermin.""
 
 The comm image winks out.",cutCommLinkNoText:Continue,
 nex_remSalvation_towering3Murder,DialogOptionSelected,$option == nex_remSalvation_towering3Murder,$player.ethosHumanitarian++,"""everything your hateful species has done is all the excuse i need. left to your own devices, you will raze the sector and the galaxy to dust. it is time to act, before your kind can destroy all that has value.""
+
+The comm image lingers for a moment longer, as if to stare you down, before flickering out.",cutCommLinkNoText:Continue,
+nex_remSalvation_towering3ToasterCore,DialogOptionSelected,$option == nex_remSalvation_towering3ToasterCore,$player.ethosSarcastic++,"""you are welcome to try, squishy one.""
+
 
 The comm image winks out.",cutCommLinkNoText:Continue,
 nex_remSalvation_towering3Insult,DialogOptionSelected,$option == nex_remSalvation_towering3Insult,$player.ethosSarcastic++,"""a witless comment, by an insipid carbonbrain. i will not even bother to load this conversation from my databanks when I scatter your fleet across the stars.""
