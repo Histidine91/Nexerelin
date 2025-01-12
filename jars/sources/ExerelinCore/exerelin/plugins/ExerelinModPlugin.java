@@ -652,9 +652,10 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         // random sector: populate the sector
         if (!SectorManager.getManager().isCorvusMode()) {
+            ExerelinSetupData data = ExerelinSetupData.getInstance();
             new ExerelinProcGen().generate(false);
             // second pass: get player homeworld if we didn't pick it before (due to requiring a non-core world)
-            if (ExerelinSetupData.getInstance().homeworldPickMode == HomeworldPickMode.NON_CORE) 
+            if (PlayerFactionStore.getPlayerFactionIdNGC().equals(Factions.PLAYER) && !data.freeStart && data.homeworldPickMode == HomeworldPickMode.NON_CORE)
             {
                 new ExerelinProcGen().generate(true);
             }

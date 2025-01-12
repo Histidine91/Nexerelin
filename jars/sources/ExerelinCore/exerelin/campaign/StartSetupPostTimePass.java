@@ -315,7 +315,13 @@ public class StartSetupPostTimePass {
 		ContactIntel.addPotentialContact(1, person, person.getMarket(), null);
 		person.getMarket().getCommDirectory().getEntryForPerson(person).setHidden(false);
 	}
-	
+
+	/**
+	 * Chooses a random market entity for the player to spawn on.
+	 * @param factionId
+	 * @param ownFactionOnly If false, allows non-faction markets as a fallback (faction markets are always preferred).
+	 * @return
+	 */
 	public static SectorEntityToken pickRandomStartLocation(String factionId, boolean ownFactionOnly) {
 		SectorEntityToken entity = null;
 		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();

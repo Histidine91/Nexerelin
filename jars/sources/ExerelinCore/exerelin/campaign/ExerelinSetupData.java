@@ -111,7 +111,7 @@ public class ExerelinSetupData
 		}
 	}
 	
-	public static enum HomeworldPickMode {
+	public enum HomeworldPickMode {
 		ANY, CORE, NON_CORE;
 		
 		public boolean canPickCore() {
