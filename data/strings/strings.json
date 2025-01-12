@@ -1237,6 +1237,7 @@
 		"theCounterInvasionForce":"the counter-invasion force",
 		
 		"invadeBlocked":"Any orbital station and interfering fleets must be removed before an invasion is possible.",
+		"notInvadable":"This is not an invadable market.",
 		
 		"intelTitleSuffixDeployed":"deployed",
 		

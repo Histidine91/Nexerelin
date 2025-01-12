@@ -612,12 +612,17 @@ public class Nex_MarketCMD extends MarketCMD {
 			options.addOption(StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
 					"invadeOptOngoing", "$market", market.getName()), "nex_mktInvadeOpenIntel");
 		}
-		else if (InvasionRound.canInvade(entity))
+		else
 		{			
 			options.addOption(StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
 					"invadeOpt", "$market", market.getName()), INVADE);
-						
-			if (getRaidCooldown() > 0) {
+			
+			if (!InvasionRound.canInvade(entity)) {
+				options.setEnabled(INVADE, false);
+				options.setTooltip(INVADE, StringHelper.getString("exerelin_invasion", "notInvadable"));
+				tempInvasion.canInvade = false;
+			}
+			else if (getRaidCooldown() > 0) {
 				if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
 					options.setEnabled(INVADE, false);
 					tempInvasion.canInvade = false;
