@@ -131,7 +131,7 @@ public class EconomyInfoHelper implements EconomyTickListener {
 		empireSizeCache.clear();
 		netIncomeByFaction.clear();
 		
-		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsInGroup(null);
+		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
 		if (markets.isEmpty())
 			return;
 		
