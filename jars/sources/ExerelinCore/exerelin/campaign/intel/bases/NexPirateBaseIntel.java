@@ -17,6 +17,7 @@ public class NexPirateBaseIntel extends PirateBaseIntel {
     // used to determine which markets this base can target, and also who within a targeted star system can issue a bounty on this base
     @Override
     public boolean affectsMarket(MarketAPI market) {
+        if (market == null) return false;
         if (!super.affectsMarket(market)) return false;
 
         if (!market.getFaction().isHostileTo(this.market.getFaction())) return false;
