@@ -180,7 +180,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		int NUM_OPTS = 3;
 		
 		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionFactionWeights"),
-				"graphics/factions/crest_domain.png", plugin, 
+				"graphics/factions/crest_domain.png", null,
 				createTooltip(getString("tooltipFactionWeights"), null, null));
 		
 		final List<ButtonAPI> buttons = new ArrayList<>();
