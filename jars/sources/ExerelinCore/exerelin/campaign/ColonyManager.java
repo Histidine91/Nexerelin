@@ -1181,13 +1181,21 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			havePerson = true;
 		}
 	}
+
+	protected boolean shouldUpdateOfficials(MarketAPI market) {
+		if (market.getFaction().isPlayerFaction() && !market.isHidden()) return true;
+		// AotD Question of Loyalty; implemented in that mod's end
+		//return Global.getSettings().getModManager().isModEnabled("aotd_qol") && market.isPlayerOwned() && market.getFaction() == PlayerFactionStore.getPlayerFaction();
+
+		return false;
+	}
 	
 	// add admin to player market if needed
 	// also adds military submarkets to places that should have them
 	// handles temporary governorship in ruler mode
 	@Override
 	public void reportPlayerOpenedMarket(MarketAPI market) {
-		if (market.getFaction().isPlayerFaction() && !market.isHidden())
+		if (shouldUpdateOfficials(market))
 		{
 			addOrUpdateOfficials(market);
 		}
