@@ -3719,7 +3719,6 @@ nex_remSalvation_towering3Murder,DialogOptionSelected,$option == nex_remSalvatio
 The comm image lingers for a moment longer, as if to stare you down, before flickering out.",cutCommLinkNoText:Continue,
 nex_remSalvation_towering3ToasterCore,DialogOptionSelected,$option == nex_remSalvation_towering3ToasterCore,$player.ethosSarcastic++,"""you are welcome to try, squishy one.""
 
-
 The comm image winks out.",cutCommLinkNoText:Continue,
 nex_remSalvation_towering3Insult,DialogOptionSelected,$option == nex_remSalvation_towering3Insult,$player.ethosSarcastic++,"""a witless comment, by an insipid carbonbrain. i will not even bother to load this conversation from my databanks when I scatter your fleet across the stars.""
 
