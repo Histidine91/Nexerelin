@@ -2,7 +2,6 @@ package exerelin.campaign.intel.groundbattle.plugins;
 
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.Industry;
-import com.fs.starfarer.api.impl.campaign.econ.impl.GroundDefenses;
 import com.fs.starfarer.api.impl.campaign.econ.impl.ItemEffectsRepo;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
@@ -31,10 +30,6 @@ public class GroundDefensesPlugin extends IndustryForBattlePlugin {
 				//Global.getLogger(this.getClass()).info("  Applying drone replicator bonus");
 			}
 		}
-		
-		String aiCoreId = indForBattle.getIndustry().getAICoreId();
-		if (Commodities.ALPHA_CORE.equals(aiCoreId))
-			contrib *= GroundDefenses.ALPHA_CORE_BONUS;
 		
 		return contrib;
 	}

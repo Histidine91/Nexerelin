@@ -51,7 +51,8 @@ public class IndustryForBattlePlugin extends BaseGroundBattlePlugin {
 		}
 		if (indForBattle.getIndustry().isDisrupted()) {
 			num *= GBConstants.DISRUPTED_TROOP_CONTRIB_MULT;
-		}		
+		}
+		//log.info(String.format("Industry %s contributing %s troops of type %s", ind.getCurrentName(), num, type));
 		
 		return num;
 	}
