@@ -117,7 +117,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("enableStrategicAI", "boolean", NexConfig.enableStrategicAI);
         addSetting("showStrategicAI", "boolean", NexConfig.showStrategicAI);
         addSetting("enableVictory", "boolean", NexConfig.enableVictory);
-        addSetting("buyShipBasePriceMult", "float", NexConfig.buyShipBasePriceMult);
+        addSetting("buyShipBasePriceMult", "float", NexConfig.buyShipBasePriceMult, 0.5f, 5f);
         addSetting("hardModeColonyGrowthMult", "float", NexConfig.hardModeColonyGrowthMult, 0.5f, 1f);
         addSetting("hardModeColonyIncomeMult", "float", NexConfig.hardModeColonyIncomeMult, 0.5f, 1f);
         addSetting("enablePunitiveExpeditions", "boolean", NexConfig.enablePunitiveExpeditions);
