@@ -83,12 +83,12 @@ public abstract class BaseQuestSkipPlugin implements QuestSkipPlugin {
         Misc.makeNonStoryCritical(market, reason);
     }
 
-    protected FleetMemberAPI addShipToPlayerFleet(String variantId) {
+    public static FleetMemberAPI addShipToPlayerFleet(String variantId) {
         ShipVariantAPI variant = Global.getSettings().getVariant(variantId).clone();
         return addShipToPlayerFleet(variant);
     }
 
-    protected FleetMemberAPI addShipToPlayerFleet(ShipVariantAPI variant) {
+    public static FleetMemberAPI addShipToPlayerFleet(ShipVariantAPI variant) {
         CampaignFleetAPI pf = Global.getSector().getPlayerFleet();
         FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variant);
         pf.getFleetData().addFleetMember(member);

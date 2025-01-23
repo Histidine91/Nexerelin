@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMission;
 import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageEntity;
 import com.fs.starfarer.api.loading.PersonMissionSpec;
+import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.intel.SpecialContactIntel;
@@ -79,10 +80,17 @@ public class RemnantQuestSkipPlugin extends BaseQuestSkipPlugin {
             player.addSpecial(new SpecialItemData(haveBoggled ? "boggled_planetkiller" : Items.PLANETKILLER, null), 1f);
 
             //addSilverlightOmegaWeapons();
-            String variantId = "nex_silverlight_Ascendant";
-            FleetMemberAPI member = addShipToPlayerFleet(variantId);
+            String variantId = "nex_silverlight_Hull";
+            String variantId2 = "nex_silverlight_Ascendant";
+            FleetMemberAPI member = BaseQuestSkipPlugin.addShipToPlayerFleet(variantId);
+
+            // copy over Ascendant variant, except for the shards
+            ShipVariantAPI temp = Global.getSettings().getVariant(variantId2).clone();
+            temp.getStationModules().clear();
+            temp.setSource(VariantSource.REFIT);
+            member.setVariant(temp, false, true);
+
             ShipVariantAPI variant = member.getVariant();
-            variant.getStationModules().clear();
             variant.addTag(Tags.SHIP_CAN_NOT_SCUTTLE);
             variant.addTag(Tags.SHIP_UNIQUE_SIGNATURE);
 
