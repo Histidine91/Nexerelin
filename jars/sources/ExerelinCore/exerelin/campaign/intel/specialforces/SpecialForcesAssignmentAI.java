@@ -52,6 +52,7 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 		}
 		
 		checkPlayerInterrogate();
+		updateMilitaryResponseState();
 		
 		if (fleet.getCurrentAssignment() == null) {
 			pickNext();
@@ -168,6 +169,16 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 			return token;
 		}
 		return null;
+	}
+
+	protected void updateMilitaryResponseState() {
+		boolean noDisturb = false;
+		SpecialForcesTask task = intel.routeAI.currentTask;
+		if (task != null) {
+			noDisturb = !task.type.canMilitaryResponse();
+		}
+		Misc.setFlagWithReason(fleet.getMemoryWithoutUpdate(), MemFlags.FLEET_NO_MILITARY_RESPONSE,
+				"nex_specialForces_task", noDisturb, 0.25f);
 	}
 
 	/**

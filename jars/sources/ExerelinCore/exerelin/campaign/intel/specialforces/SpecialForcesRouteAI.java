@@ -1047,33 +1047,42 @@ public class SpecialForcesRouteAI {
 	}
 	
 	public enum TaskType {
-		RAID(true), 
-		PATROL(false), 
-		ASSIST_RAID(true), 
-		DEFEND_RAID(true), 
-		REBUILD(false), 
-		DEFEND_VS_PLAYER(true),
-		HUNT_PLAYER(false), 
-		COUNTER_GROUND_BATTLE(true), 
-		ASSEMBLE(false), 
-		RESUPPLY(true),
-		FOLLOW_PLAYER(false),
-		WAIT_ORBIT(false),
-		IDLE(false);
+		RAID(true, false),
+		PATROL(false, true),
+		ASSIST_RAID(true, false),
+		DEFEND_RAID(true, true),
+		REBUILD(false, false),
+		DEFEND_VS_PLAYER(true, true),
+		HUNT_PLAYER(false, false),
+		COUNTER_GROUND_BATTLE(true, false),
+		ASSEMBLE(false, false),
+		RESUPPLY(true, false),
+		FOLLOW_PLAYER(false, false),
+		WAIT_ORBIT(false, false),
+		IDLE(false, true);
 		
-		public final boolean busyTask;
+		protected final boolean busyTask;
+		protected final boolean allowMilitaryResponse;
 		
-		private TaskType(boolean busyTask) {
+		TaskType(boolean busyTask, boolean allowMilitaryResponse) {
 			this.busyTask = busyTask;
+			this.allowMilitaryResponse = allowMilitaryResponse;
 		}
 		
 		/**
-		 * Returns true for tasks we don't like to "put down", 
-		 * i.e. reassignment would be considered inconvenient.
+		 * Returns true for tasks we don't like to "put down", i.e. reassignment would be considered inconvenient.
 		 * @return
 		 */
 		public boolean isBusyTask() {
 			return busyTask;
+		}
+
+		/**
+		 * Return true for tasks that {@code MilitaryResponseScript} should be allowed to override.
+		 * @return
+		 */
+		public boolean canMilitaryResponse() {
+			return allowMilitaryResponse;
 		}
 	}
 	

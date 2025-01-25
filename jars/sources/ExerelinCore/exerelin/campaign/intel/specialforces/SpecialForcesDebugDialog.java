@@ -1,11 +1,9 @@
 package exerelin.campaign.intel.specialforces;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.ai.AssignmentModulePlugin;
+import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
@@ -14,11 +12,11 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import static exerelin.campaign.intel.specialforces.SpecialForcesIntel.FLEET_TYPE;
-import java.awt.Color;
+import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
-import org.lwjgl.input.Keyboard;
 
 /**
  * Interaction dialog to apply debugging commands to special task groups.
@@ -47,6 +45,7 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 		options.addOption("Check orders", Options.CHECK_TASKS);
 		options.addOption("Assign new task", Options.PICK_NEW_TASK);
 		options.addOption("Patrol random market", Options.PATROL_RANDOM);
+		//options.addOption("Freeze assignments", Options.FREEZE_ASSIGNMENTS);
 		//options.addOption("Check fleet status", Options.CHECK_FLEET_STATUS);
 		options.addOption("Reconstitute fleet", Options.REBUILD);
 		//options.addOption("Validate route segment", Options.VALIDATE_ROUTE);
@@ -78,6 +77,23 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 			case RESET_ROUTE_LOCATION:
 				RouteSegment segment = new RouteSegment(0.1f, Global.getSector().getHyperspace().createToken(0, 0));
 				intel.route.setCurrent(segment);
+				break;
+			case FREEZE_ASSIGNMENTS:
+				ModularFleetAIAPI ai = (ModularFleetAIAPI)fleet.getAI();
+				//text.addPara("Not freezing assignments, replacing assignment module instead");
+				//ai.setAssignmentModule(new DebugAssignmentModule((CampaignFleet)fleet, ai));
+				//if (true) break;
+
+				AssignmentModulePlugin module = ai.getAssignmentModule();
+
+				if (module.areAssignmentsFrozen()) {
+					text.addPara("Assignments already frozen");
+					//module.freezeAssignments();
+				} else {
+					text.addPara("Freezing assignments");
+					module.freezeAssignments();
+				}
+
 				break;
 			case REBUILD:
 				try {
@@ -207,7 +223,7 @@ public class SpecialForcesDebugDialog implements InteractionDialogPlugin {
 	}
 	
 	protected enum Options {
-		CHECK_TASKS, PICK_NEW_TASK, PATROL_RANDOM, RESET_ROUTE_LOCATION, REBUILD, 
-		GENERATE_NAME, VALIDATE_ROUTE, CHECK_FLEET_STATUS, KILL_SHIP, DELETE, EXIT
+		CHECK_TASKS, PICK_NEW_TASK, PATROL_RANDOM, RESET_ROUTE_LOCATION, FREEZE_ASSIGNMENTS,
+		REBUILD, GENERATE_NAME, VALIDATE_ROUTE, CHECK_FLEET_STATUS, KILL_SHIP, DELETE, EXIT
 	}
 }
