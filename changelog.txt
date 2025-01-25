@@ -1,11 +1,15 @@
 Version 0.11.3c
 
-* Fix skip story memory keys and person unhides working even when that quest not skipped
+* Fix skip story memory keys and person unhides applying even when that quest not skipped
 * Fix crash with Silverlight obtained from Remnant quest skip
 * Fix player sometimes starting with colony on free start
     * This was caused by having non-core starting worlds enabled in random sector
 * Fix alpha core on Ground Defenses/Heavy Batteries reducing garrison size instead of increasing it
+* Fix special task groups ignoring their current order to patrol local system
+    * This was caused by the vanilla 'military response' script when a local raid or similar event was ongoing
+    * Now only STGs with specific tasks are allowed to join the response
 * Fix unrestricted min/max values for NPC buy ship price mult setting
+* Follow Me order only lasts 7 days instead of 15 but can be refreshed
 * Non-invadable markets show a greyed-out option instead of no option
 
 
