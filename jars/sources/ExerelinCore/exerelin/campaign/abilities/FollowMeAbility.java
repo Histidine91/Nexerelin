@@ -27,8 +27,8 @@ import java.util.Set;
 public class FollowMeAbility extends BaseDurationAbility {
 
 	protected static final String STRING_CATEGORY = "exerelin_abilities";
-	public static final float FOLLOW_DURATION = 15;
-	public static final float FOLLOW_DURATION_PASSIVE = 15;
+	public static final float FOLLOW_DURATION = 7;
+	public static final float FOLLOW_DURATION_PASSIVE = 7;
 	public static final float FOLLOW_FETCH_RANGE = 600;
 	public static final Set<String> FOLLOW_VALID_FLEET_TYPES = new HashSet<>();
 	public static final String BUSY_REASON = "nex_followMe";
@@ -98,7 +98,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 					MemoryAPI mem = fleet.getMemoryWithoutUpdate();
 					String type = NexUtilsFleet.getFleetType(fleet);
 					if (!FOLLOW_VALID_FLEET_TYPES.contains(type)) continue;
-					if (mem.contains(MemFlags.FLEET_BUSY)) continue;	// TODO: allow if this ability is the only reason for busy
+					if (mem.contains(MemFlags.FLEET_BUSY) && !isBusyForAllowedReason(fleet)) continue;
 					if (fleet.getBattle() != null) continue;
 					if (fleet.isStationMode()) continue;
 					if (true)
