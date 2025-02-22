@@ -2651,6 +2651,7 @@
 		"statDomesticProduction":"in-faction production",
 		"statExistingMarketShare":"existing market share",
 		"statFactionPower":"faction power",
+		"statFactionInfamy":"infamy",
 		"statFleetPool":"fleet pool proportion",
 		"statImportVolume":"import volume",
 		"statInvPoints":"invasion point stockpile",

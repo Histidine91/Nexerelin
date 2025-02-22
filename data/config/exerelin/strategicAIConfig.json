@@ -55,6 +55,15 @@
 			"tags":["military", "wantCauseHarm", "canSatBomb", "canSabotageIndustry", "canDestabilize", "canRebel"],
 			"module":MILITARY
 		},
+		"containAggression":{
+			"name":"Contain Aggression",
+			"desc":"$TheFaction's rampant aggression has gotten out of hand. It falls to us to cut them down to size.",
+			"classPath":"exerelin.campaign.ai.concern.ContainAggressionConcern",
+			"cooldownMult":0.5,
+			"antiRepetitionMult":0.5,
+			"tags":["military", "canInvade", "canSatBomb", "canDeclareWar"],
+			"module":MILITARY
+		},
 		
 		"developRelations":{
 			"name":"Develop Relations",

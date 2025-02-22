@@ -7,16 +7,19 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.ai.SAIConstants;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
-import exerelin.utilities.NexUtilsFaction;
 import lombok.extern.log4j.Log4j;
 
 import java.util.Set;
 
 @Log4j
-public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
+public class ContainAggressionConcern extends DiplomacyConcern {
+
+    public static final float MIN_INFAMY_TO_START = 100;
+    public static final float MAX_INFAMY_TO_END = 75;
+
     @Override
     public boolean generate() {
         FactionAPI us = ai.getFaction();
@@ -24,22 +27,21 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
 
         WeightedRandomPicker<FactionAPI> picker = new WeightedRandomPicker<>();
 
-        float ourStrength = getFactionStrength(us);
-
         for (String factionId : getRelevantLiveFactionIds()) {
             FactionAPI faction = Global.getSector().getFaction(factionId);
-            if (alreadyConcerned.contains(faction)) continue;
-            float theirStrength = getFactionStrength(faction);
-            if (!shouldBeConcernedAbout(faction, ourStrength, theirStrength)) continue;
+            if (!shouldBeConcernedAbout(faction)) continue;
 
-            float weight = theirStrength * 2 - ourStrength;
-            if (weight <= SAIConstants.MIN_FACTION_PRIORITY_TO_CARE) continue;
+            if (alreadyConcerned.contains(faction)) continue;
+            float infamy = DiplomacyManager.getBadboy(faction);
+            if (infamy < MIN_INFAMY_TO_START) continue;
+
+            float weight = infamy * 2;
             weight *= getPriorityMult(us.getRelationshipLevel(faction));
 
             picker.add(faction, weight);
         }
         faction = picker.pick();
-        priority.modifyFlat("power", picker.getWeight(faction), StrategicAI.getString("statFactionPower", true));
+        priority.modifyFlat("infamy", picker.getWeight(faction), StrategicAI.getString("statFactionInfamy", true));
 
         return faction != null;
     }
@@ -50,19 +52,17 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
             end();
             return;
         }
-        float ourStrength = getFactionStrength(ai.getFaction());
-        float theirStrength = getFactionStrength(faction);
-        if (!shouldBeConcernedAbout(faction, ourStrength, theirStrength)) {
+        float infamy = DiplomacyManager.getBadboy(faction);
+        if (infamy < MAX_INFAMY_TO_END) {
+            end();
+            return;
+        }
+        if (!shouldBeConcernedAbout(faction)) {
             end();
             return;
         }
 
-        float weight = theirStrength * 2 - ourStrength;
-        if (weight <= SAIConstants.MIN_FACTION_PRIORITY_TO_CARE) {
-            end();
-            return;
-        }
-        weight *= getPriorityMult(ai.getFaction().getRelationshipLevel(faction));
+        float weight = infamy * getPriorityMult(ai.getFaction().getRelationshipLevel(faction));
         priority.modifyFlat("power", weight, StrategicAI.getString("statFactionPower", true));
         super.update();
     }
@@ -71,18 +71,15 @@ public class PowerfulUnfriendlyConcern extends DiplomacyConcern {
         return 2 - 0.25f * level.ordinal();
     }
 
-    protected boolean shouldBeConcernedAbout(FactionAPI faction, float ourStrength, float theirStrength) {
+    protected boolean shouldBeConcernedAbout(FactionAPI faction) {
         FactionAPI us = ai.getFaction();
         if (faction.isHostileTo(us)) return false;  // already at war anyway
-        if (NexUtilsFaction.isPirateFaction(faction.getId())) return false; // no need to befriend pirates
 
         RepLevel disregardAtRep = RepLevel.NEUTRAL;
         if (DiplomacyTraits.hasTrait(us.getId(), DiplomacyTraits.TraitIds.PARANOID)) {
             disregardAtRep = disregardAtRep.getOneBetter();
         }
         if (faction.isAtWorst(us, disregardAtRep)) return false;    // safe for now
-
-        if (theirStrength * SAIConstants.STRENGTH_MULT_FOR_CONCERN < ourStrength) return false;   // we're bigger than them
 
         return true;
     }
