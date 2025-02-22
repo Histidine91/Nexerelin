@@ -1,37 +1,18 @@
 package exerelin.campaign.intel;
 
-import java.awt.Color;
-import java.util.LinkedHashMap;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
+import com.fs.starfarer.api.campaign.econ.EconomyAPI.EconomyUpdateListener;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.EconomyAPI.EconomyUpdateListener;
 import com.fs.starfarer.api.campaign.econ.MarketAPI.SurveyLevel;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.combat.MutableStat.StatMod;
 import com.fs.starfarer.api.impl.campaign.DebugFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Entities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.ids.Stats;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.PersonBountyIntel.BountyResult;
 import com.fs.starfarer.api.impl.campaign.intel.PersonBountyIntel.BountyResultType;
@@ -51,15 +32,23 @@ import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.awt.*;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 // Adapted from PirateBaseIntel
 // Note: This doesn't actually manage the respawn fleets or anything;
 // it just makes a market that the fleets can spawn from
 public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScript, FleetEventListener,
 																EconomyUpdateListener {
-		
+	public static final boolean ALWAYS_REVEAL = true;
+
 	//public static Object BOUNTY_EXPIRED_PARAM = new Object();
 	public static Object DISCOVERED_PARAM = new Object();
 	public static Object ABANDONED_PARAM = new Object();
@@ -158,7 +147,12 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 		entity.setMarket(market);
 		
 		entity.setSensorProfile(1f);
-		entity.setDiscoverable(true);
+		if (ALWAYS_REVEAL) {
+			timestamp = Global.getSector().getClock().getTimestamp();
+		} else {
+			entity.setDiscoverable(true);
+		}
+
 		entity.getDetectedRangeMod().modifyFlat("gen", 5000f);
 		
 		market.setEconGroup(market.getId());
@@ -171,7 +165,7 @@ public class RespawnBaseIntel extends BaseIntelPlugin implements EveryFrameScrip
 		
 		log.info(String.format("Added respawn base in [%s] for faction %s", system.getName(), market.getFaction().getDisplayName()));
 		
-		Global.getSector().getIntelManager().addIntel(this, true);
+		Global.getSector().getIntelManager().addIntel(this, !ALWAYS_REVEAL);
 		Global.getSector().addScript(this);
 		timestamp = null;
 		

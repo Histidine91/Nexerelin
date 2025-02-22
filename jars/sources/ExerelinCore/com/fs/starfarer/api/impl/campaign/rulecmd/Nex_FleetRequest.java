@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
+import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -828,6 +829,11 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(RaidIntel.class)) {
 			try {
 				RaidIntel raid = (RaidIntel)intel;
+
+				// check if origin known
+				AssembleStage as = raid.getAssembleStage();
+				if (as == null || !as.isSourceKnown()) continue;
+
 				IntelInfoPlugin.ArrowData arrow = new IntelInfoPlugin.ArrowData(raid.getAssembleStage().getSources().get(0).getPrimaryEntity(),
 						raid.getSystem().getHyperspaceAnchor());
 				arrow.color = raid.getFaction().getBaseUIColor();
