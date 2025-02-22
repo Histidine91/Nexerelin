@@ -240,13 +240,17 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		clearDeepHyper(system.getHyperspaceAnchor(), 350);
 	}
-	
+
+	// deep hyperspace removal (copypasted from UW)
 	public static void clearDeepHyper(SectorEntityToken entity, float radius) {
-		// deep hyperspace removal (copypasted from UW)
+
 		HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
 		NebulaEditor editor = new NebulaEditor(plugin);
-
 		float minRadius = plugin.getTileSize() * 2f;
+		clearDeepHyper(entity, radius, minRadius, editor);
+	}
+
+	public static void clearDeepHyper(SectorEntityToken entity, float radius, float minRadius, NebulaEditor editor) {
 		editor.clearArc(entity.getLocation().x, entity.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
 		editor.clearArc(entity.getLocation().x, entity.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
 	}
@@ -319,11 +323,9 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 				// no need to do it in random sector, since ExerelinCoreSystemGenerator has its own clearer
 				HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
 				NebulaEditor editor = new NebulaEditor(plugin);
-				float minRadius = plugin.getTileSize() * 2f;
+				float minRadius = editor.getTileSize() * 2f;
 				for (StarSystemAPI curr : sector.getStarSystems()) {
-					float radius = curr.getMaxRadiusInHyperspace() * 0.5f;
-					editor.clearArc(curr.getLocation().x, curr.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
-					editor.clearArc(curr.getLocation().x, curr.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
+					clearDeepHyper(curr.getHyperspaceAnchor(), curr.getMaxRadiusInHyperspace(), minRadius, editor);
 				}
 			}
 		}
