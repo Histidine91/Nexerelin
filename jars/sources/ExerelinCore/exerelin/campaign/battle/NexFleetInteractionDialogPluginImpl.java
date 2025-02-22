@@ -390,36 +390,39 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				List<CampaignFleetAPI> fleets = battle.getBothSides();
 				for (CampaignFleetAPI inBattle : fleets)
 				{
-					if (inBattle == assignTarget)
-					{
-						// THI merc handling
-						if (fleet.getMemoryWithoutUpdate().contains("$tiandongMercTarget")
-							&& fleet.getMemoryWithoutUpdate().getFleet("$tiandongMercTarget") == inBattle)
-						{
-							// don't let merc join if merc is friendly to player, 
-							// and escortee is not already on player side
-							// (otherwise merc claims to join but doesn't, as it can't pick a side)
-							// Exception: Always join if escortee is Tiandong
-							if (!battle.isOnPlayerSide(inBattle)
-									&& fleet.isFriendlyTo(Global.getSector().getPlayerFleet())
-									&& !inBattle.getFaction().getId().equals("tiandong"))
-							{
-								//dialog.getTextPanel().addPara("Merc cannot join, not hostile to player");
-								return false;
-							}
+					if (inBattle != assignTarget) continue;
 
-							// Add hostile memory keys to merc if escortee is hostile to player
-							if (!battle.isOnPlayerSide(inBattle))
-							{
-								//dialog.getTextPanel().addPara("Merc enforcing hostile mode");
-								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE);
-								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF);
-								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_LOW_REP_IMPACT);
-							}
-						}
-						escorting = true;
-						return true;
+					boolean thiMerc = fleet.getMemoryWithoutUpdate().contains("$tiandongMercTarget")
+							&& fleet.getMemoryWithoutUpdate().getFleet("$tiandongMercTarget") == inBattle;
+
+					// don't let escorting fleet join if escort is friendly to player,
+					// and escortee is not already on player side
+					// (otherwise escort claims to join but doesn't, as it can't pick a side)
+					// Exception: Always join if escortee is same faction as escort
+					if (!battle.isOnPlayerSide(inBattle)
+							&& fleet.isFriendlyTo(Global.getSector().getPlayerFleet())
+							&& inBattle.getFaction() != fleet.getFaction())
+					{
+						//dialog.getTextPanel().addPara("Escort cannot join, not hostile to player");
+						return false;
 					}
+
+					// THI merc handling
+					if (thiMerc)
+					{
+						// Add hostile memory keys to merc if escortee is hostile to player
+						if (!battle.isOnPlayerSide(inBattle))
+						{
+							//dialog.getTextPanel().addPara("Merc enforcing hostile mode");
+							addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE);
+							addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF);
+							addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_LOW_REP_IMPACT);
+						}
+					}
+
+					escorting = true;
+					return true;
+
 				}
 			}
 			if (ignore) return false;
