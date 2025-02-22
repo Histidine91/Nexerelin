@@ -287,7 +287,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			addIndustry(ind.getId());
 		}
 		if (industries.isEmpty()) {
-			addIndustry(Industries.POPULATION);
+			addIndustry(mktIndustries.get(0).getId());
 		}
 		
 		if (playerInitiated) {
