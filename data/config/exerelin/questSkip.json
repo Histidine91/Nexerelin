@@ -32,6 +32,13 @@
 			"quests":["nex_captiveCores", "nex_fragments", "nex_lostSci", "nex_showdown", "nex_salvation"],
 			"plugin":"exerelin.campaign.questskip.RemnantQuestSkipPlugin",
 		},
+		"topography":{
+			"name":"Hyperspace Topography",
+			"image":"graphics/icons/markets/hyperspace_topography.png",
+			"sortKey":"AAAB_hyperspace_topography",
+			"quests":["topography_400", "topography_700"],
+			"plugin":"exerelin.campaign.questskip.HyperspaceTopographySkipPlugin",
+		},
 	},
 
 	"quests":{
@@ -194,7 +201,7 @@
 		},
 		"scytheOfOrion":{
 			"name":"Scythe of Orion",
-			"tooltip":"The player tracks down a long-lost planetkiller.\n\nThis will convert ==Sentinel== into a ==Hegemony colony==, and stand down ==Task Force Safeguard==.",
+			"tooltip":"The player tracks down a long-lost planetkiller.\n\nThis will convert ==Sentinel== into a ==Hegemony colony==, and stand down ==Task Force Safeguard==. The player receives the ==planetkiller== item.",
 			"plugin":"exerelin.campaign.questskip.ScytheQuestSkipPlugin",
 			"sectorMemFlags":{
 				"$discoveredSentinel":true,
@@ -253,6 +260,17 @@
 				"$nex_remSalvation_missionCompleted":true,
 				#"$nex_remSalvation_missionDone":true,	# we'll need this to be false for a bit
 			}
+		},
+		
+		"topography_400":{
+			"name":"400 points",
+			"tooltip":"Enough experience in hyperspace to ==reverse slipstreams==.",
+			"idsToForceOffWhenDisabled":["topography_700"],
+		},
+		"topography_700":{
+			"name":"700 points",
+			"tooltip":"Near-total mastery of hyperspace travel, up to the level of creating ==slipsurges==.",
+			"idsToForceOnWhenEnabled":["topography_400"],
 		}
 	}
 }
