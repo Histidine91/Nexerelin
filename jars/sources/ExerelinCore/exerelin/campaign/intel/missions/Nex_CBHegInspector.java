@@ -46,6 +46,7 @@ public class Nex_CBHegInspector extends BaseCustomBountyCreator {
 		data.difficulty = difficulty;
 		
 		mission.requireMarketFaction(Factions.HEGEMONY);
+		mission.requireMarketNotHidden();
 		mission.preferMarketIsMilitary();
 		
 		MarketAPI market = mission.pickMarket();
