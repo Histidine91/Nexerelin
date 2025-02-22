@@ -141,7 +141,10 @@ FireAll ExerelinNGCStep3",,,
 nex_NGCCustomStart,NewGameOptionSelected,$option == nex_NGCCustomStart,Nex_NGCCustomStart menu,,1:nex_NGCDone:Done,
 nex_NGCCustomStartByTrigger,Nex_NGCCustomStartMenu,,Nex_NGCCustomStart menu,,,
 ,,,,,,
-nex_NGCPickStartingShips,ExerelinNGCStep3,,Nex_NGCStartFleetOptionsV2,,,
+nex_NGCPickStartingShips,ExerelinNGCStep3,,"Nex_NGCStartFleetOptionsV2
+FireBest Nex_NGCStartFactionFlavor",,,
+nex_NGCFactionFlavor,Nex_NGCStartFactionFlavor,$nex_lastSeenFactionForDesc != $playerFaction,"Nex_NGCPrintFactionDesc
+$nex_lastSeenFactionForDesc = $playerFaction",,,
 nex_NGCStartShipsSolo,NewGameOptionSelected,$option == nex_NGCFleetSolo,"NGCAddStartingShipsByFleetType SOLO
 FireBest ExerelinNGCStep4
 FireBest ExerelinNGCStep4Plus",,,
