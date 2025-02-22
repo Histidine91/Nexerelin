@@ -1,15 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.ResourceCostPanelAPI;
-import com.fs.starfarer.api.campaign.RuleBasedDialog;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -27,19 +19,20 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.achievements.OneMansTrash;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.colony.DecivRevivalIntel;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsAstro;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class Nex_DecivEvent extends BaseCommandPlugin {
@@ -260,6 +253,10 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		dialog.getInteractionTarget().setActivePerson(null);
 		
 		setMem(MEM_KEY_HAS_EVENT, false);
+
+		if (type.equals(EVENT_TYPE_BARTER)) {
+			OneMansTrash.complete();
+		}
 	}
 	
 	protected void decline(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) 
