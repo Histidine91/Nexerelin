@@ -154,6 +154,7 @@
     "rebellionMult": 1,	# higher mult means unrest will boil over into rebellion more quickly
     
     "enableColonyExpeditions": true,
+    "allowNPCColonyGrowth": true,
     "maxNPCNewColonySize": 6,	# for new colonies created by colony expedition event
     "hardModeColonyGrowthMult": 0.75,
     "hardModeColonyIncomeMult": 0.9,

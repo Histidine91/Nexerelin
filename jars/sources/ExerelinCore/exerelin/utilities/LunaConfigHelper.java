@@ -118,6 +118,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("showStrategicAI", "boolean", NexConfig.showStrategicAI);
         addSetting("enableVictory", "boolean", NexConfig.enableVictory);
         addSetting("buyShipBasePriceMult", "float", NexConfig.buyShipBasePriceMult, 0.5f, 5f);
+        addSetting("allowNPCColonyGrowth", "boolean", NexConfig.allowNPCColonyGrowth);
         addSetting("hardModeColonyGrowthMult", "float", NexConfig.hardModeColonyGrowthMult, 0.5f, 1f);
         addSetting("hardModeColonyIncomeMult", "float", NexConfig.hardModeColonyIncomeMult, 0.5f, 1f);
         addSetting("enablePunitiveExpeditions", "boolean", NexConfig.enablePunitiveExpeditions);
@@ -233,6 +234,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.enableStrategicAI = (boolean)loadSetting("enableStrategicAI", "boolean");
         NexConfig.showStrategicAI = (boolean)loadSetting("showStrategicAI", "boolean");
         NexConfig.enableVictory = (boolean)loadSetting("enableVictory", "boolean");
+        NexConfig.allowNPCColonyGrowth = (boolean)loadSetting("allowNPCColonyGrowth", "boolean");
         NexConfig.hardModeColonyGrowthMult = (float)loadSetting("hardModeColonyGrowthMult", "float");
         NexConfig.hardModeColonyIncomeMult = (float)loadSetting("hardModeColonyIncomeMult", "float");
         NexConfig.enablePunitiveExpeditions = (boolean)loadSetting("enablePunitiveExpeditions", "boolean");
