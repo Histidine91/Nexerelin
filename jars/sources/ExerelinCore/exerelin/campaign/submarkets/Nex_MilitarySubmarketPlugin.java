@@ -1,5 +1,6 @@
 package exerelin.campaign.submarkets;
 
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.submarkets.MilitarySubmarketPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
@@ -36,6 +37,14 @@ public class Nex_MilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 				transaction, 60f + 60 * (float) Math.random());
 	}
 	*/
+
+	public boolean isIllegalOnSubmarket(FleetMemberAPI member, TransferAction action) {
+		if (action == TransferAction.PLAYER_SELL && Misc.isAutomated(member)) {
+			return false;	// will buy automated ships, same as other illegal goods
+		}
+
+		return super.isIllegalOnSubmarket(member, action);
+	}
 	
 	@Override
 	protected boolean hasCommission() {

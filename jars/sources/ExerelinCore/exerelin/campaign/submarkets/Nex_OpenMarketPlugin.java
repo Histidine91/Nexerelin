@@ -1,5 +1,7 @@
 package exerelin.campaign.submarkets;
 
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.submarkets.OpenMarketPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexConfig;
@@ -21,5 +23,13 @@ public class Nex_OpenMarketPlugin extends OpenMarketPlugin {
 			
 			getCargo().sort();
 		}
+	}
+
+	@Override
+	public boolean isIllegalOnSubmarket(FleetMemberAPI member, TransferAction action) {
+		if (action == TransferAction.PLAYER_SELL && !isBlackMarket() && Misc.isAutomated(member)) {
+			return submarket.getFaction().getIllegalCommodities().contains(Commodities.AI_CORES);
+		}
+		return super.isIllegalOnSubmarket(member, action);
 	}
 }
