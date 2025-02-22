@@ -875,6 +875,8 @@ public class DiplomacyBrain {
 		float chance = (float)Math.pow(EVENT_CHANCE_EXPONENT_BASE, factions.size());
 		if (random.nextFloat() > chance)
 			return;
+
+		boolean tooHighWeariness = DiplomacyManager.getWarWeariness(this.factionId, true) > MAX_WEARINESS_FOR_WAR;
 		
 		Collections.shuffle(factions);
 		
@@ -896,12 +898,17 @@ public class DiplomacyBrain {
 			DiplomacyEventParams params = new DiplomacyEventParams();
 			params.random = false;
 			float disp = getDisposition(otherFactionId).disposition.getModifiedValue();
-			
-			if (ourStrength*1.5f < enemyStrength)
+
+			if (tooHighWeariness)
 			{
 				params.onlyPositive = true;
 			}
-			else if (disp <= DISLIKE_THRESHOLD)
+			else if (ourStrength*1.5f < enemyStrength)
+			{
+				params.onlyPositive = true;
+			}
+
+			if (disp <= DISLIKE_THRESHOLD)
 			{
 				params.onlyNegative = true;
 			}
@@ -909,9 +916,11 @@ public class DiplomacyBrain {
 			{
 				params.onlyPositive = true;
 			}
+
+			if (params.onlyPositive == params.onlyNegative) return;
 			
 			//log.info("Executing random diplomacy event");
-			DiplomacyManager.createDiplomacyEvent(faction, Global.getSector().getFaction(otherFactionId), null, params);
+			DiplomacyManager.createDiplomacyEventV2(faction, Global.getSector().getFaction(otherFactionId), null, params);
 			return;
 		}
 	}
