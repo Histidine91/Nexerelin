@@ -9,19 +9,19 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.intel.fleets.TwoWayTravelFleetAI;
-import exerelin.campaign.intel.rebellion.RebellionIntel.SuppressionFleetData;
+import exerelin.campaign.intel.rebellion.RebellionIntel.SupportFleetData;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
-// Rebel suppression fleet AI
-public class SuppressionFleetAI extends TwoWayTravelFleetAI
+// Rebel suppression/smuggler fleet AI
+public class RebellionSupportFleetAI extends TwoWayTravelFleetAI
 {
-	public static Logger log = Global.getLogger(SuppressionFleetAI.class);
+	public static Logger log = Global.getLogger(RebellionSupportFleetAI.class);
 		
-	protected final SuppressionFleetData data;
+	protected final SupportFleetData data;
 	
-	public SuppressionFleetAI(CampaignFleetAPI fleet, SuppressionFleetData data)
+	public RebellionSupportFleetAI(CampaignFleetAPI fleet, SupportFleetData data)
 	{
 		super(fleet, data.source, data.target, 150);
 		this.data = data;
@@ -44,17 +44,19 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 		if (!interval.intervalElapsed()) return;
 		
 		// target market got captured under us, or we're otherwise no longer allied to it
-		if (!AllianceManager.areFactionsAllied(fleet.getFaction().getId(), data.target.getFactionId()))
-		{
-			giveStandDownOrders();
-			return;
+		if (data.forGovernment) {
+			if (!AllianceManager.areFactionsAllied(fleet.getFaction().getId(), data.target.getFactionId()))
+			{
+				giveStandDownOrders();
+				return;
+			}
 		}
 	}
 	
 	@Override
 	protected void onFleetDefeat() {
 		//log.info("Suppression fleet defeated");
-		data.intel.suppressionFleetDefeated(data);
+		data.intel.fleetDefeated(data);
 		super.onFleetDefeat();
 	}
 	
@@ -63,11 +65,14 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 		MarketAPI market = data.target;
 		String marketName = market.getName();
 
-		// TODO: maybe damage rebels for every day it's in orbit?
+		// TODO: maybe damage rebels for every day it's in orbit instead?
+
 		fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 
 				1000, StringHelper.getFleetAssignmentString("travellingTo", marketName));
+
+		String assignKey = data.forGovernment ? "suppressingRebellion" : "deliveringToRebellion";
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 
-				3, StringHelper.getFleetAssignmentString("suppressingRebellion", marketName), 
+				3, StringHelper.getFleetAssignmentString(assignKey, marketName),
 				getDeliveryScript());
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 
 				7, StringHelper.getFleetAssignmentString("orbiting", marketName), standDownScript);
@@ -76,9 +81,10 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 	@Override
 	protected void giveInitialAssignment() {
 		float daysToOrbit = NexUtilsFleet.getDaysToOrbit(fleet);
+		String missionType = data.forGovernment ? "missionSuppression" : "missionSmuggle";
 		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, data.source.getPrimaryEntity(), 
 				daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", 
-				data.source.getPrimaryEntity().getName(), "missionSuppression"));
+				data.source.getPrimaryEntity().getName(), missionType));
 	}
 	
 	@Override
@@ -89,8 +95,6 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 			//log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " standing down");
 			orderedReturn = true;
 			fleet.clearAssignments();
-			if (data == data.intel.suppressionFleet)
-				data.intel.suppressionFleet = null;
 			
 			boolean despawningAtTarget = false;
 			if (data.target.getFaction() == data.fleet.getFaction())
@@ -120,7 +124,7 @@ public class SuppressionFleetAI extends TwoWayTravelFleetAI
 		return new Script() {
 			@Override
 			public void run() {
-				data.intel.suppressionFleetArrived(data);
+				data.intel.fleetArrived(data);
 			}
 		};
 	}

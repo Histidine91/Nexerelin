@@ -44,7 +44,7 @@ import exerelin.campaign.intel.missions.Nex_ProcurementMissionIntel;
 import exerelin.campaign.intel.raid.*;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
-import exerelin.campaign.intel.rebellion.SuppressionFleetAI;
+import exerelin.campaign.intel.rebellion.RebellionSupportFleetAI;
 import exerelin.campaign.intel.satbomb.SatBombActionStage;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.campaign.intel.specialforces.SpecialForcesAssignmentAI;
@@ -78,7 +78,7 @@ public class XStreamConfig {
 		
 		x.alias("MiningFltAI", MiningFleetAI.class);
 		x.alias("MiningFltData", MiningFleetManagerV2.MiningFleetData.class);
-		x.alias("SuppressFltAI", SuppressionFleetAI.class);
+		x.alias("SuppressFltAI", RebellionSupportFleetAI.class);
 		x.alias("VengFltIntl", VengeanceFleetIntel.class);
 		
 		x.alias("DiploIntl", DiplomacyIntel.class);
@@ -113,6 +113,8 @@ public class XStreamConfig {
 		x.alias("NexRlfFlt", ReliefFleetIntelAlt.class);
 		x.alias("NexInsurPol", InsuranceIntelV2.InsurancePolicy.class);
 		x.alias("NexInsurClm", InsuranceIntelV2.InsuranceClaim.class);
+		x.alias("NexRebel", RebellionIntel.class);
+		x.alias("NexRebFltData", RebellionIntel.SupportFleetData.class);
 		
 		// raids and such
 		x.alias("NexRaidIntl", NexRaidIntel.class);
@@ -225,8 +227,8 @@ public class XStreamConfig {
 		x.aliasAttribute(RebellionIntel.class, "rebelStrength", "rStr");
 		x.aliasAttribute(RebellionIntel.class, "govtTradePoints", "gTrd");
 		x.aliasAttribute(RebellionIntel.class, "rebelTradePoints", "rTrd");
-		x.aliasAttribute(RebellionIntel.class, "suppressionFleet", "flt");
-		x.aliasAttribute(RebellionIntel.class, "suppressionFleetWarning", "fltWarn");
+		x.aliasAttribute(RebellionIntel.class, "suppressionData", "supprDat");
+		x.aliasAttribute(RebellionIntel.class, "smugglerData", "smugDat");
 		x.aliasAttribute(RebellionIntel.class, "intensity", "intns");
 		x.aliasAttribute(RebellionIntel.class, "elapsed", "elpsd");
 		x.aliasAttribute(RebellionIntel.class, "stabilityPenalty", "stbLoss");

@@ -1131,6 +1131,7 @@
 		"resupplying":"resupplying at $target",
 		"scavenging":"scavenging $target",
 		"suppressingRebellion":"suppressing rebellion at $target",
+		"deliveringToRebellion":"delivering support to rebels at $target",
 		"wandering":"wandering $target",
 		"operatingIn":"operating in $target",
 		"buildingBase":"constructing base",
@@ -1145,6 +1146,7 @@
 		"missionVulture":"scavenging run",
 		"missionPatrol":"patrol",
 		"missionSuppression":"rebel suppression",
+		"missionSmuggle":"smuggling run",
 		"missionColony":"colony expedition"
 	},
 	"nex_fleetPool":{
@@ -2365,11 +2367,18 @@
 		#"intelHeaderRecentUpdates":"Recent updates",
 		
 		"intelHeaderFleet":"Suppression fleet",
-		"intelDescFleetPrep":"$TheSuppressFaction is readying a fleet $suppressOnOrAt $suppressMarket to suppress the rebellion $onOrAt $market.",
-		"intelDescFleetLaunched":"A fleet has launched from $suppressMarket to suppress the rebellion $onOrAt $market.",
-		"intelDescFleetArrived":"The $suppressFaction suppression fleet has arrived and reinforced the government $onOrAt $market. This is expected to place the rebellion at a grave disadvantage.",
-		"intelDescFleetDefeated":"The $suppressFaction suppression fleet dispatched to $market has been turned back with heavy losses. The news has demoralized government forces and emboldened the rebels.",
-		
+		"intelDescFleetPrep":"$TheSenderFaction $senderIsOrAre readying a fleet $sourceOnOrAt $sourceMarket to suppress the rebellion $onOrAt $market.",
+		"intelDescFleetLaunched":"A fleet has launched from $sourceMarket to suppress the rebellion $onOrAt $market.",
+		"intelDescFleetArrived":"The $sourceFaction suppression fleet has arrived and reinforced the government $onOrAt $market. This is expected to place the rebellion at a grave disadvantage.",
+		"intelDescFleetDefeated":"The $sourceFaction suppression fleet dispatched to $market has been turned back with heavy losses. The news has demoralized government forces and emboldened the rebels.",
+
+		"intelHeaderFleetAlt":"Pro-rebel smugglers",
+		"intelDescFleetPrepAlt":"$TheSenderFaction $senderIsOrAre readying a fleet $sourceOnOrAt $sourceMarket to smuggle arms to the rebellion $onOrAt $market.",
+		"intelDescFleetLaunchedAlt":"Smugglers from $sourceMarket have set out to the rebellion $onOrAt $market.",
+		"intelDescFleetArrivedAlt":"The $sourceFaction smugglers have arrived and reinforced the rebels $onOrAt $market. This will tilt the balance of power away from the government.",
+		"intelDescFleetDefeatedAlt":"The $sourceFaction smugglers dispatched to $market have been turned back with heavy losses. The rumors have disheartened the rebels.",
+
+
 		"intelHeaderDisrupt":"Industry disruption",
 		"intelDescDisruptSuccess":"Rebel forces have recently disrupted the %s on $market for %s days.",
 		"intelDescDisruptFailure":"Rebel forces have recently failed to disrupt the %s on $market.",
@@ -2395,6 +2404,10 @@
 		"intelBulletFleetLaunched":"Suppression fleet launched from %s",
 		"intelBulletFleetArrived":"Suppression fleet arrived",
 		"intelBulletFleetDefeated":"Suppression fleet defeated",
+		"intelBulletFleetPrepAlt":"Smugglers to launch from %s",
+		"intelBulletFleetLaunchedAlt":"Smugglers launched from %s",
+		"intelBulletFleetArrivedAlt":"Smugglers arrived",
+		"intelBulletFleetDefeatedAlt":"Smugglers defeated",
 		"intelBulletIndustryDisrupt":"Disrupted %s for %s days",
 		"intelBulletIndustryDisruptFail":"Failed to disrupt %s",
 		"intelBulletGovtVictory":"Government victory",
