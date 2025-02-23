@@ -58,6 +58,8 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public static final float MAX_REP = 0.2f;
 	public static final float STRENGTH_CHANGE_MULT = 0.1f;	// damage done per round
 	public static final float SUPPRESSION_FLEET_INTERVAL = 120f;
+	public static final float SMUGGLER_INTERVAL = 160f;
+	public static final float INDEPENDENT_SMUGGLER_CHANCE = 0.5f;
 	public static final float REBEL_LIBERATION_STRONG_STR_MULT = 1.3f;
 	public static final float REBEL_LIBERATION_STR_MULT = 1.15f;
 	public static final int MAX_STABILITY_PENALTY = 5;
@@ -77,6 +79,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	protected boolean started = false;
 	protected float elapsed = 0;
 	protected float suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.25f, 0.4f);
+	protected float smugglerCountdown = SMUGGLER_INTERVAL * MathUtils.getRandomNumberInRange(0.25f, 0.4f);
 	protected IntervalUtil disruptInterval = new IntervalUtil(30, 42);
 	@Getter @Setter protected boolean playerInitiated;
 
@@ -90,13 +93,19 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	protected float rebelTradePointsForStrength = 0;	// unlike the other values, this is modified even for player markets and can go negative
 	protected float govtTradePointsWithCurrentGovt = 0;	// reset if government changes
 	protected float rebelTradePointsWithCurrentGovt = 0;	// reset if government changes
-	
+
+	// suppression fleet
+	// all this stuff could've been stored in its own object, oh well
 	protected SuppressionFleetData suppressionFleet = null;
 	protected MarketAPI suppressionFleetSource = null;
 	protected boolean suppressionFleetWarning = false;
 	protected Boolean suppressionFleetSuccess = null;
 	protected Long suppressionFleetTimestamp;	// note: not updated automatically when lastUpdateTimestamp is updated by sendUpdate()
-	
+
+	// smuggler
+	protected SmugglerData smugglerData = null;
+
+	// industry disruption
 	protected Industry lastIndustryDisrupted;
 	protected float disruptTime;
 	protected Long disruptionTimestamp;	// note: not updated automatically when lastUpdateTimestamp is updated by sendUpdate()
@@ -119,6 +128,11 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		this.market = market;
 		this.rebelFaction = rebelFaction;
 		elapsed = -delay;
+	}
+
+	protected Object readResolve() {
+		if (smugglerData == null) smugglerData = new SmugglerData();
+		return this;
 	}
 	
 	public void init(boolean instant) {
@@ -593,6 +607,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		else {
 			// faction hands over planet to rebels, this is also a liberation
 			// FIXME has wrong text e.g. "Player forces have removed the player government on X"
+			// ...I forget if this is still broken
 			if (newOwner == rebelFaction)
 			{
 				if (started) {
@@ -633,7 +648,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	@Override
 	public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, 
 			FleetDespawnReason reason, Object param) {
-		if (suppressionFleet != null && suppressionFleet.fleet == fleet 
+		if (suppressionFleet != null && suppressionFleet.fleet == fleet
 				&& reason != FleetDespawnReason.REACHED_DESTINATION
 				&& reason != FleetDespawnReason.PLAYER_FAR_AWAY) {
 			suppressionFleetDefeated(suppressionFleet);
@@ -726,6 +741,39 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			// morale boost
 			rebelStrength *= 1.2f;
 			govtStrength *= 0.75f;
+		}
+	}
+
+	public void smugglerArrived(SmugglerData data)
+	{
+		if (isEnding() || isEnded()) return;
+		if (smugglerData == data)
+		{
+			smugglerData.success = true;
+			smugglerData.fleet = null;
+			smugglerData.source = null;
+			smugglerData.updateTimestamp = Global.getSector().getClock().getTimestamp();
+			sendUpdate(UpdateParam.SMUGGLER_ARRIVED);
+			float str = data.fleet.getMemoryWithoutUpdate().getFloat("$nex_rebellion_suppr_payload");
+			rebelStrength *= 1.1f;
+			rebelStrength += str * VALUE_MARINES;
+			govtStrength *= 0.9f;
+		}
+	}
+
+	public void smugglerDefeated(SmugglerData data)
+	{
+		if (isEnding() || isEnded()) return;
+		if (smugglerData == data)
+		{
+			smugglerData.success = false;
+			smugglerData.fleet = null;
+			smugglerData.source = null;
+			smugglerData.updateTimestamp = Global.getSector().getClock().getTimestamp();
+			sendUpdate(UpdateParam.FLEET_DEFEATED);
+			// morale boost
+			govtStrength *= 1.1f;
+			rebelStrength *= 0.8f;
 		}
 	}
 	
@@ -852,6 +900,29 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		MarketAPI source = picker.pick();
 		return source;
 	}
+
+	protected void updateSuppressionFleet(float days) {
+		suppressionFleetCountdown -= days;
+		if (!suppressionFleetWarning && suppressionFleetCountdown < 12)
+		{
+			prepSuppressionFleet();
+		}
+
+		// block suppression fleet launch if source market is no longer controlled
+		if (suppressionFleetSource != null && !AllianceManager.areFactionsAllied(
+				suppressionFleetSource.getFactionId(), govtFaction.getId()))
+		{
+			suppressionFleetSource = null;
+			suppressionFleetTimestamp = null;
+			suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+		}
+
+		if (suppressionFleetCountdown < 0 && suppressionFleetSource != null)
+		{
+			spawnSuppressionFleet();
+			suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+		}
+	}
 	
 	protected void prepSuppressionFleet() {
 		suppressionFleetSource = pickSuppressionFleetSource();
@@ -878,6 +949,182 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		suppressionFleetWarning = false;
 		suppressionFleetTimestamp = Global.getSector().getClock().getTimestamp();
 	}
+
+	protected MarketAPI pickSmugglerSource()
+	{
+		boolean indie = Math.random() < INDEPENDENT_SMUGGLER_CHANCE;
+		smugglerData.indie = indie;
+
+		// pick source market
+		Vector2f targetLoc = market.getLocationInHyperspace();
+		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
+		List<MarketAPI> markets;
+		if (indie) {
+			markets = new ArrayList<>();
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+				if (market.isHidden()) continue;
+				if (market.getFaction().isHostileTo(Factions.INDEPENDENT)) continue;
+				markets.add(market);
+			}
+		}
+		else if (AllianceManager.getFactionAlliance(rebelFaction.getId()) != null)
+			markets = AllianceManager.getFactionAlliance(rebelFaction.getId()).getAllianceMarkets();
+		else
+			markets = NexUtilsFaction.getFactionMarkets(rebelFaction.getId());
+
+		Set<String> alliesOfGovt = new HashSet<>();
+		Alliance govtAlliance = AllianceManager.getFactionAlliance(govtFaction.getId());
+		if (govtAlliance != null) {
+			alliesOfGovt.addAll(govtAlliance.getMembersCopy());
+		} else {
+			alliesOfGovt.add(govtFaction.getId());
+		}
+
+		for (MarketAPI maybeSource : markets)
+		{
+			if (maybeSource == this.market)
+				continue;
+
+			if (!maybeSource.hasSpaceport()) continue;
+
+			if (RebellionIntel.isOngoing(maybeSource)) continue;
+
+			if (maybeSource.getFaction().isPlayerFaction() || maybeSource.isPlayerOwned()) continue;
+
+			if (alliesOfGovt.contains(maybeSource.getFaction().getId())) continue;
+
+			float dist = Misc.getDistance(maybeSource.getLocationInHyperspace(), targetLoc);
+			if (dist < 5000.0f) {
+				dist = 5000.0f;
+			}
+			float weight = market.getSize() * 20000.0f / dist;
+			weight *= maybeSource.getSize();
+
+			if (rebelFaction != maybeSource.getFaction())
+				weight /= 2;
+			picker.add(maybeSource, weight);
+		}
+		MarketAPI source = picker.pick();
+		return source;
+	}
+
+	protected void updateSmuggler(float days) {
+		smugglerCountdown -= days;
+		if (smugglerCountdown < 12 && !smugglerData.sentWarning)
+		{
+			prepSmuggler();
+		}
+
+		// block smuggler launch if source market is now under an ally of govt faction
+		if (smugglerData.source != null && AllianceManager.areFactionsAllied(
+				smugglerData.source.getFactionId(), govtFaction.getId()))
+		{
+			smugglerData.source = null;
+			smugglerData.updateTimestamp = null;
+			smugglerCountdown = SMUGGLER_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+		}
+
+		if (smugglerCountdown < 0 && smugglerData.source != null)
+		{
+			spawnSmuggler();
+			smugglerCountdown = SMUGGLER_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+		}
+	}
+
+	protected void prepSmuggler() {
+		smugglerData.fleet = null;
+		smugglerData.source = pickSmugglerSource();
+		// no markets to launch fleet from, delay countdown and check again later
+		if (smugglerData.source == null)
+			smugglerCountdown += SMUGGLER_INTERVAL * MathUtils.getRandomNumberInRange(0.2f, 0.3f);
+		else
+		{
+			sendUpdate(UpdateParam.SMUGGLER_PREP);
+			smugglerData.updateTimestamp = Global.getSector().getClock().getTimestamp();
+			smugglerData.sentWarning = true;
+		}
+	}
+
+	protected void spawnSmuggler()
+	{
+		createSmuggler(smugglerData.source);
+		sendUpdate(UpdateParam.SMUGGLER_SPAWNED);
+		smugglerData.sentWarning = false;
+		smugglerData.updateTimestamp = Global.getSector().getClock().getTimestamp();
+		smugglerData.launched = true;
+		smugglerData.success = null;
+	}
+
+	protected CampaignFleetAPI createSmuggler(MarketAPI sourceMarket)
+	{
+		// TODO
+		boolean indie = smugglerData.indie;
+
+		String factionId = sourceMarket.getFactionId();
+		if (indie) {
+			factionId = Factions.INDEPENDENT;
+		}
+
+		int sizeFactor = market.getSize() * 4;
+		if (sizeFactor < 1) sizeFactor = 1;
+		float fp = (int)(sizeFactor * 6f);
+
+		if (!indie) {
+			fp = FleetPoolManager.getManager().drawFromPool(factionId, new FleetPoolManager.RequisitionParams(fp, 0, -5000f, 0.5f));
+			if (fp <= 0) return null;
+		}
+
+		int str = (int)(govtStrength - rebelStrength/2);
+		int maxStr = Math.round(6 * getSizeMod(market.getSize()));
+		str = Math.min(str, maxStr);
+		int numMarines = (int)(str / VALUE_MARINES);
+
+		float distance = NexUtilsMarket.getHyperspaceDistance(sourceMarket, market);
+		int tankerFP = (int)(fp * InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
+		//fp -= tankerFP;
+
+		FleetParamsV3 fleetParams = new FleetParamsV3(
+				sourceMarket,
+				FleetTypes.TRADE_SMUGGLER,
+				fp*0.4f, // combat
+				fp*0.1f, // freighters
+				tankerFP,		// tankers
+				numMarines/100,		// personnel transports
+				0,		// liners
+				fp*0.05f,	// utility
+				0);	// quality mod
+		fleetParams.factionId = Factions.INDEPENDENT;
+
+		CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(Global.getSector().getFaction(factionId), fleetParams);
+		if (fleet == null && !indie) {
+			FleetPoolManager.getManager().modifyPool(factionId, fp);
+			return null;
+		}
+
+		fleet.getCargo().addCommodity(Commodities.HAND_WEAPONS, (int)(numMarines/4f));
+		fleet.getMemoryWithoutUpdate().set("$nex_rebellion_suppr_payload", str);
+		fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
+		fleet.setAIMode(true);
+
+		SuppressionFleetData data = new SuppressionFleetData(fleet);
+		data.startingFleetPoints = fleet.getFleetPoints();
+		data.source = sourceMarket;
+		data.target = market;
+		data.intel = this;
+
+		sourceMarket.getContainingLocation().addEntity(fleet);
+		SectorEntityToken entity = sourceMarket.getPrimaryEntity();
+		fleet.setLocation(entity.getLocation().x, entity.getLocation().y);
+
+		// add AI script
+		// FIXME: need a script that buffs the rebels instead of govt
+		SuppressionFleetAI script = new SuppressionFleetAI(fleet, data);
+		fleet.addScript(script);
+		script.giveInitialAssignment();
+
+		log.info("\tSpawned smuggler " + data.fleet.getNameWithFaction() + " of size " + fp);
+		return fleet;
+	}
 	
 	// =========================================================================
 	// =========================================================================
@@ -902,29 +1149,13 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 				return;
 			}
 			
-			if (govtStrength < rebelStrength * 1.25f && suppressionFleet == null 
+			if (govtStrength < rebelStrength * 1.25f && suppressionFleet == null
 					&& !market.getFaction().isPlayerFaction())
 			{
-				suppressionFleetCountdown -= days;
-				if (!suppressionFleetWarning && suppressionFleetCountdown < 12)
-				{
-					prepSuppressionFleet();
-				}
-				
-				// block suppression fleet launch if source market is no longer controlled
-				if (suppressionFleetSource != null && !AllianceManager.areFactionsAllied(
-							suppressionFleetSource.getFactionId(), govtFaction.getId()))
-				{
-					suppressionFleetSource = null;
-					suppressionFleetTimestamp = null;
-					suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
-				}
-				
-				if (suppressionFleetCountdown < 0 && suppressionFleetSource != null)
-				{
-					spawnSuppressionFleet();
-					suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
-				}
+				updateSuppressionFleet(days);
+			}
+			if (rebelStrength < govtStrength * 1.1f && !smugglerData.isActive()) {
+				updateSmuggler(days);
 			}
 		}
 		else
@@ -1541,21 +1772,40 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	{
 		return getOngoingEvent(market) != null;
 	}
-	
+
 	public static class SuppressionFleetData {
 		public CampaignFleetAPI fleet;
 		public MarketAPI source;
 		public MarketAPI target;
 		public float startingFleetPoints;
 		public RebellionIntel intel;
-		
+
 		public SuppressionFleetData(CampaignFleetAPI fleet) {
 			this.fleet = fleet;
 		}
 	}
+
+	public static class SmugglerData {
+		public RebellionIntel intel;
+		public CampaignFleetAPI fleet;
+		public MarketAPI source;
+		public MarketAPI target;
+		public float startingFleetPoints;
+		public boolean indie;
+		public boolean sentWarning;
+		public boolean launched;
+		public Boolean success;
+		public Long updateTimestamp;
+
+		protected boolean isActive() {
+			return launched && success == null;
+		}
+	}
 	
 	protected enum UpdateParam {
-		PREP, START, FLEET_PREP, FLEET_SPAWNED, FLEET_ARRIVED, FLEET_DEFEATED, 
+		PREP, START,
+		FLEET_PREP, FLEET_SPAWNED, FLEET_ARRIVED, FLEET_DEFEATED,
+		SMUGGLER_PREP, SMUGGLER_SPAWNED, SMUGGLER_ARRIVED, SMUGGLER_DEFEATED,
 		INDUSTRY_DISRUPTED, INDUSTRY_DISRUPT_FAIL, END
 	}
 	
