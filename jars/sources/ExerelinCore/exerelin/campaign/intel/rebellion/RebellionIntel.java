@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
@@ -26,6 +27,7 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.agents.AgentIntel;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -110,6 +112,8 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	protected int stabilityPenalty = 1;
 	protected UpdateParam lastUpdate;
 	protected Long lastUpdateTimestamp;
+	@Getter @Setter	StatBonus intelModifier = new StatBonus();
+
 	protected RebellionResult result = null;
 	protected ExerelinReputationAdjustmentResult repResultGovt;
 	protected ExerelinReputationAdjustmentResult repResultRebel;
@@ -133,6 +137,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		if (smugglerData == null) {
 			smugglerData = new SupportFleetData(false);
 		}
+		if (intelModifier == null) intelModifier = new StatBonus();
 		return this;
 	}
 	
@@ -324,6 +329,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			if (intel.getMarket() == market)
 				level += intel.getLevel();
 		}
+		level = Math.round(intelModifier.computeEffective(level));
 		
 		return level;
 	}
@@ -1140,7 +1146,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		return portionAboveZero;
 	}
 	
-	public void modifyPoints(float points, boolean rebels)
+	public void modifyPointsFromTrade(float points, boolean rebels)
 	{
 		boolean addTradePoints = !market.isPlayerOwned() && !market.getFaction().isPlayerFaction();
 		float truePoints;
@@ -1216,7 +1222,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		points = marinePoints + weaponPoints + supplyPoints;
 		
 		boolean forRebels = transaction.getSubmarket().getPlugin().isBlackMarket();
-		modifyPoints(points, forRebels);
+		modifyPointsFromTrade(points, forRebels);
 	}
 	
 	@Override
@@ -1594,6 +1600,8 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		sub.add(new Pair<>("$market", market.getName()));
 
 		printBasicInfo(info, sub, opad);
+		if (isEnding() || isEnded()) return;
+
 		printSidesInfo(info, sub, opad);
 		
 		// Details on suppression fleet, if present
@@ -1610,7 +1618,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		}
 		
 		// Devmode: fast resolve action
-		if (Global.getSettings().isDevMode() && !isEnding() && !isEnded()) {
+		if ((Global.getSettings().isDevMode() || ExerelinModPlugin.isNexDev) && !isEnding() && !isEnded()) {
 			info.addButton("Fast resolve", "fastResolve",
 					getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
 					(int)(width), 20f, opad * 3f);

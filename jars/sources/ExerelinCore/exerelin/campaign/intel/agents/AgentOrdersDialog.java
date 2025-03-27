@@ -259,6 +259,9 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	        	// FIXME
 				continue;
 			}
+
+			tempAction.initBasicValuesFromDialog(this);
+
 	        if (tempAction.dialogCanShowAction(this)) {
                 addActionOption(def.id);
             }

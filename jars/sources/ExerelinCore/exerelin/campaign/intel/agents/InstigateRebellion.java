@@ -132,7 +132,9 @@ public class InstigateRebellion extends CovertActionIntel {
 
 	@Override
 	public boolean dialogCanShowAction(AgentOrdersDialog dialog) {
-		return dialog.canConductLocalActions() && RebellionCreator.ENABLE_REBELLIONS && NexUtilsMarket.canBeInvaded(dialog.getAgentMarket(), true);
+		return dialog.canConductLocalActions() && RebellionCreator.ENABLE_REBELLIONS
+				&& NexUtilsMarket.canBeInvaded(dialog.getAgentMarket(), true)
+				&& !RebellionIntel.isOngoing(market);
 	}
 
 	// TODO: tooltip?

@@ -158,7 +158,7 @@ public class Nex_RebellionActions extends PaginatedOptions {
 		RebellionIntel event = RebellionIntel.getOngoingEvent(market);
 		if (event != null)
 		{
-			event.modifyPoints(points, isRebel(dialog));
+			event.modifyPointsFromTrade(points, isRebel(dialog));
 		}
 	}
 	

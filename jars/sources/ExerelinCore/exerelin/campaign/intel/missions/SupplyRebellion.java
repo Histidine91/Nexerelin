@@ -300,7 +300,7 @@ public class SupplyRebellion extends HubMissionWithBarEvent {
             float points = marinePoints + weaponPoints + supplyPoints;
             points *= 1.5f;
 
-            curr.modifyPoints(points, true);
+            curr.modifyPointsFromTrade(points, true);
         } else {
             RebellionCreator.getInstance().createRebellion(deliveryMarket, factionId, false);
         }

@@ -59,8 +59,8 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	protected Map<String, Object> params;
 	@Getter @Setter protected MarketAPI market;
 	@Getter protected AgentIntel agent;
-	@Getter @Setter  protected FactionAPI agentFaction;
-	@Getter @Setter  protected FactionAPI targetFaction;
+	@Getter @Setter protected FactionAPI agentFaction;
+	@Getter @Setter protected FactionAPI targetFaction;
 	@Getter @Setter protected FactionAPI thirdFaction;
 	@Getter @Setter protected boolean playerInvolved = false;
 	@Getter @Setter protected CovertActionResult result;
@@ -985,6 +985,12 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	 * @param dialog
 	 */
 	public void dialogInitAction(AgentOrdersDialog dialog) {
+		initBasicValuesFromDialog(dialog);
+
+		this.init();
+	}
+
+	protected void initBasicValuesFromDialog(AgentOrdersDialog dialog) {
 		// agent faction should not be commissioning faction if target is also commissioning faction
 		FactionAPI agentFaction = PlayerFactionStore.getPlayerFaction();
 		MarketAPI market = dialog.getAgentMarket();
@@ -998,8 +1004,6 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		this.targetFaction = mktFaction;
 		this.playerInvolved = true;
 		this.params = new HashMap<>();
-
-		this.init();
 	}
 
 	public Set<FactionAPI> dialogGetFactions(AgentOrdersDialog dialog) {
@@ -1105,7 +1109,6 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 
 	/**
 	 * Called by dialog to determine whether the action should be displayed in the menu to pick actions.
-	 * The action intel's data is NOT initialized before calling this, so do not assume any needed variables have been set!
 	 * @param dialog
 	 * @return
 	 */
