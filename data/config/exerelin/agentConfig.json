@@ -212,5 +212,21 @@
 			"xp":1000,
 			"sortOrder":12,
 		},
-	},
+		"counterInsurgency":{
+			"time":30,
+			"name":"Counterinsurgency",
+			"className":"exerelin.campaign.intel.agents.CounterInsurgency",
+			"successChance":0.75,
+			"useAlertLevel":false,
+			"effectMin":100,
+			"effectMax":120,
+			"repLossOnDetectionMin":0.1,
+			"repLossOnDetectionMax":0.15,
+			"alertLevelIncrease":0,
+			"baseCost":30000,
+			"injuryChanceMult":1.5,
+			"xp":900,
+			"sortOrder":9.5,
+		}
+	}
 }

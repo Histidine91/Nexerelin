@@ -282,6 +282,7 @@
 		"intelAborted":"Mission aborted",
 		"intelRecovered":"Recovered from injuries",
 		"intelCellKill":"Removing Pather cell on $market for $cost",
+		"intelCOIN":"Infiltrating rebellion on $market for $cost",
 		"intelRepeatRelations":"Repeating $action with $faction1, $faction2 for $cost",
 		"intelDescName":"$name is a level %s operative.",
 		"intelDescLost":"Operative $name has been captured or killed.",
@@ -378,6 +379,7 @@
 		"intelStatus_destroyCommodities":"Destroying stockpiles of %s",
 		"intelStatus_sabotageIndustry":"Sabotaging %s",
 		"intelStatus_infiltrateCell":"Infiltrating Luddic cell",
+		"intelStatus_counterInsurgency":"Conducting counterinsurgency operation",
 		"intelStatus_procureShip":"Procuring $ship, delivering to $market",
 		"intelStatus_findPirateBase":"Finding pirate base",
 		"intelStatus_instigateRebellion":"Instigating rebellion",
@@ -428,7 +430,7 @@
 		"intelDesc_infiltrateCell_successPlayer":"Your operative $agentName has infiltrated and broken up a $faction cell on $market. They won't be a problem any longer, at least for a while.",
 		"intelDesc_infiltrateCell_failure":"An $agentFaction operative has failed to penetrate a $faction cell on $market. Terrorist activity continues.",
 		"intelDesc_infiltrateCell_failurePlayer":"Your operative $agentName has failed to infiltrate a $faction cell on $market. They're fortunate to be alive — such cells have a short way with traitors.",
-		
+
 		"intelDesc_procureShip_success":"A $agentFaction operative has arranged the illegal purchase of a $ship from $market. $Faction investigators have failed to detect the crime.",
 		"intelDesc_procureShip_successPlayer":"Your operative $agentName has 'bought' a $ship $onOrAt $market. $Faction authorities have not appeared to notice the disappearance.",
 		"intelDesc_procureShip_successDetected":"A $agentFaction operative has arranged the illegal purchase of a $ship from $market. $Faction have determined $theAgentFaction was responsible.",
@@ -446,7 +448,12 @@
 		"intelDesc_instigateRebellion_failurePlayer":"Your operative $agentName has failed to instigate a rebellion $onOrAt $market against $TheFaction. Fortunately, they managed to cover up your involvement.",
 		"intelDesc_instigateRebellion_failureDetected":"$TheAgentFaction was thwarted in their attempt to instigate a rebellion $onOrAt $market. $TheFaction is certainly planning reprisals.",
 		"intelDesc_instigateRebellion_failureDetectedPlayer":"$Faction authorities have broken up $agentName's attempted rebellion $onOrAt $market. They will not overlook $theAgentFaction's crime.",
-		
+
+		"intelDesc_counterInsurgency_successPlayer":"Your operative $agentName has compromised rebel forces $onOrAt $market. $TheFaction have not found the traitor in their midst.",
+		"intelDesc_counterInsurgency_successDetectedPlayer":"Your operative $agentName has compromised rebel forces $onOrAt $market. $TheFaction is no doubt plotting revenge.",
+		"intelDesc_counterInsurgency_failurePlayer":"Your operative $agentName has failed to penetrate the rebellion $onOrAt $market, but has managed to cover their tracks.",
+		"intelDesc_counterInsurgency_failureDetectedPlayer":"Your operative $agentName has failed to penetrate the rebellion $onOrAt $market. Evidence of your involvement has angered their $faction sponsors.",
+
 		"intelDesc_recruitAgent_successPlayer":"Your operative $agentName has recruited a new colleague $onOrAt $market.",
 		
 		"intel_lastMessage_travel_success":"\"Arrived at $market. Awaiting further directions.\"",
@@ -466,6 +473,8 @@
 		"intel_lastMessage_procureShip_failure":"\"Failed to procure a $ship at $market.\"",
 		"intel_lastMessage_instigateRebellion_success":"\"$market has risen in revolt. Viva la revolución!\"",
 		"intel_lastMessage_instigateRebellion_failure":"\"Our efforts to start a rebellion on $market have been suppressed.\"",
+		"intel_lastMessage_counterInsurgency_success":"\"Successfully infiltrated the rebels among us on $market.\"",
+		"intel_lastMessage_counterInsurgency_failure":"\"Failed to root out rebels on $market.\"",
 		"intel_lastMessage_injury_success":"\"Recovered from injuries. Ready for duty once more.\"",
 		"intel_lastMessage_findPirateBase_success":"\"Found the base supporting the pirate activity on $market.\"",
 		"intel_lastMessage_recruitAgent_success":"\"Recruited a new operative from $market.\"",

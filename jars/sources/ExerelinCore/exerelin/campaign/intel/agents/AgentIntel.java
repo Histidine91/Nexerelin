@@ -2,21 +2,12 @@ package exerelin.campaign.intel.agents;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.MutableStat;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
-import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCells;
-import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
-import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
-import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
-import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
-import com.fs.starfarer.api.impl.campaign.intel.events.PirateBasePirateActivityCause2;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.BaseOptionStoryPointActionDelegate;
 import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.StoryOptionParams;
@@ -64,6 +55,7 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected static final Object UPDATE_LEVEL_UP = new Object();
 	protected static final Object UPDATE_INJURY_RECOVERED = new Object();
 	protected static final Object UPDATE_CELL_KILL = new Object();
+	protected static final Object UPDATE_COIN = new Object();
 	protected static final Object UPDATE_REPEAT_RELATIONS = new Object();
 	protected static final Object UPDATE_LOST = new Object();
 	protected static final Object UPDATE_ABORTED = new Object();
@@ -225,8 +217,9 @@ public class AgentIntel extends BaseIntelPlugin {
 			NexUtils.advanceIntervalDays(cellKillInterval, amount);
 			if (cellKillInterval.intervalElapsed()) {
 				//Global.getLogger(this.getClass()).info("Cell kill interval for " + agent.getNameString());
+				checkCOIN();
 				checkCellKill();
-				checkBaseFind();
+ 				checkBaseFind();
 			}
 		}
 	}
@@ -239,6 +232,13 @@ public class AgentIntel extends BaseIntelPlugin {
 	protected CovertActionIntel getNextAction() {
 		if (actionQueue.size() <= 1) return null;
 		return actionQueue.get(1);
+	}
+
+	protected CovertActionIntel getSoonestActionOfClass(Class cl) {
+		for (CovertActionIntel intel : actionQueue) {
+			if (cl.isInstance(intel)) return intel;
+		}
+		return null;
 	}
 	
 	protected void pushActionQueue() {
@@ -369,22 +369,16 @@ public class AgentIntel extends BaseIntelPlugin {
 			return;
 		
 		MarketAPI target;
-		List<MarketAPI> playerMarkets = new ArrayList<>();
 		Set<MarketAPI> otherAgentTargets = getOtherAgentActionTargets(InfiltrateCell.class);
+		List<MarketAPI> playerMarkets = getValidPlayerMarkets(otherAgentTargets);
 
-		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-			if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) {
-				playerMarkets.add(market);
-			}
-		}
-		playerMarkets.removeAll(otherAgentTargets);
-		
-		target = getClosestMarketForCellKill(playerMarkets);
+		InfiltrateCell action = new InfiltrateCell(this, null, agent.getFaction(), null, true, null);
+		target = getClosestMarketForAction(playerMarkets, action);
 		
 		if (target == null && Misc.getCommissionFaction() != null && Global.getSettings().getBoolean("nex_killCellsForCommissioner")) {
 			List<MarketAPI> commMarkets = Misc.getFactionMarkets(Misc.getCommissionFactionId());
 			commMarkets.removeAll(otherAgentTargets);
-			target = getClosestMarketForCellKill(commMarkets);
+			target = getClosestMarketForAction(commMarkets, action);
 		}
 		
 		if (target == null) return;
@@ -392,59 +386,15 @@ public class AgentIntel extends BaseIntelPlugin {
 		issueCellKillOrder(target);
 	}
 	
-	public MarketAPI getClosestMarketForCellKill(Collection<MarketAPI> toCheck) {
-		
-		MarketAPI best = null;
-		float bestDist = 9999999;
-		float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
-		
-		for (MarketAPI market : toCheck) {
-			if (!market.hasCondition(Conditions.PATHER_CELLS)) continue;
-			MarketConditionAPI cond = market.getCondition(Conditions.PATHER_CELLS);
-			LuddicPathCells cellCond = (LuddicPathCells)(cond.getPlugin());
-			LuddicPathCellsIntel cellIntel = cellCond.getIntel();
-			if (cellIntel.getSleeperTimeout() > 90)
-				continue;
-			
-			InfiltrateCell action = new InfiltrateCell(this, market, agent.getFaction(), market.getFaction(), true, null);
-			int cost = action.getCost();
-			if (cost > credits) {
-				//log.info(String.format("Insufficient funds for cell kill on %s: %s/%s", market.getName(), cost, credits));
-				continue;
-			}
-			
-			// agent has no location, just pick the first market with cell we find
-			if (this.market == null)
-				return market;
-			
-			float dist = Misc.getDistanceLY(market.getLocationInHyperspace(), this.market.getLocationInHyperspace());
-			if (dist < bestDist) {
-				bestDist = dist;
-				best = market;
-			}
-		}
-		
-		return best;
-	}
-	
 	public void issueCellKillOrder(MarketAPI target) {
-		CovertActionIntel action;
-		if (target != this.market) {
-			action = new Travel(this, target, faction, target.getFaction(), true, null);
-			action.init();
-			addAction(action);
-			action.activate();
-		}
+		issueTravelOrderIfNeeded(target);
 
 		FactionAPI agentFaction = faction;
 		if (agentFaction == target.getFaction() || target.getFaction().isPlayerFaction())
 			agentFaction = Global.getSector().getPlayerFaction();
 				
-		action = new InfiltrateCell(this, target, agentFaction, target.getFaction(), true, null);
-		action.init();
-		addAction(action);
-		if (target == this.market) action.activate();
-		Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(action.cost);
+		CovertActionIntel action = new InfiltrateCell(this, target, agentFaction, target.getFaction(), true, null);
+		queueOrder(action, target);
 		sendUpdateIfPlayerHasIntel(UPDATE_CELL_KILL, false);
 	}
 	
@@ -456,22 +406,16 @@ public class AgentIntel extends BaseIntelPlugin {
 			return;
 		
 		MarketAPI target;
-		List<MarketAPI> playerMarkets = new ArrayList<>();
 		Set<MarketAPI> otherAgentTargets = getOtherAgentActionTargets(FindPirateBase.class);
+		List<MarketAPI> playerMarkets = getValidPlayerMarkets(otherAgentTargets);
 
-		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-			if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) {
-				playerMarkets.add(market);
-			}
-		}
-
-		playerMarkets.removeAll(otherAgentTargets);
-		target = getClosestMarketForBaseFind(playerMarkets);
+		CovertActionIntel action = new FindPirateBase(this, null, faction, true, null);
+		target = getClosestMarketForAction(playerMarkets, action);
 		
 		if (target == null && Misc.getCommissionFaction() != null) {
 			List<MarketAPI> commMarkets = Misc.getFactionMarkets(Misc.getCommissionFactionId());
 			commMarkets.removeAll(otherAgentTargets);
-			target = getClosestMarketForBaseFind(commMarkets);
+			target = getClosestMarketForAction(commMarkets, action);
 		}
 		
 		if (target == null) return;
@@ -479,58 +423,104 @@ public class AgentIntel extends BaseIntelPlugin {
 		issueBaseFindOrder(target);
 	}
 	
-	public MarketAPI getClosestMarketForBaseFind(Collection<MarketAPI> toCheck) {
-		
+	public void issueBaseFindOrder(MarketAPI target) {
+		issueTravelOrderIfNeeded(target);
+				
+		CovertActionIntel action = new FindPirateBase(this, target, faction, true, null);
+		queueOrder(action, target);
+	}
+
+	/**
+	 * Find a target (if any) for automatic Pather cell killing.
+	 */
+	public void checkCOIN() {
+		if (getCurrentAction() != null)
+			return;
+
+		MarketAPI target;
+		Set<MarketAPI> otherAgentTargets = getOtherAgentActionTargets(CounterInsurgency.class);
+		List<MarketAPI> playerMarkets = getValidPlayerMarkets(otherAgentTargets);
+
+		CounterInsurgency action = new CounterInsurgency(this, null, this.getFactionForUIColors(), null, true, null);
+		target = getClosestMarketForAction(playerMarkets, action);
+
+		if (target == null && Misc.getCommissionFaction() != null && Global.getSettings().getBoolean("nex_killCellsForCommissioner")) {
+			List<MarketAPI> commMarkets = Misc.getFactionMarkets(Misc.getCommissionFactionId());
+			commMarkets.removeAll(otherAgentTargets);
+			target = getClosestMarketForAction(commMarkets, action);
+		}
+
+		if (target == null) return;
+
+		issueCOINOrder(target);
+	}
+
+	public void issueCOINOrder(MarketAPI target) {
+		issueTravelOrderIfNeeded(target);
+
+		FactionAPI agentFaction = faction;
+		if (agentFaction == target.getFaction() || target.getFaction().isPlayerFaction())
+			agentFaction = Global.getSector().getPlayerFaction();
+
+		CovertActionIntel action = new CounterInsurgency(this, target, agentFaction, target.getFaction(), true, null);
+		queueOrder(action, target);
+		sendUpdateIfPlayerHasIntel(UPDATE_COIN, false);
+	}
+
+	protected List<MarketAPI> getValidPlayerMarkets(Collection<MarketAPI> filterOut) {
+		List<MarketAPI> playerMarkets = new ArrayList<>();
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+			if (market.getFaction().isPlayerFaction() || market.isPlayerOwned()) {
+				playerMarkets.add(market);
+			}
+		}
+		playerMarkets.removeAll(filterOut);
+		return playerMarkets;
+	}
+
+	public MarketAPI getClosestMarketForAction(List<MarketAPI> toCheck, CovertActionIntel action) {
 		MarketAPI best = null;
 		float bestDist = 9999999;
-		HostileActivityEventIntel ha = HostileActivityEventIntel.get();
-		Set<LocationAPI> checkedForHA = new HashSet<>();
-		
+		float credits = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+		AgentOrdersDialog tempDialog = new AgentOrdersDialog(this, market, null, false);
+
 		for (MarketAPI market : toCheck) {
-			PirateBaseIntel baseIntel = null;
-			if (checkedForHA.contains(market.getContainingLocation())) continue;
-
-			if (!checkedForHA.contains(market.getContainingLocation())) {
-				baseIntel = PirateBasePirateActivityCause2.getBaseIntel(market.getStarSystem());
-			}
-			else if (market.hasCondition(Conditions.PIRATE_ACTIVITY)) {
-				MarketConditionAPI cond = market.getCondition(Conditions.PIRATE_ACTIVITY);
-				PirateActivity activityCond = (PirateActivity)(cond.getPlugin());
-				baseIntel = activityCond.getIntel();
-			}
-
-			checkedForHA.add(market.getContainingLocation());
-
-			if (baseIntel == null || baseIntel.isEnding() || baseIntel.isEnded() || baseIntel.isPlayerVisible())
+			action.setMarket(market);
+			action.setTargetFaction(market.getFaction());
+			tempDialog.setAgentMarket(market);
+			if (!action.dialogCanShowAction(tempDialog)) continue;
+			int cost = action.getCost();
+			if (cost > credits) {
 				continue;
-			
-			// agent has no location, just pick the first market with cell we find
+			}
+			// agent has no location, just pick the first market with rebellion we find
 			if (this.market == null)
 				return market;
-			
+
 			float dist = Misc.getDistanceLY(market.getLocationInHyperspace(), this.market.getLocationInHyperspace());
 			if (dist < bestDist) {
 				bestDist = dist;
 				best = market;
 			}
 		}
-		
+
 		return best;
 	}
-	
-	public void issueBaseFindOrder(MarketAPI target) {
-		CovertActionIntel action;
+
+	public void issueTravelOrderIfNeeded(MarketAPI target) {
 		if (target != this.market) {
-			action = new Travel(this, target, faction, target.getFaction(), true, null);
+			CovertActionIntel action = new Travel(this, target, faction, target.getFaction(), true, null);
 			action.init();
 			addAction(action);
 			action.activate();
 		}
-				
-		action = new FindPirateBase(this, target, faction, true, null);
+	}
+
+	protected void queueOrder(CovertActionIntel action, MarketAPI target) {
 		action.init();
 		addAction(action);
 		if (target == this.market) action.activate();
+		Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(action.cost);
 	}
 	
 	@Override
@@ -552,30 +542,22 @@ public class AgentIntel extends BaseIntelPlugin {
 			info.addPara(getString("intelLevelUp"), initPad, hl, level + "");
 		} else if (listInfoParam == UPDATE_INJURY_RECOVERED) {
 			info.addPara(getString("intelRecovered"), initPad);
-		} else if (listInfoParam == UPDATE_CELL_KILL) {
-			MarketAPI destination = null;
-			float cost = 0;
-			CovertActionIntel act = getCurrentAction();
-			if (act instanceof Travel) {
-				destination = ((Travel)act).market;
-				act = getNextAction();
-				if (act instanceof InfiltrateCell) {
-					cost = act.getCost();
-				}
-			}
-			else if (act instanceof InfiltrateCell) {
-				destination = this.market;
-				cost = act.getCost();
-			}
-			if (destination != null) {
-				String mktName = destination.getName();
-				String costStr = Misc.getDGSCredits(cost);
+		} else if (listInfoParam == UPDATE_CELL_KILL || listInfoParam == UPDATE_COIN) {
+			boolean coin = listInfoParam == UPDATE_COIN;
+			CovertActionIntel next = getSoonestActionOfClass(coin ? CounterInsurgency.class : InfiltrateCell.class);
+
+			if (next != null) {
+				String mktName = next.getMarket().getName();
+				String costStr = Misc.getDGSCredits(next.cost);
 				String str = getString("intelCellKill");
+				if (coin) {
+					str = getString("intelCOIN");
+				}
 				str = StringHelper.substituteToken(str, "$market", mktName);
 				str = StringHelper.substituteToken(str, "$cost", costStr);
 				LabelAPI label = info.addPara(str, initPad);
 				label.setHighlight(mktName, costStr);
-				label.setHighlightColors(destination.getTextColorForFactionOrPlanet(), hl);
+				label.setHighlightColors(next.getMarket().getTextColorForFactionOrPlanet(), hl);
 			}
 		} else if (listInfoParam == UPDATE_REPEAT_RELATIONS) {
 			CovertActionIntel act = getCurrentAction();

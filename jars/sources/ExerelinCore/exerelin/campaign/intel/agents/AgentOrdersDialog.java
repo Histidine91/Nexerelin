@@ -21,12 +21,13 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * Interaction dialog for giving agent orders. Modularization in progress, needs testing.
@@ -46,7 +47,7 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 	protected int currentPage = 1;
 	
 	@Getter protected AgentIntel agent;
-	@Getter protected MarketAPI agentMarket;
+	@Getter @Setter	protected MarketAPI agentMarket;
 	@Getter protected CovertActionIntel action;
 	@Getter protected boolean isQueue;
 	protected List<FactionAPI> factions = new ArrayList<>();
