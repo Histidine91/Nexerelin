@@ -1152,7 +1152,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 
 				// safety so invasionOnlyRetake factions don't get stuck if no valid invasion targets
 				if (intel == null && !shouldRaid && config.invasionOnlyRetake) {
-					intel = generateInvasionOrRaidFleet(faction, null, EventType.INVASION, new RequisitionParams());
+					intel = generateInvasionOrRaidFleet(faction, null, EventType.RAID, new RequisitionParams());
 				}
 
 				if (intel != null)
