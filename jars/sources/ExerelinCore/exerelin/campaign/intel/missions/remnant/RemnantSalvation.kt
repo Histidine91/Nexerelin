@@ -917,7 +917,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
     protected fun haveArroyoComms(): Boolean {
         val arroyo = Global.getSector().importantPeople.getPerson(People.ARROYO) ?: return false
         val entry = arroyoMarket!!.commDirectory.getEntryForPerson(arroyo) ?: return false
-        return entry.isHidden
+        return !entry.isHidden
     }
 
     protected fun getCombatSkillLevel(): Float {
@@ -1198,7 +1198,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             if (!defeatedFleet1)
                 info.addPara(RemnantQuestUtils.getString("salvation_investigateLeadsDesc1"), 0f, hl, remnantSystem!!.nameWithLowercaseTypeShort)
             if (!talkedToArroyo) {
-                if (metArroyoBefore() || arroyo?.memoryWithoutUpdate?.getBoolean("\$nex_remSalvation_arroyo_imp") == true) info.addPara(RemnantQuestUtils.getString("salvation_investigateLeadsDesc2Known"), 0f, tt.baseUIColor,
+                if (haveArroyoComms()) info.addPara(RemnantQuestUtils.getString("salvation_investigateLeadsDesc2Known"), 0f, tt.baseUIColor,
                     tt.displayName, arroyo?.nameString, arroyoMarket?.name)
                 else info.addPara(RemnantQuestUtils.getString("salvation_investigateLeadsDesc2"), 0f, tt.baseUIColor, tt.displayName)
             }
