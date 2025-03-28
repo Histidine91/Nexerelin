@@ -170,16 +170,20 @@ public class FollowMeAbility extends BaseDurationAbility {
 	
 	@Override
 	public void createTooltip(TooltipMakerAPI tooltip, boolean expanded) {
-		
-		LabelAPI title = tooltip.addTitle(StringHelper.getString(STRING_CATEGORY, "followMeTitle"));
-//		title.highlightLast(status);
-//		title.setHighlightColor(gray);
 
 		float pad = 10f;
+		float initPad = 0;
+
+		if (!Global.CODEX_TOOLTIP_MODE) {
+			LabelAPI title = tooltip.addTitle(StringHelper.getString(STRING_CATEGORY, "followMeTitle"));
+			initPad = pad;
+		}
+//		title.highlightLast(status);
+//		title.setHighlightColor(gray);
 		String highlight = (int)FOLLOW_DURATION + "";
 		String tooltip1 = StringHelper.getString(STRING_CATEGORY, "followMeTooltip1");
 		tooltip1 = StringHelper.substituteToken(tooltip1, "$numDays", highlight);
-		tooltip.addPara(tooltip1, pad, Misc.getHighlightColor(), highlight);
+		tooltip.addPara(tooltip1, initPad, Misc.getHighlightColor(), highlight);
 		tooltip.addPara(StringHelper.getString(STRING_CATEGORY, "followMeTooltip2"), pad);
 	}
 

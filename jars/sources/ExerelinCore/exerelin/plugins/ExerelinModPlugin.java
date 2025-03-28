@@ -45,6 +45,7 @@ import exerelin.campaign.backgrounds.CharacterBackgroundIntel;
 import exerelin.campaign.backgrounds.CharacterBackgroundLoader;
 import exerelin.campaign.backgrounds.CharacterBackgroundUtils;
 import exerelin.campaign.battle.EncounterLootHandler;
+import exerelin.campaign.battle.NexAutoresolveListener;
 import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.campaign.econ.*;
 import exerelin.campaign.fleets.*;
@@ -459,9 +460,10 @@ public class ExerelinModPlugin extends BaseModPlugin
             plugins.addPlugin(new DerelictEmpireOfficerGeneratorPlugin(), true);
         }
 
-        Global.getSector().getListenerManager().addListener(new MiningCooldownDrawerV2(), true);
+        sector.getListenerManager().addListener(new MiningCooldownDrawerV2(), true);
 
-        Global.getSector().addTransientScript(new BattleForceJoinHelper());
+        sector.addTransientScript(new BattleForceJoinHelper());
+        sector.getListenerManager().addListener(new NexAutoresolveListener(), true);
     }
     
     @Override

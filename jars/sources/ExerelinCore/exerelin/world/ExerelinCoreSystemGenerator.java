@@ -92,7 +92,7 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 		
 		float minRadius = plugin.getTileSize() * 2f;
 		for (StarSystemAPI curr : systems) {
-			float radius = curr.getMaxRadiusInHyperspace();
+			float radius = curr.getMaxRadiusInHyperspace() * 0.5f;
 			editor.clearArc(curr.getLocation().x, curr.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
 			editor.clearArc(curr.getLocation().x, curr.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
 		}

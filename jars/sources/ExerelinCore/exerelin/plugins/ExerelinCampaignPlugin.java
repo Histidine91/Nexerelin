@@ -16,7 +16,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import exerelin.campaign.*;
 import exerelin.campaign.abilities.ai.AlwaysOnTransponderAI;
 import exerelin.campaign.alliances.Alliance;
-import exerelin.campaign.battle.NexBattleAutoresolverPlugin;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.colony.AICoreAdminPluginOmega;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
@@ -189,17 +188,6 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 	public PluginPick<AICoreAdminPlugin> pickAICoreAdminPlugin(String commodityId) {
 		if (Commodities.OMEGA_CORE.equals(commodityId)) {
 			return new PluginPick<AICoreAdminPlugin>(new AICoreAdminPluginOmega(), PickPriority.MOD_GENERAL);
-		}
-		return null;
-	}
-
-	@Override
-	public PluginPick<BattleAutoresolverPlugin> pickBattleAutoresolverPlugin(BattleAPI battle) {
-		if (battle.isPlayerInvolved()) return null;
-		for (CampaignFleetAPI fleet : battle.getBothSides()) {
-			if (fleet.getMemoryWithoutUpdate().contains(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT)) {
-				return new PluginPick<BattleAutoresolverPlugin>(new NexBattleAutoresolverPlugin(battle), PickPriority.MOD_GENERAL);
-			}
 		}
 		return null;
 	}

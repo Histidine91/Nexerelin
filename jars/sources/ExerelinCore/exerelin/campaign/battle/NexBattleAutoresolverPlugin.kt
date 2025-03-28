@@ -6,6 +6,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.BattleAutoresolverPluginImpl.FleetMemberAutoresolveData
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 
+@Deprecated("Replaced with a CoreAutoresolveListener")
 open class NexBattleAutoresolverPlugin(battle: BattleAPI?) : BattleAutoresolverPluginImpl(battle) {
 
     companion object {

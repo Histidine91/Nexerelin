@@ -325,7 +325,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 				NebulaEditor editor = new NebulaEditor(plugin);
 				float minRadius = editor.getTileSize() * 2f;
 				for (StarSystemAPI curr : sector.getStarSystems()) {
-					clearDeepHyper(curr.getHyperspaceAnchor(), curr.getMaxRadiusInHyperspace(), minRadius, editor);
+					clearDeepHyper(curr.getHyperspaceAnchor(), curr.getMaxRadiusInHyperspace() * 0.5f, minRadius, editor);
 				}
 			}
 		}

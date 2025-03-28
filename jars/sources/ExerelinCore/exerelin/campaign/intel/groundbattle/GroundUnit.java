@@ -672,8 +672,8 @@ public class GroundUnit {
 	 */
 	public void injectXPBonus(StatBonus stats, PersonnelData data, boolean attackPower) {
 		String id = "marineXP";
-		float effectBonus = PlayerFleetPersonnelTracker.getInstance().getMarineEffectBonus(data);
-		float casualtyReduction = PlayerFleetPersonnelTracker.getInstance().getMarineLossesReductionPercent(data);
+		float effectBonus = PlayerFleetPersonnelTracker.getMarineEffectBonus(data);
+		float casualtyReduction = PlayerFleetPersonnelTracker.getMarineLossesReductionPercent(data);
 		//log.info(String.format("XP %s translating to %s effect bonus, %s casualty red.", data.xp, effectBonus, casualtyReduction));
 		PersonnelRank rank = data.getRank();
 		if (attackPower) {

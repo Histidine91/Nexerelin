@@ -1562,7 +1562,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		for (int i = 0; i < num && !picker.isEmpty(); i++) {
 			String id = picker.pickAndRemove();
 			if (id == null) continue;
-			cargo.addSpecial(new SpecialItemData(Items.MODSPEC, id), 1);
+			cargo.addSpecial(new SpecialItemData(Items.TAG_MODSPEC, id), 1);
 		}
 		
 		

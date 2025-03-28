@@ -49,6 +49,7 @@ import com.fs.starfarer.loading.specs.PlanetSpec
 import exerelin.campaign.DiplomacyManager
 import exerelin.campaign.PlayerFactionStore
 import exerelin.campaign.SectorManager
+import exerelin.campaign.battle.NexAutoresolveListener
 import exerelin.campaign.battle.NexBattleAutoresolverPlugin
 import exerelin.campaign.graphics.BombardmentAnimationV2
 import exerelin.campaign.intel.merc.MercContractIntel
@@ -465,7 +466,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_NO_REP_IMPACT] = true
         fleet.memoryWithoutUpdate[MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN] = EnemyFIDConfigGen()
         fleet.memoryWithoutUpdate["\$nex_remSalvation_fleet1"] = true
-        fleet.memoryWithoutUpdate.set(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT, 1.1f);
+        fleet.memoryWithoutUpdate.set(NexAutoresolveListener.MEM_KEY_STRENGTH_MULT, 1.1f);
 
         fleet.inflateIfNeeded()
 
@@ -560,7 +561,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         fleet.memoryWithoutUpdate[MemFlags.FLEET_IGNORES_OTHER_FLEETS] = true
         fleet.memoryWithoutUpdate[MemFlags.FLEET_DO_NOT_IGNORE_PLAYER] = true
         fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true, 1f)
-        fleet.memoryWithoutUpdate.set(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT, 1.25f);
+        fleet.memoryWithoutUpdate.set(NexAutoresolveListener.MEM_KEY_STRENGTH_MULT, 1.25f);
 
         fleet.inflateIfNeeded()
 
@@ -984,7 +985,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         val fleet = Misc.getStationFleet(target)
         if (fleet != null) {
-            fleet.memoryWithoutUpdate.set(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT, 0.25f, 20f);
+            fleet.memoryWithoutUpdate.set(NexAutoresolveListener.MEM_KEY_STRENGTH_MULT, 0.25f, 20f);
             //fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true, 2f)  // not needed
             fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true, 2f)
         }
@@ -996,7 +997,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             for (member in fleet.fleetData.membersListCopy) {
                 //stats.weaponMalfunctionChance.unmodify(STAT_MOD_ID)
             }
-            fleet.memoryWithoutUpdate.unset(NexBattleAutoresolverPlugin.MEM_KEY_STRENGTH_MULT);
+            fleet.memoryWithoutUpdate.unset(NexAutoresolveListener.MEM_KEY_STRENGTH_MULT);
             //fleet.memoryWithoutUpdate.unset(MemFlags.FLEET_IGNORES_OTHER_FLEETS)
             fleet.memoryWithoutUpdate.unset(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS)
         }

@@ -11,9 +11,7 @@ import com.fs.starfarer.api.characters.SkillsChangeRemoveExcessOPEffect;
 import com.fs.starfarer.api.characters.SkillsChangeRemoveSmodsEffect;
 import com.fs.starfarer.api.characters.SkillsChangeRemoveVentsCapsEffect;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
-import com.fs.starfarer.api.impl.campaign.CoreLifecyclePluginImpl;
-import com.fs.starfarer.api.impl.campaign.HasslePlayerScript;
-import com.fs.starfarer.api.impl.campaign.SmugglingScanScript;
+import com.fs.starfarer.api.impl.campaign.*;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.econ.impl.Cryorevival;
 import com.fs.starfarer.api.impl.campaign.econ.impl.PopulationAndInfrastructure;
@@ -21,8 +19,7 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.ShipQuality;
 import com.fs.starfarer.api.impl.campaign.enc.EncounterManager;
 import com.fs.starfarer.api.impl.campaign.enc.StrandedGiveTJScript;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
-import com.fs.starfarer.api.impl.campaign.fleets.PersonalFleetHoracioCaden;
-import com.fs.starfarer.api.impl.campaign.fleets.PersonalFleetOxanaHyder;
+import com.fs.starfarer.api.impl.campaign.fleets.*;
 import com.fs.starfarer.api.impl.campaign.fleets.misc.MiscFleetRouteManager;
 import com.fs.starfarer.api.impl.campaign.ghosts.SensorGhostManager;
 import com.fs.starfarer.api.impl.campaign.graid.StandardGroundRaidObjectivesCreator;
@@ -39,6 +36,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript;
 import com.fs.starfarer.api.impl.campaign.velfield.SlipstreamManager;
 import com.fs.starfarer.api.impl.campaign.velfield.SlipstreamVisibilityManager;
+import com.fs.starfarer.api.impl.codex.CodexUnlocker;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.colony.NexAbandonMarketPlugin;
@@ -70,7 +68,7 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!listeners.hasListenerOfClass(StandardGroundRaidObjectivesCreator.class)) {
 			listeners.addListener(new StandardGroundRaidObjectivesCreator(), true);
 		}
-		
+
 		if (!listeners.hasListenerOfClass(Cryorevival.CryosleeperFactor.class)) {
 			listeners.addListener(new Cryorevival.CryosleeperFactor(), true);
 		}
@@ -80,6 +78,9 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!listeners.hasListenerOfClass(SlipstreamVisibilityManager.class)) {
 			listeners.addListener(new SlipstreamVisibilityManager(), true);
 		}
+		if (!listeners.hasListenerOfClass(CodexUnlocker.class)) {
+			listeners.addListener(new CodexUnlocker(), true);
+		}
 
 		GenericPluginManagerAPI plugins = sector.getGenericPlugins();
 		if (!plugins.hasPlugin(PKDefenderPluginImpl.class)) {
@@ -88,18 +89,30 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (!plugins.hasPlugin(SalvageGenFromSeed.SalvageDefenderModificationPluginImpl.class)) {
 			plugins.addPlugin(new SalvageGenFromSeed.SalvageDefenderModificationPluginImpl(), true);
 		}
+
+		CoreDiscoverEntityPlugin discoverPlugin = null;
 		if (!plugins.hasPlugin(CoreDiscoverEntityPlugin.class)) {
-			plugins.addPlugin(new CoreDiscoverEntityPlugin(), true);
+			discoverPlugin = new CoreDiscoverEntityPlugin();
+			plugins.addPlugin(discoverPlugin, true);
+		} else {
+			discoverPlugin = (CoreDiscoverEntityPlugin) plugins.getPluginsOfClass(CoreDiscoverEntityPlugin.class).get(0);
 		}
+		if (!listeners.hasListenerOfClass(CoreDiscoverEntityPlugin.class)) {
+			listeners.addListener(discoverPlugin, true);
+		}
+
+
 		if (!plugins.hasPlugin(CoreBuildObjectiveTypePicker.class)) {
 			plugins.addPlugin(new CoreBuildObjectiveTypePicker(), true);
 		}
-		if (!plugins.hasPlugin(NexAbandonMarketPlugin.class)) {
+		// MODIFIED
+		if (!plugins.hasPlugin(AbandonMarketPluginImpl.class)) {
 			plugins.addPlugin(new NexAbandonMarketPlugin(), true);
 		}
-		if (!plugins.hasPlugin(NexStabilizeMarketPlugin.class)) {
+		if (!plugins.hasPlugin(StabilizeMarketPluginImpl.class)) {
 			plugins.addPlugin(new NexStabilizeMarketPlugin(), true);
 		}
+		// END MODIFIED
 		if (!plugins.hasPlugin(RemnantOfficerGeneratorPlugin.class)) {
 			plugins.addPlugin(new RemnantOfficerGeneratorPlugin(), true);
 		}
@@ -111,6 +124,7 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 //		}
 		
 		PlayerFleetPersonnelTracker.getInstance();
+		HullModItemManager.getInstance();
 
 		if (!sector.hasScript(StrandedGiveTJScript.class)) {
 			sector.addScript(new StrandedGiveTJScript());
@@ -120,6 +134,18 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		}
 		if (!sector.hasScript(PersonalFleetOxanaHyder.class)) {
 			sector.addScript(new PersonalFleetOxanaHyder());
+		}
+		if (!sector.hasScript(SDFHegemony.class)) {
+			sector.addScript(new SDFHegemony());
+		}
+		if (!sector.hasScript(SDFLeague.class)) {
+			sector.addScript(new SDFLeague());
+		}
+		if (!sector.hasScript(SDFTriTachyon.class)) {
+			sector.addScript(new SDFTriTachyon());
+		}
+		if (!sector.hasScript(SDFLuddicChurch.class)) {
+			sector.addScript(new SDFLuddicChurch());
 		}
 //		if (!sector.hasScript(PilgrimageFleetRouteManager.class)) {
 //			sector.addScript(new PilgrimageFleetRouteManager());
