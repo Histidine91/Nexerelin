@@ -46,6 +46,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 	protected Long timestamp;
 	
 	public static final String OUTPOST_SET_KEY = "nex_playerOutposts";
+	public static final String OUTPOST_COUNT_KEY = "$nex_playerOutpost_lifetimeCount";
 		
 	public static int getMetalsRequired() {
 		return Global.getSettings().getInt("nex_playerOutpost_metals");
@@ -85,6 +86,18 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 			data.put(OUTPOST_SET_KEY, outposts);
 		}
 		return outposts;
+	}
+
+	public int getLifetimeOutpostCount() {
+		if (!Global.getSector().getMemoryWithoutUpdate().contains(OUTPOST_COUNT_KEY)) {
+			return 0;
+		}
+		return Global.getSector().getMemoryWithoutUpdate().getInt(OUTPOST_COUNT_KEY);
+	}
+
+	public void incrementLifetimeOutpostCount() {
+		int curr = getLifetimeOutpostCount();
+		Global.getSector().getMemoryWithoutUpdate().set(OUTPOST_COUNT_KEY, curr + 1);
 	}
 	
 	public static void registerOutpost(PlayerOutpostIntel outpost) {
@@ -144,7 +157,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		float angle = Misc.getAngleInDegrees(fleet.getLocation(), toOrbit.getLocation()) - 180;
 		
 		name += " " + getString("outpostProperName");
-		String id = "nex_outpost_" + (getOutposts().size() + 1);
+		String id = "nex_outpost_" + (getLifetimeOutpostCount() + 1);
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
 		picker.addAll(STATION_IMAGES);
 		
@@ -195,6 +208,7 @@ public class PlayerOutpostIntel extends BaseIntelPlugin implements EconomyUpdate
 		Global.getSector().getIntelManager().addIntel(this, true);
 		
 		timestamp = Global.getSector().getClock().getTimestamp();
+		incrementLifetimeOutpostCount();
 		
 		return outpost;
 	}
