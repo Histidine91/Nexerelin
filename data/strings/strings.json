@@ -1182,6 +1182,7 @@
 		"fleetType_raid":"raid",
 		"fleetType_defense":"defense",
 		"fleetType_colony":"colony",
+		"fleetType_blockade":"blockade",
 		"fleetType_relief":"relief",
 		
 		"fleetCost":"fleet cost",

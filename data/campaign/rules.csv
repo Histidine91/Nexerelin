@@ -471,6 +471,7 @@ SetTooltipHighlights nex_fleetRequest_setType_defense 150",,"nex_fleetRequest_se
 nex_fleetRequest_setType_basestrike:Base strike
 nex_fleetRequest_setType_defense:Defense
 nex_fleetRequest_setType_colony:Colony
+nex_fleetRequest_setType_blockade:Blockade
 nex_fleetRequest_setType_relief:Relief
 nex_fleetRequest_main:Back",
 nex_fleetRequest_selectType,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setType_""","Nex_FleetRequest setType

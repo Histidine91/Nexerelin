@@ -35,6 +35,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.RespawnBaseIntel;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
+import exerelin.campaign.intel.fleets.BlockadeWrapperIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.invasion.InvasionIntel;
@@ -388,7 +389,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			text.addPara(str, hl, defStr, defStrGround);
 		}
 		
-		
 		text.setFontInsignia();
 	}
 	
@@ -650,6 +650,9 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				case DEFENSE:
 					intel = new DefenseFleetIntel(attacker, source, target, fp, timeToLaunch);
 					break;
+				case BLOCKADE:
+					intel = new BlockadeWrapperIntel(attacker, source, target, fp, timeToLaunch);
+					break;
 				case COLONY:
 					intel = new ColonyExpeditionIntel(attacker, source, target, fp, timeToLaunch);
 					break;
@@ -659,7 +662,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			intel.setPlayerFee(Math.round(cost));
 			intel.init();
 			if (fleetType == FleetType.INVASION) {
-				((InvasionIntel)intel).setMarinesTotal((int)(marines));
+				((InvasionIntel)intel).setMarinesTotal(marines);
 			}
 			intel.setPlayerSpawned(true);
 			setFP(fp);
@@ -676,6 +679,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 			impact.delta = 0;
 			impact.ensureAtBest = RepLevel.HOSTILE;
+			if (fleetType == FleetType.BLOCKADE) impact.ensureAtBest = RepLevel.INHOSPITABLE;
+
 			RepActionEnvelope envelope = new RepActionEnvelope(RepActions.CUSTOM, 
 					impact, null, dialog.getTextPanel(), false);
 			Global.getSector().adjustPlayerReputation(envelope, target.getFaction().getId());
@@ -834,7 +839,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				AssembleStage as = raid.getAssembleStage();
 				if (as == null || !as.isSourceKnown()) continue;
 
-				IntelInfoPlugin.ArrowData arrow = new IntelInfoPlugin.ArrowData(raid.getAssembleStage().getSources().get(0).getPrimaryEntity(),
+				IntelInfoPlugin.ArrowData arrow = new IntelInfoPlugin.ArrowData(as.getSources().get(0).getPrimaryEntity(),
 						raid.getSystem().getHyperspaceAnchor());
 				arrow.color = raid.getFaction().getBaseUIColor();
 				arrows.add(arrow);
@@ -991,7 +996,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		BASESTRIKE(true, true),
 		RAID(true, true), 
 		DEFENSE(false, true), 
-		COLONY(false, false), 
+		COLONY(false, false),
+		BLOCKADE(true, true),
 		RELIEF(false, false);
 		
 		public final boolean isAggressive;
