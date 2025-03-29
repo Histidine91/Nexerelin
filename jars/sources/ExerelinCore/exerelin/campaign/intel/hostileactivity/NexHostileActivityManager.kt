@@ -94,30 +94,34 @@ class NexHostileActivityManager : HostileActivityManager() {
             if (remnant != null) ha.addActivity(remnant, RemnantFriendlyCause(ha));
         }
 
+        // The League and Church overrides should no longer be needed, since they check for the faction correctly on Kazeron/Hesperus
+        // keep the Diktat one since it contains text overrides
         @JvmStatic
         fun replaceVanillaOverrideActivities(ha: HostileActivityEventIntel) {
-            ha.removeActivityOfClass(PerseanLeagueHostileActivityFactor::class.java)
-            ha.removeActivityOfClass(LuddicChurchHostileActivityFactor::class.java)
+            //ha.removeActivityOfClass(PerseanLeagueHostileActivityFactor::class.java)
+            //ha.removeActivityOfClass(LuddicChurchHostileActivityFactor::class.java)
             ha.removeActivityOfClass(SindrianDiktatHostileActivityFactor::class.java)
+            /*
             Global.getSector().listenerManager.removeListenerOfClass(
                 PerseanLeagueHostileActivityFactor::class.java
             )
             Global.getSector().listenerManager.removeListenerOfClass(
                 LuddicChurchHostileActivityFactor::class.java
             )
+             */
             Global.getSector().listenerManager.removeListenerOfClass(
                 SindrianDiktatHostileActivityFactor::class.java
             )
 
-            ha.addActivity(NexPerseanLeagueHostileActivityFactor(ha), StandardPerseanLeagueActivityCause(ha))
-            ha.addActivity(NexLuddicChurchHostileActivityFactor(ha), LuddicChurchStandardActivityCause(ha))
+            //ha.addActivity(NexPerseanLeagueHostileActivityFactor(ha), StandardPerseanLeagueActivityCause(ha))
+            //ha.addActivity(NexLuddicChurchHostileActivityFactor(ha), LuddicChurchStandardActivityCause(ha))
             ha.addActivity(NexSindrianDiktatHostileActivityFactor(ha), NexSindrianDiktatStandardActivityCause(ha))
         }
 
         @JvmStatic
         fun purgeOldListeners() {
-            Global.getSector().listenerManager.removeListenerOfClass(NexPerseanLeagueHostileActivityFactor::class.java)
-            Global.getSector().listenerManager.removeListenerOfClass(NexLuddicChurchHostileActivityFactor::class.java)
+            //Global.getSector().listenerManager.removeListenerOfClass(NexPerseanLeagueHostileActivityFactor::class.java)
+            //Global.getSector().listenerManager.removeListenerOfClass(NexLuddicChurchHostileActivityFactor::class.java)
             Global.getSector().listenerManager.removeListenerOfClass(NexSindrianDiktatHostileActivityFactor::class.java)
             Global.getSector().listenerManager.removeListenerOfClass(PoliceHostileActivityFactor::class.java)
         }
