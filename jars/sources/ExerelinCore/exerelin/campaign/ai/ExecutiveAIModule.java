@@ -74,42 +74,47 @@ public class ExecutiveAIModule extends StrategicAIModule {
     }
 
     public void actOnConcerns() {
-        currentConcerns.clear();
+        try {
+            currentConcerns.clear();
 
-        if (ai.getFaction().isPlayerFaction()) return;
+            if (ai.getFaction().isPlayerFaction()) return;
 
-        int actionsTakenThisMeeting = 0;
-        List<StrategicConcern> concerns = new ArrayList<>(ai.getExistingConcerns());
-        Collections.sort(concerns);
+            int actionsTakenThisMeeting = 0;
+            List<StrategicConcern> concerns = new ArrayList<>(ai.getExistingConcerns());
+            Collections.sort(concerns);
 
-        // count ongoing actions
-        int numOngoingActions = 0;
-        for (StrategicConcern concern : concerns) {
-            if (concern.isEnded()) continue;
-            StrategicAction act = concern.getCurrentAction();
-            if (act != null && !act.isEnded()) {
-                numOngoingActions++;
+            // count ongoing actions
+            int numOngoingActions = 0;
+            for (StrategicConcern concern : concerns) {
+                if (concern.isEnded()) continue;
+                StrategicAction act = concern.getCurrentAction();
+                if (act != null && !act.isEnded()) {
+                    numOngoingActions++;
+                }
             }
-        }
 
-        int max = getMaxActionsPerMeeting();
-        for (StrategicConcern concern : concerns) {
-            if (numOngoingActions > SAIConstants.MAX_SIMULTANEOUS_ACTIONS) break;
+            int max = getMaxActionsPerMeeting();
+            for (StrategicConcern concern : concerns) {
+                if (numOngoingActions > SAIConstants.MAX_SIMULTANEOUS_ACTIONS) break;
 
-            if (concern.isEnded()) continue;
-            if (concern.getCurrentAction() != null && !concern.getCurrentAction().isEnded()) continue;
-            if (concern.getActionCooldown() > 0) continue;
-            if (concern.getPriorityFloat() < SAIConstants.MIN_CONCERN_PRIORITY_TO_ACT) continue;
+                if (concern.isEnded()) continue;
+                if (concern.getCurrentAction() != null && !concern.getCurrentAction().isEnded()) continue;
+                if (concern.getActionCooldown() > 0) continue;
+                if (concern.getPriorityFloat() < SAIConstants.MIN_CONCERN_PRIORITY_TO_ACT) continue;
 
-            StrategicAction bestAction = concern.fireBestAction();
-            if (bestAction == null) continue;
+                StrategicAction bestAction = concern.fireBestAction();
+                if (bestAction == null) continue;
 
-            log.info("Adding action " + bestAction.getName());
+                log.info("Adding action " + bestAction.getName());
 
-            currentConcerns.add(concern);
-            actionsTakenThisMeeting++;
-            numOngoingActions++;
-            if (actionsTakenThisMeeting >= max) break;
+                currentConcerns.add(concern);
+                actionsTakenThisMeeting++;
+                numOngoingActions++;
+                if (actionsTakenThisMeeting >= max) break;
+            }
+        }  catch (Exception ex) {
+            String err = String.format("Strategic AI: executive module failed to generate actions for faction %s", ai.faction.getDisplayName());
+            StrategicAI.logError(err, ex);
         }
     }
 

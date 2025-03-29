@@ -169,16 +169,26 @@ public class StrategicAI extends BaseIntelPlugin {
 	}
 
 	protected void findConcerns(StrategicAIModule module) {
-		List<StrategicConcern> newConcerns = module.findConcerns();
-		if (!newConcerns.isEmpty()) {
-			addConcerns(newConcerns);
+		try {
+			List<StrategicConcern> newConcerns = module.findConcerns();
+			if (!newConcerns.isEmpty()) {
+				addConcerns(newConcerns);
+			}
+		}  catch (Exception ex) {
+			String err = String.format("Strategic AI: error generating concerns in module %s for faction %s", module.getClass().getName(), faction.getDisplayName());
+			logError(err, ex);
 		}
 	}
 
 	protected void updateConcerns(StrategicAIModule module) {
-		List<StrategicConcern> removedConcerns = module.updateConcerns();
-		if (!removedConcerns.isEmpty()) {
-			lastRemovedConcerns.addAll(removedConcerns);
+		try {
+			List<StrategicConcern> removedConcerns = module.updateConcerns();
+			if (!removedConcerns.isEmpty()) {
+				lastRemovedConcerns.addAll(removedConcerns);
+			}
+		} catch (Exception ex) {
+			String err = String.format("Strategic AI: error updating concerns in module %s for faction %s", module.getClass().getName(), faction.getDisplayName());
+			logError(err, ex);
 		}
 	}
 
@@ -212,6 +222,12 @@ public class StrategicAI extends BaseIntelPlugin {
 		interval.forceIntervalElapsed();
 		advanceImpl(0);
 		interval.advance(0.001f);
+	}
+
+	protected static void logError(String err, Exception ex) {
+		log.error(err, ex);
+		Global.getSector().getCampaignUI().addMessage(err, Misc.getNegativeHighlightColor());
+		Global.getSector().getCampaignUI().addMessage("Check starsector.log for more info", Misc.getNegativeHighlightColor());
 	}
 
 	/*
