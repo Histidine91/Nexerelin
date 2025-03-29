@@ -5,10 +5,10 @@
     "version":{
         "major":0,
         "minor":11, 
-        "patch":"3c"
+        "patch":"3x"
     },
     "description":"Join a faction and conquer the Sector!",
-    "gameVersion":"0.97a-RC11",
+    "gameVersion":"0.98a-RC5",
     "totalConversion":false,
     "jars":["jars/ExerelinCore.jar"],
     "dependencies": [

@@ -7,9 +7,9 @@
 	{
 		"major":0,
 		"minor":11,
-		"patch":"3c"
+		"patch":"3x"
 	},
-	"starsectorVersion":"0.97a-RC11",
-	"directDownloadURL":"https://github.com/Histidine91/Nexerelin/releases/download/v0.11.3c/Nexerelin_0.11.3c.zip",
+	"starsectorVersion":"0.98a-RC5",
+	"directDownloadURL":"https://github.com/Histidine91/Nexerelin/releases/download/v0.11.3x/Nexerelin_0.11.3x.zip",
 	"changelogURL":"https://raw.githubusercontent.com/Histidine91/Nexerelin/release/changelog.txt"
 }

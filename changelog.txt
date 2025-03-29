@@ -1,3 +1,26 @@
+Version 0.11.3x
+
+* Compatibility with Starsector 0.98
+* Add operative counterinsurgency action
+* Player can request blockade fleets
+* Add hyperspace topography "quest skip"
+* Rebellion events will have smugglers running arms to the rebels (reverse suppression fleet, basically)
+* Add a "contain aggression" strategic AI concern
+* Factions avoid negative diplomatic events if war weariness is too high and strategic AI is off
+* Update deep hyperspace clearing on sector generation to match vanilla (halved radius)
+* Open market will buy automated ships if AI cores are legal in faction; military market will always buy
+* Location of respawn event bases no longer hidden
+* Add two achievements
+* Add a standardised system for printing faction descriptions in new game dialog
+* Add a toggle for NPC colony growth 
+* Fix ground battle crash when market has no industries and no Population & Infrastructure 
+    * Will still crash if there is not at least one industry-like present
+* Fix Arroyo comms check for final Remnant mission
+* Try to fix neutral fleets sometimes joining battles when they shouldn't
+* Fix an unidentified mod conflict that would make invasions unavailable
+* Fix raid fallback for invasionOnlyRetake factions for real
+* Hegemony inspector custom bounty can't spawn around hidden markets
+
 Version 0.11.3c
 
 * Fix skip story memory keys and person unhides applying even when that quest not skipped
