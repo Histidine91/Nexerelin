@@ -32,6 +32,7 @@ import com.fs.starfarer.api.impl.campaign.missions.cb.MilitaryCustomBounty;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.StarSystemType;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
+import com.fs.starfarer.api.impl.codex.CodexDataV2;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.thoughtworks.xstream.XStream;
@@ -67,6 +68,7 @@ import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.campaign.ui.PlayerFactionSetupNag;
 import exerelin.campaign.ui.ReinitScreenScript;
+import exerelin.codex.CodexSetup;
 import exerelin.debug.DebugIntel;
 import exerelin.utilities.*;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
@@ -799,6 +801,16 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (QuestChainSkipEntry chain : QuestChainSkipEntry.getEntries()) {
             chain.onNewGameAfterTimePass();
         }
+    }
+
+    @Override
+    public void onAboutToStartGeneratingCodex() {
+        CodexDataV2.WITH_GAME_MECHANICS_CAT = true;
+    }
+
+    @Override
+    public void onCodexDataGenerated() {
+        CodexSetup.run();
     }
 
     public void setupBackground() {

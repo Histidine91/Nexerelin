@@ -2126,17 +2126,21 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 * @param outer
 	 * @param width
 	 */
-	protected void generateHelpDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width)
+	public static void generateHelpDisplay(TooltipMakerAPI info, CustomPanelAPI outer, float width)
 	{
 		float opad = 10;
 		float pad = 3;
 		Color h = Misc.getHighlightColor();
 		String bullet = " - ";
-		
-		info.addSectionHeading(getString("helpHeader"), Alignment.MID, opad);
+
+		float initPad = 0;
+		if (!Global.CODEX_TOOLTIP_MODE) {
+			info.addSectionHeading(getString("helpHeader"), Alignment.MID, opad);
+			initPad = opad;
+		}
 		
 		info.setParaInsigniaLarge();
-		info.addPara(getString("helpPara0Title"), opad);
+		info.addPara(getString("helpPara0Title"), initPad);
 		info.setParaFontDefault();
 		TooltipMakerAPI section = info.beginImageWithText("graphics/factions/crest_player_flag.png", 32);
 		section.setBulletedListMode(bullet);
@@ -2186,7 +2190,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			section.addPara(getString("helpPara3-" + i), pad, h, name);
 			info.addImageWithText(0);
 		}
-		unindent(info);
+		info.setBulletedListMode(null);
 		
 		info.setParaInsigniaLarge();
 		info.addPara(getString("helpPara4Title"), opad);
@@ -2197,7 +2201,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		section.addPara(getString("helpPara4-2"), pad);
 		section.addPara(getString("helpPara4-3"), pad);
 		info.addImageWithText(pad);
-		unindent(info);
+		info.setBulletedListMode(null);
 		
 		info.setParaInsigniaLarge();
 		info.addPara(getString("helpPara5Title"), opad);
@@ -2207,7 +2211,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		section.addPara(getString("helpPara5-1"), pad);
 		section.addPara(getString("helpPara5-2"), pad);
 		info.addImageWithText(pad);
-		unindent(info);
+		info.setBulletedListMode(null);
 	}
 	
 	public void addLogEvent(GroundBattleLog log) {

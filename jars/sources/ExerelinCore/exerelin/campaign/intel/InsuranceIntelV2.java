@@ -629,13 +629,14 @@ public class InsuranceIntelV2 extends BaseIntelPlugin implements ColonyInteracti
 		info.addCustom(itemPanel, 0);
 	}
 	
-	protected void createHelpView(TooltipMakerAPI info) {
+	public static void createHelpView(TooltipMakerAPI info) {
 		float opad = 10;
 		float pad = 3;
 		Color h = Misc.getHighlightColor();
-		
+		float initPad = Global.CODEX_TOOLTIP_MODE ? 0 : opad;
+
 		info.setParaInsigniaLarge();
-		info.addPara(getString("helpPara1Title"), opad);
+		info.addPara(getString("helpPara1Title"), initPad);
 		info.setParaFontDefault();
 		TooltipMakerAPI section = info.beginImageWithText("graphics/icons/intel/fleet_log3.png", 32);
 		section.setBulletedListMode(BaseIntelPlugin.BULLET);
@@ -656,7 +657,7 @@ public class InsuranceIntelV2 extends BaseIntelPlugin implements ColonyInteracti
 				StringHelper.toPercent(Global.getSettings().getFloat("nex_insurance_newDHullMult")));
 		section.addPara(getString("helpPara2-3"), pad);
 		info.addImageWithText(opad);
-		unindent(info);
+		info.setBulletedListMode(null);
 		
 		info.setParaInsigniaLarge();
 		info.addPara(getString("helpPara3Title"), opad);
@@ -669,12 +670,14 @@ public class InsuranceIntelV2 extends BaseIntelPlugin implements ColonyInteracti
 		section.addPara(getString("helpPara3-3"), pad, h, BASE_PREMIUM_MULT + "", 
 				Misc.getWithDGS(PREMIUM_MULT_DENOMINATOR));
 		info.addImageWithText(opad);
-		unindent(info);
-		
-		section = info.beginImageWithText(Global.getSettings().getSpriteName("misc", "nex_ironbank_logo"), 128);
-		String str = String.format(getString("helpFooter"), Global.getSector().getClock().getCycle());
-		section.addPara(str, pad);
-		info.addImageWithText(opad*2);
+		info.setBulletedListMode(null);
+
+		if (!Global.CODEX_TOOLTIP_MODE) {
+			section = info.beginImageWithText(Global.getSettings().getSpriteName("misc", "nex_ironbank_logo"), 128);
+			String str = String.format(getString("helpFooter"), Global.getSector().getClock().getCycle());
+			section.addPara(str, pad);
+			info.addImageWithText(opad * 2);
+		}
 	}
 	
 	public TooltipMakerAPI generateTabButton(CustomPanelAPI buttonRow, String nameId, Tab tab,

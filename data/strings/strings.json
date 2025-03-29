@@ -3249,4 +3249,11 @@
 		"name_allowNPCColonyGrowth":"Allow NPC colony growth",
 		"tooltip_allowNPCColonyGrowth":"If false, NPC colonies will not upsize on reaching 100% growth progress."
 	},
+	
+	"nex_codex":{
+		"titlePrefix":"Nex: ",
+		"sortTag":"Nexerelin",
+		"groundBattle_title":"Ground battles",
+		"insurance_title":"Insurance",
+	},
 }
