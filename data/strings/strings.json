@@ -3247,7 +3247,7 @@
 		"tooltip_buyShipBasePriceMult":"For bar and contact missions where an NPC offers to buy one of your ships.",
 		
 		"name_allowNPCColonyGrowth":"Allow NPC colony growth",
-		"tooltip_allowNPCColonyGrowth":"If false, NPC colonies will not upsize on reaching 100% growth progress."
+		"tooltip_allowNPCColonyGrowth":"If false, NPC colonies will not upsize on reaching 100%% growth progress."
 	},
 	
 	"nex_codex":{
