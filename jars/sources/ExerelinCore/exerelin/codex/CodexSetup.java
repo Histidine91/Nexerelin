@@ -1,6 +1,7 @@
 package exerelin.codex;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.ModSpecAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.codex.CodexDataV2;
 import com.fs.starfarer.api.impl.codex.CodexDialogAPI;
@@ -9,6 +10,7 @@ import com.fs.starfarer.api.impl.codex.CodexEntryV2;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.UIPanelAPI;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.intel.InsuranceIntelV2;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.utilities.StringHelper;
@@ -132,5 +134,10 @@ public class CodexSetup {
         }
 
         public abstract void createCustomDetailImpl(TooltipMakerAPI tt, CustomPanelAPI panel, float ttWidth, UIPanelAPI relatedEntries, CodexDialogAPI codex);
+
+        @Override
+        public ModSpecAPI getSourceMod() {
+            return Global.getSettings().getModManager().getModSpec(ExerelinConstants.MOD_ID);
+        }
     }
 }
