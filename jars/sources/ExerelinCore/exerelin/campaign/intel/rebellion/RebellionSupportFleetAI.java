@@ -108,6 +108,9 @@ public class RebellionSupportFleetAI extends TwoWayTravelFleetAI
 					despawningAtTarget = true;
 				}
 			}
+			// retroactive crash fix
+			if (data.source == null) data.source = Global.getSector().getEconomy().getMarketsCopy().get(0);
+
 			final SectorEntityToken destination = despawningAtTarget ? data.target.getPrimaryEntity() : 
 					data.source.getPrimaryEntity();
 			

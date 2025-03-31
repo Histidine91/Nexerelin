@@ -2379,14 +2379,14 @@
 		"intelHeaderFleet":"Suppression fleet",
 		"intelDescFleetPrep":"$TheSenderFaction $senderIsOrAre readying a fleet $sourceOnOrAt $sourceMarket to suppress the rebellion $onOrAt $market.",
 		"intelDescFleetLaunched":"A fleet has launched from $sourceMarket to suppress the rebellion $onOrAt $market.",
-		"intelDescFleetArrived":"The $sourceFaction suppression fleet has arrived and reinforced the government $onOrAt $market. This is expected to place the rebellion at a grave disadvantage.",
-		"intelDescFleetDefeated":"The $sourceFaction suppression fleet dispatched to $market has been turned back with heavy losses. The news has demoralized government forces and emboldened the rebels.",
+		"intelDescFleetArrived":"The $senderFaction suppression fleet has arrived and reinforced the government $onOrAt $market. This is expected to place the rebellion at a grave disadvantage.",
+		"intelDescFleetDefeated":"The $senderFaction suppression fleet dispatched to $market has been turned back with heavy losses. The news has demoralized government forces and emboldened the rebels.",
 
 		"intelHeaderFleetAlt":"Pro-rebel smugglers",
 		"intelDescFleetPrepAlt":"$TheSenderFaction $senderIsOrAre readying a fleet $sourceOnOrAt $sourceMarket to smuggle arms to the rebellion $onOrAt $market.",
 		"intelDescFleetLaunchedAlt":"Smugglers from $sourceMarket have set out to the rebellion $onOrAt $market.",
-		"intelDescFleetArrivedAlt":"The $sourceFaction smugglers have arrived and reinforced the rebels $onOrAt $market. This will tilt the balance of power away from the government.",
-		"intelDescFleetDefeatedAlt":"The $sourceFaction smugglers dispatched to $market have been turned back with heavy losses. The rumors have disheartened the rebels.",
+		"intelDescFleetArrivedAlt":"The $senderFaction smugglers have arrived and reinforced the rebels $onOrAt $market. This will tilt the balance of power away from the government.",
+		"intelDescFleetDefeatedAlt":"The $senderFaction smugglers dispatched to $market have been turned back with heavy losses. The rumors have disheartened the rebels.",
 
 
 		"intelHeaderDisrupt":"Industry disruption",
@@ -3251,7 +3251,7 @@
 	},
 	
 	"nex_codex":{
-		"titlePrefix":"Nex: ",
+		"titlePrefix":"",
 		"sortTag":"Nexerelin",
 		"groundBattle_title":"Ground battles",
 		"insurance_title":"Insurance",

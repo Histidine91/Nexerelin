@@ -855,7 +855,6 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 
 		data.fleet = fleet;
 		data.startingFleetPoints = fleet.getFleetPoints();
-		data.source = sourceMarket;
 		data.target = market;
 		data.intel = this;
 		
@@ -999,7 +998,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		}
 
 		// block suppression fleet launch if source market is no longer controlled
-		if (suppressionData.source != null && !AllianceManager.areFactionsAllied(
+		if (!suppressionData.launched && suppressionData.source != null && !AllianceManager.areFactionsAllied(
 				suppressionData.source.getFactionId(), govtFaction.getId()))
 		{
 			suppressionData.source = null;
@@ -1022,7 +1021,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		}
 
 		// block smuggler launch if source market is now under an ally of govt faction
-		if (smugglerData.source != null && AllianceManager.areFactionsAllied(
+		if (!smugglerData.launched && smugglerData.source != null && AllianceManager.areFactionsAllied(
 				smugglerData.source.getFactionId(), govtFaction.getId()))
 		{
 			smugglerData.source = null;
@@ -1533,7 +1532,16 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		subFleet.add(new Pair<>("$onOrAt", market.getOnOrAt()));
 		subFleet.add(new Pair<>("$market", market.getName()));
 
-		if (data.sentWarning || data.fleet != null) {
+		if (data.success != null) {		// fleet arrived or defeated
+			String key = Boolean.TRUE.equals(data.success) ? "intelDescFleetArrived" : "intelDescFleetDefeated";
+			if (!data.forGovernment) key = key + "Alt";
+			str = getString(key);
+			str = StringHelper.substituteTokens(str, subFleet);
+			label = info.addPara(str, opad);
+			label.setHighlight(sender.getDisplayNameWithArticleWithoutArticle());
+			label.setHighlightColors(sender.getBaseUIColor());
+		}
+		else if (data.sentWarning || data.fleet != null) {	// fleet in prep or en route
 			String key = data.sentWarning ? "intelDescFleetPrep" : "intelDescFleetLaunched";
 			if (!data.forGovernment) key = key + "Alt";
 			str = getString(key);
@@ -1546,15 +1554,6 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 				label.setHighlight(data.source.getName());
 				label.setHighlightColors(sender.getBaseUIColor());
 			}
-		}
-		else {	// fleet arrived or defeated
-			String key = Boolean.TRUE.equals(data.success) ? "intelDescFleetArrived" : "intelDescFleetDefeated";
-			if (!data.forGovernment) key = key + "Alt";
-			str = getString(key);
-			str = StringHelper.substituteTokens(str, subFleet);
-			label = info.addPara(str, opad);
-			label.setHighlight(sender.getDisplayNameWithArticleWithoutArticle());
-			label.setHighlightColors(sender.getBaseUIColor());
 		}
 
 		info.addPara(Misc.getAgoStringForTimestamp(data.updateTimestamp) + ".", opad);
