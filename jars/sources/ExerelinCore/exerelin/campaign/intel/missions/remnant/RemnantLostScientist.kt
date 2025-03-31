@@ -203,7 +203,10 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
             Nex_PirateBaseManager.getInstance().addActive(pirateBase)
         }
 
-        if (pirateBase == null) return;
+        if (pirateBase == null) {
+            log.warn("Failed to generate pirate base for mission")
+            return
+        }
 
         var orbitRadius = BaseThemeGenerator.getOrbitalRadius(planet)
         pirateBase!!.entity.setCircularOrbitPointingDown(
@@ -370,8 +373,9 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
 
     protected fun sendToweringHome() {
         if (toweringFleet != null) {
-            RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(toweringFleet, true);
-            toweringFleet!!.abilities[Abilities.GO_DARK]?.deactivate();
+            RemnantQuestUtils.giveReturnToNearestRemnantBaseAssignments(toweringFleet, true)
+            toweringFleet!!.abilities[Abilities.GO_DARK]?.deactivate()
+            makeUnimportant(toweringFleet)
         }
     }
 
@@ -384,13 +388,13 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         set("\$nex_remLostSci_scientist", scientist)
         set("\$nex_remLostSci_planet", planet!!.name)
         set("\$nex_remLostSci_system", planet!!.starSystem.nameWithLowercaseTypeShort)
-        set("\$nex_remLostSci_isBaseAlive", pirateBase?.entity?.isAlive)
+        set("\$nex_remLostSci_isBaseAlive", pirateBase?.entity?.isAlive ?: false)
         set("\$nex_remLostSci_stage", getCurrentStage())
         set("\$nex_remLostSci_bribe", bribe)
         set("\$nex_remLostSci_bribeSmall", bribeSmall)
         set("\$nex_remLostSci_bribeStr", Misc.getWithDGS(bribe.toFloat()))
         set("\$nex_remLostSci_bribeSmallStr", Misc.getWithDGS(bribeSmall.toFloat()))
-        set("\$nex_remLostSci_hasSKDeal", pirateBase?.playerHasDealWithBaseCommander())
+        set("\$nex_remLostSci_hasSKDeal", pirateBase?.playerHasDealWithBaseCommander() ?: false)
         set(
             "\$nex_remLostSci_playerDP",
             Global.getSector().playerFleet.fleetData.membersListCopy.filter { !it.isCivilian }
