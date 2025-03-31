@@ -242,6 +242,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     // should catch debris field salvage
     @Override
     public void reportShownInteractionDialog(InteractionDialogAPI dialog) {
+        if (dialog == null) return;	// temp: https://fractalsoftworks.com/forum/index.php?topic=31941.msg469453#msg469453
         InteractionDialogPlugin plugin = dialog.getPlugin();
         if (plugin instanceof RuleBasedInteractionDialogPluginImpl)
         {
