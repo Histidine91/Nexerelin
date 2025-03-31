@@ -1,3 +1,11 @@
+Version 0.11.3y
+
+* Fix Threat not spawning
+* Fix rare crash and incorrect text in rebellion intel
+* Temporary fix for right-click on shroud special item crash
+* Lost scientist mission still works if pirate base failed to spawn
+* Tweaks to starting background descs and handling of codex entries
+
 Version 0.11.3x
 
 * Compatibility with Starsector 0.98
