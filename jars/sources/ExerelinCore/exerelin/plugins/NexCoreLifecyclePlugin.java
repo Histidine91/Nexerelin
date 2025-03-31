@@ -37,6 +37,7 @@ import com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript;
 import com.fs.starfarer.api.impl.campaign.velfield.SlipstreamManager;
 import com.fs.starfarer.api.impl.campaign.velfield.SlipstreamVisibilityManager;
 import com.fs.starfarer.api.impl.codex.CodexUnlocker;
+import com.fs.starfarer.api.impl.combat.threat.DisposableThreatFleetManager;
 import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.colony.NexAbandonMarketPlugin;
@@ -106,10 +107,10 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 			plugins.addPlugin(new CoreBuildObjectiveTypePicker(), true);
 		}
 		// MODIFIED
-		if (!plugins.hasPlugin(AbandonMarketPluginImpl.class)) {
+		if (!plugins.hasPlugin(NexAbandonMarketPlugin.class)) {
 			plugins.addPlugin(new NexAbandonMarketPlugin(), true);
 		}
-		if (!plugins.hasPlugin(StabilizeMarketPluginImpl.class)) {
+		if (!plugins.hasPlugin(NexStabilizeMarketPlugin.class)) {
 			plugins.addPlugin(new NexStabilizeMarketPlugin(), true);
 		}
 		// END MODIFIED
@@ -201,6 +202,9 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 
 		if (!sector.hasScript(DisposableHostileActivityFleetManager.class)) {
 			sector.addScript(new DisposableHostileActivityFleetManager());
+		}
+		if (!sector.hasScript(DisposableThreatFleetManager.class)) {
+			sector.addScript(new DisposableThreatFleetManager());
 		}
 		// MODIFIED
 		if (!sector.hasScript(NexHostileActivityManager.class)) {
