@@ -79,7 +79,9 @@ public class BattleForceJoinHelper implements EveryFrameScript {
         for (CampaignFleetAPI fleet : fleetsToJoin) {
             forceJoinFleet(fleet, battle, playerSide, dialog, config);
         }
+        battle.uncombine();
         battle.genCombined();
+        battle.takeSnapshots();
         if (!FleetInteractionDialogPluginImpl.inConversation) {
             new ShowDefaultVisual().execute(null, dialog, null, null);
             //ReflectionUtils.invokeIncludingSuperclasses("showFleetInfo", fidpi, fidpi.getClass(), new Object[0], true);
