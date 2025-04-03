@@ -90,8 +90,8 @@ public class ConquestMissionManager extends BaseEventManager {
 		}
 		
 		float duration = getDuration(target);
-		float currReward = ConquestMissionIntel.calculateReward(target, true);
-		if (currReward <= 0) return null;
+		float baseReward = ConquestMissionIntel.calculateReward(target, false);
+		if (baseReward <= 0) return null;
 		
 		ConquestMissionIntel intel = new ConquestMissionIntel(target, faction, duration);
 		intel.init();
