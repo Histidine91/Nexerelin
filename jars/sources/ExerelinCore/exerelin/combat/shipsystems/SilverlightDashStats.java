@@ -165,7 +165,6 @@ public class SilverlightDashStats extends BaseShipSystemScript {
             jitterRangeBonus = jitterLevel * maxRangeBonus;
         }
         jitterLevel = (float) Math.sqrt(jitterLevel);
-        effectLevel *= effectLevel;
 
         ship.setJitter(this, JITTER_COLOR, jitterLevel, 3, 0, 0 + jitterRangeBonus);
         ship.setJitterUnder(this, JITTER_UNDER_COLOR, jitterLevel, 25, 0f, 7f + jitterRangeBonus);
@@ -200,9 +199,19 @@ public class SilverlightDashStats extends BaseShipSystemScript {
         return (String.format(str, aspects.size(), MAX_ASPECTS));
     }
 
+    /**
+     * @param ship
+     * @param fromSystemUse
+     * @return True to tell the shard health monitor plugin to remove itself
+     */
     public static boolean detachShardsIfNeeded(ShipAPI ship, boolean fromSystemUse) {
         if (!ship.isAlive()) {
             return true;
+        }
+        for (ShipAPI module : ship.getChildModulesCopy()) {
+            if (module.getStationSlot() == null) {  // already launched shards
+                return true;
+            }
         }
 
         // launch if main ship or any of the modules are at 40% or higher hard flux
