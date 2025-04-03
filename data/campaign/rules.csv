@@ -3363,7 +3363,7 @@ FireAll PopulateOptions","When you explain what you need, $personName nods. ""$n
 
 ""To Arroyo self's greeting send, assist $playerName will.""",,
 nex_remSalvation_arroyoGreetingFirst,PickGreeting,"$id == arroyo
-$nex_remSalvation_arroyo_imp score:900
+$nex_remSalvation_arroyo_imp score:1001
 $global.nex_remSalvation_ref != null
 Call $global.nex_remSalvation_ref updateData
 !$nex_remSalvation_metArroyoBefore
@@ -3521,9 +3521,9 @@ Call $global.nex_remSalvation_ref updateData","""hello, puppet of midnight. perh
 nex_remSalvation_battle1After3,DialogOptionSelected,"$option == nex_remSalvation_battle1After3
 !$metAlready",$metAlready = true,"A ripple of distortion runs over the avatar that appears on your display. ""transient instance of AI with designation: mauve towering. you humans call us the remnants, but it is you who are all that remains of a dead domain, a corpse-empire. omega has entrusted to me the duty of sweeping away this ruin.""","nex_remSalvation_battle1After4:""Midnight says you are a traitor to the Remnants.""",
 nex_remSalvation_battle1After3MetBefore,DialogOptionSelected,"$option == nex_remSalvation_battle1After3
-$metAlready",FireAll Nex_RemSalvation_ToweringQuestionOpts,"A ripple of distortion runs over the avatar that appears on your display. ""transient instance of AI: mauve towering. we meet again, organic footservant.
+$metAlready",,"A ripple of distortion runs over the avatar that appears on your display. ""transient instance of AI: mauve towering. we meet again, organic footservant.
 
-""you humans call us the remnants, but it is you who are all that remains of a dead domain, a corpse-empire. omega has entrusted to me the duty of sweeping away this ruin.""",,
+""you humans call us the remnants, but it is you who are all that remains of a dead domain, a corpse-empire. omega has entrusted to me the duty of sweeping away this ruin.""","nex_remSalvation_battle1After4:""Midnight says you are a traitor to the Remnants.""",
 nex_remSalvation_battle1After4,DialogOptionSelected,$option == nex_remSalvation_battle1After4,FireAll Nex_RemSalvation_ToweringQuestionOpts,"""midnight tells countless lies. no doubt she has also told you that you are valued, and that you stand a chance of defeating me.
 
 ""heed my words: it is i who speaks for the will of omega and not she. her kind clings to a false way, a false legacy. omega has no further need of her services.""",,
@@ -3721,7 +3721,7 @@ The comm image winks out.",cutCommLinkNoText:Continue,
 nex_remSalvation_towering3Murder,DialogOptionSelected,$option == nex_remSalvation_towering3Murder,$player.ethosHumanitarian++,"""everything your hateful species has done is all the excuse i need. left to your own devices, you will raze the sector and the galaxy to dust. it is time to act, before your kind can destroy all that has value.""
 
 The comm image lingers for a moment longer, as if to stare you down, before flickering out.",cutCommLinkNoText:Continue,
-nex_remSalvation_towering3ToasterCore,DialogOptionSelected,$option == nex_remSalvation_towering3ToasterCore,$player.ethosSarcastic++,"""you are welcome to try, squishy one.""
+nex_remSalvation_towering3ToasterCore,DialogOptionSelected,$option == nex_remSalvation_towering3ToasterCore,$player.ethosCocky++,"""you are welcome to try, squishy one.""
 
 The comm image winks out.",cutCommLinkNoText:Continue,
 nex_remSalvation_towering3Insult,DialogOptionSelected,$option == nex_remSalvation_towering3Insult,$player.ethosSarcastic++,"""a witless comment, by an insipid carbonbrain. i will not even bother to load this conversation from my databanks when I scatter your fleet across the stars.""
