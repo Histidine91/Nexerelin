@@ -37,7 +37,7 @@ public class Nex_HA_CMD extends BaseCommandPlugin {
                 HostileActivityEventIntel intel = HostileActivityEventIntel.get();
                 if (intel != null) {
                     EventFactor factor = intel.getFactorOfClass(NexPerseanLeagueHostileActivityFactor.class);
-                    return factor.getProgress(intel) > 0;
+                    return factor != null && factor.getProgress(intel) > 0;
                 }
                 return false;
             }
