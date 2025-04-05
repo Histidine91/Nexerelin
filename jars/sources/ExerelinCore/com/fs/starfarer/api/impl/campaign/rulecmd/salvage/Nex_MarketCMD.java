@@ -1106,6 +1106,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		Misc.setFlagWithReason(market.getMemoryWithoutUpdate(), "$nex_recentlyInvaded", 
 							   Factions.PLAYER, true, 60f);
 		dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", "NONE", 0);
+		setRaidCooldown(getRaidCooldownMax());
 		
 		openInvasionIntel(intel);
 	}

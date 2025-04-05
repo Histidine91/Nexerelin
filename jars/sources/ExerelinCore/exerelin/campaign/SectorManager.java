@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -1401,6 +1402,21 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         addOrRemoveSubmarket(market, Submarkets.SUBMARKET_BLACK, haveBlackMarket);
         //addOrRemoveSubmarket(market, "tem_templarmarket", haveTemplar);
         addOrRemoveMilitarySubmarket(market, newOwnerId, haveMilitary);
+
+        // refresh all submarket stock
+        if (!newOwnerId.equals(oldOwnerId)) {
+            for (SubmarketAPI sub : market.getSubmarketsCopy()) {
+                refreshSubmarket(sub);
+            }
+        }
+    }
+
+    // Fixes https://github.com/Histidine91/Nexerelin/issues/92
+    public static void refreshSubmarket(SubmarketAPI submarket) {
+        if (submarket.getPlugin() instanceof BaseSubmarketPlugin)
+        {
+            ((BaseSubmarketPlugin) submarket.getPlugin()).addAndRemoveStockpiledResources(180, true, true, true);
+        }
     }
     
     @Override
