@@ -128,6 +128,9 @@
 	"nex_vicVirusBombChance":0.5,	# at 0.5, half of sat bomb expeditions by VIC will be converted to virus bomb expeditions
 	"nex_ignoreSatBomb":false,	# no rep loss with third parties for sat bombing (also no perma-hatred with anyone)
 	
+	"nex_blueprintSwap_minAvailable":7,
+	"nex_blueprintSwap_maxAvailable":10,
+	
 	"nex_specialForces_overOfficerLimitWarningOnly":true,
 	
 	"nex_sizeFractionForVictory":0.501,	# note: winner must also be twice as big as the next largest party

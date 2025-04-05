@@ -35,8 +35,8 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	public static final String STOCK_ARRAY_KEY = "$nex_BPSwapStock";
 	public static final String ALREADY_SOLD_KEY = "$nex_BPSwapAlreadySold";
 	public static final float STOCK_KEEP_DAYS = 30;
-	public static final int STOCK_COUNT_MIN = 7;
-	public static final int STOCK_COUNT_MAX = 10;
+	//public static final int STOCK_COUNT_MIN = 7;
+	//public static final int STOCK_COUNT_MAX = 10;
 	public static final float PRICE_POINT_MULT = 0.01f;
 	//public static final float ALREADY_SOLD_MULT = 0.25f;
 	public static final String PERSISTENT_RANDOM_KEY = "nex_blueprintSwapRandom";
@@ -457,8 +457,10 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			info.itemId = Items.WEAPON_BP;
 			picker.add(info, 2 * wep.getRarity());
 		}
-		
-		int num = STOCK_COUNT_MIN + random.nextInt(STOCK_COUNT_MAX - STOCK_COUNT_MIN + 1);
+
+		int min = Global.getSettings().getInt("nex_blueprintSwap_minAvailable");
+		int max = Global.getSettings().getInt("nex_blueprintSwap_maxAvailable");
+		int num = min + random.nextInt(max - min + 1);
 		for (int i = 0; i < num; i++)
 		{
 			if (picker.isEmpty()) continue;
