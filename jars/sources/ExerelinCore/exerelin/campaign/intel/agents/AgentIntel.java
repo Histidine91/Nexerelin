@@ -351,11 +351,11 @@ public class AgentIntel extends BaseIntelPlugin {
 			if (otherAgent == this) continue;
 			CovertActionIntel currAction = otherAgent.getCurrentAction(), nextAction = otherAgent.getNextAction();
 			if (currAction == null) continue;
-			if (action.isInstance(nextAction)) {
+			if (action.isInstance(currAction)) {
 				targets.add(currAction.market);
 			}
 			else if (currAction instanceof Travel && nextAction != null && action.isInstance(nextAction)) {
-				targets.add(currAction.market);
+				targets.add(nextAction.market);
 			}
 		}
 		return targets;
