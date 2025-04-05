@@ -1756,6 +1756,28 @@ Commission personCanGiveCommission
 Nex_IsModActive PAGSM
 Nex_HA_CMD diktatConcernedByFuelProd",,,"sdMakeDeal:""The Company sends attack fleets against me despite my commission. This oversight must be corrected!""",
 ,,,,,,
+nex_sdtuMacReasonRemnant,SDTUMacIntroReasoning,"$global.nex_remBrawl_missionCompleted
+!$global.nex_remBrawl_betrayedMidnight",,"""You have a relationship with—of all entities—the AI Remnants!""
+
+Macario folds his hands in his lap. ""A curious game you play, collaborating with declared enemies of humanity. One capable of harboring such thoughts must be... indeed, you are perfect for what I have in mind, dear captain.""",,
+,,,,,,
+nex_ZGRacknowledgeRemnantEarly1,ZGRbigUps,"!$didRemnant
+$global.nex_remFragments_missionCompleted score:2
+!$global.nex_remBrawl_betrayedMidnight","$option = nex_ZGRacknowledgeRemnantEarlyShared 0
+FireBest DialogOptionSelected",,,
+nex_ZGRacknowledgeRemnantEarly2,ZGRbigUps,"!$didRemnant
+$global.nex_remLostSci_missionCompleted score:2
+!$global.nex_remBrawl_betrayedMidnight","$option = nex_ZGRacknowledgeRemnantEarlyShared 0
+FireBest DialogOptionSelected",,,
+nex_ZGRacknowledgeRemnantEarlyShared,DialogOptionSelected,$option == nex_ZGRacknowledgeRemnantEarlyShared,"$didRemnant = true 0
+$didUps++","""You seem to have developed an association with our old, sentient toys. The Remnants, I mean.""
+
+She cocks her head ever so slightly, the angle almost imperceptible. ""A curious choice of partnership. What extraordinary technology do they offer you, I wonder? Say the word, and I will match their bid twice over.""",ZGR_acknowledgeContinue:Continue,
+nex_ZGRacknowledgeRemnantLate,ZGRbigUps,"!$didRemnant
+$global.nex_remSalvation_missionCompleted score:5","$didRemnant = true 0
+$didUps++","""You seem to have developed an association with our old, sentient toys. The Remnants, I mean,"" she says. ""Indeed, you seem to have done the inconceivable in their... service.""
+
+Her gaze bores into you like a High Intensity Laser rotating inexorably on its mount. ""Be careful, $playerName. Your conflicted loyalties may prove... dangerous.""",ZGR_acknowledgeContinue:Continue,
 ,,,,,,
 #END Vanilla not-quite-overrides,,,,,,
 ,,,,,,
