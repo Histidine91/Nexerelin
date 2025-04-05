@@ -992,7 +992,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 
 	protected void updateSuppressionFleet(float days) {
 		suppressionFleetCountdown -= days;
-		if (!suppressionData.sentWarning && suppressionFleetCountdown < 12)
+		if (!suppressionData.isActive() && !suppressionData.sentWarning && suppressionFleetCountdown < 12)
 		{
 			prepFleet(true);
 		}
@@ -1003,6 +1003,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		{
 			suppressionData.source = null;
 			suppressionData.updateTimestamp = null;
+			suppressionData.sentWarning = false;
 			suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 		}
 
@@ -1015,7 +1016,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 
 	protected void updateSmuggler(float days) {
 		smugglerCountdown -= days;
-		if (smugglerCountdown < 12 && !smugglerData.sentWarning)
+		if (!smugglerData.isActive() && smugglerCountdown < 12 && !smugglerData.sentWarning)
 		{
 			prepFleet(false);
 		}
@@ -1026,6 +1027,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		{
 			smugglerData.source = null;
 			smugglerData.updateTimestamp = null;
+			smugglerData.sentWarning = false;
 			smugglerCountdown = SMUGGLER_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 		}
 
@@ -1556,6 +1558,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			}
 		}
 
+		if (ExerelinModPlugin.isNexDev) {
+			info.addPara(String.format("ETA to next fleet launch: %.0f", data.forGovernment ? this.suppressionFleetCountdown : this.smugglerCountdown), opad);
+		}
+
 		info.addPara(Misc.getAgoStringForTimestamp(data.updateTimestamp) + ".", opad);
 	}
 
@@ -1736,6 +1742,15 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			rebel.onSuccess();
 			*/
 			RebellionCreator.getInstance().createRebellion(target.getMarket(), false);
+		}
+	}
+
+	// runcode exerelin.campaign.intel.rebellion.RebellionIntel.resetWarnings();
+	public static void resetWarnings() {
+		for (IntelInfoPlugin plugin : Global.getSector().getIntelManager().getIntel(RebellionIntel.class)) {
+			RebellionIntel rebel = (RebellionIntel)plugin;
+			rebel.smugglerData.sentWarning = false;
+			rebel.suppressionData.sentWarning = false;
 		}
 	}
 	
