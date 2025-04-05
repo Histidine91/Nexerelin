@@ -191,7 +191,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             Tags.THEME_HIDDEN
         )
         preferSystemTags(ReqMode.ANY, Tags.THEME_REMNANT, Tags.THEME_DERELICT, Tags.THEME_INTERESTING)
-        requireSystemWithinRangeOf(base!!.locationInHyperspace, 15f)
+        preferSystemWithinRangeOf(base!!.locationInHyperspace, 15f)
+        requireSystemWithinRangeOf(base!!.locationInHyperspace, 25f)
         search.systemReqs.add(SystemUninhabitedReq())
         preferSystemOutsideRangeOf(base!!.locationInHyperspace, 7f)
         preferSystemUnexplored()
