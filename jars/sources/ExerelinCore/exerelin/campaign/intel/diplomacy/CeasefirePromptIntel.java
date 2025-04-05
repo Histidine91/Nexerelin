@@ -189,7 +189,7 @@ public class CeasefirePromptIntel extends TimedDiplomacyIntel implements PopupDi
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
-		tags.add(StringHelper.getString(Tags.INTEL_AGREEMENTS, true));
+		tags.add(Tags.INTEL_AGREEMENTS);
 		tags.add(StringHelper.getString("diplomacy", true));
 		tags.add(factionId);
 		tags.add(PlayerFactionStore.getPlayerFactionId());
