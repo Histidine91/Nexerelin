@@ -11,7 +11,7 @@
 			"name":"Luddic Church",
 			"image":"graphics/icons/missions/pilgrims_path.png",
 			"sortKey":"AAAA_luddicChurch",
-			"quests":["pilgrimsPath", "knightErrant"],
+			"quests":["pilgrimsPath", "knightErrant", "falseIdols"],
 			"plugin":"exerelin.campaign.questskip.LuddicChurchQuestSkipPlugin",
 		},
 		"sindrianDiktat":{
@@ -103,7 +103,8 @@
 				"$gaATG_missionGiven":true,
 				"$gaATG_missionCompleted":true,
 				"$canScanGates":true,
-				"$gatesActive":true
+				"$gatesActive":true,
+				"$didKantasDenIntro":true
 			},
 			"playerMemFlags":{
 				"$gaveDaudYaribayContact":true,
@@ -121,7 +122,7 @@
 		"pilgrimsPath":{
 			"name":"Pilgrim's Path",
 			"tooltip":"The player visits the six Luddic shrines of the Sector.",
-			"idsToForceOffWhenDisabled":["knightErrant"],
+			"idsToForceOffWhenDisabled":["knightErrant", "falseIdols"],
 			"peopleToUnhide":["standfast", "jaspis", "oak"],
 			"sectorMemFlags":{
 				"$lpp_missionCompleted":true,
@@ -139,14 +140,34 @@
 			"name":"Knight-Errant",
 			"tooltip":"The player finds a missing Luddic novice.\n\nJethro Bornanew will be ==returned== to Archcurate Jaspis.",
 			"idsToForceOnWhenEnabled":["pilgrimsPath"],
+			"idsToForceOffWhenDisabled":["falseIdols"],
 			"peopleToUnhide":["virens"],
 			"sectorMemFlags":{
-				"$lke_completed":true,
+				"$lke_missionCompleted":true,
 				"$lke_sedgeDrankYourTea":true,
-				"$jaspisMadeOffer":false
+				"$jaspisMadeOffer":false,
+				"$jethroName":"Jeff"	# sure why not
 			},
 			"playerMemFlags":{
 				"$metBornanew":true
+			}
+		},
+		"falseIdols":{
+			"name":"False Idols",
+			"tooltip":"The player helps Jethro Bornanew track down a fake Luddic relic.",
+			"idsToForceOnWhenEnabled":["pilgrimsPath", "knightErrant"],
+			"sectorMemFlags":{
+				"$bfin_didStart":true,
+				"$bfin_missionCompleted":true,
+				"$bffi_missionCompleted":true,
+				"$bornanewWasShotBySedge":true,
+				"$bornanewBadBoy":2.0
+			},
+			"playerMemFlags":{	# don't set an official "fate of Pond" outcome
+				"$BFFIgaveBornanewStateroom":true,
+				"$bffi_boughtRelic":true,
+				"$bffi_playerKilledSedgeAfterPond":true,
+				"$foundUlmusPondSafehouse":true
 			}
 		},
 		"usurpers":{
