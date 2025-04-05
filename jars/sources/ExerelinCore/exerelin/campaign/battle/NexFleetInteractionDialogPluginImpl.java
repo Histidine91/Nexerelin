@@ -58,7 +58,8 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		this.config = params;
 		context = new NexFleetEncounterContext();
 	}
-	
+
+	// Don't restore KIA/MIA officers
 	@Override
 	protected void restoreOrigCaptains() {
 		if (origCaptains != null) {

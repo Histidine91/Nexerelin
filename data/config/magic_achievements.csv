@@ -1,4 +1,3 @@
 id,name,description,tooltip,script,image,spoilerLevel,rarity
-,,,,,,,
 nex_spaceland,SpaceLand Battle,Won an offensive ground battle.,,exerelin.campaign.achievements.SpaceLandBattle,graphics/icons/cargo/marine.png,VISIBLE,UNCOMMON
 nex_oneMansTrash,One Man's Trash,Did a barter trade with a decivilized settlement.,,exerelin.campaign.achievements.OneMansTrash,graphics/icons/cargo/materials.png,VISIBLE,COMMON
