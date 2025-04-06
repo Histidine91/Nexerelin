@@ -1,3 +1,20 @@
+Version 0.12.0
+
+* Add False Idols to story skip system
+    * Includes fix for the quest not being accessible if using Knight Errant skip
+* Remnant final mission fixes
+    * Fix Silverlight's shards randomly flying over stuff when they shouldn't (it was kinda cool looking but not intended behavior)
+    * Loosen some distance checks to reduce potential cases of mission failing to generate
+    * Fix a couple of dialog bugs
+    * Silverlight now codex-unlockable
+* Fix an exploit with selling to, raiding and then conquering a market
+* Fix fleet events during rebellion getting stuck
+* Fix multiple operatives on internal security mode doing the same action
+* Fix ceasefire offer's intel tag
+* Fix non-fatal NPE when talking to Hannan about potential League membership
+* Fix how conquest mission creator filters out zero-reward missions
+* Number of blueprints available at Prism blueprint trader now configurable in settings.json
+
 Version 0.11.3y
 
 * Fix Threat not spawning
@@ -132,116 +149,3 @@ Version 0.11.3
     * Removed: ApproLight, Knights Templar, Underworld
     * Added: Second in Command
 * Custom starts can hide or disable themselves in their script
-
-Version 0.11.2c
-
-* Add option for player faction to automatically resist the police colony crisis
-* Fix some dialog options for vanilla colony crises being removed
-    * This bug made the negotiation options for Luddic Church and Sindrian Diktat crises inaccessible
-* Fix strategic AI not being able to form new alliances
-* Fix multiple player special task groups sharing the same financial report node until next game load
-* NPC operatives don't try to sabotage non-disruptable industries
-* Lost scientist mission should work if retried
-* Diktat colony crisis shows appropriate texts if PAGSM mod is running
-* GroundBattleLog supports custom message types
-
-
-Version 0.11.2b
-
-* Blockade nerfs
-    * When strategic AI is off, conversion ratio from raids 0.3 -> 0.2, further halved if invasions are disabled in config
-        * Conversion ratio is configurable as nex_raidToBlockadeConversionFreq value in settings.json
-    * When strategic AI is on, blockade action has 50% chance to not be considered as an action for any given concern
-    * Remove 35% invasion point discount for blockades
-    * Blockade period 180 -> 120 days
-* Fix a concurrent modification exception when bulk reviving ships in special task groups
-* Prevent a crash with UNGP's John Wick rule
-* Fix a dialog interaction in police colony crisis
-
-
-Version 0.11.2
-
-### Changes from beta 0.11.1x ###
-* Can't weaken rebellions by buying more goods on the black market than were sold into it
-* Player special task groups will use a gate if both they and the task target are in gate systems
-* 'No invade story-critical markets' and 'no invade starting markets' settings won't affect raids or blockades
-* Fix free port crisis crash when no eligible factions
-* Fix crash on start when using ApproLight in random sector
-* Fix strategic AI ignoring 'invasions only after player colony' setting and a bug in fleet event targeting
-* Fix random sector memkey being set only after new game time pass
-* Fix blockades always being replaced by invasions with strategic AI off
-* Alliance offer intel includes relevant strategic AI info and link button if applicable
-* Don't double stack defenses on Agreus when Ko Combine mod is running
-
-### Gameplay ###
-* Alliance fixes/improvements
-    * NPCs joining or merging an alliance requires player consent if player is a member
-    * Fix strategic AI spamming player with invites to an existing alliance 
-    * Alliance offer cooldown is short if player accepts, long if rejected or expires
-    * Strategic AI can request an alliance merger
-    * When using strategic AI, don't ally outside of AI actions
-    * Pirate factions won't spontaneously join alliances
-* NPC factions can launch blockades
-    * Unlike the League colony crisis blockade, these are smaller but don't have command or supply fleets to snipe
-    * Blockade has chance to replace raid if strategic AI is disabled (sat bomb now replaces invasion instead of raid)
-* Colony crisis stuff
-    * Crises that originate from a specific market (League, Church and Diktat ones) will be properly suppressed if the origin (Kazeron, Hesperus or Sindria) is captured by another faction
-    * Add a pseudo-Independents colony crisis involving free ports (can be disabled in config)
-    * Remnant contact will now negate Remnant colony crisis points
-* Remnant mission 'Salvation' improvements
-    * Knight fleet will use ships from Knights of Ludd mod if available
-    * Boss shard launch behavior closer to what was intended
-    * Fix some irregularities in special merc's immortality
-* Invasion etc. adjustments
-    * Player colonies below size 4 won't be targeted for military actions (except in Starfarer mode)
-    * Autoresolve for Nex military events will take into account allied factions in the system
-    * Base strike missions and colony expeditions consume invasion points
-    * 'Revenge' invasions will not spawn if invasion points too low
-* Ground units fighting won't cause industry disruption any more
-* Strategy AI can have captured markets returned to the original owner if sufficiently friendly
-* Luddic shrines can be visited even if the markets are captured
-* Having an outpost won't block supplies request from quartermaster
-* Derelict Empire also takes over pirate-type factions' markets at start, if pirate invasions are enabled
-* Luddic Church ground battle bonus is squared on worlds with Luddic Majority
-    * Previously it was squared for being militia
-* Increase bonus XP for agent action SP use and ground battle Inspire
-* NPC special task groups 1/13th smaller, respawn delay 30 -> 60
-* Proxy raids launched by strategic AI won't be hostile to sponsor faction
-* Base strike missions should happen half as often or less
-
-### UI ###
-* Boolean settings to disable invasions/raids/sat bombs and colony expeditions
-* Faction directory won't display factions that only have hidden markets
-
-### Text ###
-* Clarify intel text when tribute is cancelled by external factors
-* Fix inconsistent captain's pronouns in 'File Drawer Problem' mission
-* Market desc changer handles player colonize/abandon
-
-### Bugfixes ###
-* Fix undersupplied market concern crashing on update() if no producers left
-* Fix an unusual crash with player special task group on game load
-* Fix NPC factions not invading if their invasion point capacity has reached the minimum allowed
-* Fix strategic AI general warfare concern causing sabotage of unrelated factions' industries
-* Fix joining a ground battle sometimes not forcing relations to hostile when it should
-* Fix stabilize package option being available when it shouldn't if a dialog option is removed
-* Fix player saturation bombardments not being tracked in some places
-* Buy ship rule should now work properly with S-modded built-in hullmods
-* Fix invasion point refund for cancelled actions not taking stage into account
-* Don't generate conquest mission if the reward is zero
-* Fix repeat relations action allowing free reuse of story point effect
-* Fix recruit operative action not showing on own markets
-* Maybe fix prices not updating sufficiently after delivering commodities to suppress rebellion
-* NPC ground units shouldn't be able to deploy if their fleet is destroyed (if fleets were not abstracted on battle start)
-
-### Modding ###
-* Ground battle stuff
-    * Add some config options for ground battle attacker and defender strengths
-    * Fixes/improvements in support for custom ground unit types and Crew Replacer mod
-    * Market conditions can generate ground battle troops
-    * Add handling for HMI Fang and Draco market conditions, AotD Planetary Defense Bureau industry
-* Add some relevant getters/setters for insurance intel
-
-### Misc ###
-* End vanilla faction hostilities on loading Nex into existing save
-* Update Silverlight variants for new OP costs

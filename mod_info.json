@@ -4,11 +4,11 @@
     "author":"Histidine (original by Zaphide)",
     "version":{
         "major":0,
-        "minor":11, 
-        "patch":"3y"
+        "minor":12, 
+        "patch":"0"
     },
     "description":"Join a faction and conquer the Sector!",
-    "gameVersion":"0.98a-RC5",
+    "gameVersion":"0.98a-RC7",
     "totalConversion":false,
     "jars":["jars/ExerelinCore.jar"],
     "dependencies": [
