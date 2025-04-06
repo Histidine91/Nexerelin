@@ -3,10 +3,13 @@ TO DO FOR STARSECTOR 0.97
 Files to check on Starsector update, because they significantly modify vanilla code that could change under us.
 Partial list.
 
+Most likely to have changed:
+- NexCoreLifecyclePlugin
+
+Others:
 - ExerelinNewGameSetup
     - VanillaSystemsGenerator
--  rules.csv "vanilla overrides"
--  NexCoreLifecyclePlugin
+- rules.csv "vanilla overrides"
 - NexFleetInteractionDialogPluginImpl
 - NexFleetEncounterContext
 - Nex_PunitiveExpeditionManager
@@ -14,13 +17,16 @@ Partial list.
 - Nex_SustainedBurnAbilityAI
 - Nex_AICores
 - NexHostileActivityEventIntel, NexHostileActivityManager
-- SSP_BattleCreationPluginImpl
+- [idk] SSP_BattleCreationPluginImpl
 - InvasionFleetManager.getPatrolCombatFP
 - Submarket plugins
 - Colony manager: getFreePortGrowthBonus()
-- Everything that uses Industries.TAG_UNRAIDABLE
 - Objective entity plugins
+
+Honestly, do I care?
+- Everything that uses Industries.TAG_UNRAIDABLE
 - CreateFleetPlugin if I make one
+
 
 0.96 notes:
 
