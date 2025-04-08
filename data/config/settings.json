@@ -188,6 +188,7 @@
 	
 	"nex_customStartFleetThresholds":[0, 80000, 160000, 240000, 500000, 1000000],
 	
+	"nex_factionSetupMaxPoints":100,
 	"nex_factionSetupNumFont":"graphics/fonts/insignia21LTaa.fnt",
 	
 	"plugins":{

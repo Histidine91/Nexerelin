@@ -1,19 +1,7 @@
 package exerelin.campaign.ui;
 
-import java.util.Map;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CargoPickerListener;
-import com.fs.starfarer.api.campaign.CargoStackAPI;
-import com.fs.starfarer.api.campaign.CoreInteractionListener;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.SpecialItemData;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
@@ -24,15 +12,16 @@ import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import exerelin.world.factionsetup.FactionSetupHandler;
 import exerelin.world.factionsetup.FactionSetupItemPlugin;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * When picking the own faction start, present some options to customize player planet
  */
 public class OwnFactionSetupScript extends DelayedDialogScreenScript
 {
-	public static final int MAX_POINTS = 100;
 	
 	@Override
 	protected void showDialog() {
@@ -107,10 +96,8 @@ public class OwnFactionSetupScript extends DelayedDialogScreenScript
 				public void recreateTextPanel(TooltipMakerAPI panel, CargoAPI cargo, CargoStackAPI pickedUp, boolean pickedUpFromSource, CargoAPI combined) {
 
 					int cost = getCargoCost(combined);
-					int max = MAX_POINTS;
+					int max = Global.getSettings().getInt("nex_factionSetupMaxPoints");
 
-					float pad = 3f;
-					float small = 5f;
 					float opad = 10f;
 					
 					String str = getString("pickerFancyText");
