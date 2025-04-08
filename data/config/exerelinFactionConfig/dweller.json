@@ -1,0 +1,8 @@
+{
+    "playableFaction":false,
+    "corvusCompatible":true,
+    "dropPrisoners":false,
+    "hostileToAll":2,
+    "noRandomizeRelations":true,
+    "noSyncRelations":true,
+}

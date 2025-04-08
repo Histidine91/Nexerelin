@@ -134,81 +134,24 @@ public class VanillaSystemsGenerator {
 	}
 	
 	public static void initFactionRelationships(SectorAPI sector) 
-	{	
-		// forget why this is necessary - workaround for some JANINO issue, I think
-		//Class c = HeavyArmor.class;
-		
+	{
 		boolean enhancedRelations = NexConfig.useEnhancedStartRelations;
 
 		FactionAPI hegemony = sector.getFaction(Factions.HEGEMONY);
 		FactionAPI tritachyon = sector.getFaction(Factions.TRITACHYON);
-		FactionAPI pirates = sector.getFaction(Factions.PIRATES);
-		FactionAPI independent = sector.getFaction(Factions.INDEPENDENT);
-		FactionAPI kol = sector.getFaction(Factions.KOL);
 		FactionAPI church = sector.getFaction(Factions.LUDDIC_CHURCH);
 		FactionAPI path = sector.getFaction(Factions.LUDDIC_PATH);
-		FactionAPI player = sector.getFaction(Factions.PLAYER);
 		FactionAPI diktat = sector.getFaction(Factions.DIKTAT);
 		FactionAPI persean = sector.getFaction(Factions.PERSEAN);
-		FactionAPI remnant = sector.getFaction(Factions.REMNANTS);
-		FactionAPI derelict = sector.getFaction(Factions.DERELICT);
 
-		player.setRelationship(hegemony.getId(), 0);
-		player.setRelationship(tritachyon.getId(), 0);
-		player.setRelationship(persean.getId(), 0);
-		//player.setRelationship(pirates.getId(), RepLevel.HOSTILE);
-		player.setRelationship(pirates.getId(), -0.65f);
+		String str = "import data.scripts.world.SectorGen;\r\nSectorGen.initFactionRelationships(sector);";
+		String[] paramNames = {"sector"};
+		try {
+			NexUtils.runCode(str, paramNames, null, sector);
+		} catch (Exception ex) {
+			Global.getLogger(VanillaSystemsGenerator.class).error("Failed to run vanilla faction relationships", ex);
+		}
 
-		player.setRelationship(independent.getId(), 0);
-		player.setRelationship(kol.getId(), 0);
-		player.setRelationship(church.getId(), 0);
-		//player.setRelationship(path.getId(), RepLevel.HOSTILE);
-		player.setRelationship(path.getId(), -0.65f);
-
-
-		// replaced by hostilities set in CoreLifecyclePluginImpl
-		//hegemony.setRelationship(tritachyon.getId(), RepLevel.HOSTILE);
-		//hegemony.setRelationship(persean.getId(), RepLevel.HOSTILE);
-
-		hegemony.setRelationship(pirates.getId(), RepLevel.HOSTILE);
-
-		tritachyon.setRelationship(pirates.getId(), RepLevel.HOSTILE);
-		//tritachyon.setRelationship(independent.getId(), -1);
-		tritachyon.setRelationship(kol.getId(), RepLevel.HOSTILE);
-		//tritachyon.setRelationship(church.getId(), RepLevel.HOSTILE);
-		tritachyon.setRelationship(path.getId(), RepLevel.HOSTILE);
-		tritachyon.setRelationship(persean.getId(), RepLevel.SUSPICIOUS);
-
-		pirates.setRelationship(kol.getId(), RepLevel.HOSTILE);
-		pirates.setRelationship(church.getId(), RepLevel.HOSTILE);
-		pirates.setRelationship(path.getId(), 0);
-		pirates.setRelationship(independent.getId(), RepLevel.HOSTILE);
-		pirates.setRelationship(diktat.getId(), RepLevel.HOSTILE);
-		pirates.setRelationship(persean.getId(), RepLevel.HOSTILE);
-
-		church.setRelationship(kol.getId(), RepLevel.COOPERATIVE);
-		path.setRelationship(kol.getId(), RepLevel.FAVORABLE);
-
-		path.setRelationship(independent.getId(), RepLevel.HOSTILE);
-		path.setRelationship(hegemony.getId(), RepLevel.HOSTILE);
-		path.setRelationship(diktat.getId(), RepLevel.HOSTILE);
-		path.setRelationship(persean.getId(), RepLevel.HOSTILE);
-		path.setRelationship(church.getId(), RepLevel.COOPERATIVE);
-
-		persean.setRelationship(tritachyon.getId(), RepLevel.SUSPICIOUS);
-		persean.setRelationship(pirates.getId(), RepLevel.HOSTILE);
-		persean.setRelationship(path.getId(), RepLevel.HOSTILE);
-		persean.setRelationship(diktat.getId(), RepLevel.COOPERATIVE);
-
-		player.setRelationship(remnant.getId(), RepLevel.HOSTILE);
-		independent.setRelationship(remnant.getId(), RepLevel.HOSTILE);
-		pirates.setRelationship(remnant.getId(), RepLevel.HOSTILE);
-		hegemony.setRelationship(remnant.getId(), RepLevel.HOSTILE);
-		kol.setRelationship(remnant.getId(), RepLevel.HOSTILE);
-		church.setRelationship(remnant.getId(), RepLevel.HOSTILE);
-		path.setRelationship(remnant.getId(), RepLevel.HOSTILE);
-		diktat.setRelationship(remnant.getId(), RepLevel.HOSTILE);
-		persean.setRelationship(remnant.getId(), RepLevel.HOSTILE);
 
 		if (enhancedRelations) {
 			path.setRelationship(church.getId(), RepLevel.NEUTRAL);

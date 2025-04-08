@@ -170,5 +170,5 @@
     # DO NOT TOUCH!
     # to make factions not appear, use the menu options
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "lions_guard", "persean", "luddic_church", "luddic_path", "knights_of_ludd", "pirates",
-           "derelict", "remnant", "player", "independent", "scavengers", "neutral", "poor", "sleeper", "omega"],
+           "derelict", "remnant", "player", "independent", "scavengers", "neutral", "poor", "sleeper", "omega", "dweller", "threat"],
 }
