@@ -51,13 +51,17 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	// on the other hand, should combat actually be free?
 	// can't be helped, it _is_ free if far-autoresolved
 	public static final boolean AI_MODE = true;
+
 	public static final boolean PRINT_VARIANT_WARNING = true;
 	public static final String MEM_KEY_OVER_OFFICER_LIMIT_WARN = "$nex_overOfficerLimitWarn";
-	
+
+	// cost mults
+	// with the existience of specialForcesMaintMult in NexConfig, shouldn't need to mess with these unless cost types need to be changed relative to each other
 	public static final float CREW_SALARY_MULT = 1;	// should not be high since the utility of assets in a PSF fleet is much lower than in the player fleet
 	public static final float SUPPLY_COST_MULT = 1;	// ditto, even though we're getting free combat out of the deal
 	public static final float OFFICER_SALARY_MULT = 1f;
 	public static final float FUEL_COST_MULT = 1f;
+	public static final float REVIVE_COST_MULT = 0.5f;
 	
 	public static final Object DESTROYED_UPDATE = new Object();	
 	protected static final Object BUTTON_COMMAND = new Object();
@@ -652,7 +656,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		float pad = 3, opad = 10;
-		
+
 		createSmallDescriptionPart1(info, width);
 		
 		if (route == null || isEnding() || isEnded()) {
@@ -870,9 +874,9 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	
 	public static float getReviveSupplyCost(FleetMemberAPI member) {
 		if (member == null) return 0;
-		float deployCost = member.getDeployCost();
+		float deployCost = member.getDeployCost() * 100;	// CR % per deployment
 		if (deployCost <= 1) {
-			log.error(String.format("Ship %s has <1 deployment cost, applying safety", member.getShipName()));
+			log.warn(String.format("Ship %s has <1 deployment cost, applying safety", member.getShipName()));
 			deployCost = 1f;
 		}
 		float suppliesPerCRPoint = member.getDeploymentCostSupplies()/deployCost;
@@ -881,6 +885,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		float daysToRepair = member.getRepairTracker().getRemainingRepairTime();
 
 		float suppliesNeeded = daysToRepair * suppliesPerDay;
+		suppliesNeeded *= REVIVE_COST_MULT;
 			
 		return suppliesNeeded;
 	}
