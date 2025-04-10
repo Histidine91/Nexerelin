@@ -1,5 +1,6 @@
 package exerelin.campaign.questskip;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.intel.events.ht.HyperspaceTopographyEventIntel;
 import exerelin.campaign.ExerelinSetupData;
 import lombok.extern.log4j.Log4j;
@@ -22,6 +23,18 @@ public class HyperspaceTopographySkipPlugin extends BaseQuestSkipPlugin {
         else if (chain.isQuestEnabled("topography_400", quests)) {
             HyperspaceTopographyEventIntel intel = getOrCreateIntel();
             intel.setProgress(HyperspaceTopographyEventIntel.PROGRESS_3);
+        }
+        else if (chain.isQuestEnabled("topography_250", quests)) {
+            HyperspaceTopographyEventIntel intel = getOrCreateIntel();
+            intel.setProgress(HyperspaceTopographyEventIntel.PROGRESS_2);
+        }
+    }
+
+    @Override
+    public void init() {
+        if (Global.getSettings().getBoolean("nex_skipStoryDefault")) {
+            if (chain == null) return;
+            chain.quests.get(0).isEnabled = true;
         }
     }
 

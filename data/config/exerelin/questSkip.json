@@ -36,7 +36,7 @@
 			"name":"Hyperspace Topography",
 			"image":"graphics/icons/markets/hyperspace_topography.png",
 			"sortKey":"AAAB_hyperspace_topography",
-			"quests":["topography_400", "topography_700"],
+			"quests":["topography_250", "topography_400", "topography_700"],
 			"plugin":"exerelin.campaign.questskip.HyperspaceTopographySkipPlugin",
 		},
 	},
@@ -285,15 +285,21 @@
 			}
 		},
 		
+		"topography_250":{
+			"name":"250 points",
+			"tooltip":"Enough experience in hyperspace to ==reverse slipstreams==.",
+			"idsToForceOffWhenDisabled":["topography_400", "topography_700"],
+		},
 		"topography_400":{
 			"name":"400 points",
-			"tooltip":"Enough experience in hyperspace to ==reverse slipstreams==.",
+			"tooltip":"With greater expertise in hyperspace physics, ==spaceports== can ==detect slipstreams==.",
+			"idsToForceOnWhenEnabled":["topography_400"],
 			"idsToForceOffWhenDisabled":["topography_700"],
 		},
 		"topography_700":{
 			"name":"700 points",
 			"tooltip":"Near-total mastery of hyperspace travel, up to the level of creating ==slipsurges==.",
-			"idsToForceOnWhenEnabled":["topography_400"],
+			"idsToForceOnWhenEnabled":["topography_250", "topography_400"],
 		}
 	}
 }
