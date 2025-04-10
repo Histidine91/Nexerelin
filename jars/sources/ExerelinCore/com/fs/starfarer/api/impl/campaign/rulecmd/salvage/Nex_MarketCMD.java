@@ -2015,7 +2015,7 @@ public class Nex_MarketCMD extends MarketCMD {
 				str = StringHelper.substituteFactionTokens(str, market.getFaction());
 				text.addPara(str);
 			}
-			setSatBombLimitedHatred(true, SatBombExcuse.SMALL_SIZE);
+			setSatBombLimitedHatred(true, SatBombExcuse.SAT_BOMBER);
 		}
 		else if (nonHostile != null && nonHostile.isEmpty()) {
 			if (text != null) text.addPara(StringHelper.getString("nex_bombardment", "satBombWarningAllHostile"));
