@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI
 import com.fs.starfarer.api.characters.CharacterCreationData
 import com.fs.starfarer.api.impl.campaign.ids.Factions
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin
+import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator
 import com.fs.starfarer.api.util.Misc
@@ -79,7 +80,7 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
         }
 
         var first = true
-        var checkboxes = HashMap<NexLunaElement, NexLunaCheckbox>()
+        var checkboxes = LinkedHashMap<NexLunaElement, NexLunaCheckbox>()
         element.addPara("", 0f).position.inTL(10f, 0f)
         for (background in backgrounds.sortedBy { it.order }) {
             if (!background.shouldShowInSelection(factionSpec, factionConfig)) continue
@@ -93,7 +94,6 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
 
             var canBeSelected = background.canBeSelected(factionSpec, factionConfig)
 
-
             var title = background.getTitle(factionSpec, factionConfig)
             var description = background.getShortDescription(factionSpec, factionConfig)
             var imagePath = background.getIcon(factionSpec, factionConfig)
@@ -105,7 +105,9 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
             subelement.innerElement.addSpacer(10f)
 
             var checkbox = NexLunaCheckbox(first, subelement.innerElement, 20f, 20f)
-            if (first) {
+            // checkbox enabled if this was the last selected background
+            checkbox.value = canBeSelected && background.spec.id.equals(ExerelinSetupData.getInstance().backgroundId)
+            if (checkbox.value) {
                 memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_background", background.spec.id)
             }
             first = false
@@ -202,8 +204,15 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
                     other.value.value = false
                 }
             }
+        }
 
-
+        // no background selected previously, apply first one
+        var anyChecked = checkboxes.values.any { i -> i.value }
+        if (!anyChecked) {
+            var element = checkboxes.keys.first();
+            var background = element.getCustomData("plugin") as BaseCharacterBackground
+            checkboxes.values.first().value = true
+            memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_background", background.spec.id)
         }
 
 

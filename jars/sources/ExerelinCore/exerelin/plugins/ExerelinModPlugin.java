@@ -629,8 +629,8 @@ public class ExerelinModPlugin extends BaseModPlugin
             BaseCharacterBackground background = CharacterBackgroundUtils.getBackgroundPluginByID(backgroundID);
             background.onNewGame(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID));
 
-            data.backgroundId = null;
-            data.selectedFactionForBackground = null;
+            //data.backgroundId = null;
+            //data.selectedFactionForBackground = null;
         }
 
         for (QuestChainSkipEntry chain : QuestChainSkipEntry.getEntries()) {
