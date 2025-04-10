@@ -265,7 +265,6 @@ public class Nex_NGCCustomStartFleet extends BaseCommandPlugin {
             addStartingShips();
 
             mem.set("$nex_lastSelectedFleetType", "CUSTOM");
-            NGCAddStartingShipsByFleetType.addStartingDModScript(mem);
             ExerelinSetupData.getInstance().startFleetType = NexFactionConfig.StartFleetType.CUSTOM;
             FireBest.fire(null, dialog, memoryMap, "ExerelinNGCStep4");
             FireBest.fire(null, dialog, memoryMap, "ExerelinNGCStep4Plus");

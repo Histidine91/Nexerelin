@@ -1,12 +1,8 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -26,8 +22,10 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.StartFleetType;
-import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
+
+import java.util.List;
+import java.util.Map;
 
 
 public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
@@ -46,7 +44,6 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 			startingVariants = factionConf.getStartFleetForType(fleetTypeStr, true, 0);
 		
 		generateFleetFromVariantIds(dialog, data, fleetTypeStr, startingVariants);
-		addStartingDModScript(memoryMap.get(MemKeys.LOCAL));
 		
 		ExerelinSetupData.getInstance().startFleetType = StartFleetType.getType(fleetTypeStr);
 		
@@ -115,20 +112,6 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		
 		dialog.getVisualPanel().showFleetInfo(StringHelper.getString("exerelin_ngc", "playerFleet", true), 
 				tempFleet, null, null);
-	}
-	
-	public static void addStartingDModScript(MemoryAPI localMem) {
-		CharacterCreationData data = (CharacterCreationData)localMem.get("$characterData");
-		data.addScript(new Script() {
-			public void run() {
-				CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
-				if (fleet.getMemoryWithoutUpdate().contains("$nex_addedStartingDMods"))
-					return;
-				NexUtilsFleet.addDMods(fleet, ExerelinSetupData.getInstance().dModLevel);
-				fleet.getFleetData().syncIfNeeded();
-				fleet.getMemoryWithoutUpdate().set("$nex_addedStartingDMods", true, 5);
-			}
-		});
 	}
 	
 	protected static void addCargo(CharacterCreationData data, String commodity, int amount, TextPanelAPI text)
