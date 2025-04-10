@@ -12,11 +12,16 @@ import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Missions;
 import com.fs.starfarer.api.impl.campaign.ids.People;
 import com.fs.starfarer.api.impl.campaign.missions.academy.GAFCReplaceArchon;
+import com.fs.starfarer.api.impl.campaign.missions.academy.GAFindingCoureuse;
+import com.fs.starfarer.api.impl.campaign.missions.hub.HubMission;
+import com.fs.starfarer.api.loading.PersonMissionSpec;
 import exerelin.campaign.AcademyStoryVictoryScript;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.StartSetupPostTimePass;
+import exerelin.utilities.NexUtils;
 
 import java.util.Map;
+import java.util.Random;
 
 public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
 
@@ -67,10 +72,24 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             market.getCommDirectory().addPerson(cour);
             zal.getMemoryWithoutUpdate().set("$metAlready", true);
             new GAFCReplaceArchon().run();  // archon replacement
+
+            Global.getSector().getMemoryWithoutUpdate().set("$gaFC_pickedBranchFikenhild", true);
         }
 
         if (kallichore || coureuse) {
             setRepLevelFixed(seb, RepLevel.COOPERATIVE);
+        }
+
+        // if we skipped either KA or FC but not the other, start that other mission
+        if (kallichore && !coureuse) {
+            HubMission mission = startAcademyMission("gaFC");
+            MemoryAPI global = Global.getSector().getMemoryWithoutUpdate();
+            global.set("$gaFC_pickedBranchFikenhild", true);
+            GAFindingCoureuse fc = (GAFindingCoureuse)mission;
+            fc.checkStageChangesAndTriggers(null, null);
+        }
+        if (!kallichore && coureuse) {
+            startAcademyMission("gaKA");
         }
 
         if (chain.isQuestEnabled("ziggurat", quests)) {
@@ -96,7 +115,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             zal.getRelToPlayer().setRel(0.2f);
             Global.getSector().getImportantPeople().getPerson(People.KANTA).getRelToPlayer().setRel(-0.15f);
 
-            StartSetupPostTimePass.addStoryContact(People.HORUS_YARIBAY);
+            //StartSetupPostTimePass.addStoryContact(People.HORUS_YARIBAY); // go talk to him yourself
 
             Global.getSector().getPlayerFleet().getCargo().addSpecial(new SpecialItemData(Items.JANUS, null), 1);
         }
@@ -178,6 +197,17 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
                 quest.isEnabled = true;
             }
         }
+    }
+
+    public HubMission startAcademyMission(String missionId) {
+        PersonAPI person = Global.getSector().getImportantPeople().getPerson(People.BAIRD);
+        PersonMissionSpec spec = Global.getSettings().getMissionSpec(missionId);
+        HubMission mission = spec.createMission();
+        mission.setPersonOverride(person);
+        mission.setGenRandom(new Random(NexUtils.getStartingSeed()));
+        mission.createAndAbortIfFailed(person.getMarket(), false);
+        mission.accept(null, null);
+        return mission;
     }
 
     @Override

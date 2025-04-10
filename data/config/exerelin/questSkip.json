@@ -62,10 +62,11 @@
 		"kallichore":{
 			"name":"Kallichore Arc.",
 			"tooltip":"The player recovers the archive of the previous Galatian Academy provost, Tomas Kallichore, from the Academy.",
-			"idsToForceOnWhenEnabled":["transverseJump", "coureuse"],
+			"idsToForceOnWhenEnabled":["transverseJump"],
 			"idsToForceOffWhenDisabled":["ziggurat", "atTheGates"],
 			"sectorMemFlags":{
 				"$gaKA_missionCompleted":true,
+				"$foundGargoyle":true
 			},
 			"playerMemFlags":{
 				"$metCloneLoke":true
@@ -74,10 +75,11 @@
 		"coureuse":{
 			"name":"Finding Coureuse",
 			"tooltip":"The player finds the missing Academician Scylla Coureuse and invites her back to the Academy.",
-			"idsToForceOnWhenEnabled":["transverseJump", "kallichore"],
+			"idsToForceOnWhenEnabled":["transverseJump"],
 			"idsToForceOffWhenDisabled":["ziggurat", "atTheGates"],
 			"sectorMemFlags":{
 				"$gaFC_missionCompleted":true,
+				"$foundCoureuse":true
 			},				
 			"playerMemFlags":{
 				"$metCavin":true,
