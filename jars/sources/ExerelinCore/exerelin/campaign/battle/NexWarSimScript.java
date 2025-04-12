@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.intel.specialforces.SpecialForcesIntel;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -129,7 +130,7 @@ public class NexWarSimScript {
      * @param them Can be null, but this may lead to inaccurate results.
      * @return
      */
-    public static boolean willFactionSideWithUs(FactionAPI factionToConsider, FactionAPI us, FactionAPI them) {
+    public static boolean willFactionSideWithUs(FactionAPI factionToConsider, FactionAPI us, @Nullable FactionAPI them) {
         if (factionToConsider == us) return true;
         if (factionToConsider == them) return false;
 

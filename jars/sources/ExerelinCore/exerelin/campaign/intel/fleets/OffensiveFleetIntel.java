@@ -864,7 +864,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		float pad = 3, opad = 10;
 
 		FactionStrengthReport attacker = getFactionStrengthReport(faction, targetFaction, target.getStarSystem());
-		FactionStrengthReport defender = getFactionStrengthReport(targetFaction, targetFaction, target.getStarSystem());
+		FactionStrengthReport defender = getFactionStrengthReport(targetFaction, faction, target.getStarSystem());
 
 		info.addPara("Attacker breakdown", faction.getBaseUIColor(), opad);
 		bullet(info);
