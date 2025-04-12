@@ -3828,7 +3828,7 @@ $metAlready",ShowPersonVisual,"Your comms officer connects your personal termina
 nex_gaKAArroyoProvostSel_alreadyMet,DialogOptionSelected,"$option == gaKA_arroyoProvost
 $metAlready score:5",$global.nex_gaKA_arroyoVisitShort = true 30,"For just a moment, you think you see a wave of panic cross Arroyo's face. It's replaced by a cocky grin, ""Oh, of course, of course- the Galatia Academy endowment fund. How could I forget?""
 
-""I suppose it won't hurt to come visit my chalet again. We can touch base about the fund. I'm sure the Provost has exciting plans and I want to hear all about them-"" He lifts his eyes upward for a moment and lowers them again to look directly at you. ""In person.""",gaKA_arroyoProvost2:Continue,
+""I suppose it won't hurt to come visit my chalet again. We can touch base about the fund. I'm sure the Provost has exciting plans and I want to hear all about them-"" He lifts his eyes upward for a moment and lowers them again to look directly at you. ""In person.""",cutCommLinkNoText:Continue,
 nex_gaKAArroyoVisitStart_alreadyMet,DialogOptionSelected,"$option == gaKA_visitChalet
 $global.nex_gaKA_arroyoVisitShort score:5",,"Your shuttle descends into the young atmosphere of Eochu Bres, through towering battlements of clouds that cast a spray of rain over the viewport which is wiped clean in half a blink by the heat and speed of your descent.
 
@@ -5087,12 +5087,12 @@ $entity.relativeStrength >= 0","$entity.ignorePlayerCommRequests = true 7
 AddTextSmall ""The cargo scan will use the Hegemony's list of illegal commodities."" h
 Nex_MiscCMD saveFactionColor hegemony
 SetTextHighlightColors $factionColor
-SetTextHighlights ""Hegemony's""","""Halt, captain! This system is the site of an ongoing investigation by the Department of Narcotics, Armaments and Technology. You are hereby ordered to submit to a cargo scan for illegal goods.""","0:cargoScan_comply:Allow the scan
+SetTextHighlights ""Hegemony's""","""Halt, captain! This system is the site of an ongoing investigation into suspected criminal activity by the Department of Narcotics, Armaments and Technology. You are hereby ordered to submit to a cargo scan for illegal goods.""","0:cargoScan_comply:Allow the scan
 1:nex_HA_policeHassleObject:""Cargo scan? This is my territory!""
 2:cargoScan_refuse:Refuse",
 nex_HA_policeHassleCommsWeaker,OpenCommLink,"$entity.nex_HA_policeScanConv score:100
 $entity.relativeStrength < 0","$entity.ignorePlayerCommRequests = true 7
-MakeOtherFleetPreventDisengage hassle false","""Halt, captain! This system is the site of an ongoing investigation by the Department of Narcotics, Armaments and Technology."" 
+MakeOtherFleetPreventDisengage hassle false","""Halt, captain! This system is the site of an ongoing investigation into suspected criminal activity by the Department of Narcotics, Armaments and Technology."" 
 
 The $personPost tries to look suitably intimidating. The attempt is... unimpressive. ""You are hereby... requested to submit to a cargo scan for illegal goods.""","#0:cargoScan_comply:Allow the scan
 1:nex_HA_policeHassleObject:""Cargo scan? This is my territory!""
