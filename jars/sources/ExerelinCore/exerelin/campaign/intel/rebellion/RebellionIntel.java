@@ -851,6 +851,11 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		fleet.getMemoryWithoutUpdate().set("$nex_rebellion_suppr_payload", str);
 		fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
 		if (name != null) fleet.setName(name);
+		if (!data.forGovernment) {
+			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_LOW_REP_IMPACT, true);
+			fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SMUGGLER, true);
+		}
+
 		fleet.setAIMode(true);
 
 		data.fleet = fleet;
@@ -946,6 +951,11 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		}
 		MarketAPI source = picker.pick();
 		data.source = source;
+
+		if (source != null && source.getFaction().isHostileTo(market.getFaction())) {
+			data.indie = true;
+		}
+
 		return source;
 	}
 
