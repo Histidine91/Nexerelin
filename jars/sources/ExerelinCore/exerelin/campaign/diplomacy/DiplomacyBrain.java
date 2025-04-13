@@ -1083,6 +1083,10 @@ public class DiplomacyBrain {
 	public void addCeasefire(String enemyId) {
 		ceasefires.put(enemyId, CEASEFIRE_LENGTH);
 	}
+
+	public boolean hasCeasefireWith(String otherFactionId) {
+		return ceasefires.containsKey(otherFactionId);
+	}
 	
 	public void update(float days)
 	{

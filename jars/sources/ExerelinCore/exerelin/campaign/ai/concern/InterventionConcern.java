@@ -76,7 +76,7 @@ public class InterventionConcern extends DiplomacyConcern {
                 if (existingConcerns2.contains(potentialEnemy)) continue;
                 if (aif.getRelationshipLevel(potentialEnemy).isAtWorst(RepLevel.FRIENDLY)) continue;
                 if (NexFactionConfig.getMinRelationship(aiid, potentialEnemy) > -0.5) continue;
-                if (brain != null && brain.getCeasefires().containsKey(potentialEnemy)) continue;
+                if (brain != null && brain.hasCeasefireWith(potentialEnemy)) continue;
                 
                 float weight = 100 - aif.getRelationship(potentialEnemy) * 100;
 

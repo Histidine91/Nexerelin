@@ -50,7 +50,7 @@ public class InterventionAction extends DeclareWarAction {
 
         // can't intervene if ceasefired
         DiplomacyBrain brain = DiplomacyManager.getManager().getDiplomacyBrain(ai.getFactionId());
-        if (brain != null && brain.getCeasefires().containsKey(ic.getFaction().getId())) {
+        if (brain != null && brain.hasCeasefireWith(ic.getFaction().getId())) {
             return false;
         }
 
