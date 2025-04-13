@@ -315,7 +315,7 @@ public class NexUtilsFleet
 		
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			// needed to make the effect stick between saves
-			ShipVariantAPI v = NexUtilsFleet.setClonedVariant(member, false);
+			ShipVariantAPI v = NexUtilsFleet.setClonedVariant(member, true);
 			member.setVariant(v, false, false);
 			
 			int num = level;
@@ -334,8 +334,8 @@ public class NexUtilsFleet
 	public static ShipVariantAPI setClonedVariant(FleetMemberAPI member, boolean setNullOrigVariant) {
 		ShipVariantAPI var = member.getVariant().clone();
 		var.setSource(VariantSource.REFIT);
-		member.setVariant(var, false, false);
 		if (setNullOrigVariant) var.setOriginalVariant(null);
+		member.setVariant(var, false, false);
 		return var;
 	}
 	

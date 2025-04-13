@@ -61,7 +61,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public static final float SUPPLY_COST_MULT = 1;	// ditto, even though we're getting free combat out of the deal
 	public static final float OFFICER_SALARY_MULT = 1f;
 	public static final float FUEL_COST_MULT = 1f;
-	public static final float REVIVE_COST_MULT = 0.5f;
+	public static final float REVIVE_COST_MULT = 1f;	// giving a discount here will let players give ships to the fleet to repair
 	
 	public static final Object DESTROYED_UPDATE = new Object();	
 	protected static final Object BUTTON_COMMAND = new Object();
@@ -871,18 +871,27 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public void reportEconomyMonthEnd() {
 		
 	}
-	
+
+	public static float getTrueRepairTime(FleetMemberAPI member) {
+		float repairTime = member.getRepairTracker().getRemainingRepairTime();
+		float crToRecover = member.getRepairTracker().getMaxCR() - member.getRepairTracker().getCR();
+		float crRecoverTime = crToRecover/member.getRepairTracker().getRecoveryRate();
+
+		return Math.max(repairTime, crRecoverTime);
+	}
+
 	public static float getReviveSupplyCost(FleetMemberAPI member) {
 		if (member == null) return 0;
-		float deployCost = member.getDeployCost() * 100;	// CR % per deployment
-		if (deployCost <= 1) {
-			log.warn(String.format("Ship %s has <1 deployment cost, applying safety", member.getShipName()));
-			deployCost = 1f;
+		float deployCostCR = member.getDeployCost();
+		if (deployCostCR <= 0.01) {
+			log.warn(String.format("Ship %s has <1% deployment cost, applying safety", member.getShipName()));
+			deployCostCR = 0.01f;
 		}
-		float suppliesPerCRPoint = member.getDeploymentCostSupplies()/deployCost;
-		float suppliesPerDay = suppliesPerCRPoint * member.getRepairTracker().getRecoveryRate();
+		float suppliesToFullCR = member.getDeploymentCostSupplies()/deployCostCR;
+		float recRate = member.getRepairTracker().getRecoveryRate();
+		float suppliesPerDay = suppliesToFullCR * recRate;
 		//member.getRepairTracker().setSuspendRepairs(false);
-		float daysToRepair = member.getRepairTracker().getRemainingRepairTime();
+		float daysToRepair = getTrueRepairTime(member);
 
 		float suppliesNeeded = daysToRepair * suppliesPerDay;
 		suppliesNeeded *= REVIVE_COST_MULT;
