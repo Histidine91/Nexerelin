@@ -26,7 +26,7 @@ public class DiplomaticAIModule extends StrategicAIModule {
 
     @Override
     public void generateReport(TooltipMakerAPI tooltip, CustomPanelAPI holder, float width) {
-        float opad = 10;
+        float pad = 3, opad = 10;
         float weariness = DiplomacyManager.getWarWeariness(ai.getFactionId(), true);
         String wearinessStr = String.format("%.0f", weariness);
 
@@ -37,6 +37,16 @@ public class DiplomaticAIModule extends StrategicAIModule {
 
         Color wearinessColor = Misc.interpolateColor(Color.WHITE, Misc.getNegativeHighlightColor(), colorProgress);
         tooltip.addPara(str, opad, wearinessColor, wearinessStr);
+
+        float badboy = DiplomacyManager.getBadboy(ai.getFaction());
+        String badboyStr = String.format("%.0f", badboy);
+        str = DiplomacyProfileIntel.getString("badboy", true) + ": " + badboyStr;
+        colorProgress = Math.min(badboy, DiplomacyProfileIntel.BADBOY_MAX_FOR_COLOR)/DiplomacyProfileIntel.BADBOY_MAX_FOR_COLOR;
+        if (colorProgress > 1) colorProgress = 1;
+        if (colorProgress < 0) colorProgress = 0;
+
+        Color badboyColor = Misc.interpolateColor(Misc.getTextColor(), Misc.getNegativeHighlightColor(), colorProgress);
+        tooltip.addPara(str, pad, badboyColor, badboyStr);
 
         super.generateReport(tooltip, holder, width);
     }
