@@ -9,6 +9,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import lombok.extern.log4j.Log4j;
 
@@ -63,6 +64,7 @@ public class ContainAggressionConcern extends DiplomacyConcern {
         }
 
         float weight = infamy * getPriorityMult(ai.getFaction().getRelationshipLevel(faction));
+        priority.modifyFlat("infamy", infamy, StrategicAI.getString("statFactionInfamy", true));
         priority.modifyFlat("power", weight, StrategicAI.getString("statFactionPower", true));
         super.update();
     }
@@ -82,6 +84,12 @@ public class ContainAggressionConcern extends DiplomacyConcern {
         if (faction.isAtWorst(us, disregardAtRep)) return false;    // safe for now
 
         return true;
+    }
+
+    @Override
+    public void modifyActionPriority(StrategicAction action) {
+        float infamy = DiplomacyManager.getBadboy(faction);
+        action.getPriority().modifyFlat("infamy", infamy/5,  StrategicAI.getString("statFactionInfamy", true));
     }
 
     @Override
