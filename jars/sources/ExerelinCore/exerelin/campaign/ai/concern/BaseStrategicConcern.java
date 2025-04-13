@@ -142,7 +142,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
 
             @Override
             public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
-                createTooltipDesc(tooltip, holder, 0);
+                createTooltipDesc(tooltip, holder, 3);
                 if (concern.getActionCooldown() > 0) {
                     tooltip.addPara(StrategicAI.getString("descCooldown", true), opad, Misc.getHighlightColor(),
                             Math.round(concern.getActionCooldown()) + "");
@@ -183,7 +183,7 @@ public abstract class BaseStrategicConcern implements StrategicConcern {
             hl = market.getFaction().getBaseUIColor();
         }
 
-        return tooltip.addPara(str, pad, hl, marketName);
+        return tooltip.addPara(str, 0, hl, marketName);
     }
 
     @Override
