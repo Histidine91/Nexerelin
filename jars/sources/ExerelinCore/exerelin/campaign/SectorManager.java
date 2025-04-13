@@ -1406,6 +1406,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // refresh all submarket stock
         if (!newOwnerId.equals(oldOwnerId)) {
             for (SubmarketAPI sub : market.getSubmarketsCopy()) {
+                if (!sub.getPlugin().isParticipatesInEconomy()) continue;
                 refreshSubmarket(sub);
             }
         }
