@@ -6,6 +6,7 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.BoostIndustryInstallableItem
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import exerelin.utilities.StringHelper;
 import java.util.List;
+import java.util.Set;
 
 public abstract class Nex_BoostIndustryInstallableItemEffect extends BoostIndustryInstallableItemEffect {
 	
@@ -16,14 +17,14 @@ public abstract class Nex_BoostIndustryInstallableItemEffect extends BoostIndust
 	}
 	
 	@Override
-	public List<String> getUnmetRequirements(Industry industry) {
-		List<String> unmet = super.getUnmetRequirements(industry);
+	public List<String> getUnmetRequirements(Industry industry, boolean checkSurveyed) {
+		List<String> unmet = super.getUnmetRequirements(industry, checkSurveyed);
 		if (industry == null) return unmet;
 		
 		MarketAPI market = industry.getMarket();
-		
+
 		for (String curr : getRequirements(industry)) {
-			if (curr.equals(STATION_OR_NO_ATMO)) {
+			if (getRequirements(industry).contains(STATION_OR_NO_ATMO)) {
 				if (!market.hasCondition(Conditions.NO_ATMOSPHERE) && market.getPlanetEntity() != null)
 				{
 					unmet.add(curr);
@@ -32,5 +33,14 @@ public abstract class Nex_BoostIndustryInstallableItemEffect extends BoostIndust
 		}
 		
 		return unmet;
+	}
+
+	@Override
+	public Set<String> getConditionsRelatedToRequirements(Industry industry) {
+		Set<String> cond = super.getConditionsRelatedToRequirements(industry);
+		if (getRequirements(industry).contains(STATION_OR_NO_ATMO)) {
+			cond.add(Conditions.NO_ATMOSPHERE);
+		}
+		return cond;
 	}
 }
