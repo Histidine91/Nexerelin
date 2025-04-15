@@ -50,7 +50,8 @@ public class RebellionCreator implements EveryFrameScript {
 	public static RebellionCreator getInstance() {
 		return (RebellionCreator)Global.getSector().getPersistentData().get(PERSISTENT_DATA_KEY);
 	}
-	
+
+	// runcode exerelin.campaign.intel.rebellion.RebellionCreator.getInstance().createRebellion(Global.getSector().getEconomy().getMarket("gilead"), "player", true);
 	public RebellionIntel createRebellion(MarketAPI market, String factionId, boolean instant)
 	{
 		if (!ENABLE_REBELLIONS) return null;

@@ -483,6 +483,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	public void advanceImpl(float amount) {
 		super.advanceImpl(amount);
 
+		// this should be a method really
 		boolean needAbort = false;
 		if (!allowOwnMarket() && isOwnMarket())	{
 			needAbort = true;

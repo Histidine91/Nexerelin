@@ -2006,7 +2006,7 @@
 		"optionEasyMode":"Easy mode",
 		"tooltipEasyMode":"- Your ships take %s less damage\n- Sensor range increased by %s units\n- Salvage increased by %s",
 		"optionHardMode":"Starfarer mode",
-		"tooltipHardMode":"Hard mode\n- Other factions are more aggressive towards yours\n- %s lower colony growth rate; %s lower colony income\n- %s higher vengeance point generation",
+		"tooltipHardMode":"Hard mode\n- Other factions are more aggressive towards yours\n- %s lower colony growth/shrink rate; %s lower colony income\n- %s higher vengeance point generation",
 		"optionSpacerObligation":"Spacer obligation",
 		"tooltipSpacerObligation":"Growing monthly payments as seen in the spacer start option.",
 		"optionStipend":"Academy stipend",

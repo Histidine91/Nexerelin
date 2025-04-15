@@ -296,7 +296,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
 
         Double defaultAsDouble = objectToDouble(defaultVal);
         if (defaultAsDouble != null) {
-            log.info("Trying default " + defaultAsDouble + " for setting " + var);
+            //log.info("Trying default " + defaultAsDouble + " for setting " + var);
             if (defaultAsDouble < min) min = defaultAsDouble;
             else if (defaultAsDouble > max) max = defaultAsDouble;
         }

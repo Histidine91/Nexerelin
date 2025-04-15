@@ -300,6 +300,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static float getWantedFleetSize(FactionAPI attacker, MarketAPI target,
 			float variability, boolean countAllHostile, float maxMult)
 	{
+		//log.info("Checking wanted fleet strength vs. " + target.getName());
 		FactionAPI targetFaction = target.getFaction();
 		StarSystemAPI system = target.getStarSystem();
 		
@@ -324,7 +325,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		float max = getMaxInvasionSize(attacker.getId(), maxMult);
 		if (defensiveStr > max)
 			defensiveStr = max;
-		
+
 		log.info("\tWanted fleet size vs. " + target.getName() + ": " + defensiveStr);
 		return Math.max(defensiveStr, 30);
 	}
@@ -1620,7 +1621,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		
 		Map<String, Object> data = Global.getSector().getPersistentData();
 		manager = new InvasionFleetManager();
-		//Global.getSector().getListenerManager().addListener(manager);
+		//Global.getSector().getListenerManager().addListener(manager);	// uncomment if we want revanche bonus
 		data.put(MANAGER_MAP_KEY, manager);
 		return manager;
 	}
