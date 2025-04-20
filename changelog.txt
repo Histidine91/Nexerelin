@@ -1,3 +1,22 @@
+Version 0.12.0b
+
+* Rebellion smugglers marked as smugglers and have low rep impact
+* Add 250 point option to Hyperspace Topography skip
+    * This is just enough for Reverse Polarity in 0.98
+    * Default-skip-story setting will enable this option
+* Academy quests: Handle case where Kallichore or Coureuse but not both are skipped
+* New game dialog remembers last selected background within the current session
+* Contain aggression concern raises the priority of actions based on the target's infamy
+* Diplomacy AI module shows infamy
+* Fix special task group revive cost calculation being too low
+* Fix Shrouded Dweller and Threat not being hostile at start
+* Fix commodities disappearing from storage after market capture
+* Fix Catalytic Core and Synchrotron planet filters not working
+* Re-fix player special task group ships losing their variants
+* Fix displayed 'excuse' for satbombing a satbomber
+* Max points in new game own faction setup now configurable in settings.json
+
+
 Version 0.12.0
 
 * Add False Idols to story skip system
