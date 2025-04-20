@@ -333,6 +333,7 @@ public class NexUtilsFleet
 
 	public static ShipVariantAPI setClonedVariant(FleetMemberAPI member, boolean setNullOrigVariant) {
 		ShipVariantAPI var = member.getVariant().clone();
+		var.setHullVariantId(member.getHullId() + "_" + Misc.genUID());
 		var.setSource(VariantSource.REFIT);
 		if (setNullOrigVariant) var.setOriginalVariant(null);
 		member.setVariant(var, false, false);

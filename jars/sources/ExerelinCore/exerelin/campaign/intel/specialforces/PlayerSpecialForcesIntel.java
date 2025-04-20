@@ -386,20 +386,21 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 			}
 			if (variant != saved) {
 				String warn = "Warning: Variant for " + member.getShipName() + ", " + member.getHullSpec().getNameWithDesignationWithDashClass()
-						+ " does not match saved variant, restoring";
+						+ " does not match saved variant, repairing and restoring";
 				//Global.getSector().getCampaignUI().addMessage(warn, Misc.getNegativeHighlightColor(), member.getShipName(), "", Misc.getHighlightColor(), Color.WHITE);
 				if (PRINT_VARIANT_WARNING) {
 					log.warn(warn);
-					//printVariant(member, variant);
-					//printVariant(member, saved);
+					printVariant(member, variant, false);
+					printVariant(member, saved, true);
 				}
 				saved.setOriginalVariant(null);
+				saved.setHullVariantId(saved.getHullSpec().getHullId() + "_" + Misc.genUID());
 				member.setVariant(saved, false, true);
 				errorCount++;
 			}
 		}
 		if (PRINT_VARIANT_WARNING && errorCount > 0) {
-			String warn = String.format("Warning: Variants for %s ship(s) do not match saved variant, restoring", errorCount);
+			String warn = String.format("[Nexerelin] Warning: Variants for %s ship(s) in player special task group do not match saved variant, repairing and restoring", errorCount);
 			Global.getSector().getCampaignUI().addMessage(warn, Misc.getNegativeHighlightColor(),
 					errorCount + "", "", Misc.getHighlightColor(), Color.WHITE);
 		}
@@ -1018,15 +1019,15 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	@Override
 	public void onNewGameAfterTimePass() {}
 
-	public static void printVariant(FleetMemberAPI member, ShipVariantAPI variant) {
+	public static void printVariant(FleetMemberAPI member, ShipVariantAPI variant, boolean saved) {
 		StringBuilder sb = new StringBuilder();
 		String str = "\r\n--------------------";
 		sb.append(str);
-		str = String.format("Variant %s for ship %s (%s)", variant.getDisplayName(), member.getShipName(), member.getHullSpec().getHullNameWithDashClass());
+		str = String.format("%s variant %s (ID %s) for ship %s (%s)", saved ? "Saved" : "Current", variant.getDisplayName(), variant.getHullVariantId(), member.getShipName(), member.getHullSpec().getHullNameWithDashClass());
 		sb.append("\r\n" + str);
-		str = String.format("Source: %s", variant.getSource());
+		str = String.format("Source: %s, orig variant %s", variant.getSource(), variant.getOriginalVariant());
 		sb.append("\r\n" + str);
-		sb.append("\r\n" + variant.toString());
+		//sb.append("\r\n Hash: " + variant.toString());
 		log.info(sb.toString());
 	}
 }
