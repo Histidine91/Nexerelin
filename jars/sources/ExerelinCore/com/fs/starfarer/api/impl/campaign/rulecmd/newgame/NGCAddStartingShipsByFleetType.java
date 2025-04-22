@@ -120,10 +120,13 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		data.getStartingCargo().addItems(CargoItemType.RESOURCES, commodity, amount);
 		AddRemoveCommodity.addCommodityGainText(commodity, amount, text);
 	}
+
+	/**
+	 * Moved to {@code Nex_NGCFinalize}.
+	 * @param localMem
+	 */
+	@Deprecated
+	public static void addStartingDModScript(MemoryAPI localMem) {
+		Nex_NGCFinalize.addStartingDModScript(localMem);
+	}
 }
-
-
-
-
-
-
