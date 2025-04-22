@@ -3243,6 +3243,11 @@
 		"name_skipStoryDefault":"Default \"skip story\" option",
 		"tooltip_skipStoryDefault":"Default setting for the \"skip story\" toggle in new game setup dialog.",
 		
+		"name_baseTariffMult":"Base tariff mult",
+		"tooltip_baseTariffMult":"Modifies the base tariff (which is usually 30%%). Changes only apply on game load.",
+		"name_freeMarketTariffMult":"Free port tariff mult",
+		"tooltip_freeMarketTariffMult":"Multiplier for free ports, stacks with the base mult. Changes only apply on game load.",
+		
 		"name_buyShipBasePriceMult":"NPC buy ship price mult",
 		"tooltip_buyShipBasePriceMult":"For bar and contact missions where an NPC offers to buy one of your ships.",
 		
