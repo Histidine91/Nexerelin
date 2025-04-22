@@ -27,15 +27,16 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.intel.SWP_IBBIntel.FamousBountyStage;
 import data.scripts.campaign.intel.SWP_IBBTracker;
 import data.scripts.campaign.intel.VayraUniqueBountyManager;
-import org.magiclib.util.MagicSettings;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.magiclib.util.MagicSettings;
 
 import java.io.IOException;
 import java.util.*;
@@ -60,16 +61,17 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     static Exception failedLoad = null;
     //protected float minCargoUpdateInterval = 0;    // debugging
-    
-    protected static Set<String> restrictedWeapons;
-    protected static Set<String> restrictedShips;
-    protected static Set<String> restrictedBlueprints;
-    protected static Set<String> allowedFactions;
-    protected static Map<String, Float> blueprintValues;
+
+    @Getter protected static Set<String> bossShips;
+    @Getter protected static Set<String> restrictedWeapons;
+    @Getter protected static Set<String> restrictedShips;
+    @Getter protected static Set<String> restrictedBlueprints;
+    @Getter protected static Set<String> allowedFactions;
+    @Getter protected static Map<String, Float> blueprintValues;
     
     protected static Set<SubmarketAPI> cachedSubmarkets = null;
-    
-    protected Set<String> alreadyBoughtShips = new HashSet<>();
+
+    @Getter  protected Set<String> alreadyBoughtShips = new HashSet<>();
     
     static {
         try {
@@ -256,11 +258,10 @@ public class PrismMarket extends BaseSubmarketPlugin {
         
         CargoAPI cargo = getCargo();
         FleetDataAPI data = cargo.getMothballedShips();
-        Set<String> allBossShips = getAllBossShips();
         
         //remove half the stock (and all boss ships)
         for (FleetMemberAPI member : data.getMembersListCopy()) {
-            if (allBossShips.contains(member.getHullId())) 
+            if (bossShips.contains(member.getHullId()))
                 data.removeFleetMember(member);
             else if (itemGenRandom.nextFloat() > 0.5f) 
                 data.removeFleetMember(member);
@@ -357,7 +358,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         }
         
         //add some IBBs
-        List<String> bossShips = getBossShips();
+        List<String> bossShips = pickBossShips();
         for (String variantId : bossShips)
         {
             try { 
@@ -377,28 +378,13 @@ public class PrismMarket extends BaseSubmarketPlugin {
             }
         }
     }
-    
+
     /**
      * Gets a set of all boss ships in the merged definition .csv
      * @return
      */
+    @Deprecated
     public Set<String> getAllBossShips() {
-        Set<String> bossShips = new HashSet<>();
-        // Load IBB list from config
-        try {
-            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", getIBBFile(), ExerelinConstants.MOD_ID);
-            for(int i = 0; i < config.length(); i++) {
-                JSONObject row = config.getJSONObject(i);
-                String hullId = row.getString("id");
-                String factionId = row.optString("faction");
-                
-                if (!canLoadShips(factionId)) continue;
-                bossShips.add(hullId);    
-            }
-        } catch (IOException | JSONException ex) {
-            log.error(ex);
-        }
-        
         return bossShips;
     }
     
@@ -429,7 +415,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
      * Gets a limited number of boss ships to add to the market stocks.
      * @return
      */
-    public List<String> getBossShips() {
+    public List<String> pickBossShips() {
         
         List<BossShipEntry> validShips = new ArrayList<>();
         List<String> ret = new ArrayList<>();
@@ -556,10 +542,10 @@ public class PrismMarket extends BaseSubmarketPlugin {
      * @param factionOrModId
      * @return
      */
-    public boolean canLoadShips(String factionOrModId) {
+    public static boolean canLoadShips(String factionOrModId) {
         if (factionOrModId == null || factionOrModId.isEmpty()) return true;
         if (factionOrModId.equals("ssp")) return ExerelinModPlugin.HAVE_SWP;    // legacy
-        return Global.getSector().getFaction(factionOrModId) != null || Global.getSettings().getModManager().isModEnabled(factionOrModId);
+        return Global.getSettings().getFactionSpec(factionOrModId) != null || Global.getSettings().getModManager().isModEnabled(factionOrModId);
     }
     
     //BLACKLISTS
@@ -626,6 +612,18 @@ public class PrismMarket extends BaseSubmarketPlugin {
             String id = row.getString("id");
             if (id == null || id.isEmpty()) continue;    // otherwise empty rows crash it
             blueprintValues.put(row.getString("id"), (float)row.getDouble("value"));
+        }
+
+        // boss ships
+        bossShips = new HashSet<>();
+        JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", getIBBFile(), ExerelinConstants.MOD_ID);
+        for(int i = 0; i < config.length(); i++) {
+            JSONObject row = config.getJSONObject(i);
+            String hullId = row.getString("id");
+            String factionId = row.optString("faction");
+
+            if (!canLoadShips(factionId)) continue;
+            bossShips.add(hullId);
         }
     }
     
