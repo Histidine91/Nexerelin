@@ -140,9 +140,14 @@ open class PoliceHostileActivityFactor(intel: HostileActivityEventIntel?) : Base
 
         //float f = intel.getMarketPresenceFactor(system);
         var maxSize = 0
+        var largest : MarketAPI? = null
         for (curr: MarketAPI in Misc.getMarketsInLocation(system, Factions.PLAYER)) {
-            maxSize = Math.max(curr.size, maxSize)
+            if (curr.size > maxSize) {
+                largest = curr
+                maxSize = curr.size
+            }
         }
+        if (largest == null) return null
 
         //int difficulty = 0 + (int) Math.max(1f, Math.round(f * 6f));
         var difficulty = maxSize
@@ -162,6 +167,7 @@ open class PoliceHostileActivityFactor(intel: HostileActivityEventIntel?) : Base
         m.triggerSetPatrol()
         m.triggerSetFleetHasslePlayer(HASSLE_REASON)
         m.triggerSetFleetFlag("\$nex_HA_police")
+        m.triggerSetFleetMemoryValue("\$nex_HA_police_marketName", largest.name)
         m.triggerFleetAllowLongPursuit()
         m.triggerMakeNoRepImpact()
         m.triggerSetFleetMaxShipSize(3)
