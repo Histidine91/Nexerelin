@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
@@ -39,6 +40,11 @@ public abstract class BuyShipRule {
 		try {
 			ShipHullSpecAPI spec = Global.getSettings().getHullSpec("sotf_pledge");
 			if (spec != null) DESIGN_TYPES_NO_BUY.add(spec.getManufacturer());
+
+			for (String hullId : PrismMarket.getBossShips()) {
+				spec = Global.getSettings().getHullSpec(hullId);
+				if (spec != null) DESIGN_TYPES_NO_BUY.add(spec.getManufacturer());
+			}
 		} catch (RuntimeException rex) {	// spec doesn't exist and the API isn't smart enough to just return null
 			// do nothing
 		}
@@ -89,7 +95,7 @@ public abstract class BuyShipRule {
 		if (member.getVariant().hasTag(Tags.SHIP_CAN_NOT_SCUTTLE)) {
 			return false;
 		}
-		if (member.getVariant().hasTag(TAG_NO_BUY)) {
+		if (member.getVariant().hasTag(TAG_NO_BUY) || member.getHullSpec().hasTag(TAG_NO_BUY)) {
 			return false;
 		}
 		if (DESIGN_TYPES_NO_BUY.contains(member.getHullSpec().getManufacturer())) {
