@@ -1494,6 +1494,9 @@ nex_outpostOption,PopulateOptions,$nex_canMine,,,7:nex_outpostPreview:Construct 
 nex_outpostOptionNearbyHostile,PopulateOptions,"$nex_canMine
 HostileFleetNearbyAndAware","SetEnabled nex_outpostPreview false
 SetTooltip nex_outpostPreview ""A nearby hostile fleet is tracking your movements, making construction of an outpost impossible.""",,,
+nex_outpostOptionAbyss,PopulateOptions,"$nex_canMine
+$abyssalDepth > 0","SetEnabled nex_outpostPreview false
+SetTooltip nex_outpostPreview ""Cannot be built in the abyss.""",,,
 nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"Nex_PlayerOutpost buildInfo
 FireAll Nex_OutpostOption","You can build an automated outpost here. It will automatically stock supplies and fuel for you to take, and can be used as storage.",,
 nex_outpostBuildOption,Nex_OutpostOption,,"SetEnabled nex_outpostBuildStart true
@@ -1778,6 +1781,19 @@ $global.nex_remSalvation_missionCompleted score:5","$didRemnant = true 0
 $didUps++","""You seem to have developed an association with our old, sentient toys. The Remnants, I mean,"" she says. ""Indeed, you seem to have done the inconceivable in their... service.""
 
 Her gaze bores into you like a High Intensity Laser rotating inexorably on its mount. ""Be careful, $playerName. Your conflicted loyalties may prove... dangerous.""",ZGR_acknowledgeContinue:Continue,
+,,,,,,
+nex_plReynardHannanAlliance,JoinLeagueCommissionInfo,$player.isInAlliance,FireBest JoinLeagueOptions,"""You are presently in alliance with other interstellar states."" A slight smirk forms on his face.
+
+""It will, of course, be necessary to withdraw from such arrangements and commit fully to the League. No great loss, I assure you; you will find membership in the League far superior to any play-act association with the two-bit powers of the Sector.""",,
+nex_plReynardHannanAllianceHegemony,JoinLeagueCommissionInfo,"$player.isInAlliance
+Nex_Alliance isPlayerAlliedWith hegemony score:2",FireBest JoinLeagueOptions,"""You are presently in alliance with the Hegemony,"" he says, frowning. ""Needless to say, it is absolutely imperative that you first withdraw from that arrangement; your accession is already politically difficult as it stands.""
+
+""Certain members of the council may object, perhaps loudly. Pure posturing, of course; in the end, they'll understand the benefits."" A ghost of a smile forms on his face. ""You need not fear reprisals from your erstwhile allies; our navy will see to that.""",,
+nex_plReynardHannanAllianceLeague,JoinLeagueCommissionInfo,"$player.isInAlliance
+Nex_Alliance isPlayerAlliedWith persean score:3",FireBest JoinLeagueOptions,"""You are presently in alliance with the Persean League. A demonstration of your sound judgment,"" he says with a nod. ""The transition to full membership is fairly straightforward; you will simply cease to be an independent party to this treaty, accepting a League commission in its place.""",,
+nex_rh_handleAlliance,DialogOptionSelected,"$option == rh_acceptMembership
+$player.isInAlliance score:5","Nex_Alliance leave
+FireBest DialogOptionSelected",,,
 ,,,,,,
 #END Vanilla not-quite-overrides,,,,,,
 ,,,,,,

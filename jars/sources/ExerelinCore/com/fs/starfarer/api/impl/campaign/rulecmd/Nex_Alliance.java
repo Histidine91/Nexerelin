@@ -241,11 +241,12 @@ public class Nex_Alliance extends BaseCommandPlugin {
 		if (newAlliance != null)
 			str = StringHelper.substituteToken(str, "$NewAlliance", newAlliance);
 		if (factionId != null) {
-			str = StringHelper.substituteToken(str, "$theFaction", 
-					Global.getSector().getFaction(factionId).getDisplayNameLongWithArticle(), true);
+			String faction = Global.getSector().getFaction(factionId).getDisplayNameLongWithArticle();
+			str = StringHelper.substituteToken(str, "$theFaction", faction, true);
 		}
-			
+		text.setFontSmallInsignia();
 		text.addParagraph(str, color);
+		text.setFontInsignia();
 	}
 	
 }
