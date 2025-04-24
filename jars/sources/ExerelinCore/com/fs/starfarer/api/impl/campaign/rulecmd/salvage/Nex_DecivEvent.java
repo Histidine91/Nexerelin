@@ -19,7 +19,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.achievements.OneMansTrash;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.colony.DecivRevivalIntel;
 import exerelin.utilities.NexUtils;
@@ -28,6 +27,7 @@ import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+import org.magiclib.achievements.MagicAchievementManager;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -255,7 +255,7 @@ public class Nex_DecivEvent extends BaseCommandPlugin {
 		setMem(MEM_KEY_HAS_EVENT, false);
 
 		if (type.equals(EVENT_TYPE_BARTER)) {
-			OneMansTrash.complete();
+			MagicAchievementManager.getInstance().completeAchievement("nex_oneMansTrash");
 		}
 	}
 	

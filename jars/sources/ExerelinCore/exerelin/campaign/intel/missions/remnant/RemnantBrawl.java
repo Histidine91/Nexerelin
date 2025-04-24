@@ -1,7 +1,5 @@
 package exerelin.campaign.intel.missions.remnant;
 
-import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener;
-import exerelin.utilities.ReflectionUtils;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
@@ -10,6 +8,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.BaseFleetEventListener;
+import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -34,15 +33,17 @@ import exerelin.campaign.intel.missions.BuildStation;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.NexUtilsReputation;
+import exerelin.utilities.ReflectionUtils;
 import exerelin.utilities.StringHelper;
 import exerelin.world.ExerelinNewGameSetup;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.achievements.MagicAchievementManager;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static exerelin.campaign.intel.missions.remnant.RemnantQuestUtils.getString;
 
@@ -849,6 +850,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		getPerson().setImportance(getPerson().getImportance().next());
 		ContactIntel ci = ContactIntel.getContactIntel(getPerson());
 		if (ci != null) ci.sendUpdateIfPlayerHasIntel(null, false, false);
+		MagicAchievementManager.getInstance().completeAchievement("nex_remnant2");
 	}
 	
 	public void hegemonyVictory() {
@@ -870,7 +872,8 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 				ci.endAfterDelay();
 				ci.sendUpdateIfPlayerHasIntel(null, false, false);
 			}
-			
+
+			MagicAchievementManager.getInstance().completeAchievement("nex_remnant2");
 		} else {
 			setCurrentStage(Stage.FAILED, null, null);
 		}

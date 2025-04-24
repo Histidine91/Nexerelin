@@ -1,3 +1,6 @@
 id,name,description,tooltip,script,image,spoilerLevel,rarity
 nex_spaceland,SpaceLand Battle,Won an offensive ground battle.,,exerelin.campaign.achievements.SpaceLandBattle,graphics/icons/cargo/marine.png,VISIBLE,UNCOMMON
-nex_oneMansTrash,One Man's Trash,Did a barter trade with a decivilized settlement.,,exerelin.campaign.achievements.OneMansTrash,graphics/icons/cargo/materials.png,VISIBLE,COMMON
+nex_oneMansTrash,One Man's Trash,Did a barter trade with a decivilized settlement.,,org.magiclib.achievements.MagicAchievement,graphics/icons/cargo/materials.png,VISIBLE,COMMON
+nex_remnant1,The Frontier of Secrets,"Completed ""Fragments"" and ""File Drawer Problem"".",,org.magiclib.achievements.MagicAchievement,graphics/exerelin/portraits/dissonant.png,SPOILER,COMMON
+nex_remnant2,My IFF's overloaded!,"Completed ""Showdown"".",,org.magiclib.achievements.MagicAchievement,graphics/exerelin/icons/missions/rem_brawl.png,SPOILER,UNCOMMON
+nex_remnant3,Singularity,"Completed ""Salvation"".",,org.magiclib.achievements.MagicAchievement,graphics/exerelin/icons/missions/rem_salvation.png,SPOILER,RARE

@@ -34,8 +34,8 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithSearch.Mark
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode
 import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator
-import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.*
-import com.fs.starfarer.api.impl.campaign.procgen.themes.MiscellaneousThemeGenerator
+import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.EntityLocation
+import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.LocationType
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BaseSalvageSpecial
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData
@@ -50,16 +50,14 @@ import exerelin.campaign.DiplomacyManager
 import exerelin.campaign.PlayerFactionStore
 import exerelin.campaign.SectorManager
 import exerelin.campaign.battle.NexAutoresolveListener
-import exerelin.campaign.battle.NexBattleAutoresolverPlugin
 import exerelin.campaign.graphics.BombardmentAnimationV2
 import exerelin.campaign.intel.merc.MercContractIntel
 import exerelin.campaign.intel.missions.BuildStation.SystemUninhabitedReq
 import exerelin.plugins.ExerelinCampaignPlugin
 import exerelin.utilities.*
-import lombok.Getter
 import org.apache.log4j.Logger
 import org.lazywizard.lazylib.MathUtils
-import org.lazywizard.lazylib.VectorUtils
+import org.magiclib.achievements.MagicAchievementManager
 import java.awt.Color
 import kotlin.math.abs
 
@@ -956,6 +954,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         logString = StringHelper.substituteToken(logString, "\$target", target!!.name)
         logString = StringHelper.substituteToken(logString, "\$towering", RemnantQuestUtils.getOrCreateTowering().nameString)
         PlaythroughLog.getInstance().addEntry(logString, true)
+        MagicAchievementManager.getInstance().completeAchievement("nex_remnant3")
     }
 
     protected fun completeMissionBadEnd(dialog : InteractionDialogAPI?, memoryMap: Map<String, MemoryAPI>?) {

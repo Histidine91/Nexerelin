@@ -8,7 +8,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener
 import com.fs.starfarer.api.campaign.rules.MemoryAPI
 import com.fs.starfarer.api.characters.PersonAPI
-import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript.MilitaryResponseParams
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent
@@ -20,14 +19,9 @@ import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithBarEvent
 import com.fs.starfarer.api.impl.campaign.missions.hub.ReqMode
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator
-import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.StarSystemData
-import com.fs.starfarer.api.impl.campaign.procgen.themes.MiscellaneousThemeGenerator
-import com.fs.starfarer.api.impl.campaign.procgen.themes.SalvageSpecialAssigner
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_DecivEvent
-import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipCondition
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
-import com.fs.starfarer.api.util.WeightedRandomPicker
 import exerelin.campaign.SectorManager
 import exerelin.campaign.colony.ColonyTargetValuator
 import exerelin.campaign.intel.bases.NexPirateBaseIntel
@@ -38,10 +32,9 @@ import exerelin.utilities.NexUtilsFleet
 import exerelin.utilities.StringHelper
 import org.apache.log4j.Logger
 import org.lazywizard.lazylib.MathUtils
-import org.lazywizard.lazylib.ext.logging.i
 import org.lwjgl.util.vector.Vector2f
+import org.magiclib.achievements.MagicAchievementManager
 import java.awt.Color
-import java.util.*
 
 
 open class RemnantLostScientist : HubMissionWithBarEvent() {
@@ -438,6 +431,9 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
             "completeMission" -> {
                 setCurrentStage(Stage.COMPLETED, dialog, memoryMap)
                 Global.getSector().memoryWithoutUpdate["\$nex_remLostSci_missionCompleted"] = true
+                if (Global.getSector().memoryWithoutUpdate.getBoolean("\$nex_remFragments_missionCompleted")) {
+                    MagicAchievementManager.getInstance().completeAchievement("nex_remnant1")
+                }
                 return true
             }
             "investigateFleet" -> {

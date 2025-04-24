@@ -37,6 +37,7 @@ import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.achievements.MagicAchievementManager;
 import second_in_command.SCData;
 import second_in_command.SCUtils;
 import second_in_command.specs.SCOfficer;
@@ -646,6 +647,9 @@ public class RemnantFragments extends HubMissionWithBarEvent implements FleetEve
 			case "complete":
 				setCurrentStage(Stage.COMPLETED, dialog, memoryMap);
 				Global.getSector().getMemoryWithoutUpdate().set("$nex_remFragments_missionCompleted", true);
+				if (Global.getSector().getMemoryWithoutUpdate().getBoolean("$nex_remLostSci_missionCompleted")) {
+					MagicAchievementManager.getInstance().completeAchievement("nex_remnant1");
+				}
 				return true;
 			default:
 				break;
