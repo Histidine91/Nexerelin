@@ -12,7 +12,6 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
-import exerelin.world.NexMarketBuilder;
 
 import java.util.*;
 
@@ -167,8 +166,8 @@ public class HeavyIndustry extends IndustryClassGen {
 				id = upgrade ? "ms_specializedSystemsFabs" : "ms_modularFac";
 			else
 				id = upgrade ? Industries.ORBITALWORKS : Industries.HEAVYINDUSTRY;
-			
-			NexMarketBuilder.addIndustry(market, id, this.id, instant);
+
+			addIndustry(market, id, instant);
 		}
 		
 		entity.numProductiveIndustries += 1;

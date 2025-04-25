@@ -1,6 +1,9 @@
 package exerelin.world.industry;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.econ.Industry;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
@@ -24,12 +27,24 @@ public abstract class IndustryClassGen implements Comparable {
 		
 	public IndustryClassGen(Collection<String> industryIds)
 	{
-		this.industryIds = new HashSet<>(industryIds);
+		this.industryIds = new LinkedHashSet<>(industryIds);
+		addDowngradesAndUpgradesToIndustryIDs();
 	}
 	
 	public IndustryClassGen(String... industryIds)
 	{
-		this.industryIds = new HashSet<>(Arrays.asList(industryIds));
+		this.industryIds = new LinkedHashSet<>(Arrays.asList(industryIds));
+		addDowngradesAndUpgradesToIndustryIDs();
+	}
+
+	public void addDowngradesAndUpgradesToIndustryIDs() {
+		Set<String> iter = new HashSet<>(industryIds);
+		for (String base : iter) {
+			addDowngradesToCollectionRecursive(base, industryIds);
+		}
+		for (String base : iter) {
+			addUpgradesToCollectionRecursive(base, industryIds);
+		}
 	}
 	
 	public void init(String id, String name, float priority, boolean special)
@@ -71,7 +86,7 @@ public abstract class IndustryClassGen implements Comparable {
 	
 	public boolean canApply(ProcGenEntity entity)
 	{
-		if (alreadyExists(entity)) return false;
+		if (alreadyExistsAndAtMax(entity)) return false;
 		return true;
 	}
 	
@@ -86,12 +101,49 @@ public abstract class IndustryClassGen implements Comparable {
 	
 	public boolean alreadyExists(ProcGenEntity entity)
 	{
-		for (String ind : industryIds)
+		for (String id : industryIds)
 		{
-			if (entity.market.hasIndustry(ind))
+			if (entity.market.hasIndustry(id))
 				return true;
 		}
 		return false;
+	}
+
+	public boolean alreadyExistsAndAtMax(ProcGenEntity entity)
+	{
+		for (String id : industryIds)
+		{
+			Industry ind = entity.market.getIndustry(id);
+			if (ind == null) continue;
+			if (ind.getSpec().getUpgrade() == null || !ind.canUpgrade())
+				return true;
+		}
+		return false;
+	}
+
+	protected Collection<String> addDowngradesToCollectionRecursive(String industryId, Collection<String> toModify) {
+		IndustrySpecAPI spec = Global.getSettings().getIndustrySpec(industryId);
+		if (spec == null) return toModify;	// if we specify an industry from a mod that's not currently loaded
+		String downgrade = spec.getDowngrade();
+		if (downgrade == null) return toModify;				// no downgrade
+		if (toModify.contains(downgrade)) return toModify;	// downgrade already in list
+
+		toModify.add(downgrade);
+		addDowngradesToCollectionRecursive(downgrade, toModify);
+
+		return toModify;
+	}
+
+	protected Collection<String> addUpgradesToCollectionRecursive(String industryId, Collection<String> toModify) {
+		IndustrySpecAPI spec = Global.getSettings().getIndustrySpec(industryId);
+		if (spec == null) return toModify;	// if we specify an industry from a mod that's not currently loaded
+		String upgrade = spec.getUpgrade();
+		if (upgrade == null) return toModify;				// no downgrade
+		if (toModify.contains(upgrade)) return toModify;	// downgrade already in list
+
+		toModify.add(upgrade);
+		addUpgradesToCollectionRecursive(upgrade, toModify);
+		return toModify;
 	}
 	
 	public float getCountWeightModifier(float divisorMult) {
@@ -111,15 +163,41 @@ public abstract class IndustryClassGen implements Comparable {
 	
 	/**
 	 * Adds the industry to the entity's market.
-	 * Multi-industry classes should override this method to specify exactly which industry gets added.
+	 * Multi-industry classes may want to override this method to specify exactly which industry gets added.
 	 * Not used for faction industry seeds, those add the industry by ID directly.
 	 * @param entity
 	 * @param instant If false, industry starts construction
 	 */
 	public void apply(ProcGenEntity entity, boolean instant) {
 		String id = industryIds.toArray(new String[0])[0];
-		NexMarketBuilder.addIndustry(entity.market, id, this.id, instant);
+
+		addIndustry(entity.market, id, instant);
+
 		entity.numProductiveIndustries += 1;
+	}
+
+	/**
+	 * Add the directly specified industry if in new game generation. For industries built afterward, add the lowest industry in the upgrade chain.
+	 * @param market
+	 * @param id
+	 * @param instant
+	 */
+	public void addIndustry(MarketAPI market, String id, boolean instant) {
+		if (Global.getSector().isInNewGameAdvance()) NexMarketBuilder.addIndustry(market, id, this.id, instant);
+		else addLowestIndustryInChain(market, getLowestIndustryInChain(id).getId(), instant);
+	}
+
+	public void addLowestIndustryInChain(MarketAPI market, String id, boolean instant) {
+		IndustrySpecAPI lowest = getLowestIndustryInChain(id);
+		NexMarketBuilder.addIndustry(market, lowest.getId(), this.id, instant);
+	}
+
+	protected IndustrySpecAPI getLowestIndustryInChain(String industryId) {
+		IndustrySpecAPI curr = Global.getSettings().getIndustrySpec(industryId);
+		if (curr.getDowngrade() != null) {
+			return getLowestIndustryInChain(curr.getDowngrade());
+		}
+		return curr;
 	}
 	
 	public Set<String> getIndustryIds() {

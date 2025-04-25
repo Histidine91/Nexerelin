@@ -7,7 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.world.ExerelinProcGen.EntityType;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
-import exerelin.world.NexMarketBuilder;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -85,8 +85,8 @@ public class Farming extends IndustryClassGen {
 		String id = Industries.FARMING;
 		if (isWater(entity))
 			id = Industries.AQUACULTURE;
-		
-		NexMarketBuilder.addIndustry(market, id, this.id, instant);
+
+		addIndustry(entity.market, id, instant);
 		entity.numProductiveIndustries += 1;
 	}
 }

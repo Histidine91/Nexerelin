@@ -847,6 +847,7 @@ public class ExerelinProcGen {
 						break;
 					}
 				}
+
 				if (!allow) continue;
 				
 				float weight = 0;
