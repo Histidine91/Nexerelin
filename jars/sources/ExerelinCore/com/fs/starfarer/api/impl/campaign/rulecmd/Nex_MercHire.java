@@ -23,7 +23,6 @@ import exerelin.campaign.intel.merc.MercContractIntel;
 import exerelin.campaign.intel.merc.MercDataManager;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.campaign.intel.merc.MercSectorManager;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
@@ -35,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 import static exerelin.campaign.intel.merc.MercContractIntel.getString;
-import static exerelin.campaign.intel.merc.MercContractIntel.log;
 
 public class Nex_MercHire extends BaseCommandPlugin {
 	
@@ -399,10 +397,10 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			String fee2 = Misc.getDGSCredits(def.feeMonthly);
 			text.addPara(fee1 + " + " + fee2 + "/mth", pad, enough ? Misc.getHighlightColor() 
 					: Misc.getNegativeHighlightColor(), fee1, fee2);
-			if (true || ExerelinModPlugin.isNexDev) {
-				String fleetVal = Misc.getDGSCredits(intel.calcOfferedFleetValue());
-				text.addPara(getString("panel_shipValue") + ": " + fleetVal, pad, Misc.getHighlightColor(), fleetVal);
-			}
+
+			String fleetVal = Misc.getDGSCredits(intel.calcOfferedFleetValue());
+			text.addPara(getString("panel_shipValue") + ": " + fleetVal, pad, Misc.getHighlightColor(), fleetVal);
+
 			
 			float shipAreaWidth = MERC_INFO_WIDTH - 200 - 8;
 			TooltipMakerAPI shipHolder = info.createUIElement(shipAreaWidth, 0, false);

@@ -341,7 +341,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	{
 		width -= MARGIN;
 		tooltip.addSectionHeading(getString("dispTableHeader" + (inwards ? "Inwards" : "")), com.fs.starfarer.api.ui.Alignment.MID, pad);
-		if (true || !faction.isPlayerFaction()) createDispositionDirButton(mainPanel, tooltip, width, 3);
+		createDispositionDirButton(mainPanel, tooltip, width, 3);
 		
 		float cellWidth = 0.09f * width;
 		tooltip.beginTable(faction, 20, StringHelper.getString("faction", true), 0.19f * width,
