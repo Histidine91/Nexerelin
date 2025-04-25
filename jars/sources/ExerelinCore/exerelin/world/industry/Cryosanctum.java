@@ -13,6 +13,6 @@ public class Cryosanctum extends IndustryClassGen {
 	public float getWeight(ProcGenEntity entity) {
 		float weight = 6 - entity.market.getSize();
 		if (weight < 0) weight = 0;
-		return (weight * getFactionMult(entity) / 2) + 0.5f;
+		return (weight * getFactionMult(entity) / 3);
 	}
 }
