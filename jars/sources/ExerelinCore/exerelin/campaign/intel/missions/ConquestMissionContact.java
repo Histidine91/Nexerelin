@@ -18,14 +18,13 @@ import exerelin.campaign.intel.EventCancelReason;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static exerelin.campaign.intel.missions.ConquestMissionManager.MIN_PLAYER_LEVEL;
 
@@ -167,11 +166,7 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		String factionId = faction.getId();
 		FactionAPI oldFaction = Global.getSector().getFaction(oldFactionId);
 
-		float repChange = Nex_TransferMarket.getRepChange(market).getModifiedValue() * 0.01f;
-		if (factionId.equals(Nex_TransferMarket.getRecentlyCapturedFromId(market)))
-			repChange *= Global.getSettings().getFloat("nex_transferMarket_recentlyCapturedMult");
-		else if (factionId.equals(NexUtilsMarket.getOriginalOwner(market)))
-			repChange *= Global.getSettings().getFloat("nex_transferMarket_originalOwnerMult");
+		float repChange = Nex_TransferMarket.getRepChange(market, factionId).getModifiedValue() * 0.01f;
 
 		SectorManager.transferMarket(market, faction, oldFaction, true, false,
 				new ArrayList<>(Arrays.asList(factionId)), repChange);

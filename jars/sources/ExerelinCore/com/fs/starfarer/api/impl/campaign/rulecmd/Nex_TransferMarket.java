@@ -149,6 +149,17 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		
 		return stat;
 	}
+
+	public static MutableStat getRepChange(MarketAPI market, String factionId) {
+		MutableStat stat = getRepChange(market);
+
+		if (factionId.equals(Nex_TransferMarket.getRecentlyCapturedFromId(market)))
+			stat.modifyMult("recentlyCaptured", Global.getSettings().getFloat("nex_transferMarket_recentlyCapturedMult"));
+		else if (factionId.equals(NexUtilsMarket.getOriginalOwner(market)))
+			stat.modifyMult("originalOwner", Global.getSettings().getFloat("nex_transferMarket_originalOwnerMult"));
+
+		return stat;
+	}
 	
 	public void transferMarket(InteractionDialogAPI dialog, MarketAPI market, String newFactionId)
 	{

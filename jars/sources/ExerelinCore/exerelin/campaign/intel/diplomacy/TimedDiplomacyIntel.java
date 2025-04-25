@@ -59,14 +59,20 @@ public abstract class TimedDiplomacyIntel extends BaseIntelPlugin implements Str
         if (getState() == 1) return;
         acceptImpl();
         setState(1);
-        if (endOnAccept()) endAfterDelay();
+        if (endOnAccept()) {
+            if (strategicAction != null) strategicAction.end(ActionStatus.SUCCESS);
+            endAfterDelay();
+        }
     }
 
     public void reject() {
         if (getState() == -1) return;
         rejectImpl();
         setState(-1);
-        if (endOnReject()) endAfterDelay();
+        if (endOnReject()) {
+            if (strategicAction != null) strategicAction.end(ActionStatus.FAILURE);
+            endAfterDelay();
+        }
     }
 
     public abstract void onExpire();

@@ -8,15 +8,20 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.concern.StrategicConcern;
+import exerelin.campaign.intel.diplomacy.RequestMarketIntel;
 
 public class TransferMarketAction extends BaseStrategicAction implements StrategicActionDelegate {
 
     @Override
     public boolean generate() {
         MarketAPI market = concern.getMarket();
+
+        // if the player is the owning faction, offer to buy it
         if (Nex_IsFactionRuler.isRuler(market.getFaction())) {
-            // TODO: offer to buy the market
-            return false;
+            RequestMarketIntel intel = new RequestMarketIntel(market, ai.getFactionId());
+            intel.init();
+            delegate = intel;
+            return true;
         }
 
         SectorManager.transferMarket(market, ai.getFaction(), market.getFaction(), false, false, null, 0);
@@ -49,6 +54,10 @@ public class TransferMarketAction extends BaseStrategicAction implements Strateg
 
         RepLevel rel = RepLevel.FRIENDLY;
         if (market.getSize() >= 5) rel = RepLevel.COOPERATIVE;
+        if (Nex_IsFactionRuler.isRuler(market.getFaction())) {
+            if (market.getMemoryWithoutUpdate().getBoolean(RequestMarketIntel.MEM_KEY_COOLDOWN)) return false;
+            rel = RepLevel.SUSPICIOUS; // may as well try asking
+        }
 
         return faction.getRelationshipLevel(ai.getFaction()).isAtWorst(rel);
     }

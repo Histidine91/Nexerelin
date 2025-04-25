@@ -169,11 +169,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		String factionId = faction.getId();
 		FactionAPI oldFaction = Global.getSector().getFaction(oldFactionId);
 		
-		float repChange = Nex_TransferMarket.getRepChange(market).getModifiedValue() * 0.01f;
-		if (factionId.equals(Nex_TransferMarket.getRecentlyCapturedFromId(market)))
-			repChange *= Global.getSettings().getFloat("nex_transferMarket_recentlyCapturedMult");
-		else if (factionId.equals(NexUtilsMarket.getOriginalOwner(market)))
-			repChange *= Global.getSettings().getFloat("nex_transferMarket_originalOwnerMult");
+		float repChange = Nex_TransferMarket.getRepChange(market, factionId).getModifiedValue() * 0.01f;
 		
 		SectorManager.transferMarket(market, faction, oldFaction, true, false, 
 				new ArrayList<>(Arrays.asList(factionId)), repChange);
