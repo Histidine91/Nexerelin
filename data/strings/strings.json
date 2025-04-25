@@ -1146,6 +1146,7 @@
 		"buildingBase":"constructing base",
 		"following":"following $target",
 		"holding":"holding",
+		"disbandingAt":"disbanding at $target",
 		
 		"idle":"idle",
 
@@ -2199,7 +2200,6 @@
 		"dialog_officerLevels":"Officer levels: [%s]",
 		"dialog_lesserShips":"The company includes %s other ships of lesser significance.",
 		"dialog_shipsAfterHiring":"Ships after hiring: %s/%s",
-		"dialog_debtIncurred":"Incurred %s debt",
 		"dialog_removedFromStorage":"Lost %s from storage",
 		
 		"reportNode_name":"Mercenary contract: %s",
@@ -2978,6 +2978,7 @@
 		
 		"creditsAvailable":"You have %s credits available.",
 		"resourcesNeeded":"resources needed (available)",
+		"debtIncurred":"incurred %s debt",
 		
 		"alreadyKnown":"known",
 

@@ -24,6 +24,7 @@ import exerelin.campaign.intel.merc.MercDataManager;
 import exerelin.campaign.intel.merc.MercDataManager.MercCompanyDef;
 import exerelin.campaign.intel.merc.MercSectorManager;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsCargo;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
 import org.lwjgl.input.Keyboard;
@@ -179,28 +180,12 @@ public class Nex_MercHire extends BaseCommandPlugin {
 	public void processPayment(InteractionDialogAPI dialog, MemoryAPI local) {
 		int net = local.getInt("$nex_mercNetPaymentVal");
 		MutableValue creds = Global.getSector().getPlayerFleet().getCargo().getCredits();
-		int debt = 0;
 		if (net > 0) {
 			creds.add(net);
 			AddRemoveCommodity.addCreditsGainText(net, dialog.getTextPanel());
 		}
 		else if (net < 0) {
-			int payment = -net;
-			if (creds.get() < payment) {
-				debt = -(int)(creds.get() - payment);
-				payment = (int)creds.get();
-				MonthlyReport report = SharedData.getData().getPreviousReport();
-				report.setDebt(report.getDebt() + debt);
-			}
-			creds.subtract(payment);
-			AddRemoveCommodity.addCreditsLossText(payment, dialog.getTextPanel());
-			if (debt > 0) {
-				String debtStr = Misc.getDGSCredits(debt);
-				dialog.getTextPanel().setFontSmallInsignia();
-				dialog.getTextPanel().addPara(getString("dialog_debtIncurred"), 
-						Misc.getNegativeHighlightColor(), Misc.getHighlightColor(), debtStr);
-				dialog.getTextPanel().setFontInsignia();
-			}
+			NexUtilsCargo.makePaymentWithDebtIfNeeded(-net, dialog);
 		}
 	}
 	
