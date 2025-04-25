@@ -338,7 +338,7 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 		}
 		
 		// skip story
-		if (true || data.corvusMode) {
+		{
 			CustomPanelAPI buttonPanel = Nex_NGCPopulateCustomPanelOptions.prepOption(panel, info, getString("optionSkipStory"),
 					"graphics/icons/missions/ga_intro.png", null, createTooltip(getString("tooltipSkipStory"), highlights, null));
 
