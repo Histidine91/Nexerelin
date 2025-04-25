@@ -2333,8 +2333,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 					info.showCargo(playerData.getLoot(), 10, true, opad);
 				}					
 				else {
-					info.addPara(getString("intelDesc_localStorage"), opad);
-					info.showCargo(storage.getCargo(), 10, true, opad);
+					// don't show local storage if no loot, it's confusing?
+					//info.addPara(getString("intelDesc_localStorage"), opad);
+					//info.showCargo(storage.getCargo(), 10, true, opad);
 				}
 			} else {
 				info.addPara(getString("intelDesc_lootAndSurvivorsDirect"), opad);
