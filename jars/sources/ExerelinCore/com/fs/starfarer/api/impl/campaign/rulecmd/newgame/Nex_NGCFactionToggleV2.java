@@ -176,7 +176,7 @@ public class Nex_NGCFactionToggleV2 extends BaseCommandPlugin {
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		CustomPanelAPI buttonPanel = Nex_NGCPopulateCustomPanelOptions.prepOption(panel, info, 
 				Nex_FactionDirectoryHelper.getFactionDisplayName(factionId), 
-				faction.getCrest(), faction.getBaseUIColor(), plugin, null);
+				faction.getCrest(), faction.getBaseUIColor(), null, null);
 		
 		final List<ButtonAPI> buttons = new ArrayList<>();
 		TooltipMakerAPI lastHolder = null;
