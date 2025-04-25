@@ -2537,6 +2537,7 @@
 		
 		"intelBulletArrived":"Arrived at %s",
 		"intelBulletDestroyed":"Fleet destroyed",
+		"intelBulletRebuild":"Revived dead ships for %s",
 		
 		"intelDesc1":"The $faction special task group $fleetName is present in the Sector.",
 		"intelDesc1NoName":"A $faction special task group is present in the Sector.",

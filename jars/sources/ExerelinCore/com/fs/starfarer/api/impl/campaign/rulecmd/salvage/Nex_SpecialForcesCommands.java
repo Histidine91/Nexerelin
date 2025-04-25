@@ -27,11 +27,14 @@ import java.util.*;
 public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 	
 	public static final String MEM_KEY_TASK = "$nex_psf_task";
-	
+
+	protected transient CampaignFleetAPI fleet;
+
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
 		SectorEntityToken token = dialog.getInteractionTarget();
 		CampaignFleetAPI fleet = token instanceof CampaignFleetAPI ? (CampaignFleetAPI)token : null;
 		if (fleet == null) return false;
+		this.fleet = fleet;
 		
 		MemoryAPI local = memoryMap.get(MemKeys.LOCAL);
 		
@@ -51,7 +54,13 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 				return true;
 			case "joinRaid":
 				showRaidScreen(dialog, memoryMap, fleet);
-				return true;			
+				return true;
+			case "disbandAtLocation":
+				giveOrderAtLocation(dialog, "disband", local);
+				return true;
+			case "rebuildAtLocation":
+				giveOrderAtLocation(dialog, "rebuild", local);
+				return true;
 			case "autoAssign":
 				autoAssign(dialog, (CampaignFleetAPI)dialog.getInteractionTarget());
 				return true;
@@ -60,6 +69,9 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 				return true;
 			case "refreshIntelUI":
 				refreshIntelUI(fleet, memoryMap);
+				return true;
+			case "updateData":
+				updateData(fleet, memoryMap);
 				return true;
 		}
 		
@@ -255,6 +267,7 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 					if (market.isHidden() && market.getPrimaryEntity().isDiscoverable())
 						continue;
 					if (market.getPrimaryEntity() == null) continue;
+					if ("rebuild".equals(type) && market.getFaction().isAtBest(fleet.getFaction(), RepLevel.INHOSPITABLE)) continue;
 					
 					results.add(market.getPrimaryEntity());
 				}
@@ -277,5 +290,14 @@ public class Nex_SpecialForcesCommands extends BaseCommandPlugin {
 		SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
 		IntelUIAPI ui = (IntelUIAPI)memoryMap.get(MemKeys.LOCAL).get("$nex_uiToRefresh");
 		if (ui != null) ui.updateUIForItem(sf);
+	}
+
+	public void updateData(CampaignFleetAPI fleet, Map<String, MemoryAPI> memoryMap) {
+		MemoryAPI local = memoryMap.get(MemKeys.LOCAL);
+		PlayerSpecialForcesIntel sf = (PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(fleet);
+		float reviveCost = PlayerSpecialForcesIntel.getReviveCost(sf.getDeadMembers());
+		local.set("$nex_sf_reviveCost", reviveCost, 0);
+		local.set("$nex_sf_reviveCostStr", Misc.getDGSCredits(reviveCost), 0);
+		local.set("$nex_sf_numDeadShips", sf.getDeadMembers().size(), 0);
 	}
 }

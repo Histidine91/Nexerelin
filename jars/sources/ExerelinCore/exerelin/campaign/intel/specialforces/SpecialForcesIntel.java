@@ -417,12 +417,18 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		float fp = damage * startingFP;
 		
 		route.getExtra().damage = 0f;
-		generateFlagshipAndCommanderIfNeeded(route);
-		if (route.getActiveFleet() != null) {
+
+		if (isPlayer) {
 			rebuildFleet();
+		} else {
+			generateFlagshipAndCommanderIfNeeded(route);
+			if (route.getActiveFleet() != null) {
+				rebuildFleet();
+			}
+			SpecialForcesManager.getManager().incrementPoints(faction.getId(), -fp);
+			FleetPoolManager.getManager().modifyPool(faction.getId(), -fp);
 		}
-		SpecialForcesManager.getManager().incrementPoints(faction.getId(), -fp);
-		FleetPoolManager.getManager().modifyPool(faction.getId(), -fp);
+
 	}
 	
 	/**
@@ -658,35 +664,35 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	
 	protected void printFleetStrengthInfo(TooltipMakerAPI info, float opad) {
 		Color h = Misc.getHighlightColor();
-		if (true || isDebugVisible()) {
-			String str = getString("intelDescStr");
-			String fp = Math.round(route.getExtra().fp) + "";
-			if (route.getActiveFleet() != null) {
-				String routeFP = fp;
-				fp = route.getActiveFleet().getFleetPoints() + "";
-				if (!this.isPlayer || ExerelinModPlugin.isNexDev) fp += "/" + routeFP;
-			}
-			int damage = getDamage();
 
-			info.addPara(str, opad, h, fp, damage + "%");
-
-			if (route.getActiveFleet() != null) {
-				str = getString("intelDescFleetStatus");
-				String loc = route.getActiveFleet().getContainingLocation() != null ?
-						route.getActiveFleet().getContainingLocation().getName() : " <null location>";
-				info.addPara(str, opad, h, loc);
-				
-				FleetAssignmentDataAPI assign = route.getActiveFleet().getCurrentAssignment();
-				if (assign != null) {
-					str = String.format("Fleet current assignment: %s (time %s of %s)", 
-							assign.getActionText(),
-							assign.getElapsedDays(),
-							assign.getMaxDurationInDays());
-					//info.addPara(str, opad, h, loc);
-				}
-				
-			}
+		String str = getString("intelDescStr");
+		String fp = Math.round(route.getExtra().fp) + "";
+		if (route.getActiveFleet() != null) {
+			String routeFP = fp;
+			fp = route.getActiveFleet().getFleetPoints() + "";
+			if (!this.isPlayer || ExerelinModPlugin.isNexDev) fp += "/" + routeFP;
 		}
+		int damage = getDamage();
+
+		info.addPara(str, opad, h, fp, damage + "%");
+
+		if (route.getActiveFleet() != null) {
+			str = getString("intelDescFleetStatus");
+			String loc = route.getActiveFleet().getContainingLocation() != null ?
+					route.getActiveFleet().getContainingLocation().getName() : " <null location>";
+			info.addPara(str, opad, h, loc);
+
+			FleetAssignmentDataAPI assign = route.getActiveFleet().getCurrentAssignment();
+			if (assign != null) {
+				str = String.format("Fleet current assignment: %s (time %s of %s)",
+						assign.getActionText(),
+						assign.getElapsedDays(),
+						assign.getMaxDurationInDays());
+				//info.addPara(str, opad, h, loc);
+			}
+
+		}
+
 	}
 	
 	public void printCurrentAction(TooltipMakerAPI info, float opad) {

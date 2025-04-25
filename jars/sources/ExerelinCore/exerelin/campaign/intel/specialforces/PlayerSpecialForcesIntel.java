@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
@@ -39,8 +40,8 @@ import second_in_command.SCData;
 import second_in_command.SCUtils;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static exerelin.campaign.intel.fleets.NexAssembleStage.getAdjustedStrength;
 
@@ -63,7 +64,8 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public static final float FUEL_COST_MULT = 1f;
 	public static final float REVIVE_COST_MULT = 1f;	// giving a discount here will let players give ships to the fleet to repair
 	
-	public static final Object DESTROYED_UPDATE = new Object();	
+	public static final Object DESTROYED_UPDATE = new Object();
+	public static final Object REBUILT_UPDATE = new Object();
 	protected static final Object BUTTON_COMMAND = new Object();
 	protected static final Object BUTTON_DISBAND = new Object();
 	protected static final Object BUTTON_RECREATE = new Object();
@@ -90,6 +92,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected float fuelUsedLastInterval;
 	protected int autoShipDP;
 	protected transient Vector2f lastPos;
+	protected transient int lastReviveCost;
 	
 	protected Object readResolve() {
 		// no, bad, don't do anything in readResolve that involves anything else
@@ -304,8 +307,12 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	protected void endEvent() {
 		// you die on my command, not before
 	}
-	
+
 	public void disband() {
+		disband(null);
+	}
+
+	public void disband(MarketAPI market) {
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		CampaignFleetAPI toDisband = this.fleet;
 		if (toDisband == null) toDisband = tempFleet;
@@ -314,20 +321,33 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		//log.info("Reviving dead ships would cost " + reviveCostDebug + " credits");
 
 		List<FleetMemberAPI> checkForSurplusOfficers = new ArrayList<>();
+
+		SubmarketAPI subm = null;
+		if (market != null) subm = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
 		for (OfficerDataAPI officer : toDisband.getFleetData().getOfficersCopy()) {
 			if (officer.getPerson().isAICore()) continue;
 			player.getFleetData().addOfficer(officer);
 		}
 		for (FleetMemberAPI member : toDisband.getFleetData().getMembersListCopy()) {
-			player.getFleetData().addFleetMember(member);
-			checkForSurplusOfficers.add(member);
+			if (subm != null) {
+				subm.getCargo().getMothballedShips().addFleetMember(member);
+				if (!Misc.isUnremovable(member.getCaptain())) member.setCaptain(null);
+			} else {
+				player.getFleetData().addFleetMember(member);
+				checkForSurplusOfficers.add(member);
+			}
 		}
 		for (FleetMemberAPI member : getDeadMembers()) {
-			player.getFleetData().addFleetMember(member);
+			if (market != null) {
+				subm.getCargo().getMothballedShips().addFleetMember(member);
+				if (!Misc.isUnremovable(member.getCaptain())) member.setCaptain(null);
+			} else {
+				player.getFleetData().addFleetMember(member);
+				checkForSurplusOfficers.add(member);
+			}
 			// so they don't vanish if not repaired immediately
 			member.getRepairTracker().performRepairsFraction(0.001f);
-			checkForSurplusOfficers.add(member);
 		}
 		
 		player.getCargo().addAll(toDisband.getCargo());
@@ -337,7 +357,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		player.forceSync();
 				
 		endAfterDelay();
-		toDisband.despawn(CampaignEventListener.FleetDespawnReason.OTHER, null);
+		toDisband.despawn(CampaignEventListener.FleetDespawnReason.REACHED_DESTINATION, market != null ? market.getPrimaryEntity() : player);
 	}
 	
 	public void unstickFleet() {
@@ -363,6 +383,19 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		to.addEntity(fleet);
 		fleet.setLocation(dest.getLocation().x, dest.getLocation().y);
 		log.info("Fleet teleported to " + to.getName());
+	}
+
+	@Override
+	protected void rebuildFleet() {
+		int cost = getReviveCost(deadMembers);
+
+		for (FleetMemberAPI dead : new ArrayList<>(deadMembers)) {
+			reviveDeadMember(dead);
+		}
+
+		NexUtilsCargo.makePaymentWithDebtIfNeeded(cost, null);
+		lastReviveCost = cost;
+		sendUpdateIfPlayerHasIntel(REBUILT_UPDATE, false, false);
 	}
 
 	/*
@@ -649,6 +682,11 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 				info.addPara(getString("intelBulletDestroyed"), tc, 3);
 				return;
 			}
+
+			if (isUpdate && listInfoParam == REBUILT_UPDATE) {
+				info.addPara(getString("intelBulletRebuild"), 3, tc, Misc.getHighlightColor(), Misc.getDGSCredits(lastReviveCost));
+				return;
+			}
 		}
 		
 		super.addBulletPoints(info, mode, isUpdate, tc, initPad);
@@ -852,8 +890,9 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		
 		// remove economy tick listener, no longer needed
 		Global.getSector().getListenerManager().removeListener(this);
-		
-		if (reason != CampaignEventListener.FleetDespawnReason.DESTROYED_BY_BATTLE) {
+
+		// died for unknown reason?
+		if (reason != CampaignEventListener.FleetDespawnReason.DESTROYED_BY_BATTLE && reason != CampaignEventListener.FleetDespawnReason.REACHED_DESTINATION) {
 			Global.getSector().getCampaignUI().showConfirmDialog(getString("warnMsg"), 
 					getString("warnMsgButton1"), getString("warnMsgButton2"), 640, 320, null, null);
 		}
@@ -996,9 +1035,6 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public void onGameLoad(boolean newGame) {
 		addListenerIfNeeded();
 		checkVariants();
-		if (fleet != null && !fleet.getMemoryWithoutUpdate().contains(MemFlags.MAY_GO_INTO_ABYSS)) {
-			fleet.getMemoryWithoutUpdate().set(MemFlags.MAY_GO_INTO_ABYSS, true);
-		}
 	}
 
 	@Override

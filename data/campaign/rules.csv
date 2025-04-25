@@ -5008,21 +5008,27 @@ nex_configSF_create,DialogOptionSelected,$option == nex_configSF_createFinish,Ne
 nex_configSF_abortCreate,DialogOptionSelected,$option == nex_configSF_abortCreate,Nex_SpecialForcesConfig cancel,,,
 nex_commandSF_main,DialogOptionSelected,$option == nex_commandSF_main,"$nex_sf_menuType = ""command"" 0
 Nex_SpecialForcesCommands main",,,
-nex_commandSF_mainOpts,Nex_CommandSFOptions,,SetShortcut nex_commandSF_leave ESCAPE,,"nex_commandSF_patrol:Patrol system
-nex_commandSF_orbit:Orbit location
-nex_commandSF_follow:Follow player
-nex_commandSF_wait:Wait at player location
-nex_commandSF_joinRaid:Participate in raid
-nex_commandSF_autoAssign:Auto-assign
-nex_sf_reviveShipStart:Revive dead ships
-nex_commandSF_leave:Leave",
-nex_commandSF_mainOptsNoRevive,Nex_CommandSFOptions,!Nex_SpecialForcesConfig canRevive,"SetEnabled nex_sf_reviveShipStart false
-SetTooltip nex_sf_reviveShipStart $nex_psf_noReviveReason",,,
+nex_commandSF_mainOpts,Nex_CommandSFOptions,Nex_SpecialForcesCommands updateData,"SetTooltip nex_commandSF_goAndDespawn ""The fleet will go to a designated market and place all its ships in storage. Officers will be returned to player fleet.""
+SetShortcut nex_commandSF_leave ESCAPE",,"1:nex_commandSF_patrol:Patrol system
+2:nex_commandSF_orbit:Orbit location
+3:nex_commandSF_follow:Follow player
+4:nex_commandSF_wait:Wait at player location
+5:nex_commandSF_joinRaid:Participate in raid
+6:nex_commandSF_goAndDespawn:Go to location and despawn
+7:nex_commandSF_autoAssign:Auto-assign
+9:nex_commandSF_leave:Leave",
+nex_commandSF_mainOptsRevive,Nex_CommandSFOptions,"Nex_SpecialForcesConfig canRevive
+$nex_sf_numDeadShips > 0",,,8:nex_sf_reviveShipStart:Revive dead ships,
+nex_commandSF_mainOptsReviveRemote,Nex_CommandSFOptions,"!Nex_SpecialForcesConfig canRevive
+$nex_sf_numDeadShips > 0","SetTooltip nex_commandSF_goAndRevive ""The fleet will go to a designated market and revive all its lost ships there. This will cost $nex_sf_reviveCostStr, which will be billed on arrival.""
+SetTooltipHighlights nex_commandSF_goAndRevive $nex_sf_reviveCostStr",,8:nex_commandSF_goAndRevive:Go to location and revive dead ships,
 nex_commandSF_patrol,DialogOptionSelected,$option == nex_commandSF_patrol,Nex_SpecialForcesCommands patrol,,,
 nex_commandSF_orbit,DialogOptionSelected,$option == nex_commandSF_orbit,Nex_SpecialForcesCommands orbit,,,
 nex_commandSF_follow,DialogOptionSelected,$option == nex_commandSF_follow,Nex_SpecialForcesCommands follow,,,
 nex_commandSF_joinRaid,DialogOptionSelected,$option == nex_commandSF_joinRaid,Nex_SpecialForcesCommands joinRaid,,nex_commandSF_main:Go back,
 nex_commandSF_wait,DialogOptionSelected,$option == nex_commandSF_wait,Nex_SpecialForcesCommands wait_player,,,
+nex_commandSF_goAndDespawn,DialogOptionSelected,$option == nex_commandSF_goAndDespawn,Nex_SpecialForcesCommands disbandAtLocation,,,
+nex_commandSF_goAndRevive,DialogOptionSelected,$option == nex_commandSF_goAndRevive,Nex_SpecialForcesCommands rebuildAtLocation,,,
 nex_commandSF_autoAssign,DialogOptionSelected,$option == nex_commandSF_autoAssign,"Nex_SpecialForcesCommands autoAssign
 #Nex_SpecialForcesCommands main",,,
 nex_commandSF_leave,DialogOptionSelected,$option == nex_commandSF_leave,"unset $nex_psf_task

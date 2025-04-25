@@ -17,6 +17,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
@@ -269,8 +270,9 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 		}
 		switch (task.type) {
 			case REBUILD:
+				float days = intel.isPlayer ? 1 : NexUtilsFleet.getDaysToOrbit(fleet);
 				fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, current.from,	
-						current.daysMax - current.elapsed, getInSystemActionText(current),
+						days, getInSystemActionText(current),
 						goNextScript(current));
 				break;
 			case DEFEND_RAID:
@@ -318,6 +320,15 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, current.from,
 						current.daysMax - current.elapsed, getInSystemActionText(current),
 						goNextScript(current));
+				break;
+			case DISBAND:
+				if (intel.isPlayer) {
+					fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, current.from,
+							999, getInSystemActionText(current), new PlayerDisbandScript((PlayerSpecialForcesIntel)intel, current.from));
+				} else {
+					fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, current.from,
+							999, getInSystemActionText(current));
+				}
 				break;
 			default:
 				super.addLocalAssignment(current, justSpawned);
@@ -376,7 +387,7 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 				return StringHelper.getFleetAssignmentString("patrollingStarSystem", 
 						fleet.getContainingLocation().getNameWithLowercaseType());
 			case REBUILD:
-				return StringHelper.getFleetAssignmentString("reconstituting", 
+				return StringHelper.getFleetAssignmentString("reconstituting",
 						task.getMarket().getName());
 			case WAIT_ORBIT:
 				if (task.getEntity().hasTag("nex_player_location_token")) {
@@ -387,6 +398,9 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 			case FOLLOW_PLAYER:
 				return StringHelper.getFleetAssignmentString("following", 
 						task.getEntity().getName());
+			case DISBAND:
+				return StringHelper.getFleetAssignmentString("disbandingAt",
+						task.getMarket().getName());
 			default:
 				return super.getInSystemActionText(segment);
 		}
@@ -423,6 +437,22 @@ public class SpecialForcesAssignmentAI extends RouteFleetAssignmentAI {
 			float ly = Misc.getDistanceLY(gateFrom, gateTo);
 			showGateUse(gateFrom, ly);
 			showGateUse(gateTo, ly);
+		}
+	}
+
+	public static class PlayerDisbandScript implements Script {
+
+		protected PlayerSpecialForcesIntel intel;
+		protected SectorEntityToken dest;
+
+		public PlayerDisbandScript(PlayerSpecialForcesIntel intel, SectorEntityToken dest) {
+			this.intel = intel;
+			this.dest = dest;
+		}
+
+		@Override
+		public void run() {
+			intel.disband(dest.getMarket());
 		}
 	}
 }

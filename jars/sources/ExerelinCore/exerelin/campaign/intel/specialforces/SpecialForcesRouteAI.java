@@ -343,6 +343,7 @@ public class SpecialForcesRouteAI {
 			case COUNTER_GROUND_BATTLE:
 			case WAIT_ORBIT:
 			case ASSEMBLE:
+			case DISBAND:
 				if (task.getEntity() != null) destination = task.getEntity();
 				else
 					destination = task.getMarket() == null ? task.system.getCenter() : task.getMarket().getPrimaryEntity();
@@ -1059,6 +1060,7 @@ public class SpecialForcesRouteAI {
 		RESUPPLY(true, false),
 		FOLLOW_PLAYER(false, false),
 		WAIT_ORBIT(false, false),
+		DISBAND(false, false),
 		IDLE(false, true);
 		
 		protected final boolean busyTask;
@@ -1150,6 +1152,8 @@ public class SpecialForcesRouteAI {
 					return StringHelper.getFleetAssignmentString("orbiting", entity.getName());
 				case FOLLOW_PLAYER:
 					return StringHelper.getFleetAssignmentString("following", entity.getName());
+				case DISBAND:
+					return StringHelper.getFleetAssignmentString("disbandingAt", entity.getName());
 				case IDLE:
 					return StringHelper.getFleetAssignmentString("idle", null);
 				default:
