@@ -95,6 +95,9 @@ public class RebellionSupportFleetAI extends TwoWayTravelFleetAI
 			//log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " standing down");
 			orderedReturn = true;
 			fleet.clearAssignments();
+
+			// retroactive crash fix
+			if (data.source == null) data.source = Global.getSector().getEconomy().getMarketsCopy().get(0);
 			
 			boolean despawningAtTarget = false;
 			if (data.target.getFaction() == data.fleet.getFaction())
@@ -108,8 +111,6 @@ public class RebellionSupportFleetAI extends TwoWayTravelFleetAI
 					despawningAtTarget = true;
 				}
 			}
-			// retroactive crash fix
-			if (data.source == null) data.source = Global.getSector().getEconomy().getMarketsCopy().get(0);
 
 			final SectorEntityToken destination = despawningAtTarget ? data.target.getPrimaryEntity() : 
 					data.source.getPrimaryEntity();
