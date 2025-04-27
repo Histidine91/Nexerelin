@@ -3842,7 +3842,10 @@ $metAlready",ShowPersonVisual,"Your comms officer connects your personal termina
 
 ""Arroyo here."" He looks at you with mild suspicion. ""Who sent you to me this time?""","gaKA_arroyoProvost:""Provost Anahita Baird.""",
 nex_gaKAArroyoProvostSel_alreadyMet,DialogOptionSelected,"$option == gaKA_arroyoProvost
-$metAlready score:5",$global.nex_gaKA_arroyoVisitShort = true 30,"For just a moment, you think you see a wave of panic cross Arroyo's face. It's replaced by a cocky grin, ""Oh, of course, of course- the Galatia Academy endowment fund. How could I forget?""
+$metAlready score:5","$global.nex_gaKA_arroyoVisitShort = true 30
+$toldToVisitChalet = true
+$global.gaKA_visitArroyo = true
+Call $global.gaKA_ref updateStage","For just a moment, you think you see a wave of panic cross Arroyo's face. It's replaced by a cocky grin, ""Oh, of course, of course- the Galatia Academy endowment fund. How could I forget?""
 
 ""I suppose it won't hurt to come visit my chalet again. We can touch base about the fund. I'm sure the Provost has exciting plans and I want to hear all about them-"" He lifts his eyes upward for a moment and lowers them again to look directly at you. ""In person.""",cutCommLinkNoText:Continue,
 nex_gaKAArroyoVisitStart_alreadyMet,DialogOptionSelected,"$option == gaKA_visitChalet

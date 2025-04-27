@@ -69,7 +69,8 @@
 				"$foundGargoyle":true
 			},
 			"playerMemFlags":{
-				"$metCloneLoke":true
+				"$metCloneLoke":true,
+				"$metGargoyle":true
 			}
 		},
 		"coureuse":{
@@ -101,6 +102,7 @@
 			"name":"At the Gates",
 			"tooltip":"The player unlocks the Gates with the power of the Janus Device.",
 			"idsToForceOnWhenEnabled":["transverseJump", "kallichore", "coureuse", "ziggurat"],
+			"peopleToUnhide":["horus_yaribay"],
 			"sectorMemFlags":{
 				"$gaATG_missionGiven":true,
 				"$gaATG_missionCompleted":true,
@@ -169,7 +171,9 @@
 				"$BFFIgaveBornanewStateroom":true,
 				"$bffi_boughtRelic":true,
 				"$bffi_playerKilledSedgeAfterPond":true,
-				"$foundUlmusPondSafehouse":true
+				"$foundUlmusPondSafehouse":true,
+				"$metTanaica":true,
+				"$metMenesYaribay":true
 			}
 		},
 		"usurpers":{
@@ -279,6 +283,7 @@
 			"name":"Salvation",
 			"tooltip":"The player confronts a conspiracy among the Remnants.\n\nWill grant a ==Planetkiller== and the ==Silverlight-class capital ship==.",
 			"idsToForceOnWhenEnabled":["nex_captiveCores", "nex_fragments", "nex_lostSci", "nex_showdown"],
+			"peopleToUnhide":["arroyo"],
 			"sectorMemFlags":{
 				"$nex_remSalvation_missionCompleted":true,
 				#"$nex_remSalvation_missionDone":true,	# we'll need this to be false for a bit
