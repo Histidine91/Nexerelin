@@ -8,6 +8,7 @@ import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
+import com.fs.starfarer.api.impl.campaign.ids.People;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.hub.BaseMissionHub;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMission;
@@ -74,6 +75,11 @@ public class RemnantQuestSkipPlugin extends BaseQuestSkipPlugin {
             PersonAPI towering = RemnantQuestUtils.getOrCreateTowering();
             RemnantQuestUtils.enhanceTowering();
             addKnight();
+
+            PersonAPI person = Global.getSector().getImportantPeople().getPerson(People.ARROYO);
+            person.getMemoryWithoutUpdate().set("$metAlready", true);
+            person = Global.getSector().getImportantPeople().getPerson(People.SIYAVONG);
+            person.getMemoryWithoutUpdate().set("$metAlready", true);
 
             boolean haveBoggled = Global.getSettings().getModManager().isModEnabled("Terraforming & Station Construction");
             CargoAPI player = Global.getSector().getPlayerFleet().getCargo();
