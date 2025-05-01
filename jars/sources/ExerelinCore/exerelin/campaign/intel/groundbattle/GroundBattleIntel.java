@@ -657,6 +657,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	
 	public boolean isFleetInRange(CampaignFleetAPI fleet) {
 		if (fleet == null) return true;
+		if (!fleet.isAlive()) return false;
 		if (fleet.getContainingLocation() != market.getContainingLocation()) return false;
 		return MathUtils.getDistance(fleet, 
 				market.getPrimaryEntity()) <= GBConstants.MAX_SUPPORT_DIST;
@@ -667,7 +668,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		try {
 			LocationAPI curr = route.getSegments().get(route.getCurrentSegmentId()).getCurrentContainingLocation();
-			if (curr != market.getContainingLocation()) return false; 
+			if (curr != market.getContainingLocation()) return false;
 
 			return MathUtils.getDistance(route.getInterpolatedHyperLocation(), 
 					market.getPrimaryEntity().getLocationInHyperspace()) 

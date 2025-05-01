@@ -294,8 +294,12 @@ public class GroundUnit {
 	}
 	
 	public boolean isFleetInRange() {
-		if (fleet != null && fleet.isAlive()) {
-			return intel.isFleetInRange(fleet);
+		if (fleet == null && route != null && route.getActiveFleet() != null) {
+			fleet = route.getActiveFleet();
+		}
+
+		if (fleet != null) {
+			return fleet.isAlive() && intel.isFleetInRange(fleet);
 		}
 		if (route != null) {
 			return intel.isRouteInRange(route);
