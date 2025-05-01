@@ -581,7 +581,9 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
             battle: BattleAPI?
         ) {
             if (battle?.isPlayerInvolved == true && battle?.playerSide != battle?.getSideFor(fleet)) {
+                if (mission.isEnding || mission.isEnded) return;
                 mission.setCurrentStage(Stage.FAILED, Global.getSector().campaignUI.currentInteractionDialog, null)
+                mission.sendUpdateIfPlayerHasIntel(null, false)
             }
         }
 
