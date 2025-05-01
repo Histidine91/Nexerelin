@@ -85,7 +85,10 @@ public class VanillaSystemsGenerator {
 		cathedralLabel.setFixedLocation(-12700, -12000);
 		coreLabel.setFixedLocation(0, -6000);
 
-		abyssLabel.setFixedLocation(-65000, -47000);
+		// try to make abyss label a constant relative distance from sector center
+		float abyssLabelX = -65000f/164000 * Global.getSettings().getFloat("sectorWidth");
+		float abyssLabelY = -47000f/104000 * Global.getSettings().getFloat("sectorHeight");
+		abyssLabel.setFixedLocation(abyssLabelX, abyssLabelY);
 	}
 	
 	public static void exerelinEndGalatiaPortionOfMission()
