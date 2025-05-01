@@ -52,7 +52,7 @@ public class RemnantQuestUtils {
 	}
 
 	public static PersonAPI getOrCreateLostScientist() {
-		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_TOWERING);
+		PersonAPI person = Global.getSector().getImportantPeople().getPerson(PERSON_LOST_SCIENTIST);
 		if (person != null) return person;
 
 		person = NexUtils.getOrCreatePerson(PERSON_LOST_SCIENTIST, null, Factions.INDEPENDENT,
