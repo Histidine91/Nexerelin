@@ -1,3 +1,22 @@
+Version 0.12.0c
+
+* Improve checks for whether NPC fleets are close enough to deploy/support ground battle units
+* Joining Persean League leaves player's existing alliance, if any
+* Buy ship bar/contact offer shouldn't ask for IBB boss ships
+* File Drawer Problem: notify mission failure on attacking Mauve; fix convo with wrong person if retrying mission
+* Abyss map label will adjust its position based on sector size
+* NAT Investigators in Sectorpol colony crisis will explain reason for their presence when asked
+* Refactor market builder to better handle AotD, fix market upsize bonus in random sector no longer working
+* Story skip polish/fixes
+* Fix GUI bug in random sector faction toggle
+* Ground battle intel no longer shows loot that's actually just existing storage contents
+* Tariff mults configurable in Luna mod settings menu
+* Retroactive fix for rebellion support fleet AI crash covers more cases
+* Fixes in the 0.12.0b reuploads
+    * Fix crash with certain custom starts (e.g. The Infernal Machine and Notre Dame)
+    * Fix diplomacy rep limit crash
+
+
 Version 0.12.0b
 
 * Rebellion smugglers marked as smugglers and have low rep impact
