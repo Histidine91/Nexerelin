@@ -161,7 +161,7 @@
     "colonyExpeditionInterval": 270,	# days, starts in cycle 207; also note nex_expeditionDelayPerExistingColony in settings.json
     "colonyExpeditionsOnlyAfterPlayerColony": false,
     
-    "enablePunitiveExpeditions": true,	# if false, vs. competitor and free port expeditions will not happen (territorial ones still will)
+    "enablePunitiveExpeditions": false,	# if false, vs. competitor and free port expeditions will not happen (territorial ones still will)
     "enableNexColonyCrises": true,		# enable colony crises added by Nex (currently only the free port one)
     "autoResistAIInspections": true,	# default to resisting Hegemony AI inspections
     

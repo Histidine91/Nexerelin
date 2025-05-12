@@ -175,7 +175,7 @@ public class NexConfig
     public static int stabilizePackageEffect = 3;
     public static float rebellionMult = 1;
     public static boolean allowSmugglersForPlayerRebellions = true;
-    public static boolean enablePunitiveExpeditions = true;
+    public static boolean enablePunitiveExpeditions = false;
     public static boolean autoResistAIInspections = true;
     public static boolean allyVictories = true;
     public static boolean updateMarketDescOnCapture = true;
