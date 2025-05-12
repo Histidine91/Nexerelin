@@ -84,6 +84,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static final String MEMORY_KEY_RULER_TEMP_OWNERSHIP = "$nex_ruler_temp_owner";
 	public static final String MEMORY_KEY_RULER_TEMP_OWNERSHIP_ADMINDEX = "$nex_ruler_temp_owner_adminIndex";
 	public static final String MEMORY_KEY_FACTION_SURVEY_BONUS = "$nex_colony_surveyBonus";
+	public static final String MEMORY_KEY_GLOBAL_SAT_BOMB_COUNT = "$nex_allSatBombCount";
 	public static final Set<String> NEEDED_OFFICIALS = new HashSet<>(Arrays.asList(
 			Ranks.POST_ADMINISTRATOR, Ranks.POST_BASE_COMMANDER, 
 			Ranks.POST_STATION_COMMANDER, Ranks.POST_PORTMASTER
@@ -1554,6 +1555,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				DiplomacyManager.modifyBadboy(nad.attackerFaction, nad.sizeBeforeBombardment * nad.sizeBeforeBombardment * 4);
 			}
 		}
+
+		NexUtils.incrementMemoryValue(Global.getSector().getMemoryWithoutUpdate(), MEMORY_KEY_GLOBAL_SAT_BOMB_COUNT, 1);
 	}
 
 	@Override

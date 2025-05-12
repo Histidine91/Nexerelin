@@ -459,11 +459,18 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			canBombard = attacker.getCustom().optJSONObject(Factions.CUSTOM_PUNITIVE_EXPEDITION_DATA)
 				.optBoolean("canBombard", false);
 		}
+
+		if (Global.getSector().getMemoryWithoutUpdate().contains(ColonyManager.MEMORY_KEY_GLOBAL_SAT_BOMB_COUNT))
+		{
+			canBombard |= Global.getSector().getMemoryWithoutUpdate().getInt(ColonyManager.MEMORY_KEY_GLOBAL_SAT_BOMB_COUNT) > 1;
+		}
 		
+		/*
 		if (defender != null && (defender.isPlayerFaction() || PlayerFactionStore.getPlayerFaction() == defender))
 		{
 			canBombard = canBombard || StatsTracker.getStatsTracker().getMarketsSatBombarded() > 0;
 		}
+		*/
 		
 		return canBombard;
 	}
