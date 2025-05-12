@@ -611,6 +611,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			return false;
 		}
 
+		if (!sectorDefenderCheck(faction, market.getFaction())) return false;
+
 		if (!isRemnantRaid && !NexUtilsMarket.shouldTargetForInvasions(market, 0, type)) return false;
 
 		if (isRemnantRaid && market.isHidden()) return false;
@@ -645,6 +647,19 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		}
 
 		return true;
+	}
+
+	/**
+	 * @param attacker
+	 * @param defender
+	 * @return False if invasions/raids are blocked by sector defender mode.
+	 */
+	protected boolean sectorDefenderCheck(FactionAPI attacker, FactionAPI defender) {
+		if (!Global.getSettings().getBoolean("nex_sectorDefenderMode")) return true;
+
+		NexFactionConfig ac = NexConfig.getFactionConfig(attacker.getId());
+		NexFactionConfig dc = NexConfig.getFactionConfig(defender.getId());
+		return ac.hostileToAll > 0 || dc.hostileToAll > 0;
 	}
 	
 	public MarketAPI getTargetMarketForFleet(FactionAPI faction, FactionAPI targetFaction, 

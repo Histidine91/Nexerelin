@@ -112,6 +112,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("specialForcesPointMult", "float", tabFleets, NexConfig.specialForcesPointMult, 0, 10);
         addSetting("specialForcesSizeMult", "float", tabFleets, NexConfig.specialForcesSizeMult, 0.2, 5);
         addSetting("specialForcesMaintMult", "float", tabFleets, NexConfig.specialForcesMaintMult, 0, 2);
+        addSetting("enablePunitiveExpeditions", "boolean", tabFleets, NexConfig.enablePunitiveExpeditions);
 
         addHeader("misc", null);
         addSetting("enableStrategicAI", "boolean", NexConfig.enableStrategicAI);
@@ -124,7 +125,6 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("allowNPCColonyGrowth", "boolean", NexConfig.allowNPCColonyGrowth);
         addSetting("hardModeColonyGrowthMult", "float", NexConfig.hardModeColonyGrowthMult, 0.5f, 1f);
         addSetting("hardModeColonyIncomeMult", "float", NexConfig.hardModeColonyIncomeMult, 0.5f, 1f);
-        addSetting("enablePunitiveExpeditions", "boolean", NexConfig.enablePunitiveExpeditions);
         //addSetting("prismNumBossShips", "int", NexConfig.prismNumBossShips, 0, 10);
         addSetting("enableNexColonyCrises", "boolean", NexConfig.enableNexColonyCrises);
         addSetting("officerDeaths", "boolean", NexConfig.officerDeaths);
@@ -275,6 +275,8 @@ public class LunaConfigHelper implements LunaSettingsListener {
                 return (float)(double)LunaSettings.getDouble(mid, var);
             case "double":
                 return LunaSettings.getDouble(mid, var);
+            case "string":
+                return LunaSettings.getString(mid, var);
             default:
                 log.error(String.format("Setting %s has invalid type %s", var, type));
         }
@@ -333,6 +335,9 @@ public class LunaConfigHelper implements LunaSettingsListener {
             case "double":
                 LunaSettings.SettingsCreator.addDouble(mid, var, name, tooltip,
                         (double)defaultVal, min, max, tab);
+                break;
+            case "string":
+                LunaSettings.SettingsCreator.addString(mid, var, name, tooltip, (String)defaultVal, tab);
                 break;
             case "key":
                 LunaSettings.SettingsCreator.addKeybind(mid, var, name, tooltip, (int)defaultVal, tab);

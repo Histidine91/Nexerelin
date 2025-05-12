@@ -92,6 +92,8 @@
 	"nex_brawlMode_maxMult":3,
 	"nex_brawlMode_randomFactionGearChance":0,	# 0.6
 	
+	"nex_sectorDefenderMode":false,	# invasions can only be launched by or against hostile-to-all factions
+	
 	"nex_officerBaseEscapeChance":0.5,	# modified by crew loss mult
 	"nex_officerSurviveChance":0.75,	# modified by crew loss mult; survive chance is the base value only if officer does not escape and ship is disabled rather than destroyed
 										# if the ship is lost, survival chance starts at zero and reaches this number when crew loss mult is zero
