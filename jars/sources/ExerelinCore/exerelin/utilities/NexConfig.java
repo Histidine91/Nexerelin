@@ -174,6 +174,7 @@ public class NexConfig
     public static boolean corvusModeLandmarks = false;
     public static int stabilizePackageEffect = 3;
     public static float rebellionMult = 1;
+    public static boolean allowSmugglersForPlayerRebellions = true;
     public static boolean enablePunitiveExpeditions = true;
     public static boolean autoResistAIInspections = true;
     public static boolean allyVictories = true;
@@ -303,6 +304,7 @@ public class NexConfig
             leaveEliminatedFaction = settings.optBoolean("leaveEliminatedFaction", leaveEliminatedFaction);
             stabilizePackageEffect = settings.optInt("stabilizePackageEffect", stabilizePackageEffect);
             rebellionMult = (float)settings.optDouble("rebellionMult", rebellionMult);
+            allowSmugglersForPlayerRebellions = settings.optBoolean("allowSmugglersForPlayerRebellions", allowSmugglersForPlayerRebellions);
             enablePunitiveExpeditions = settings.optBoolean("enablePunitiveExpeditions", enablePunitiveExpeditions);
             autoResistAIInspections = settings.optBoolean("autoResistAIInspections", autoResistAIInspections);
             allyVictories = settings.optBoolean("allyVictories", allyVictories);

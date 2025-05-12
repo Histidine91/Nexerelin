@@ -3248,6 +3248,8 @@
 		"tooltip_officerDeaths":"Player officers may be killed or go MIA in combat.",
 		"name_rebellionMult":"Rebellion generation mult",
 		"tooltip_rebellionMult":"Modifies the rate at which rebellions break out due to low stability.",
+		"name_allowSmugglersForPlayerRebellions":"Allow rebellion smugglers on player markets",
+		"tooltip_allowSmugglersForPlayerRebellions":"If enabled, rebellions on player markets can receive supplies from smugglers by event (these smugglers can be intercepted to weaken the rebellion).",
 		
 		"name_skipStoryDefault":"Default \"skip story\" option",
 		"tooltip_skipStoryDefault":"Default setting for the \"skip story\" toggle in new game setup dialog.",

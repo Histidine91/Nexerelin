@@ -1077,7 +1077,9 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 				updateSuppressionFleet(days);
 			}
 			if (rebelStrength < govtStrength * 1.1f && !smugglerData.isActive()) {
-				updateSmuggler(days);
+				if (NexConfig.allowSmugglersForPlayerRebellions || !market.getFaction().isPlayerFaction()) {
+					updateSmuggler(days);
+				}
 			}
 		}
 		else
