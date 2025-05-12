@@ -299,19 +299,26 @@ public class Alliance
 		HIERARCHICAL(Color.MAGENTA),
 		@Deprecated HIERARCHIAL(Color.MAGENTA, HIERARCHICAL),	// reverse compatibility hax
 		DIPLOMATIC(Color.YELLOW),
-		IDEOLOGICAL(Color.GREEN);
+		@Deprecated IDEOLOGICAL(Color.GREEN);
 		
 		public final Color color;
 		public final Alignment redirect;
+		public final boolean deprecated;
 		
-		private Alignment(Color color) {
-			this.color = color;
-			redirect = null;
+		Alignment(Color color) {
+			this(color, null);
 		}
 		
-		private Alignment(Color color, Alignment redirect) {
+		Alignment(Color color, Alignment redirect) {
 			this.color = color;
 			this.redirect = redirect;
+			this.deprecated = redirect != null;
+		}
+
+		Alignment(Color color, boolean deprecated) {
+			this.color = color;
+			this.redirect = null;
+			this.deprecated = deprecated;
 		}
 		
 		/**

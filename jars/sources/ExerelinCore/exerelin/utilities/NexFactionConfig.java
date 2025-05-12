@@ -392,6 +392,7 @@ public class NexFactionConfig
                     try {
                         if (alignmentName.equals("HIERARCHIAL")) alignmentName = Alignment.HIERARCHICAL.toString();    // spelling fix
                         Alignment alignment = Alignment.valueOf(alignmentName);
+                        if (alignment.deprecated) continue;
                         alignments.put(alignment, value);
                     } catch (IllegalArgumentException ex) {
                         // do nothing
