@@ -3261,6 +3261,8 @@
 		
 		"name_buyShipBasePriceMult":"NPC buy ship price mult",
 		"tooltip_buyShipBasePriceMult":"For bar and contact missions where an NPC offers to buy one of your ships.",
+		"name_buyShipRefundFullSP":"NPC buy ship: refund full SP",
+		"tooltip_buyShipRefundFullSP":"True: Give one SP for each player-installed S-mod on the ship. False: Give the same bonus XP that would be refunded by scuttling the ship, with 100%% BXP converted to 1 SP.",
 		
 		"name_allowNPCColonyGrowth":"Allow NPC colony growth",
 		"tooltip_allowNPCColonyGrowth":"If false, NPC colonies will not upsize on reaching 100%% growth progress."

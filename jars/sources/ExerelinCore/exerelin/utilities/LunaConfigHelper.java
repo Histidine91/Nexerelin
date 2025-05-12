@@ -120,6 +120,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("baseTariffMult", "float", NexConfig.baseTariffMult, 0f, 3.4f);
         addSetting("freeMarketTariffMult", "float", NexConfig.freeMarketTariffMult, 0f, 2f);
         addSetting("buyShipBasePriceMult", "float", NexConfig.buyShipBasePriceMult, 0.5f, 5f);
+        addSetting("buyShipRefundFullSP", "boolean", NexConfig.buyShipRefundFullSP);
         addSetting("allowNPCColonyGrowth", "boolean", NexConfig.allowNPCColonyGrowth);
         addSetting("hardModeColonyGrowthMult", "float", NexConfig.hardModeColonyGrowthMult, 0.5f, 1f);
         addSetting("hardModeColonyIncomeMult", "float", NexConfig.hardModeColonyIncomeMult, 0.5f, 1f);
@@ -239,6 +240,8 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.enableVictory = (boolean)loadSetting("enableVictory", "boolean");
         NexConfig.baseTariffMult = (float)loadSetting("baseTariffMult", "float");
         NexConfig.freeMarketTariffMult = (float)loadSetting("freeMarketTariffMult", "float");
+        NexConfig.buyShipBasePriceMult = (float)loadSetting("buyShipBasePriceMult", "float");
+        NexConfig.buyShipRefundFullSP = (boolean)loadSetting("buyShipRefundFullSP", "boolean");
         NexConfig.allowNPCColonyGrowth = (boolean)loadSetting("allowNPCColonyGrowth", "boolean");
         NexConfig.hardModeColonyGrowthMult = (float)loadSetting("hardModeColonyGrowthMult", "float");
         NexConfig.hardModeColonyIncomeMult = (float)loadSetting("hardModeColonyIncomeMult", "float");

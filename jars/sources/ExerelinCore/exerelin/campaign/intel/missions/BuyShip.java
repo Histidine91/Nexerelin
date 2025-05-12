@@ -22,6 +22,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsBaseOfficial;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.intel.missions.BuyShipRule.*;
 import exerelin.utilities.NexConfig;
@@ -198,20 +199,40 @@ public class BuyShip extends HubMissionWithBarEvent {
 			AddRemoveCommodity.addCommodityGainText(aicId, 1, dialog.getTextPanel());
 		}
 
-		int sMods = this.getSModsInstalledByPlayer(member);
-		if (sMods > 0) {
-			Global.getSector().getPlayerStats().addStoryPoints(sMods, dialog.getTextPanel(), false);
+		Pair<Integer, Float> sModSpending = getSModSpending(member);
+		float baseRefund = sModSpending.one;
+		float netRefund = baseRefund - sModSpending.two;
+
+		if (netRefund < 0) return;
+
+		int spToGive = (int)netRefund;
+		float bxpFractionToGive = netRefund % 1;
+
+		if (NexConfig.buyShipRefundFullSP) {
+			spToGive = (int)baseRefund;
+			bxpFractionToGive = 0;
+		}
+
+		if (spToGive > 0) {
+			Global.getSector().getPlayerStats().addStoryPoints(spToGive, dialog.getTextPanel(), false);
+		}
+		if (bxpFractionToGive > 0) {
+			long bxp = Math.round(Global.getSector().getPlayerStats().getBonusXPForSpendingStoryPointBeforeSpendingIt() * bxpFractionToGive);
+			Global.getSector().getPlayerStats().addBonusXP(bxp, true, dialog.getTextPanel(), false);
 		}
 	}
-	
-	protected int getSModsInstalledByPlayer(FleetMemberAPI member) {
-		int count = 0;
+
+	protected Pair<Integer, Float> getSModSpending(FleetMemberAPI member) {
+		Pair<Integer, Float> result = new Pair<>();
+		result.one = 0;
+		result.two = 0f;
 		for (SModRecord record : PlaythroughLog.getInstance().getSModsInstalled()) {
 			FleetMemberAPI thisMember = record.getMember();
 			if (member != thisMember) continue;
-			count += record.getSPSpent();
+			result.one += record.getSMods().size();
+			result.two += record.getBonusXPFractionGained();
 		}
-		return count;
+		return result;
 	}
 
 	protected Variation pickVariation() {
