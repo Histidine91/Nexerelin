@@ -739,6 +739,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 				float ratio = invPoints/baseline;
 				fpMult = ratio * BASE_INVASION_SIZE / defStr;
 			}
+			if (isRemnantRaid) fpMult = 1;
 
 			if (fpMult < SAIConstants.MIN_FP_RATIO_THRESHOLD) {
 				continue;	// we're too weak to attack this target
