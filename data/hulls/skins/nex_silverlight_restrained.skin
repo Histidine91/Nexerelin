@@ -12,4 +12,5 @@
   "restoreToBaseHull": false,
   "skinHullId": "nex_silverlight_restrained",
   "systemId":"microburn_omega",
+  "tags":["codex_unlockable", "limited_tooltip_if_locked"],
 }
