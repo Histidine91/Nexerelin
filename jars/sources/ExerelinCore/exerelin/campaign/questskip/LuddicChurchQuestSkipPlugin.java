@@ -39,7 +39,7 @@ public class LuddicChurchQuestSkipPlugin extends BaseQuestSkipPlugin {
             Global.getSector().getImportantPeople().getPerson(People.BORNANEW).getRelToPlayer().setRel(0.04f);
         }
 
-        if (chain.isQuestEnabled("false_idols")) {
+        if (chain.isQuestEnabled("falseIdols")) {
             String id = Missions.FALSE_IDOLS;
             makeNonStoryCritical("asher", id);
             makeNonStoryCritical("chalcedon", id);
