@@ -7,7 +7,9 @@ import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAd
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
@@ -61,6 +63,19 @@ public class NexUtilsReputation
 			else
 				Global.getSector().getCampaignUI().addMessage(str);
 		}
+	}
+
+	public static ReputationAdjustmentResult applyRepFromAndradaOption(MarketAPI market) {
+		CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
+		impact.delta = -0.05f * market.getSize();
+		//impact.ensureAtBest = RepLevel.SUSPICIOUS;
+		impact.limit = RepLevel.INHOSPITABLE;
+		ReputationAdjustmentResult result = Global.getSector().adjustPlayerReputation(
+				new CoreReputationPlugin.RepActionEnvelope(
+						CoreReputationPlugin.RepActions.CUSTOM, impact, null, null, true),
+				PlayerFactionStore.getPlayerFactionId());
+
+		return result;
 	}
 	
 	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction,	float delta)

@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.MissionCompletionRep;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_TransferMarket;
@@ -18,10 +19,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.groundbattle.GBConstants;
-import exerelin.utilities.InvasionListener;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
@@ -168,6 +166,10 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 		String oldFactionId = market.getFactionId();
 		String factionId = faction.getId();
 		FactionAPI oldFaction = Global.getSector().getFaction(oldFactionId);
+
+		if (!Factions.PLAYER.equals(oldFactionId)) {
+			NexUtilsReputation.applyRepFromAndradaOption(market);
+		}
 		
 		float repChange = Nex_TransferMarket.getRepChange(market, factionId).getModifiedValue() * 0.01f;
 		
@@ -341,7 +343,7 @@ public class ConquestMissionIntel extends BaseMissionIntel implements InvasionLi
 			str = StringHelper.substituteToken(str, "$market", marketName);
 			info.addPara(str, opad, g);
 			
-			if (isAccepted() && market.getFaction().isPlayerFaction()) {
+			if (isAccepted() && (market.getFaction().isPlayerFaction() || market.isPlayerOwned())) {
 				ButtonAPI button = info.addButton(getString("intelButtonTransfer"), BUTTON_TRANSFER, 
 						faction.getBaseUIColor(), faction.getDarkUIColor(),
 					  (int)(width), 20f, opad * 2f);

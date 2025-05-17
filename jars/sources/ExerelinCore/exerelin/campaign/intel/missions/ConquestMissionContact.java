@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithSearch;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_TransferMarket;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
@@ -18,6 +19,7 @@ import exerelin.campaign.intel.EventCancelReason;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.utilities.InvasionListener;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 import org.lwjgl.input.Keyboard;
@@ -166,6 +168,10 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		String factionId = faction.getId();
 		FactionAPI oldFaction = Global.getSector().getFaction(oldFactionId);
 
+		if (!Factions.PLAYER.equals(oldFactionId)) {
+			NexUtilsReputation.applyRepFromAndradaOption(market);
+		}
+
 		float repChange = Nex_TransferMarket.getRepChange(market, factionId).getModifiedValue() * 0.01f;
 
 		SectorManager.transferMarket(market, faction, oldFaction, true, false,
@@ -251,7 +257,7 @@ public class ConquestMissionContact extends HubMissionWithSearch implements Inva
 		str = StringHelper.substituteToken(str, "$onOrAt", market.getOnOrAt());
 		info.addPara(str, opad, tc);
 
-		if (currentStage == Stage.CAPTURE && market.getFaction().isPlayerFaction()) {
+		if (currentStage == Stage.CAPTURE && (market.getFaction().isPlayerFaction() || market.isPlayerOwned())) {
 			ButtonAPI button = info.addButton(ConquestMissionIntel.getString("intelButtonTransfer"), BUTTON_TRANSFER,
 					faction.getBaseUIColor(), faction.getDarkUIColor(),
 					(int)(width), 20f, opad * 2f);

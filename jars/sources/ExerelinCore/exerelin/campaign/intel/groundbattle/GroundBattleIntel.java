@@ -1344,14 +1344,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				market.getFaction(), true, false, new ArrayList<String>(), 0, true);
 		
 		if (!wasPlayerMarket()) {
-			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
-			impact.delta = -0.05f * market.getSize();
-			//impact.ensureAtBest = RepLevel.SUSPICIOUS;
-			impact.limit = RepLevel.INHOSPITABLE;
-			ReputationAdjustmentResult result = Global.getSector().adjustPlayerReputation(
-					new CoreReputationPlugin.RepActionEnvelope(
-					CoreReputationPlugin.RepActions.CUSTOM, impact, null, null, true), 
-					PlayerFactionStore.getPlayerFactionId());
+			ReputationAdjustmentResult result = NexUtilsReputation.applyRepFromAndradaOption(market);
 			playerData.andradaRepChange = result;
 			playerData.andradaRepAfter = Global.getSector().getPlayerFaction().getRelationship(PlayerFactionStore.getPlayerFactionId());
 		}
