@@ -4,7 +4,8 @@ id,trigger,conditions,script,text,options,notes
 # NGC options,,,,,,
 ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,"$isInIntro = true 0
 $introPage = 1.0 0
-FireAll ExerelinNGCIntroPage",,,override SS+ NGC
+FireAll ExerelinNGCIntroPage
+NGCGetExerelinDefaults",,,override SS+ NGC
 ,,,,,,
 ExerelinNGCIntroNextPage,NewGameOptionSelected,$option==exerelinNGCIntroNextPage,"$introPage++
 FireAll ExerelinNGCIntroPage",,,
@@ -39,8 +40,7 @@ ExerelinNGCIntroDevStart,ExerelinNGCIntroPage,$global.isDevMode,,,"99:nex_NGCDev
 100:nex_NGCDevStartFast:>> (dev) quick start no time pass",
 ,,,,,,
 ,,,,,,
-ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,"NGCGetExerelinDefaults
-FireAll ExerelinNGCOptions",Configure the Sector?,,"make sure this runs once per new game, so that Exerelin sector generation data is set up properly"
+ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,FireAll ExerelinNGCOptions,Configure the Sector?,,"make sure this runs once per new game, so that Exerelin sector generation data is set up properly"
 ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptionsBack,"Nex_VisualCustomPanel clear
 FireAll ExerelinNGCOptions",,,
 ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOptionsDone RETURN,,"exerelinNGCOptionsDone:Proceed
