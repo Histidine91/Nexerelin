@@ -709,7 +709,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId1);
         for (MarketAPI market:markets)
         {
-            marketPicker.add(market);
+            marketPicker.add(market, market.getSize());
         }
         
         MarketAPI market = marketPicker.pick();
@@ -721,7 +721,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         return getManager().doDiplomacyEvent(event, market, faction1, faction2);
     }
-    
+
+    // runcode exerelin.campaign.DiplomacyManager.createDiplomacyEvent();
     /**
      * Executes a random diplomacy event between two randomly selected factions.
      */

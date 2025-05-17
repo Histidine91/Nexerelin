@@ -36,6 +36,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.*;
 import exerelin.campaign.intel.VictoryScoreboardIntel.ScoreEntry;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
@@ -795,9 +796,34 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             expelPlayerFromFaction(true);
         }
 
+        SectorManager.getManager().ceasefirePostElimination(defeated);
+
         StrategicAI.removeAI(defeatedId);
 
         checkForVictory();
+    }
+
+    public void ceasefirePostElimination(FactionAPI defeated) {
+        if (defeated.isPlayerFaction()) return;
+        String defeatedId = defeated.getId();
+        NexFactionConfig us = NexConfig.getFactionConfig(defeatedId);
+        if (us.hostileToAll > 0 || !us.playableFaction || NexUtilsFaction.isPirateOrTemplarFaction(defeatedId)) {
+            return;
+        }
+        for (String otherFactionId : getLiveFactionIdsCopy()) {
+            if (!defeated.isHostileTo(otherFactionId)) continue;
+            if (Factions.PLAYER.equals(otherFactionId)) continue;
+            NexFactionConfig them = NexConfig.getFactionConfig(otherFactionId);
+            if (them.hostileToAll > 0 || !them.playableFaction || NexUtilsFaction.isPirateOrTemplarFaction(otherFactionId)) {
+                continue;
+            }
+
+            float reduction = NexConfig.warWearinessCeasefireReduction;
+            // faction order is important, since the defeated faction will have no markets
+            DiplomacyIntel intel = DiplomacyManager.createDiplomacyEventV2(Global.getSector().getFaction(otherFactionId), defeated, "ceasefire", null);
+            DiplomacyManager.getManager().modifyWarWeariness(defeatedId, -reduction);
+            DiplomacyManager.getManager().modifyWarWeariness(otherFactionId, -reduction);
+        }
     }
     
     public static void factionRespawned(FactionAPI faction, MarketAPI market)
