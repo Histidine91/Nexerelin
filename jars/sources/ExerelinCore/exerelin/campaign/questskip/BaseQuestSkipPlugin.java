@@ -106,7 +106,7 @@ public abstract class BaseQuestSkipPlugin implements QuestSkipPlugin {
     protected void setMissionDone(String missionId, PersonAPI hubPerson) {
         BaseMissionHub hub = (BaseMissionHub)BaseMissionHub.get(hubPerson);
         hub.updateMissionCreatorsFromSpecs();
-        List<HubMissionCreator> creators = (List<HubMissionCreator>) ReflectionUtils.getIncludingSuperclasses("creators", hub, hub.getClass());
+        List<HubMissionCreator> creators = (List<HubMissionCreator>) ReflectionUtils.get(hub, "creators", null, true);
         for (HubMissionCreator creator : creators) {
             if (missionId.equals(creator.getSpecId())) {
                 creator.setNumCompleted(1);

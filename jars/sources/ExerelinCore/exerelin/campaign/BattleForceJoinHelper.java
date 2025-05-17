@@ -70,7 +70,7 @@ public class BattleForceJoinHelper implements EveryFrameScript {
         }
         BattleAPI.BattleSide playerSide = battle.pickSide(player);
         FleetInteractionDialogPluginImpl fidpi = (FleetInteractionDialogPluginImpl)dialog.getPlugin();
-        FIDConfig config = (FIDConfig)ReflectionUtils.getIncludingSuperclasses("config", fidpi, fidpi.getClass());
+        FIDConfig config = (FIDConfig)ReflectionUtils.get(fidpi, "config", null, true);
         if (config == null) {
             endCheck();
             return;
@@ -108,7 +108,7 @@ public class BattleForceJoinHelper implements EveryFrameScript {
 
         FleetInteractionDialogPluginImpl fidpi = (FleetInteractionDialogPluginImpl)dialog.getPlugin();
         List<CampaignFleetAPI> pulledIn = new ArrayList<>();
-        pulledIn = (List<CampaignFleetAPI>)ReflectionUtils.getIncludingSuperclasses("pulledIn", fidpi, fidpi.getClass());
+        pulledIn = (List<CampaignFleetAPI>)ReflectionUtils.get(fidpi, "pulledIn", null, true);
         pulledIn.add(fleet);
     }
 

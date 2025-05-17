@@ -313,7 +313,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 		RemnantStationFleetManager rsfm = getRemnantStationFleetManager();
 
 		if (rsfm == null) return 0;
-		return (Integer)ReflectionUtils.getIncludingSuperclasses("maxFleets", rsfm, rsfm.getClass());
+		return (Integer)ReflectionUtils.get(rsfm, "maxFleets", null, true);
 	}
 	
 	/**
@@ -533,7 +533,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 
 		float fp = 0;
 		int numFleets = 0;
-		List<CampaignFleetAPI> fleets = (List<CampaignFleetAPI>)ReflectionUtils.getIncludingSuperclasses("fleets", rsfm, rsfm.getClass());
+		List<CampaignFleetAPI> fleets = (List<CampaignFleetAPI>)ReflectionUtils.get(rsfm, "fleets", null, true);
 		for (CampaignFleetAPI fleet : fleets) {
 			numFleets++;
 			fp += fleet.getFleetPoints();
