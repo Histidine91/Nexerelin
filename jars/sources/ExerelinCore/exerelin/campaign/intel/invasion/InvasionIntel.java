@@ -480,6 +480,14 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		if (ExerelinModPlugin.isNexDev && (isEnding() || isEnded())) {
 			info.addPara("The event is now over.", opad);
 		}
+
+		if (target.getFaction().isPlayerFaction() || target.getFaction() == Misc.getCommissionFaction()) {
+			if (requestedDefenseFleet == null) {
+				addDefenseFleetButton(info, width, opad);
+			} else {
+				info.addPara(StringHelper.getString("exerelin_invasion", "intelDefFleetRequested"), opad);
+			}
+		}
 	}
 	
 	/**

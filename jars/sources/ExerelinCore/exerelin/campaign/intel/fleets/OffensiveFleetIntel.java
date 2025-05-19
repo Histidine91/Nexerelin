@@ -13,8 +13,10 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidDelegate;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FleetRequest;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.ui.IntelUIAPI;
+import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -31,16 +33,18 @@ import exerelin.campaign.battle.NexWarSimScript;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.GroundPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static exerelin.campaign.battle.NexWarSimScript.*;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
@@ -50,6 +54,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public static final String MEM_KEY_ACTION_DONE = "$nex_raidActionDone";
 	public static final Object ENTERED_SYSTEM_UPDATE = new Object();
 	public static final Object OUTCOME_UPDATE = new Object();
+	public static final Object BUTTON_AUTO_DEF_FLEET = new Object();
 	public static final boolean INTEL_ALWAYS_VISIBLE = true;
 	public static final float ALLY_GEAR_CHANCE = 0.5f;
 	public static final float FP_MULT = 0.7f;
@@ -84,6 +89,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected boolean brawlMode;
 	protected float brawlMult = -1;
 	protected boolean reportedRaid = false;
+
+	@Getter protected DefenseFleetIntel requestedDefenseFleet;	// quick-request defense fleet to counter this fleet
 		
 	protected Set<RouteData> alreadyActionedRoutes = new HashSet<>();
 	
@@ -402,6 +409,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			addETABullet(info, tc, Misc.getHighlightColor(), initPad);
 		}
 	}
+
+	protected float getWantedStrengthForRequestedDefenseFleet() {
+		return this.fp;	// cba to do anything more elaborate for now
+	}
 	
 	protected void addArrivedBullet(TooltipMakerAPI info, Color color, float pad) 
 	{
@@ -457,6 +468,13 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			String str = StringHelper.getStringAndSubstituteToken("nex_fleetIntel", "bulletETA", "$days", days);
 			info.addPara(str, pad, color, hl, "" + Math.round(eta));
 		}
+	}
+
+	protected void addDefenseFleetButton(TooltipMakerAPI info, float width, float pad) {
+		float reqStrength = getWantedStrengthForRequestedDefenseFleet();
+		String btnStr = String.format(StringHelper.getString("exerelin_invasion", "intelButtonRequestDef"), (int)reqStrength, (int)InvasionFleetManager.getManager().getFleetRequestStock());
+		FactionAPI faction = target.getFaction();
+		info.addButton(btnStr, BUTTON_AUTO_DEF_FLEET, faction.getBaseUIColor(), faction.getDarkUIColor(), width, 24, pad);
 	}
 
 	@Override
@@ -741,6 +759,28 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		}
 	}
 
+	public boolean requestDefenseFleetIfPossible() {
+		int reqFP = (int)this.getWantedStrengthForRequestedDefenseFleet();
+		int availableFP = (int)InvasionFleetManager.getManager().getFleetRequestStock();
+		float cost = reqFP * NexConfig.fleetRequestCostPerFP;
+		float currCreds = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+		boolean enoughFP = availableFP >= reqFP;
+		boolean enoughCreds = currCreds >= cost;
+
+		if (!enoughFP || !enoughCreds) return false;
+
+		float timeToLaunch = Nex_FleetRequest.getTimeToLaunch(reqFP, Nex_FleetRequest.FleetType.DEFENSE);
+		this.requestedDefenseFleet = new DefenseFleetIntel(target.getFaction(), target, target, reqFP, timeToLaunch);
+		requestedDefenseFleet.setPlayerFee(Math.round(cost));
+		requestedDefenseFleet.setPlayerSpawned(true);
+		requestedDefenseFleet.init();
+
+		Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(cost);
+		InvasionFleetManager.getManager().modifyFleetRequestStock(-reqFP);
+
+		return true;
+	}
+
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		super.createSmallDescription(info, width, height);
@@ -936,6 +976,38 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		if (buttonId == StrategicActionDelegate.BUTTON_GO_INTEL && strategicAction != null) {
 			Global.getSector().getCampaignUI().showCoreUITab(CoreUITabId.INTEL, strategicAction.getAI());
 		}
+		else if (buttonId == BUTTON_AUTO_DEF_FLEET) {
+			boolean success = requestDefenseFleetIfPossible();
+			if (success) ui.updateIntelList();
+		}
+	}
+
+	@Override
+	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+		if (buttonId == BUTTON_AUTO_DEF_FLEET) {
+			Color hl = Misc.getHighlightColor();
+			Color bad = Misc.getNegativeHighlightColor();
+
+			int reqFP = (int)this.getWantedStrengthForRequestedDefenseFleet();
+			int availableFP = (int)InvasionFleetManager.getManager().getFleetRequestStock();
+			float cost = reqFP * NexConfig.fleetRequestCostPerFP;
+			float currCreds = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+			boolean enoughFP = availableFP >= reqFP;
+			boolean enoughCreds = currCreds >= cost;
+			String str = StringHelper.getString("exerelin_invasion", "intelButtonRequestDefConfirm");
+			LabelAPI label = prompt.addPara(str,0f, hl, reqFP + "", Misc.getDGSCredits(cost), availableFP + "", Misc.getDGSCredits(currCreds));
+			label.setHighlightColors(hl, hl, enoughFP ? hl : bad, enoughCreds ? hl : bad);
+
+			return;
+		}
+
+		super.createConfirmationPrompt(buttonId, prompt);
+	}
+
+	@Override
+	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
+		if (buttonId == BUTTON_AUTO_DEF_FLEET) return true;
+		return super.doesButtonHaveConfirmDialog(buttonId);
 	}
 
 	/**

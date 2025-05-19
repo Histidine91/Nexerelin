@@ -316,6 +316,14 @@ public class SatBombIntel extends OffensiveFleetIntel {
 			stage.showStageInfo(info);
 			if (getStageIndex(stage) == failStage) break;
 		}
+
+		if (target.getFaction().isPlayerFaction() || target.getFaction() == Misc.getCommissionFaction()) {
+			if (requestedDefenseFleet == null) {
+				addDefenseFleetButton(info, width, opad);
+			} else {
+				info.addPara(StringHelper.getString("exerelin_invasion", "intelDefFleetRequested"), opad);
+			}
+		}
 	}
 	
 	@Override

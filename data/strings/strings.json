@@ -1265,6 +1265,10 @@
 		"intelPredictionBombard":"The invasion force is likely to resort to tactical bombardment.",
 		"intelBrawl":"$TheTargetFaction will likely deploy a large defense force to meet the invasion.",
 		"intelCounterInvasionStrength":"The force is carrying an estimated %s marines.",
+		"intelDefFleetRequested":"You have requested a defense fleet to counter this invasion.",
+		
+		"intelButtonRequestDef":"Quick-request defense fleet (%s/%s)",
+		"intelButtonRequestDefConfirm":"This will request a defense fleet of size %s to match the attacker, costing %s. You have %s fleet request points and %s.",
 		
 		"intelStealPenalty":"The operation was pre-empted by player forces of $thePlayerFaction. $TheFaction has lodged an official protest over your meddling intervention.",
 		"intelStealBulletReason":"Target stolen",
