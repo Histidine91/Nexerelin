@@ -525,6 +525,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         return null;
     }
+
+    protected boolean willResultInWar(DiplomacyEventDef def, FactionAPI faction1, FactionAPI faction2) {
+        if (!def.isNegative()) return false;
+        if (def.repLimit != null && def.repLimit.isAtWorst(RepLevel.INHOSPITABLE)) return false;
+        if (NexFactionConfig.getMinRelationship(faction1.getId(), faction2.getId()) >= -0.5f) return false;
+
+        float curr = faction1.getRelationship(faction2.getId());
+        return curr + def.minRepChange < -0.5f;
+    }
     
     /**
      * Picks a random diplomacy event to execute between the two specified factions,
@@ -591,12 +600,19 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (eventDef.allowedFactions2 != null && !eventDef.allowedFactions2.contains(factionId2))
                 continue;
             
-            boolean isNegative = (eventDef.maxRepChange + eventDef.minRepChange)/2 < 0;
+            boolean isNegative = eventDef.isNegative();
             if (!isNegative && params.onlyNegative) continue;
             if (isNegative && params.onlyPositive) continue;
             
             float chance = eventDef.chance;
             if (chance <= 0) continue;
+
+            boolean willResultInWar = willResultInWar(eventDef, faction1, faction2);
+            if (willResultInWar && getDiplomacyBrain(factionId1).hasCeasefireWith(factionId2)) {
+                log.info(String.format("Blocking diplomacy event def %s between %s and %s due to ceasefire", eventDef.name, faction1.getDisplayName(), faction2.getDisplayName()));
+                continue;
+            }
+
             if (getManager().startRelationsMode.isDefault()) {
                 if (isNegative) {
                     float mult = NexFactionConfig.getDiplomacyNegativeChance(factionId1, factionId2);
@@ -631,9 +647,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         for (Pair<DiplomacyEventDef, Float> validEvent : validEvents) {
             DiplomacyEventDef event = validEvent.one;
             float chance = validEvent.two;
-            
-            boolean isNegative = (event.maxRepChange + event.minRepChange)/2 < 0;
-            if (isNegative) chance /= sumChancesNegative;
+            if (event.isNegative()) chance /= sumChancesNegative;
             else chance /= sumChancesPositive;
             //log.info("Adding event " + event.name + " with chance " + chance + " to picker");
             
@@ -1600,6 +1614,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         public boolean allowPiratesToNonPirates;
         public boolean allowNonPiratesToPirates;
         public float chance;
+
+        public boolean isNegative() {
+            return (maxRepChange + minRepChange)/2 < 0;
+        }
     }
     
     public static class DiplomacyEventParams {
