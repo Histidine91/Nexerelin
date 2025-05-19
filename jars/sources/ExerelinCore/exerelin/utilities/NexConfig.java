@@ -70,7 +70,7 @@ public class NexConfig
     public static float invasionPointsPerPlayerLevel = 1;
     public static float invasionPointEconomyMult = 0.5f;
     public static float creditLossOnColonyLossMult = 0.5f;
-    public static boolean allowNPCSatBomb = true;
+    public static boolean allowNPCSatBomb = false;
     public static float permaHateFromPlayerSatBomb = 0.2f;
 
     // ground battles

@@ -3,7 +3,7 @@
     
     "directoryDialogKey": 45,   # integer, default 45 (X)
     
-    "enableStrategicAI":false,	# new experimental strategic AI for NPC factions
+    "enableStrategicAI":true,	# goal-directed AI for NPC factions
     
     "ceasefireNotificationPopup": true,
     # 0 = no filter, 1 = popup only events affecting player/commissioner faction, 2 = filter out all events
@@ -66,7 +66,7 @@
     "invasionPointsPerPlayerLevel": 1,
     "invasionPointEconomyMult": 0.5, # multiplier for invasion point gains from economic assets
     "creditLossOnColonyLossMult": 0.4,
-    "allowNPCSatBomb": true,	# NPC factions can launch saturation bombardment missions in place of some invasions, raids and vengeance fleets
+    "allowNPCSatBomb": false,	# NPC factions can launch saturation bombardment missions in place of some invasions, raids and vengeance fleets
     "permaHateFromPlayerSatBomb": 0.24f,	# sat bombing permanently lowers max relationship with relevant factions by this much (doubled for actual victim)
     
     "groundBattleDamageMult":1,				# modifier to damage dealt during ground battle resolution; lower this to make battles last longer
