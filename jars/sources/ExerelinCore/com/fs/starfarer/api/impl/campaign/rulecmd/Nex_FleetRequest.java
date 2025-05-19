@@ -302,19 +302,22 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	
 	
 	protected float getTimeToLaunch() {
+		return getTimeToLaunch(fp, fleetType);
+	}
+
+	public static float getTimeToLaunch(float fp, FleetType fleetType) {
 		float time = InvasionFleetManager.getOrganizeTime(fp);
 		if (fleetType == FleetType.INVASION)
 			time *= 1.25f;
 		else if (fleetType == FleetType.COLONY)
 			time *= 2f;
 		time *= Global.getSettings().getFloat("nex_fleetRequestOrganizeTimeMult");
-		
+
 		if (time < 0.1f) time = 0.1f;
-		
+
 		if (Global.getSettings().isDevMode()) {
 			time = 0.5f;
 		}
-		
 		return time;
 	}
 	

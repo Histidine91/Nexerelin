@@ -4,16 +4,16 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Abilities;
-import com.fs.starfarer.api.impl.campaign.ids.Items;
-import com.fs.starfarer.api.impl.campaign.ids.Missions;
-import com.fs.starfarer.api.impl.campaign.ids.People;
+import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.missions.academy.GAFCReplaceArchon;
 import com.fs.starfarer.api.impl.campaign.missions.academy.GAFindingCoureuse;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMission;
+import com.fs.starfarer.api.impl.campaign.rulecmd.missions.GateCMD;
 import com.fs.starfarer.api.loading.PersonMissionSpec;
 import exerelin.campaign.AcademyStoryVictoryScript;
 import exerelin.campaign.ExerelinSetupData;
@@ -115,9 +115,20 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             zal.getRelToPlayer().setRel(0.2f);
             Global.getSector().getImportantPeople().getPerson(People.KANTA).getRelToPlayer().setRel(-0.15f);
 
+            scanGateInSystem(Global.getSector().getStarSystem("Galatia"));
+            scanGateInSystem(Global.getSector().getStarSystem("Magec"));
+
             //StartSetupPostTimePass.addStoryContact(People.HORUS_YARIBAY); // go talk to him yourself
 
             Global.getSector().getPlayerFleet().getCargo().addSpecial(new SpecialItemData(Items.JANUS, null), 1);
+        }
+    }
+
+    public void scanGateInSystem(StarSystemAPI system) {
+        if (system == null) return;
+        for (SectorEntityToken gate : system.getEntitiesWithTag(Tags.GATE)) {
+            gate.getMemoryWithoutUpdate().set(GateEntityPlugin.GATE_SCANNED, true);
+            GateCMD.notifyScanned(gate);
         }
     }
 
