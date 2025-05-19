@@ -55,7 +55,7 @@ public class ScytheQuestSkipPlugin extends BaseQuestSkipPlugin {
         }
         final SectorEntityToken cache2 = cache;
 
-        Global.getSector().addScript(new DelayedActionScript(0) {
+        Global.getSector().addScript(new DelayedActionScript(0.05f) {
             @Override
             public void doAction() {
                 boolean createdDialog = Global.getSector().getCampaignUI().showInteractionDialog(cache2);
