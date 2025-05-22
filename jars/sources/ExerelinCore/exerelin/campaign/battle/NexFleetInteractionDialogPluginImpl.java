@@ -388,7 +388,8 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			SectorEntityToken assignTarget = assignment.getTarget();
 			if (assignTarget != null && assignTarget instanceof CampaignFleetAPI)
 			{
-				List<CampaignFleetAPI> fleets = battle.getBothSides();
+				List<CampaignFleetAPI> fleets = new ArrayList<>(battle.getBothSides());
+				fleets.add(Global.getSector().getPlayerFleet());
 				for (CampaignFleetAPI inBattle : fleets)
 				{
 					if (inBattle != assignTarget) continue;
