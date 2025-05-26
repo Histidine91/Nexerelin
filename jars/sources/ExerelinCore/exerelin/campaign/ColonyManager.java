@@ -978,14 +978,14 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		log.info("Attempting to generate instant colony");
 		String factionId = pickFactionToColonize(random, false);
 		if (factionId == null) {
-			log.info("Failed to pick faction for colony");
+			// log.info("Failed to pick faction for colony");
 			return false;
 		}
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		
 		MarketAPI source = pickColonyExpeditionSource(factionId, random);
 		if (source == null) {
-			log.info("Failed to pick source market for colony");
+			// log.info("Failed to pick source market for colony");
 			return false;
 		}
 		SectorEntityToken anchor;
@@ -994,14 +994,14 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		
 		PlanetAPI target = pickColonyExpeditionTarget(factionId, anchor, true);
 		if (target == null) {
-			log.info("Failed to pick target for colony");
+			// log.info("Failed to pick target for colony");
 			return false;
 		}
 
 		// Generate colony with random size
 		int marketSize = 3 + (int)(Math.random() * (maxSize - 3));
 		ColonyExpeditionIntel.createColonyStatic(target.getMarket(), target, faction, false, false, marketSize);
-		log.info("Generated colony of size " + marketSize);
+		// log.info("Generated colony of size " + marketSize);
 
 		return true;
 	}
