@@ -1968,6 +1968,8 @@
 		"maxMarketsTitle":"Maximum inhabited planets + stations per system",
 		"randomColoniesTitle":"Extra colonies at start",
 		"randomColoniesTooltip":"Follows the same selection rules as midgame colony expeditions.",
+		"randomColoniesMaxSize":"Maximum colony size",
+		"randomColoniesMaxSizeTooltip":"Maximum size of generated colonies. Minimum size is 3.",
 		"randomizeFactionsTooltip":"Every faction has a 50% chance to be enabled (except independents, which will not be toggled from their current setting).",
 		
 		"infoCustomPanel":"Mouse over option titles for more information",

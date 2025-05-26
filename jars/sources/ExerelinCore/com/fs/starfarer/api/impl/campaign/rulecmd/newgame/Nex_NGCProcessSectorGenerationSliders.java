@@ -79,9 +79,14 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 		}
 		else {
 			opts.addSelector(getString("randomColoniesTitle"), "randomColoniesSelector", 
-					Color.YELLOW, BAR_WIDTH, 48, 0, 50, ValueDisplayMode.VALUE, 
+					Color.YELLOW, BAR_WIDTH, 48, 0, 1000, ValueDisplayMode.VALUE,
 					getString("randomColoniesTooltip"));
 			opts.setSelectorValue("randomColoniesSelector", data.randomColonies);
+			// Maximum size of generated colonies
+			opts.addSelector(getString("randomColoniesMaxSize"), "randomColoniesMaxSizeSelector",
+					Color.YELLOW, BAR_WIDTH, 48, 3, 10, ValueDisplayMode.VALUE,
+					getString("randomColoniesMaxSizeTooltip"));
+			opts.setSelectorValue("randomColoniesMaxSizeSelector", data.randomColoniesMaxSize);
 		}
 		
 		opts.addOption(StringHelper.getString("back", true), "exerelinNGCSectorOptionsBack");
@@ -94,6 +99,7 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 		
 		if (data.corvusMode) {
 			data.randomColonies = Math.round(opts.getSelectorValue("randomColoniesSelector"));
+			data.randomColoniesMaxSize = Math.round(opts.getSelectorValue("randomColoniesMaxSizeSelector"));
 		} else {
 			data.numSystems = Math.round(opts.getSelectorValue("systemCountSelector"));
 			data.numPlanets = Math.round(opts.getSelectorValue("planetCountSelector"));

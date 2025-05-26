@@ -772,14 +772,15 @@ public class ExerelinModPlugin extends BaseModPlugin
             }
             
             int count = ExerelinSetupData.getInstance().randomColonies;
-            int tries = 0;
+            int tries = count * 5;
             Random random = new Random(NexUtils.getStartingSeed());
+            int maxSize = ExerelinSetupData.getInstance().randomColoniesMaxSize;
             while (count > 0) {
-                boolean success = ColonyManager.getManager().generateInstantColony(random);
+                boolean success = ColonyManager.getManager().generateInstantColony(random, maxSize);
                 if (success)
                     count--;
-                tries++;
-                if (tries >= 1000)
+                tries--;
+                if (tries == 0)
                     break;
             }
         }
