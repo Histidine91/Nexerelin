@@ -79,7 +79,7 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 		}
 		else {
 			opts.addSelector(getString("randomColoniesTitle"), "randomColoniesSelector", 
-					Color.YELLOW, BAR_WIDTH, 48, 0, 1000, ValueDisplayMode.VALUE,
+					Color.YELLOW, BAR_WIDTH, 48, 0, 250, ValueDisplayMode.VALUE,
 					getString("randomColoniesTooltip"));
 			opts.setSelectorValue("randomColoniesSelector", data.randomColonies);
 			// Maximum size of generated colonies
