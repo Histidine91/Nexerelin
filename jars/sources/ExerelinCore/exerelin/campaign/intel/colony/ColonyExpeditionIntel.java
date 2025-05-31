@@ -361,20 +361,20 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	public void createColony() {
 		MarketAPI target = getTarget();
 		String oldName = target.getName();
-		createColonyStatic(target, planet, faction, false, playerSpawned);
+		createColonyStatic(target, planet, faction, false, playerSpawned, 3);
 		String newName = target.getName();
 		if (!oldName.equals(newName))
 			this.newName = newName;
 	}
 	
 	public static void createColonyStatic(MarketAPI market, PlanetAPI planet, 
-			FactionAPI faction, boolean fromDeciv, boolean isPlayer) 
+			FactionAPI faction, boolean fromDeciv, boolean isPlayer, int marketSize)
 	{
 		log.info("Colonizing market " + market.getName() + ", " + market.getId());
 		String factionId = faction.getId();
 		
-		market.setSize(3);
-		market.addCondition("population_3");
+		market.setSize(marketSize);
+		market.addCondition("population_" + marketSize);
 		market.setFactionId(factionId);
 		market.setPlanetConditionMarketOnly(false);
 		market.getMemoryWithoutUpdate().set(MEMORY_KEY_COLONY, true);
