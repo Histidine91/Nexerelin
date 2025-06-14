@@ -2,6 +2,8 @@ package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CampaignEventListener;
+import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -155,6 +157,11 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 		dialog.getTextPanel().addParagraph(PlayerOutpostIntel.getString("outpostComplete"));
 		dialog.setInteractionTarget(outpost);
 		Global.getSector().getIntelManager().addIntelToTextPanel(intel, text);
+
+		for (CampaignEventListener listener : Global.getSector().getAllListeners()) {
+			listener.reportPlayerOpenedMarket(outpost.getMarket());
+		}
+		
 		return true;
 	}
 	
@@ -189,6 +196,10 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 		cargo.addCommodity(Commodities.HEAVY_MACHINERY, PlayerOutpostIntel.getMachineryRequired()/2);
 		cargo.addCommodity(Commodities.SUPPLIES, PlayerOutpostIntel.getSuppliesRequired()/2);
 		cargo.addCommodity(Commodities.GAMMA_CORE, PlayerOutpostIntel.getGammaCoresRequired());
+
+		for (ColonyDecivListener listener : Global.getSector().getListenerManager().getListeners(PlayerColonizationListener.class)) {
+			listener.reportPlayerAbandonedColony(intel.getMarket());
+		}
 		
 		dialog.getVisualPanel().showLoot(Misc.ucFirst(StringHelper.getString("salvage")),
 				cargo, false, true, true, new CoreInteractionListener() {
