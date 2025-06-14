@@ -192,7 +192,7 @@ nex_NGCFinalize,ExerelinNGCStep4,,"AddText ""Starting experience and assets?""
 Nex_NGCStartResources createOptions
 SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCStartEnsign:Ensign (20,000 credits, level 1)
 nex_NGCStartLieutenant:Lieutenant (75,000 credits, level 3, one officer)
-nex_NGCStartCommander:Commander (250,000 credits, level 6, two officers)
+nex_NGCStartCommander:Commander (250,000 credits, level 6, two officers, one operative)
 nex_NGCCustomResourcesStart:Custom...",
 nex_NGCFinalizeSuper,ExerelinNGCStep4,$option == nex_NGCFleetSuper,"AddText ""Starting experience and assets?""
 Nex_NGCStartResources createOptions
@@ -231,6 +231,7 @@ nex_NGCStartCommander,NewGameOptionSelected,$option == nex_NGCStartCommander,"NG
 NGCAddCharacterPoints 1
 Nex_NGCAddLevel 6
 NGCSetNumStartingOfficers 2
+NGCSetNumStartingOfficers 1 true
 FireBest NewGameBackgroundSelection",,,
 nex_NGCStartAgent,NewGameOptionSelected,$option == nex_NGCStartAgent,"NGCAddCredits 20000
 NGCAddCharacterPoints 1

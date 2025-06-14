@@ -1967,6 +1967,8 @@
 		"gainedXP":"gained $xp XP",
 		"recruitedOfficer":"recruited $numOfficers officer",
 		"recruitedOfficers":"recruited $numOfficers officers",
+		"recruitedOperative":"recruited $numOfficers operative",
+		"recruitedOperatives":"recruited $numOfficers operatives",
 
 		"populatedSystemsTitle":"Populated systems",
 		"populatedSystemsTooltip":"This is a target number of systems. Actual populated system count may be more or less than this.",
@@ -2062,6 +2064,7 @@
 		"startingLevelTitle":"Starting level",
 		"startingCreditsTitle":"Starting credits (000)",
 		"startingOfficersTitle":"Starting officers",
+		"startingOperativesTitle":"Starting operatives",
 		
 		"customFleetButton":"Custom",
 		"customFleetHeader":"Custom fleet",

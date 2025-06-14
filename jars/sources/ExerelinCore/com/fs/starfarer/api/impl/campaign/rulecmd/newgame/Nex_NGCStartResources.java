@@ -1,9 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
@@ -21,7 +18,10 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.StartFleetType;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
+import java.util.List;
+import java.util.Map;
 
 
 public class Nex_NGCStartResources extends BaseCommandPlugin {
@@ -69,6 +69,11 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 				0, 4,	// min, max
 				ValueDisplayMode.VALUE, null);
 		opts.setSelectorValue("startOfficersSelector", data.numStartingOfficers);
+
+		opts.addSelector(getString("startingOperativesTitle"), "startOperativesSelector", Color.CYAN, BAR_WIDTH, 48,
+				0, 2,	// min, max
+				ValueDisplayMode.VALUE, null);
+		opts.setSelectorValue("startOperativesSelector", data.numStartingOperatives);
 		
 		MemoryAPI local = memoryMap.get(MemKeys.LOCAL);
 		if (true && local.contains("$nex_lastSelectedFleetType")) 
@@ -96,6 +101,7 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		long xp = Global.getSettings().getLevelupPlugin().getXPForLevel(level);
 		int credits = Math.round(opts.getSelectorValue("startCreditsSelector")) * 1000;
 		int officers = Math.round(opts.getSelectorValue("startOfficersSelector"));
+		int operatives = Math.round(opts.getSelectorValue("startOperativesSelector"));
 		Global.getLogger(this.getClass()).info(String.format("bla: %s, %s, %s, %s", level, xp, credits, officers));
 		
 		charData.getPerson().getStats().addXP(xp);
@@ -109,6 +115,9 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		
 		setupData.numStartingOfficers = officers;
 		NGCSetNumStartingOfficers.addOfficersGainText(officers, text);
+
+		setupData.numStartingOperatives = operatives;
+		NGCSetNumStartingOfficers.addOfficersGainText(operatives, text, true);
 		
 		opts.clearOptions();
 		opts.addOption(StringHelper.getString("done", true), "nex_NGCDone");

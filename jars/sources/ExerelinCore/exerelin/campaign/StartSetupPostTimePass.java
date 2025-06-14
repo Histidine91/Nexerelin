@@ -26,6 +26,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.customstart.Nex_SpacerObligation;
 import exerelin.campaign.intel.Nex_GalatianAcademyStipend;
+import exerelin.campaign.intel.agents.AgentIntel;
 import exerelin.campaign.ui.OwnFactionSetupScript;
 import exerelin.utilities.*;
 import exerelin.utilities.NexFactionConfig.SpecialItemSet;
@@ -125,7 +126,24 @@ public class StartSetupPostTimePass {
 			}
 		}
 		
-		handleStartLocation(sector, playerFleet, factionIdForSpawnLoc);
+		SectorEntityToken startLocation = handleStartLocation(sector, playerFleet, factionIdForSpawnLoc);
+		MarketAPI agentSpawn = startLocation != null ? startLocation.getMarket() : null;
+		if (agentSpawn == null) agentSpawn = Global.getSector().getEconomy().getMarketsCopy().get(0);
+		int numAgents = ExerelinSetupData.getInstance().numStartingOperatives;
+		for (int i=0; i<numAgents; i++)
+		{
+			PersonAPI agent = Global.getSector().getPlayerFaction().createRandomPerson();
+			agent.setRankId(Ranks.AGENT);
+			agent.setPostId(Ranks.POST_AGENT);
+			AgentIntel intel = new AgentIntel(agent, Global.getSector().getPlayerFaction(), 1);
+
+			// if we just have the one agent, it's a hybrid
+			// else, rotate through the specializations
+			if (numAgents == 1) intel.addSpecialization(AgentIntel.Specialization.HYBRID);
+			else intel.addSpecialization(AgentIntel.Specialization.values()[i % AgentIntel.Specialization.values().length]);
+			intel.setMarket(agentSpawn);
+			intel.init();
+		}
 		
 		// Galatian stipend
 		if (!TutorialMissionIntel.isTutorialInProgress() && !SectorManager.getManager().isHardMode() && !Misc.isSpacerStart()
@@ -349,7 +367,7 @@ public class StartSetupPostTimePass {
 		return entity;
 	}
 	
-	public static void handleStartLocation(SectorAPI sector, CampaignFleetAPI playerFleet, String factionId) 
+	public static SectorEntityToken handleStartLocation(SectorAPI sector, CampaignFleetAPI playerFleet, String factionId)
 	{
 		if (TutorialMissionIntel.isTutorialInProgress()) {
 			playerFleet.getContainingLocation().removeEntity(playerFleet);
@@ -358,7 +376,7 @@ public class StartSetupPostTimePass {
 			Global.getSector().setCurrentLocation(system);
 			Vector2f loc = new Vector2f(1000, -15000);
 			playerFleet.setLocation(loc.x, loc.y);
-			return;
+			return null;
 		}
 		
 		SectorEntityToken entity = null;
@@ -413,7 +431,8 @@ public class StartSetupPostTimePass {
 		else {	// hyperspace, turn off transponder in case we're hostile to anyone
 			playerFleet.getAbilities().get(Abilities.TRANSPONDER).deactivate();
 		}
-		
+		return entity;
+
 		// insurance popup
 		//SectorManager.getManager().getInsurance().sendUpdateIfPlayerHasIntel(null, false);
 	}
