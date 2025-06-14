@@ -95,7 +95,6 @@ object NexUtilsSIC {
 
                 var aptitude = officer.getAptitudePlugin()
 
-                aptitude.clearSections()
                 aptitude.createSections()
                 var sections = aptitude.getSections()
 
