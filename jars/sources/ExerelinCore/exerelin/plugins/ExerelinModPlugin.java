@@ -763,22 +763,24 @@ public class ExerelinModPlugin extends BaseModPlugin
         log.info("New game after time pass; " + isNewGame);
         ScenarioManager.afterTimePass(Global.getSector());
         StartSetupPostTimePass.execute();
-        
-        // generate random additional colonies
-        // note: faction picking relies on live faction list having been generated
+
         if (ExerelinSetupData.getInstance().corvusMode) {
             if (NexConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
                 Global.getSector().getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
             }
-            
+
+            // generate random additional colonies
+            // note: faction picking relies on live faction list having been generated
             int count = ExerelinSetupData.getInstance().randomColonies;
             int tries = count * 5;
             Random random = new Random(NexUtils.getStartingSeed());
             int maxSize = ExerelinSetupData.getInstance().randomColoniesMaxSize;
             while (count > 0) {
-                boolean success = ColonyManager.getManager().generateInstantColony(random, maxSize);
-                if (success)
+                MarketAPI market = ColonyManager.getManager().generateInstantColony(random, maxSize);
+                if (market != null) {
                     count--;
+                    market.getMemoryWithoutUpdate().set("$nex_randomStartingColony", true);
+                }
                 tries--;
                 if (tries == 0)
                     break;
