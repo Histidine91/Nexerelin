@@ -3,7 +3,7 @@ package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
-import com.fs.starfarer.api.campaign.listeners.ColonyDecivListener;
+import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -197,8 +197,8 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 		cargo.addCommodity(Commodities.SUPPLIES, PlayerOutpostIntel.getSuppliesRequired()/2);
 		cargo.addCommodity(Commodities.GAMMA_CORE, PlayerOutpostIntel.getGammaCoresRequired());
 
-		for (ColonyDecivListener listener : Global.getSector().getListenerManager().getListeners(ColonyDecivListener.class)) {
-			listener.reportColonyDecivilized(intel.getMarket(), true);
+		for (ColonyDecivListener listener : Global.getSector().getListenerManager().getListeners(PlayerColonizationListener.class)) {
+			listener.reportPlayerAbandonedColony(intel.getMarket(), true);
 		}
 		
 		dialog.getVisualPanel().showLoot(Misc.ucFirst(StringHelper.getString("salvage")),
