@@ -2,7 +2,7 @@ package exerelin.campaign.ai.concern;
 
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
-import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.utilities.NexConfig;
 
 public class WarWearinessConcern extends DiplomacyConcern {
 
@@ -16,7 +16,7 @@ public class WarWearinessConcern extends DiplomacyConcern {
     @Override
     public void update() {
         float weariness = DiplomacyManager.getWarWeariness(ai.getFactionId(), true);
-        if (weariness < DiplomacyBrain.MAX_WEARINESS_FOR_WAR * 0.75f) {
+        if (weariness < NexConfig.minWarWearinessForPeace * 0.75f) {
             end();
             return;
         }
@@ -26,7 +26,7 @@ public class WarWearinessConcern extends DiplomacyConcern {
     @Override
     public boolean isValid() {
         float weariness = DiplomacyManager.getWarWeariness(ai.getFactionId(), true);
-        return weariness >= DiplomacyBrain.MAX_WEARINESS_FOR_WAR * 0.75f;
+        return weariness >= NexConfig.minWarWearinessForPeace * 0.75f;
     }
 
     @Override
