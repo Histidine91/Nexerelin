@@ -4,7 +4,7 @@
 			"name":"Galatia Academy",
 			"image":"graphics/icons/missions/ga_intro.png",
 			"sortKey":"AAAA_academy",
-			"quests":["transverseJump", "kallichore", "coureuse", "ziggurat", "atTheGates"],
+			"quests":["transverseJump", "kallichore", "coureuse", "ziggurat", "atTheGates", "abyssalSpaceOddity"],
 			"plugin":"exerelin.campaign.questskip.GalatiaQuestSkipPlugin",
 		},
 		"luddicChurch":{
@@ -80,7 +80,17 @@
 			"idsToForceOffWhenDisabled":["ziggurat", "atTheGates"],
 			"sectorMemFlags":{
 				"$gaFC_missionCompleted":true,
-				"$foundCoureuse":true
+				"$foundCoureuse":true,
+				"$gaFC_ghostStory":true,
+				"$gaFC_gotAlamangForScylla":true,
+				"$gaFC_knowElissasName":true,
+				"$gaFC_gotIsirahLeadFromZal":true,
+				"$gaFC_gotZalContactFromCavin":true,
+				"$gaFC_triedToSeeCavin":true,
+				"$gaFC_hackedIsirahRelay":true,
+				"$gaFC_knowAboutLeagueOp":true,
+				"$gaFC_foundGroombridgeRelay":true,
+				"$gaFC_isirahClues":3.0
 			},				
 			"playerMemFlags":{
 				"$metCavin":true,
@@ -95,7 +105,11 @@
 			"idsToForceOffWhenDisabled":["atTheGates"],
 			"sectorMemFlags":{
 				"$gaPZ_missionCompleted":true,
-				"$gaPZ_scannedZiggurat":true
+				"$gaPZ_scannedZiggurat":true,
+				
+			},
+			"playerMemFlags":{
+				"$gaPZ_metRogueKnight":true
 			}
 		},
 		"atTheGates":{
@@ -108,18 +122,41 @@
 				"$gaATG_missionCompleted":true,
 				"$canScanGates":true,
 				"$gatesActive":true,
-				"$didKantasDenIntro":true
+				"$didKantasDenIntro":true,
+				"$gaATG_didRemoteFirstJanusTest":true,
+				"$gaATG_returnedLoke":true,
+				"$gaATG_usedMagecGateToEscape":true
 			},
 			"playerMemFlags":{
 				"$gaveDaudYaribayContact":true,
 				"$gotYaribayCredentials":true,
 				"$knowsCottonHearsSong":true,
+				"$gotBookOfLuddFromCotton":true,
 				"$knowsZalHeldBack":true,
 				"$metBrotherCotton":true,
 				"$metCydonia":true,
 				"$metDaud":true,
 				"$metHorusYaribay":true,
 				"$metKanta":true
+			}
+		},
+		"abyssalSpaceOddity":{
+			"name":"Ab. Space Oddity",
+			"tooltip":"The player investigates unusual readings from a deep space array.",
+			"plugin":"exerelin.campaign.questskip.SpaceOddityQuestSkipPlugin",
+			"peopleToUnhide":["elek"],
+			"sectorMemFlags":{
+				"$gaDHO_didInvite":true,
+				"$gaDHO_missionComplete":true,
+				"$gaDHO_playerAgreedTo200k":true,
+				"$gaDHO_gotCoordinates":true,
+				"$gaDHO_foundOneslaught":true,
+				"$gaDHO_gotReward":true
+			},
+			"playerMemFlags":{
+				"$metElek":true,
+				"$encounteredThreat":true,
+				"$encounteredWeird":true
 			}
 		},
 		

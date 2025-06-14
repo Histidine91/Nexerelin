@@ -1795,6 +1795,14 @@ Nex_Alliance isPlayerAlliedWith persean score:3",FireBest JoinLeagueOptions,"""Y
 nex_rh_handleAlliance,DialogOptionSelected,"$option == rh_acceptMembership
 $player.isInAlliance score:5","Nex_Alliance leave
 FireBest DialogOptionSelected",,,
+nex_ZGRfirstVisitOption,PopulateOptions,"$hasMarket
+$market.nex_zgrLocation
+$menuState == main
+$global.firstGlamorRotanevVisitInvite
+!$player.didZGRfirstMeeting",FireBest ZGRfirstVisitOptionCheck,,2:ZGR_visitOptDirect:Take a shuttle to visit Director of Special Acquisitions Glamor-Rotanev,
+nex_ZGRfirstVisitOptionCheck,ZGRfirstVisitOptionCheck,"$faction.isHostile
+$player.transponderOn","SetEnabled ZGR_visitOptDirect false
+SetTooltip ZGR_visitOptDirect ""You have been flagged as a hostile by Tri-Tachyon automated defenses and would be gunned down upon approach.""",,,
 ,,,,,,
 #END Vanilla not-quite-overrides,,,,,,
 ,,,,,,

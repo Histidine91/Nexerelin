@@ -15,6 +15,12 @@ public interface QuestSkipPlugin {
     void onNewGameAfterTimePass();
 
     boolean shouldShow();
+    /**
+     * Use this version to control hiding of individual quests from a single chain plugin.
+     * @param entry
+     * @return
+     */
+    boolean shouldShow(QuestSkipEntry entry);
 
     void setQuest(QuestSkipEntry quest);
     QuestSkipEntry getQuest();

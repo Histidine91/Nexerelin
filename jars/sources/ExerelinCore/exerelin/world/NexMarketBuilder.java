@@ -721,6 +721,7 @@ public class NexMarketBuilder
 				market.addSubmarket("tahlan_stdfmarket");
 			
 			market.getMemoryWithoutUpdate().set("$nex_procgen_hq", true);
+			Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().set("$nex_procgen_hq", market);
 		}
 		
 		addMilitaryStructures(data, true, random);

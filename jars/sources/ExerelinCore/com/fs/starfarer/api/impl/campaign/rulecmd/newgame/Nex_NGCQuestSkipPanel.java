@@ -53,6 +53,7 @@ public class Nex_NGCQuestSkipPanel {
             List<QuestSkipEntry> toDisplay = new ArrayList<>();
             for (QuestSkipEntry entry : chain.quests) {
                 if (entry.plugin != null && !entry.plugin.shouldShow()) continue;
+                else if (chain.plugin != null && !chain.plugin.shouldShow(entry)) continue;
                 toDisplay.add(entry);
             }
             int numButtons = toDisplay.size();

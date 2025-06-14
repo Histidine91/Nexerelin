@@ -326,6 +326,32 @@ public class StartSetupPostTimePass {
 			market.addPerson(person);
 			ip.addPerson(person);
 		}
+
+		market = (MarketAPI)Global.getSector().getFaction(Factions.TRITACHYON).getMemoryWithoutUpdate().get("$nex_procgen_hq");
+		if (market != null && ip.getPerson(People.GLAMOR_ROTANEV) == null) {
+			PersonAPI person = Global.getFactory().createPerson();
+			person.setId(People.GLAMOR_ROTANEV);
+			person.setFaction(Factions.TRITACHYON);
+			person.setGender(FullName.Gender.FEMALE);
+			person.setRankId(Ranks.SENIOR_EXECUTIVE);
+			person.setPostId(Ranks.POST_INTELLIGENCE_DIRECTOR);
+			person.setImportance(PersonImportance.VERY_HIGH);
+			person.getName().setFirst(StringHelper.getString("exerelin_misc", "zgrName1"));
+			person.getName().setLast(StringHelper.getString("exerelin_misc", "zgrName2"));
+			person.setPortraitSprite(Global.getSettings().getSpriteName("characters",  person.getId()));
+			person.getStats().setSkillLevel(Skills.BULK_TRANSPORT, 1);
+			person.getStats().setSkillLevel(Skills.INDUSTRIAL_PLANNING, 1);
+			person.getStats().setSkillLevel(Skills.OFFICER_MANAGEMENT, 1);
+			person.addTag(Tags.CONTACT_TRADE);
+			person.addTag(Tags.CONTACT_MILITARY);
+			person.setVoice(Voices.BUSINESS);
+
+			market.getCommDirectory().addPerson(person, 1); // second after Sun
+			market.getCommDirectory().getEntryForPerson(person).setHidden(true); // you'll hear from her people.
+			market.addPerson(person);
+			ip.addPerson(person);
+			market.getMemoryWithoutUpdate().set("$nex_zgrLocation", true);
+		}
 	}
 
 	public static void addStoryContact(String id) {

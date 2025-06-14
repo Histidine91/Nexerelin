@@ -205,6 +205,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
         if (Global.getSettings().getBoolean("nex_skipStoryDefault")) {
             if (chain == null) return;
             for (QuestSkipEntry quest : chain.quests) {
+                if (quest.id.equals("abyssalSpaceOddity")) continue;
                 quest.isEnabled = true;
             }
         }
@@ -222,7 +223,8 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
     }
 
     @Override
-    public boolean shouldShow() {
+    public boolean shouldShow(QuestSkipEntry entry) {
+        if (entry.id.equals("abyssalSpaceOddity")) return true;
         return ExerelinSetupData.getInstance().corvusMode;
     }
 }

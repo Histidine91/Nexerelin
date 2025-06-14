@@ -55,6 +55,7 @@ public class ExerelinSetupData
 	public boolean randomFactionWeights = false;
 	public boolean randomStartLocation = false;
 	public int numStartingOfficers = 0;
+	public int numStartingOperatives = 0;
 	@Deprecated public boolean randomStartShips = false;
 	public int dModLevel = 0;
 	public boolean enableStipend = true;
