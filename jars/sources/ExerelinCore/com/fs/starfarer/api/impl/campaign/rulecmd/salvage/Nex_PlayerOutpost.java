@@ -198,7 +198,7 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 		cargo.addCommodity(Commodities.GAMMA_CORE, PlayerOutpostIntel.getGammaCoresRequired());
 
 		for (ColonyDecivListener listener : Global.getSector().getListenerManager().getListeners(PlayerColonizationListener.class)) {
-			listener.reportPlayerAbandonedColony(intel.getMarket(), true);
+			listener.reportPlayerAbandonedColony(intel.getMarket());
 		}
 		
 		dialog.getVisualPanel().showLoot(Misc.ucFirst(StringHelper.getString("salvage")),
