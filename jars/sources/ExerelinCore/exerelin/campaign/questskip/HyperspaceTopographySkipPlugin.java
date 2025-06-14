@@ -2,7 +2,6 @@ package exerelin.campaign.questskip;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.intel.events.ht.HyperspaceTopographyEventIntel;
-import exerelin.campaign.ExerelinSetupData;
 import lombok.extern.log4j.Log4j;
 
 import java.util.Map;
@@ -12,8 +11,6 @@ public class HyperspaceTopographySkipPlugin extends BaseQuestSkipPlugin {
 
     @Override
     public void onNewGameAfterTimePass() {
-        if (!ExerelinSetupData.getInstance().corvusMode) return;
-
         Map<String, Boolean> quests = chain.getEnabledQuestMap();
 
         if (chain.isQuestEnabled("topography_700", quests)) {
