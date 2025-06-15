@@ -2439,6 +2439,9 @@
 		"intelBulletLiberated":"Liberated by $faction",
 		"intelBulletMutualAnnihilation":"Fall into anarchy",
 		"intelBulletExpired":"Ended in ceasefire",
+
+		"intelButtonRequestSuppr":"Request suppression fleet",
+		"intelButtonRequestSupprConfirm":"This will request a suppression fleet from a random location to help subdue the rebellion, costing %s. You have %s.",
 		
 		"intelTag":"Rebellions",
 		

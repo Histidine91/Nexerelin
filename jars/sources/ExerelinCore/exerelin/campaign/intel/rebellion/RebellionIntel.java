@@ -36,8 +36,8 @@ import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static exerelin.campaign.SectorManager.MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER;
 import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
@@ -52,7 +52,9 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		//"AL_militaryMarket", Submarkets.GENERIC_MILITARY, Submarkets.SUBMARKET_OPEN,
 		Submarkets.SUBMARKET_BLACK
 	}));
-	
+
+	public static final String BUTTON_AUTO_SUPPRESS_FLEET = "autoSuppress";
+
 	public static final float MAX_DAYS = 365*2;
 	public static final float VALUE_WEAPONS = 0.5f;
 	public static final float VALUE_SUPPLIES = 0.1f;
@@ -64,6 +66,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	public static final float SUPPRESSION_FLEET_INTERVAL = DEBUG_MODE ? 6f : 120f;
 	public static final float SMUGGLER_INTERVAL = DEBUG_MODE ? 8f : 160f;
 	public static final float INDEPENDENT_SMUGGLER_CHANCE = 0.5f;
+	public static final float SUPPRESSION_COST_MULT = 0.45f;
 	public static final float REBEL_LIBERATION_STRONG_STR_MULT = 1.3f;
 	public static final float REBEL_LIBERATION_STR_MULT = 1.15f;
 	public static final int MAX_STABILITY_PENALTY = 5;
@@ -778,6 +781,34 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 
 		log.info(String.format("Strengths after: %.1f, %.1f", govtStrength, rebelStrength));
 	}
+
+	protected int getWantedBaseFP() {
+		int sizeFactor = market.getSize() * 4;
+		if (sizeFactor < 1) sizeFactor = 1;
+		return sizeFactor * 6;
+	}
+
+	protected int getWantedPayloadStrength(boolean smuggler, float fp) {
+		int maxStr = Math.round(12 * getSizeMod(market.getSize()));
+
+		int str;
+		if (smuggler) {
+			str = (int)(govtStrength - rebelStrength/2);
+			maxStr /= 2;
+		}
+		else {
+			str = (int)(rebelStrength * 2 - govtStrength);
+		}
+		str = Math.max(str, (int)(fp/2));
+		str = Math.min(str, maxStr);
+		return str;
+	}
+
+	protected float getPayloadCreditCost(int reqStrength) {
+		int numMarines = (int)(reqStrength / VALUE_MARINES);
+		float baseCost = (numMarines * Global.getSettings().getCommoditySpec(Commodities.MARINES).getBasePrice()) + (numMarines/4f * Global.getSettings().getCommoditySpec(Commodities.HAND_WEAPONS).getBasePrice());
+		return baseCost * SUPPRESSION_COST_MULT;
+	}
 	
 	protected CampaignFleetAPI createFleet(SupportFleetData data)
 	{
@@ -789,7 +820,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		}
 		int sizeFactor = market.getSize() * 4;
 		if (sizeFactor < 1) sizeFactor = 1;
-		float fp = (int)(sizeFactor * 6f);
+		float fp = getWantedBaseFP();
 		if (smuggler) {
 			if (sourceMarket.hasIndustry(Industries.HIGHCOMMAND))
 				fp *= 1.25f;
@@ -810,18 +841,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		String name = null;
 		if (!smuggler) name = getFleetName("nex_suppressionFleet", factionId, fp);
 
-		int maxStr = Math.round(12 * getSizeMod(market.getSize()));
-
-		int str;
-		if (smuggler) {
-			str = (int)(govtStrength - rebelStrength/2);
-			maxStr /= 2;
-		}
-		else {
-			str = (int)(rebelStrength * 2 - govtStrength);
-		}
-		str = Math.max(str, (int)(fp/2));
-		str = Math.min(str, maxStr);
+		int str = getWantedPayloadStrength(smuggler, fp);
 		int numMarines = (int)(str / VALUE_MARINES);
 		
 		float distance = NexUtilsMarket.getHyperspaceDistance(sourceMarket, market);
@@ -1046,6 +1066,25 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			spawnFleet(smugglerData);
 			smugglerCountdown = SMUGGLER_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 		}
+	}
+
+	protected boolean instaCreateSuppressionFleet(boolean applyCost) {
+		suppressionData = new SupportFleetData(true);
+		suppressionData.source = pickFleetSource(suppressionData);
+		if (suppressionData.source == null) {
+			return false;
+		}
+		spawnFleet(suppressionData);
+		if (applyCost) {
+			int reqFP = getWantedBaseFP();
+			int reqStrength = getWantedPayloadStrength(false, reqFP);
+			float cost = reqFP * NexConfig.fleetRequestCostPerFP;
+			cost += getPayloadCreditCost(reqStrength);
+
+			NexUtilsCargo.makePaymentWithDebtIfNeeded((int)cost, null);
+		}
+
+		return true;
 	}
 	
 	// =========================================================================
@@ -1633,6 +1672,14 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		if (lastIndustryDisrupted != null) {
 			printIndustryDisruptInfo(info, opad);
 		}
+
+		// request suppression fleet
+		if (!suppressionData.isActive() && (market.isPlayerOwned() || market.getFaction().isPlayerFaction() || AllianceManager.areFactionsAllied(PlayerFactionStore.getPlayerFactionId(), market.getFactionId())))
+		{
+			info.addButton(StringHelper.getString("nex_rebellion", "intelButtonRequestSuppr"), BUTTON_AUTO_SUPPRESS_FLEET,
+					getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
+					(int)(width), 20f, opad);
+		}
 		
 		// Devmode: fast resolve action
 		if ((Global.getSettings().isDevMode() || ExerelinModPlugin.isNexDev) && !isEnding() && !isEnded()) {
@@ -1646,6 +1693,13 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 					getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
 					(int)(width), 20f, opad);
 		}
+	}
+
+	protected void addSuppresionFleetButton(TooltipMakerAPI info, float width, float pad) {
+		float reqStrength = 0;
+		String btnStr = String.format(StringHelper.getString("exerelin_invasion", "intelButtonRequestDef"), (int)reqStrength, (int)InvasionFleetManager.getManager().getFleetRequestStock());
+		FactionAPI faction = market.getFaction();
+		info.addButton(btnStr, BUTTON_AUTO_SUPPRESS_FLEET, faction.getBaseUIColor(), faction.getDarkUIColor(), width, 24, pad);
 	}
 	
 	@Override
@@ -1662,9 +1716,42 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 				prepFleet(false);
 				spawnFleet(smugglerData);
 				break;
+			case BUTTON_AUTO_SUPPRESS_FLEET:
+				instaCreateSuppressionFleet(true);
+				break;
 		}
 		
 		ui.updateUIForItem(this);
+	}
+
+	@Override
+	public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+		if (buttonId == BUTTON_AUTO_SUPPRESS_FLEET) {
+			Color hl = Misc.getHighlightColor();
+			Color bad = Misc.getNegativeHighlightColor();
+
+			int reqFP = getWantedBaseFP();
+			int reqStrength = getWantedPayloadStrength(false, reqFP);
+			float cost = reqFP * NexConfig.fleetRequestCostPerFP;
+			cost += getPayloadCreditCost(reqStrength);
+
+			float currCreds = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+
+			boolean enoughCreds = currCreds >= cost;
+			String str = StringHelper.getString("nex_rebellion", "intelButtonRequestSupprConfirm");
+			LabelAPI label = prompt.addPara(str,0f, hl, Misc.getDGSCredits(cost), Misc.getDGSCredits(currCreds));
+			label.setHighlightColors(hl, enoughCreds ? hl : bad);
+
+			return;
+		}
+
+		super.createConfirmationPrompt(buttonId, prompt);
+	}
+
+	@Override
+	public boolean doesButtonHaveConfirmDialog(Object buttonId) {
+		if (buttonId == BUTTON_AUTO_SUPPRESS_FLEET) return true;
+		return super.doesButtonHaveConfirmDialog(buttonId);
 	}
 	
 	@Override
