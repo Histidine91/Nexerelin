@@ -48,6 +48,7 @@ public class GBConstants {
 	public static int STABILITY_PENALTY_BASE = 2;
 	public static int STABILITY_PENALTY_OCCUPATION = 5;
 	public static int EXISTING_UNREST_DIVISOR = 4;
+	public static int UNREST_CAP = 15;
 	public static float DISRUPTED_TROOP_CONTRIB_MULT = 0.5f;
 	public static float DISRUPT_WHEN_CAPTURED_TIME = 0.25f;
 	public static boolean DISRUPT_FROM_COMBAT = false;
