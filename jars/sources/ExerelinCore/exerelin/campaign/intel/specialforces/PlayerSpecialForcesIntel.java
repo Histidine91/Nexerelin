@@ -924,7 +924,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		if (member == null) return 0;
 		float deployCostCR = member.getDeployCost();
 		if (deployCostCR <= 0.01) {
-			log.warn(String.format("Ship %s has <1% deployment cost, applying safety", member.getShipName()));
+			log.warn(String.format("Ship %s has <1 percent deployment cost, applying safety", member.getShipName()));
 			deployCostCR = 0.01f;
 		}
 		float suppliesToFullCR = member.getDeploymentCostSupplies()/deployCostCR;
