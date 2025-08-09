@@ -1796,6 +1796,9 @@
 		
 		"remnant_friendlyActivityCauseName":"Friendly with Remnants",
 		"remnant_friendlyActivityCauseTooltip":"Your association with the Remnants via %s leads to them grudgingly accepting your status as an uninvited neighbour.",
+		
+		"generic_allianceCauseName":"Have alliance",
+		"generic_allianceCauseTooltip":"As you are allied with this faction, they will not take hostile activity against you.",
 	},
 	
 	"exerelin_landmarks":{

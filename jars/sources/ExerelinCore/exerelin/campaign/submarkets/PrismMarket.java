@@ -451,7 +451,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 ibbProgress = highestIBBNum;
             
             for (BossShipEntry entry : validShips) {
-                log.info("Trying boss ship " + entry.id);
+                //log.info("Trying boss ship " + entry.id);
                 boolean proceed = true;
                 String stageStr = entry.stage;
                 

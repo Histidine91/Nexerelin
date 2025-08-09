@@ -445,7 +445,7 @@ public class StartSetupPostTimePass {
 				entity = SectorManager.getHomeworld();
 		}
 		
-		// couldn't find an more suitable start location, pick any market that's not unfriendly to us
+		// couldn't find a more suitable start location, pick any market that's not unfriendly to us
 		if (entity == null) {
 			entity = pickRandomStartLocation(factionId, false);
 		}
