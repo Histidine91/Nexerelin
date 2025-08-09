@@ -15,11 +15,12 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.lwjgl.input.Keyboard;
 
 public class Nex_NGCListFactions extends PaginatedOptions {
 	
@@ -59,9 +60,9 @@ public class Nex_NGCListFactions extends PaginatedOptions {
 				}
 				memoryMap.get(MemKeys.LOCAL).set("$factionGroup", num);
 				FactionListGrouping group = Nex_FactionDirectoryHelper.getNGCFactionGroupings(true).get(num - 1);
-				for (FactionAPI faction : group.factions)
+				for (String factionId : group.factionIds)
 				{
-					String factionId = faction.getId();
+					FactionAPI faction = Global.getSettings().createBaseFaction(factionId);
 					NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
 					String optId = JOIN_FACTION_OPTION_PREFIX + factionId;
 					String text = Nex_FactionDirectoryHelper.getFactionDisplayName(faction);

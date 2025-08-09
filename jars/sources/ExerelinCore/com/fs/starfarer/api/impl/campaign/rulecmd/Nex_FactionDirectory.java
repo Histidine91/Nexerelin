@@ -75,7 +75,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				//memoryMap.get(MemKeys.LOCAL).set("$nex_dirFactionGroup", num);
 				List<FactionListGrouping> groups = (List<FactionListGrouping>)(memoryMap.get(MemKeys.LOCAL).get(FACTION_GROUPS_KEY));
 				FactionListGrouping group = groups.get(num - 1);
-				for (FactionAPI faction : group.factions)
+				for (FactionAPI faction : group.getFactions())
 				{
 					opts.addOption(Nex_FactionDirectoryHelper.getFactionDisplayName(faction), 
 							PRINT_FACTION_OPTION_PREFIX + faction.getId(), faction.getBaseUIColor(), null);

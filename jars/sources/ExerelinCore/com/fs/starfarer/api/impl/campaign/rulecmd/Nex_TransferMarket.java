@@ -211,7 +211,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		MarketAPI market = dialog.getInteractionTarget().getMarket();
 		boolean recentlyCaptured = getRecentlyCapturedFromId(market) != null;
 		
-		for (FactionAPI faction : group.factions)
+		for (FactionAPI faction : group.getFactions())
 		{
 			String optKey = SELECT_FACTION_PREFIX + faction.getId();
 			opts.addOption(Nex_FactionDirectoryHelper.getFactionDisplayName(faction), optKey, faction.getColor(), null);

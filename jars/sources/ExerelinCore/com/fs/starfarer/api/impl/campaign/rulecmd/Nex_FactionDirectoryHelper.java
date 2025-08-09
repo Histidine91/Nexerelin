@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Nex_FactionDirectoryHelper {
 
@@ -48,9 +49,9 @@ public class Nex_FactionDirectoryHelper {
 			return n1.compareTo(n2);
 		}
 	};
-	
+
 	protected static List<FactionListGrouping> ngcFactions = new ArrayList<>();
-	
+
 	protected static Map<String, String> nameCache = new HashMap<>();
 	
 	/**
@@ -215,13 +216,17 @@ public class Nex_FactionDirectoryHelper {
 	{
 		String first = "";	// initial of the first faction
 		String last = "";	// initial of the last faction 
-		public List<FactionAPI> factions;
+		public List<String> factionIds;
+		/**
+		 * List will be empty, use {@code getFactions()} instead.
+		 */
+		@Deprecated public List<FactionAPI> factions = new ArrayList<>();
 		//public List<String> factionNames = new ArrayList<>();
 		public String tooltip = "";
 		
 		public FactionListGrouping(List<FactionAPI> factions)
 		{
-			this.factions = factions;
+			this.factionIds = factions.stream().map(FactionAPI::getId).collect(Collectors.toList());
 			first = getFactionInitial(factions.get(0));
 			if (factions.size() > 1)
 				last = getFactionInitial(factions.get(factions.size() - 1));
@@ -236,6 +241,10 @@ public class Nex_FactionDirectoryHelper {
 			}
 			this.tooltip = tooltip;
 		}
+
+		public List<FactionAPI> getFactions() {
+			return NexUtilsFaction.factionIdsToFactions(factionIds);
+		}
 		
 		public String getGroupingRangeString()
 		{
@@ -246,7 +255,7 @@ public class Nex_FactionDirectoryHelper {
 		public List<Color> getTooltipColors()
 		{
 			List<Color> list = new ArrayList<>();
-			for (FactionAPI faction : factions)
+			for (FactionAPI faction : getFactions())
 			{
 				list.add(faction.getBaseUIColor());
 			}
@@ -256,7 +265,7 @@ public class Nex_FactionDirectoryHelper {
 		public List<String> getFactionNames()
 		{
 			List<String> list = new ArrayList<>();
-			for (FactionAPI faction : factions)
+			for (FactionAPI faction : getFactions())
 			{
 				list.add(getFactionDisplayName(faction));
 			}
