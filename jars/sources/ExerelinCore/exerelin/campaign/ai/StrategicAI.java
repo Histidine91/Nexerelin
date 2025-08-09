@@ -427,7 +427,7 @@ public class StrategicAI extends BaseIntelPlugin {
 		Random random = new Random(NexUtils.getStartingSeed());
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
 			if (factionId.equals(Factions.PLAYER)) continue;
-			if (NexConfig.getFactionConfig(factionId).pirateFaction) continue;
+			if (!NexConfig.getFactionConfig(factionId).useStrategicAI) continue;
 			StrategicAI ai = addAIIfNeeded(factionId);
 
 			// stagger the intervals so the strategy meetings aren't all taking place at the same time

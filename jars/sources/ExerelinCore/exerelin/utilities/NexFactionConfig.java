@@ -52,6 +52,7 @@ public class NexFactionConfig
     public boolean freeStart = false;
     public String ngcTooltip = null;
     public boolean isPlayerRuled = false;
+    public boolean useStrategicAI = true;   // default false for pirate factions, true otherwise
    
     public boolean pirateFaction = false;
     public boolean isPirateNeutral = false;
@@ -226,6 +227,7 @@ public class NexFactionConfig
             freeStart = settings.optBoolean("freeStart", false);
             ngcTooltip = settings.optString("ngcTooltip", ngcTooltip);
             isPlayerRuled = settings.optBoolean("isPlayerRuled", isPlayerRuled);
+            useStrategicAI = settings.optBoolean("useStrategicAI", !pirateFaction);
             
             baseFleetCostMultiplier = settings.optDouble("baseFleetCostMultiplier", 1);
             
