@@ -3,6 +3,7 @@ package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
+import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -158,9 +159,16 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 		dialog.setInteractionTarget(outpost);
 		Global.getSector().getIntelManager().addIntelToTextPanel(intel, text);
 
+		if (target.getMarket() != null) {
+			for (CampaignEventListener listener : Global.getSector().getAllListeners()) {
+				listener.reportPlayerClosedMarket(target.getMarket());
+			}
+			ListenerUtil.reportPlayerClosedMarket(target.getMarket());
+		}
 		for (CampaignEventListener listener : Global.getSector().getAllListeners()) {
 			listener.reportPlayerOpenedMarket(outpost.getMarket());
 		}
+		ListenerUtil.reportPlayerOpenedMarket(outpost.getMarket());
 		
 		return true;
 	}
