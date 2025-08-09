@@ -872,7 +872,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			EventType type, float sizeMult, RequisitionParams rp) {
 		FactionAPI faction = origin.getFaction();
 		String factionId = faction.getId();
-		float maxMult = type == EventType.RESPAWN ? 5 : 1;
+		float maxMult = type == EventType.RESPAWN ? 100 : 1;
 		
 		float fp = getWantedFleetSize(faction, target, 0.1f, false, maxMult);
 		float organizeTime = getOrganizeTime(fp);
