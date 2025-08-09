@@ -17,7 +17,6 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageEntity;
 import com.fs.starfarer.api.loading.PersonMissionSpec;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
-import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.intel.SpecialContactIntel;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.campaign.intel.missions.remnant.RemnantSalvation;
@@ -35,8 +34,6 @@ public class RemnantQuestSkipPlugin extends BaseQuestSkipPlugin {
 
     @Override
     public void onNewGameAfterTimePass() {
-        if (!ExerelinSetupData.getInstance().corvusMode) return;
-
         Map<String, Boolean> quests = chain.getEnabledQuestMap();
         FactionAPI remnants = Global.getSector().getFaction(Factions.REMNANTS);
         PersonAPI dissonant = null;
