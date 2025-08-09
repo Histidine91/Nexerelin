@@ -1,7 +1,10 @@
 {
     "playableFaction":false,
+	"startingFaction":true,
+    "spawnAsFactionId":"player",
+	"freeStart":true,
     "corvusCompatible":true,
-    "enabledByDefault":true,
+    #"enabledByDefault":true,	# defaults to startingFaction
     "showIntelEvenIfDead":true,
     "noHomeworld":true,
     
@@ -21,6 +24,22 @@
     "factionIdForHqResponse":"mercenary",
     "specialForcesMaxFleets":1,
     "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.FactionListNamer",
+	
+	"startShipsSolo":[
+      ["swp_alastor_sta"],
+      ["centurion_Starting"],
+    ],
+    "startShipsCombatSmall":[["hammerhead_Balanced", "vigilance_Starting", "kite_Standard"]],
+    "startShipsTradeSmall":[["mule_Starting", "cerberus_Standard", "mercury_Standard"]],
+    "startShipsCombatLarge":[
+      ["swp_vulture_sta", "swp_striker_ass", "wolf_Assault"],
+      ["eagle_Balanced", "sunder_Assault", "brawler_Elite"]
+    ],
+    "startShipsTradeLarge":[["colossus_Standard", "mule_Standard", "wayfarer_Standard"]],
+    "startShipsExplorerLarge":[["venture_Balanced", "tarsus_Standard", "shepherd_Frontier"]],
+    "startShipsCarrierSmall":[["drover_Strike", "monitor_Escort", "vigilance_AP"]],
+    "startShipsCarrierLarge":[["heron_Strike", "hammerhead_Balanced", "brawler_Elite"]],
+    "startShipsSuper":[["hyperion_Attack"]],
     
     "defenceStations":[
         {"ids":["orbitalstation", "battlestation", "starfortress"], "weight":0.5},
