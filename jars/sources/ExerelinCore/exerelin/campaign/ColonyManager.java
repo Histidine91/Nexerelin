@@ -1753,21 +1753,24 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	 * @param productive Adds productive industries such as farms and mines.
 	 */
 	public static void buildIndustries(MarketAPI market, boolean military, boolean productive) {		
-		Random random = new Random();
+		buildIndustries(market, military, productive, false, new Random());
+	}
+
+	public static void buildIndustries(MarketAPI market, boolean military, boolean productive, boolean instant, Random random) {
 		ProcGenEntity entity = ExerelinProcGen.createEntityData(market.getPrimaryEntity());
 		entity.numProductiveIndustries = countProductive(market);
-		
+
 		if (!market.hasIndustry(Industries.SPACEPORT) && !market.hasIndustry(Industries.MEGAPORT))
-			NexMarketBuilder.addSpaceportOrMegaport(market, entity.type, false, random);
+			NexMarketBuilder.addSpaceportOrMegaport(market, entity.type, instant, random);
 
 		if (!STRATEGIC_AI_BLOCKS_BUILD_MILITARY_ON_UPSIZE || StrategicAI.getAI(market.getFactionId()) == null) {
 			if (military)
-				NexMarketBuilder.addMilitaryStructures(entity, false, random);
+				NexMarketBuilder.addMilitaryStructures(entity, instant, random);
 		}
 
 		if (!STRATEGIC_AI_BLOCKS_BUILD_ECON_ON_UPSIZE || StrategicAI.getAI(market.getFactionId()) == null) {
 			if (productive)
-				NexMarketBuilder.addIndustriesToMarket(entity, false, random);
+				NexMarketBuilder.addIndustriesToMarket(entity, instant, random);
 		}
 	}
 	

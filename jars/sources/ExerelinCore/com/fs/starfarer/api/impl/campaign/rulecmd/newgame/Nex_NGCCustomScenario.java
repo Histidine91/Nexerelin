@@ -1,9 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -11,14 +8,14 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
+import exerelin.world.scenarios.Scenario;
 import exerelin.world.scenarios.ScenarioManager;
 import exerelin.world.scenarios.ScenarioManager.StartScenarioDef;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import org.lwjgl.input.Keyboard;
+
+import java.util.*;
 
 
 public class Nex_NGCCustomScenario extends PaginatedOptions {
@@ -45,7 +42,7 @@ public class Nex_NGCCustomScenario extends PaginatedOptions {
 				generateMenu(ruleId);
 				return true;
 			case "select":
-				selectScenario(memoryMap.get(MemKeys.LOCAL));
+				selectScenario(dialog, memoryMap.get(MemKeys.LOCAL));
 				return true;
 		}
 		
@@ -62,17 +59,20 @@ public class Nex_NGCCustomScenario extends PaginatedOptions {
 		mem.set("$nex_customScenarioName", scenarioName);
 	}
 	
-	public static void selectScenario(MemoryAPI mem) {
+	public static void selectScenario(InteractionDialogAPI dialog, MemoryAPI mem) {
 		String option = mem.getString("$option");
 		String scenarioId = option.substring(PREFIX_LENGTH);
-		selectScenario(mem, scenarioId);
+		selectScenario(dialog, mem, scenarioId);
 	}
 	
-	public static void selectScenario(MemoryAPI mem, String scenarioId) {		
+	public static void selectScenario(InteractionDialogAPI dialog, MemoryAPI mem, String scenarioId) {
 		if (scenarioId == null || scenarioId.isEmpty() || scenarioId.equals("none")) {
 			ExerelinSetupData.getInstance().startScenario = null;
 		} else {
 			ExerelinSetupData.getInstance().startScenario = scenarioId;
+			StartScenarioDef def = ScenarioManager.getScenarioDef(scenarioId);
+			Scenario scenario = (Scenario) NexUtils.instantiateClassByName(def.className);
+			scenario.onSelect(dialog);
 		}
 		setMenuOptionText(mem);
 	}

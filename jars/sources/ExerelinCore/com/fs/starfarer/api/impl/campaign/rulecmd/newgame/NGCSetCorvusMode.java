@@ -1,8 +1,5 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -13,6 +10,9 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.StringHelper;
 import exerelin.world.scenarios.ScenarioManager;
 import exerelin.world.scenarios.ScenarioManager.StartScenarioDef;
+
+import java.util.List;
+import java.util.Map;
 
 
 public class NGCSetCorvusMode extends BaseCommandPlugin {
@@ -29,7 +29,7 @@ public class NGCSetCorvusMode extends BaseCommandPlugin {
 		if (data.startScenario != null) {
 			StartScenarioDef def = ScenarioManager.getScenarioDef(data.startScenario);
 			if (setting && def.randomSectorOnly) {
-				Nex_NGCCustomScenario.selectScenario(memory, null);
+				Nex_NGCCustomScenario.selectScenario(dialog, memory, null);
 				String msg = StringHelper.getStringAndSubstituteToken(
 						"exerelin_ngc", "customScenarioRemoved", "$name", def.name);
 				dialog.getTextPanel().setFontSmallInsignia();

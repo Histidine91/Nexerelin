@@ -86,6 +86,8 @@ import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -761,31 +763,17 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
 
         log.info("New game after time pass; " + isNewGame);
-        ScenarioManager.afterTimePass(Global.getSector());
-        StartSetupPostTimePass.execute();
 
         if (ExerelinSetupData.getInstance().corvusMode) {
             if (NexConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {
                 Global.getSector().getListenerManager().addListener(new MarketDescChanger().registerInstance(), true);
             }
 
-            // generate random additional colonies
-            // note: faction picking relies on live faction list having been generated
-            int count = ExerelinSetupData.getInstance().randomColonies;
-            int tries = count * 5;
-            Random random = new Random(NexUtils.getStartingSeed());
-            int maxSize = ExerelinSetupData.getInstance().randomColoniesMaxSize;
-            while (count > 0) {
-                MarketAPI market = ColonyManager.getManager().generateInstantColony(random, maxSize);
-                if (market != null) {
-                    count--;
-                    market.getMemoryWithoutUpdate().set("$nex_randomStartingColony", true);
-                }
-                tries--;
-                if (tries == 0)
-                    break;
-            }
+            generateRandomStartingColonies();
         }
+
+        ScenarioManager.afterTimePass(Global.getSector());
+        StartSetupPostTimePass.execute();
 
         if (isNexDev) {
             new DebugIntel().init();
@@ -823,6 +811,31 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void configureXStream(XStream x) {
         XStreamConfig.configureXStream(x);
+    }
+
+    protected void generateRandomStartingColonies() {
+        // note: faction picking relies on live faction list having been generated
+        int count = ExerelinSetupData.getInstance().randomColonies;
+        int tries = count * 5;
+        Random random = new Random(NexUtils.getStartingSeed());
+        int maxSize = ExerelinSetupData.getInstance().randomColoniesMaxSize;
+        List<MarketAPI> markets = new ArrayList<>();
+        while (count > 0) {
+            MarketAPI market = ColonyManager.getManager().generateInstantColony(random, maxSize);
+            if (market != null) {
+                count--;
+                market.getMemoryWithoutUpdate().set("$nex_randomStartingColony", true);
+                markets.add(market);
+            }
+            tries--;
+            if (tries == 0)
+                break;
+        }
+
+        Collections.shuffle(markets, random);
+        for (MarketAPI market : markets) {
+            ColonyManager.buildIndustries(market, true, true, true, random);
+        }
     }
     
     public void loadRaidBPBlocker() {
