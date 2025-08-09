@@ -156,6 +156,8 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
         if (fgi.isFailed) return ActionStatus.FAILURE
         if (fgi.isInPreLaunchDelay) return ActionStatus.STARTING
 
+        if (fgi.isEnding || fgi.isEnded) return ActionStatus.CANCELLED
+
         return ActionStatus.IN_PROGRESS
     }
 
