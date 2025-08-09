@@ -12,8 +12,8 @@ class NexHostileActivityManager : HostileActivityManager() {
         val ha = HostileActivityEventIntel.get()
         if (ha != null) {
             addCustomFactorsIfNeeded(ha)
+            addCustomCausesIfNeeded(ha)
             addDefenseFleetFactorsIfNeeded(ha)
-            addCommissionFactorsIfNeeded(ha)
         }
     }
 
@@ -33,8 +33,8 @@ class NexHostileActivityManager : HostileActivityManager() {
             val ha = HostileActivityEventIntel.get()
             if (ha != null) {
                 addCustomFactorsIfNeeded(ha)
+                addCustomCausesIfNeeded(ha)
                 addDefenseFleetFactorsIfNeeded(ha)
-                addCommissionFactorsIfNeeded(ha)
             }
         }
     }
@@ -67,31 +67,39 @@ class NexHostileActivityManager : HostileActivityManager() {
         }
 
         @JvmStatic
-        fun addCommissionFactorsIfNeeded(ha: HostileActivityEventIntel) {
-            //val alreadyHas = hasFactorOfClass(ha, DefenseFleetsFactor::class.java)
-
-            val pirateFactor = ha.getActivityOfClass(PirateHostileActivityFactor::class.java)
-            val wantAddPC = pirateFactor != null && pirateFactor?.getCauseOfClass(OutlawCommissionActivityCause::class.java) == null
-            if (wantAddPC) {
-                pirateFactor.addCause(OutlawCommissionActivityCause(ha, Factions.PIRATES, "pirate"))
-            }
-
-            val patherFactor = ha.getActivityOfClass(LuddicPathHostileActivityFactor::class.java)
-            val wantAddLPC = patherFactor != null && patherFactor?.getCauseOfClass(OutlawCommissionActivityCause::class.java) == null
-            if (wantAddLPC) {
-                patherFactor.addCause(OutlawCommissionActivityCause(ha, Factions.LUDDIC_PATH, "lp"))
-            }
-        }
-
-        @JvmStatic
         fun addCustomFactorsIfNeeded(ha: HostileActivityEventIntel) {
             //Global.getLogger(this.javaClass).info("Preparing to add custom factors")
             val alreadyHas = hasFactorOfClass(ha, PoliceHostileActivityFactor::class.java)
             if (alreadyHas) return
             ha.addActivity(PoliceHostileActivityFactor(ha), PoliceFreePortActivityCause(ha))
+        }
 
+        @JvmStatic
+        fun addCustomCausesIfNeeded(ha: HostileActivityEventIntel) {
             val remnant = ha.getActivityOfClass(RemnantHostileActivityFactor::class.java)
-            if (remnant != null) ha.addActivity(remnant, RemnantFriendlyCause(ha));
+            addCauseIfNotAlreadyPresent(ha, remnant, RemnantFriendlyCause(ha))
+
+            val persean = ha.getActivityOfClass(PerseanLeagueHostileActivityFactor::class.java)
+            addCauseIfNotAlreadyPresent(ha, persean, GenericAlliedCause(ha, Factions.PERSEAN, PerseanLeagueHostileActivityFactor::class.java))
+
+            val diktat = ha.getActivityOfClass(SindrianDiktatHostileActivityFactor::class.java)
+            addCauseIfNotAlreadyPresent(ha, diktat, GenericAlliedCause(ha, Factions.DIKTAT, SindrianDiktatHostileActivityFactor::class.java))
+
+            val church = ha.getActivityOfClass(LuddicChurchHostileActivityFactor::class.java)
+            addCauseIfNotAlreadyPresent(ha, church, GenericAlliedCause(ha, Factions.LUDDIC_CHURCH, LuddicChurchHostileActivityFactor::class.java))
+
+            val pirate = ha.getActivityOfClass(PirateHostileActivityFactor::class.java)
+            addCauseIfNotAlreadyPresent(ha, pirate, OutlawCommissionActivityCause(ha, Factions.PIRATES, "pirate"))
+
+            val pather = ha.getActivityOfClass(LuddicPathHostileActivityFactor::class.java)
+            addCauseIfNotAlreadyPresent(ha, pather, OutlawCommissionActivityCause(ha, Factions.LUDDIC_PATH, "lp"))
+        }
+
+        @JvmStatic
+        fun addCauseIfNotAlreadyPresent(ha: HostileActivityEventIntel, factor : BaseHostileActivityFactor?, cause : BaseHostileActivityCause2) {
+            if (factor == null) return
+            if (factor.getCauseOfClass(cause.javaClass) != null) return
+            ha.addActivity(factor, cause)
         }
 
         // The League and Church overrides should no longer be needed, since they check for the faction correctly on Kazeron/Hesperus
