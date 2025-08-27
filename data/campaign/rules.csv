@@ -2,10 +2,13 @@ id,trigger,conditions,script,text,options,notes
 #RULESET_NAME Nexerelin,,,,,,
 ,,,,,,
 # NGC options,,,,,,
-ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,"$isInIntro = true 0
-$introPage = 1.0 0
-FireAll ExerelinNGCIntroPage
+ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,"FireBest ExerelinNGCIntroPicker
 NGCGetExerelinDefaults",,,override SS+ NGC
+,,,,,,
+ExerelinNGCSkipIntro,ExerelinNGCIntroPicker,NGCIntroPicker 0,FireAll ExerelinNGCStep1,,,
+ExerelinNGCDoIntro,ExerelinNGCIntroPicker,!NGCIntroPicker 0,"$isInIntro = true 0
+$introPage = 1.0 0
+FireAll ExerelinNGCIntroPage",,,
 ,,,,,,
 ExerelinNGCIntroNextPage,NewGameOptionSelected,$option==exerelinNGCIntroNextPage,"$introPage++
 FireAll ExerelinNGCIntroPage",,,
@@ -13,7 +16,8 @@ ExerelinNGCIntroPrevPage,NewGameOptionSelected,$option==exerelinNGCIntroPrevPage
 FireAll ExerelinNGCIntroPage",,,
 ,,,,,,
 ExerelinNGCIntro1,ExerelinNGCIntroPage,"$introPage == 1.0
-$isInIntro","SetShortcut exerelinNGCIntroNextPage RETURN
+$isInIntro","NGCIntroPicker true
+SetShortcut exerelinNGCIntroNextPage RETURN
 SetShortcut exerelinNGCIntroEnd ESCAPE",">>> GREETINGS, STARFARER <<<
 
 Welcome to the Nexerelin mod for Starsector!
