@@ -27,9 +27,11 @@ public class Nex_NGCPrintFactionDesc extends BaseCommandPlugin {
             if (faction.isPlayerFaction()) {
                 str = StringHelper.getString("exerelin_ngc", "factionDesc_player");
             }
-            sub.addPara(str, 0);
-            tt.addImageWithText(0);
-            dialog.getTextPanel().addTooltip();
+            if (!str.isBlank() && !str.equals("No description... yet")) {
+                sub.addPara(str, 0);
+                tt.addImageWithText(0);
+                dialog.getTextPanel().addTooltip();
+            }
         } catch (Exception ex) {
 
         }

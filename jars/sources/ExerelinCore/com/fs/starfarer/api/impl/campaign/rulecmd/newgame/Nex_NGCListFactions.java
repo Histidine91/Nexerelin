@@ -8,7 +8,7 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
-import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
+import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptionsPlus;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.NexConfig;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Nex_NGCListFactions extends PaginatedOptions {
+public class Nex_NGCListFactions extends PaginatedOptionsPlus {
 	
 	public static final String JOIN_FACTION_OPTION_PREFIX = "nex_NGCJoinFaction_";
 	public static final String LIST_FACTIONS_IN_GROUP_OPTION_PREFIX = "nex_NGCListFactionsGroup_";
