@@ -2,6 +2,8 @@ package exerelin.console.commands;
 
 import com.fs.starfarer.api.Global;
 import exerelin.campaign.ui.ReinitScreenScript;
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.utilities.LunaConfigHelper;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
@@ -22,6 +24,8 @@ public class ReloadNexConfig implements BaseCommand {
 		for (NexFactionConfig conf : NexConfig.getAllFactionConfigsCopy()) {
 			conf.updateBaseAlignmentsInMemory();
 		}
+		if (ExerelinModPlugin.HAVE_LUNALIB) LunaConfigHelper.tryLoadLunaConfig();
+
 		Global.getSector().addTransientScript(new ReinitScreenScript());
 				
 		Console.showMessage(StringHelper.getString("nex_console", "msg_configReload"));
