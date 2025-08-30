@@ -600,19 +600,20 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		FleetType oldType = fleetType;
 		fleetType = type;
 		//memory.set(MEM_KEY_TYPENAME, Misc.ucFirst(type.getName()), 0);
-		if (fleetType == FleetType.COLONY) {
-			setFP(100);
+		if (fleetType == FleetType.COLONY || fleetType == FleetType.RELIEF) {
+			setFP(150);
 		}
 		if (oldType != null && oldType != type) {
 			updateCost();
 			setTarget((MarketAPI)null);
-			
-			if (fleetType == FleetType.RELIEF) {
-				
-			}
+
+			printFleetInfo(true, false, true, true);
+			/*
+			if (fleetType == FleetType.RELIEF) {}
 			else {
-				printFleetInfo(true, false, true, true);
+				//printFleetInfo(true, false, true, true);
 			}
+			*/
 		}
 	}
 	
@@ -703,7 +704,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		String fpStr = fp + "";
 		opts.addOption(getString("optionStrength") + ": " + fpStr, "nex_fleetRequest_strengthMenu");
-		opts.setEnabled("nex_fleetRequest_strengthMenu", fleetType != FleetType.RELIEF && fleetType != FleetType.COLONY);
+		//opts.setEnabled("nex_fleetRequest_strengthMenu", fleetType != FleetType.RELIEF && fleetType != FleetType.COLONY);
 		
 		String sourceName = source == null ? StringHelper.getString("none") : source.getName();
 		opts.addOption(getString("optionSource") + ": " + sourceName, "nex_fleetRequest_selectSource");
