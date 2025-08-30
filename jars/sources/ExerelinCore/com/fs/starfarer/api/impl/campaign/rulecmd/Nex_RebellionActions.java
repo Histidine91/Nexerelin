@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class Nex_RebellionActions extends PaginatedOptions {
+public class Nex_RebellionActions extends PaginatedOptionsPlus {
 	
 	public static final String OPT_PREFIX = "nex_supplyInsurgency_deliver_";
 	public static final int PREFIX_LENGTH = OPT_PREFIX.length();

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.*;
 
 
-public class Nex_BlueprintSwap extends PaginatedOptions {
+public class Nex_BlueprintSwap extends PaginatedOptionsPlus {
 	
 	public static final String POINTS_KEY = "nex_BPSwapPoints";
 	public static final String STOCK_ARRAY_KEY = "$nex_BPSwapStock";

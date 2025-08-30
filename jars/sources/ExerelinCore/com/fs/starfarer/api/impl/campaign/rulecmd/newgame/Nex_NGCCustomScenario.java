@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
+import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptionsPlus;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
@@ -18,7 +18,7 @@ import org.lwjgl.input.Keyboard;
 import java.util.*;
 
 
-public class Nex_NGCCustomScenario extends PaginatedOptions {
+public class Nex_NGCCustomScenario extends PaginatedOptionsPlus {
 	
 	public static final String CUSTOM_SCENARIO_OPTION_PREFIX = "nex_NGCCustomScenario_";
 	public static final int PREFIX_LENGTH = CUSTOM_SCENARIO_OPTION_PREFIX.length();

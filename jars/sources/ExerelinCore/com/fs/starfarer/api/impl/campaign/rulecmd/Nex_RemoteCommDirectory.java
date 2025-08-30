@@ -16,7 +16,7 @@ import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
 // TODO:
-public class Nex_RemoteCommDirectory extends PaginatedOptions {
+public class Nex_RemoteCommDirectory extends PaginatedOptionsPlus {
 	
 	public static final String OPTION_PREFIX = "nex_remoteCommDirectory_open_";
 	public static final int PREFIX_LENGTH = OPTION_PREFIX.length();

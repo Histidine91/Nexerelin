@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
-public class Nex_DonateAdmin extends PaginatedOptions {
+public class Nex_DonateAdmin extends PaginatedOptionsPlus {
 	
 	public static final String OPTION_PREFIX = "nex_donateAdmin_select_";
 	public static final int PREFIX_LENGTH = OPTION_PREFIX.length();

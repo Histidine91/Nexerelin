@@ -8,10 +8,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
-import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions.OPTION_NEXT_PAGE;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions.OPTION_PREV_PAGE;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.newgame.Nex_NGCListFactions.EMPTY_PARAMS;
+import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptionsPlus;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.ExerelinSetupData;
@@ -19,19 +16,19 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+
+import static com.fs.starfarer.api.impl.campaign.rulecmd.newgame.Nex_NGCListFactions.EMPTY_PARAMS;
 
 // it's bad 
 // selecting a main faction, then going back, doesn't return you to previous faction page 
 // due to use of nested pages
 @Deprecated
-public class Nex_NGCListFactionsV2 extends PaginatedOptions {
+public class Nex_NGCListFactionsV2 extends PaginatedOptionsPlus {
 	
 	public static final String JOIN_FACTION_OPTION_PREFIX = "nex_NGCJoinFaction_";
 	public static List<Pair<String, String>> factionOptions = new ArrayList<>();
