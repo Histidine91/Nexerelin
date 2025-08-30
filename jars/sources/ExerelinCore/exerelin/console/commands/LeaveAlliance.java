@@ -29,22 +29,23 @@ public class LeaveAlliance implements BaseCommand {
             return CommandResult.BAD_SYNTAX;
         }
 
-        String faction = tmp[0];
+        String factionArg = tmp[0];
 
-        FactionAPI fac = CommandUtils.findBestFactionMatch(faction);
+        FactionAPI fac = CommandUtils.findBestFactionMatch(factionArg);
 
         if (fac == null)
         {
-            Console.showMessage("Error: no such faction '" + faction + "'!");
+            Console.showMessage("Error: no such faction '" + factionArg + "'!");
             return CommandResult.ERROR;
         }
 
-        Alliance alliance = AllianceManager.getFactionAlliance(faction);
+        String factionId = fac.getId();
+        Alliance alliance = AllianceManager.getFactionAlliance(factionId);
 		if (alliance == null) {
 			Console.showMessage(CommandUtils.getFactionName(fac) + " is not in an alliance");
             return CommandResult.ERROR;
 		}
-		AllianceManager.getManager().leaveAlliance(faction, alliance, false, true);
+		AllianceManager.getManager().leaveAlliance(factionId, alliance, false, true);
 		
         Console.showMessage(CommandUtils.getFactionName(fac) + " has left their alliance.");
         return CommandResult.SUCCESS;
