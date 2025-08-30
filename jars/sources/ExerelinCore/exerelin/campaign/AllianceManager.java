@@ -478,9 +478,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 Alignment bestAlignment = getBestAlignment(factionId, otherFactionId);
                 if (bestAlignment != null)
                 {
-                    if (NexConfig.npcAllianceOffers && Nex_IsFactionRuler.isRuler(otherFactionId)) {
+                    if (Nex_IsFactionRuler.isRuler(otherFactionId)) {
                         if (Global.getSector().getFaction(otherFactionId).getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN))
                             continue;
+                        if (!NexConfig.npcAllianceOffers) continue;
 
                         AllianceOfferIntel offer = new AllianceOfferIntel(factionId, null, null);
                         offer.init();
@@ -544,6 +545,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (all.requirePlayerApproval()) {
                     if (Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN))
                         continue;
+                    if (!NexConfig.npcAllianceOffers) continue;
 
                     AllianceOfferIntel offer = new AllianceOfferIntel(factionId, all, null);
                     offer.init();
@@ -566,6 +568,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                         String factionId = PlayerFactionStore.getPlayerFactionId();
                         if (Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().getBoolean(AllianceOfferIntel.MEM_KEY_COOLDOWN))
                             continue;
+                        if (!NexConfig.npcAllianceOffers) continue;
 
                         Alliance toOffer = !alliance.getMembersCopy().contains(factionId) ? alliance : otherAlliance;
                         AllianceOfferIntel offer = new AllianceOfferIntel(toOffer.getRandomMember(), alliance, otherAlliance);
