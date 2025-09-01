@@ -109,6 +109,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("enableColonyExpeditions", "boolean", tabFleets, NexConfig.enableColonyExpeditions);
         addSetting("colonyExpeditionInterval", "int", tabFleets, NexConfig.colonyExpeditionInterval, 15, 10000);
         addSetting("colonyExpeditionsOnlyAfterPlayerColony", "boolean", tabFleets, NexConfig.colonyExpeditionsOnlyAfterPlayerColony);
+        addSetting("colonyExpeditionsOnlyAfterGalatia", "boolean", tabFleets, Global.getSettings().getBoolean("nex_colonyExpeditionOnlyAfterGalatia"));
         addSetting("specialForcesPointMult", "float", tabFleets, NexConfig.specialForcesPointMult, 0, 10);
         addSetting("specialForcesSizeMult", "float", tabFleets, NexConfig.specialForcesSizeMult, 0.2, 5);
         addSetting("specialForcesMaintMult", "float", tabFleets, NexConfig.specialForcesMaintMult, 0, 2);
@@ -231,6 +232,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.enableColonyExpeditions = (boolean)loadSetting("enableColonyExpeditions", "boolean");
         NexConfig.colonyExpeditionInterval = (int)loadSetting("colonyExpeditionInterval", "int");
         NexConfig.colonyExpeditionsOnlyAfterPlayerColony = (boolean)loadSetting("colonyExpeditionsOnlyAfterPlayerColony", "boolean");
+        Global.getSettings().setBoolean("nex_colonyExpeditionOnlyAfterGalatia", (boolean)loadSetting("colonyExpeditionsOnlyAfterGalatia", "boolean"));
         NexConfig.specialForcesPointMult = (float)loadSetting("specialForcesPointMult", "float");
         NexConfig.specialForcesSizeMult = (float)loadSetting("specialForcesSizeMult", "float");
         NexConfig.specialForcesMaintMult = (float)loadSetting("specialForcesMaintMult", "float");

@@ -3238,6 +3238,8 @@
 		"tooltip_colonyExpeditionInterval":"Base interval at which colony expeditions are launched, modified by factors such as the number of existing colonies. Each participating faction has a chance to be selected in each expedition round.",
 		"name_colonyExpeditionsOnlyAfterPlayerColony":"Colony expeditions only after player colony",
 		"tooltip_colonyExpeditionsOnlyAfterPlayerColony":"Disables NPC colony expedition until after the player faction setup screen (faction name, flag, etc.) has been seen at least once.",
+		"name_colonyExpeditionsOnlyAfterGalatia":"Colony expeditions only after Galatia",
+		"tooltip_colonyExpeditionsOnlyAfterGalatia":"Disables NPC colony expedition until after the player completes the quest \"At The Gates\".",
 		"name_specialForcesPointMult":"Special task group point mult",
 		"tooltip_specialForcesPointMult":"Controls the rate at which NPC special task groups spawn and are replaced.",
 		"name_specialForcesSizeMult":"Special task group size mult",
