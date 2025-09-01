@@ -1679,6 +1679,15 @@ tut_janContactReport3,DialogOptionSelected,$option == tutReport3,"AddAbility exe
 SetShortcut cutCommLinkPolite ""ESCAPE""","""Finally, you could take a commission with the Hegemony - due to the Galatia business, your standing is high enough that such a request would be accepted.
 
 You'll be expected to fight our enemies, though, so it's quite a commitment. If I were you, I'd hold off on it until you've got a more solid fleet behind you.""","cutCommLinkPolite:""Thanks, I'll think about it.""",
+,,,,,,
+sdtuSafehouseEndInterrupt,DialogOptionSelected,"$option == sdtu_safehouseEnd
+RepLTE sindrian_diktat INHOSPITABLE
+!$nex_sdtu_alreadyAttemptedRepFix","AdjustRep sindrian_diktat SUSPICIOUS 100
+$nex_sdtu_alreadyAttemptedRepFix = true 1","""Ah,"" Macario raises a finger. ""Just one thing, captain.""
+
+""You've been very, very bad,"" he wags his finger, scolding you. ""I'll arrange matters to allow you to operate in Diktat space. But you must promise to behave. You'll behave?"" 
+
+He doesn't wait for an answer, ""Good.""",sdtu_safehouseEnd:Continue,
 #END Vanilla overrides,,,,,,
 ,,,,,,
 # Vanilla not-quite-overrides,,,,,,
