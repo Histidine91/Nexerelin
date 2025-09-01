@@ -1500,8 +1500,8 @@ nex_outpostOptionNearbyHostile,PopulateOptions,"$nex_canMine
 HostileFleetNearbyAndAware","SetEnabled nex_outpostPreview false
 SetTooltip nex_outpostPreview ""A nearby hostile fleet is tracking your movements, making construction of an outpost impossible.""",,,
 nex_outpostOptionAbyss,PopulateOptions,"$nex_canMine
-$abyssalDepth > 0","SetEnabled nex_outpostPreview false
-SetTooltip nex_outpostPreview ""Cannot be built in the abyss.""",,,
+$player.locTag:temporary_location score:100","SetEnabled nex_outpostPreview false
+SetTooltip nex_outpostPreview ""This location will be unlikely to be found again in the future and an outpost here would be lost.""",,,
 nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"Nex_PlayerOutpost buildInfo
 FireAll Nex_OutpostOption","You can build an automated outpost here. It will automatically stock supplies and fuel for you to take, and can be used as storage.",,
 nex_outpostBuildOption,Nex_OutpostOption,,"SetEnabled nex_outpostBuildStart true
