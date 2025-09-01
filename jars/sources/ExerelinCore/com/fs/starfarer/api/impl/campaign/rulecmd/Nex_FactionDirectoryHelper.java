@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 public class Nex_FactionDirectoryHelper {
 
-	public static final int MAX_ENTRIES_PER_GROUPING = 8;
-	public static final int PREFERED_ENTRIES_PER_GROUPING = 7;
+	public static final int MAX_ENTRIES_PER_GROUPING = 9;
+	public static final int PREFERED_ENTRIES_PER_GROUPING = 8;
 	public static final int MAX_GROUPINGS = 7;
 	
 	public static final Comparator<FactionAPI> NAME_COMPARATOR = new Comparator<FactionAPI>()
