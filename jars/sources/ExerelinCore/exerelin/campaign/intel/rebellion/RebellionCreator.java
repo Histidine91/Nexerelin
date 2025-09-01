@@ -21,7 +21,9 @@ import exerelin.utilities.NexUtilsMarket;
 import org.lazywizard.console.Console;
 import org.lazywizard.lazylib.MathUtils;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Periodically starts rebellions on suitably restive planets.
@@ -36,6 +38,12 @@ public class RebellionCreator implements EveryFrameScript {
 	public static final float HARD_MODE_MULT = 1.25f;
 	public static final float HARD_MODE_STABILITY_MODIFIER = -2;
 	public static final float MAX_ONGOING = 4;
+
+	public static final Set<String> NO_REBEL_ON_FACTIONS = new HashSet<>();
+	static {
+		NO_REBEL_ON_FACTIONS.add("nex_derelict");
+		NO_REBEL_ON_FACTIONS.add("templars");
+	}
 	
 	protected IntervalUtil interval = new IntervalUtil(1,1);
 	protected transient int numOngoing;
@@ -193,9 +201,7 @@ public class RebellionCreator implements EveryFrameScript {
 	{
 		if (!NexUtilsMarket.shouldTargetForInvasions(market, 0))
 			return;
-		if (market.getFactionId().equals("templars"))
-			return;
-		if (market.getFactionId().equals(Factions.INDEPENDENT))
+		if (NO_REBEL_ON_FACTIONS.contains(market.getFactionId()))
 			return;
 		if (NexUtilsFaction.isPirateFaction(market.getFactionId()))
 			return;
