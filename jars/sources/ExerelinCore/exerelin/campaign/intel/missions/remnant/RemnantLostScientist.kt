@@ -2,6 +2,7 @@ package exerelin.campaign.intel.missions.remnant
 
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.Script
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.ActionType
 import com.fs.starfarer.api.campaign.econ.MarketAPI
@@ -147,9 +148,7 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
 
         beginWithinHyperspaceRangeTrigger(planet, 3f, false, Stage.GO_TO_PLANET)
         currTrigger.id = "goToPlanet_approach"
-        triggerRunScriptAfterDelay(0f) {
-            setupPirateBaseAndFleet()
-        }
+        triggerRunScriptAfterDelay(0f, SetupPirateScript(this))
         endTrigger()
 
     }
@@ -183,7 +182,7 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         // first see if there's already a pirate base around the planet that we can use
         for (info in Global.getSector().intelManager.getIntel(PirateBaseIntel::class.java)) {
             val pbi = info as PirateBaseIntel
-            if (pbi.isEnding || pbi.isEnded) continue;
+            if (pbi.isEnding || pbi.isEnded) continue
             if (pbi.entity?.orbit?.focus == planet) {
                 pirateBase = pbi
                 break
@@ -563,6 +562,12 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
 
     override fun getBaseName(): String? {
         return RemnantQuestUtils.getString("lostScientist_name")
+    }
+
+    class SetupPirateScript(var mission: RemnantLostScientist) : Script {
+        override fun run() {
+            mission.setupPirateBaseAndFleet()
+        }
     }
 
     class RemnantLostScientistToweringListener(var mission: RemnantLostScientist) : FleetEventListener {
