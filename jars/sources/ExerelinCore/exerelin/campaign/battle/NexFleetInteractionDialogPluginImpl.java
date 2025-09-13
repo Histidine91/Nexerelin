@@ -40,6 +40,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	protected static final String STRING_HELPER_CAT = "exerelin_officers";
 	protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
 	protected boolean recoveredOfficers = false;
+	protected FleetMemberAPI startingFlagship;
 
 	private Map<FleetMemberAPI, Float[]> disabledOrDestroyedMembers = new HashMap<>();
 
@@ -51,12 +52,14 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	public NexFleetInteractionDialogPluginImpl() {
 		super();
 		context = new NexFleetEncounterContext();
+		startingFlagship = Global.getSector().getPlayerFleet().getFlagship();
 	}
 
 	public NexFleetInteractionDialogPluginImpl(FIDConfig params) {
 		super(params);
 		this.config = params;
 		context = new NexFleetEncounterContext();
+		startingFlagship = Global.getSector().getPlayerFleet().getFlagship();
 	}
 
 	// Don't restore KIA/MIA officers
@@ -76,6 +79,12 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				}
 			}
 		}
+	}
+
+	// for mod cases where you can transfer to an automated ship
+	protected boolean isValidTransferCommandTarget(FleetMemberAPI member) {
+		if (member == startingFlagship) return true;
+		return super.isValidTransferCommandTarget(member);
 	}
 
 	@Override
