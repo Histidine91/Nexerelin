@@ -2,12 +2,11 @@
 
 Nexerelin is a mod for the game [Starsector](http://fractalsoftworks.com). It implements 4X-style gameplay with faction wars, diplomacy and planetary conquest.
 
-Current repo version: v0.12.0b
+Current repo version: v0.12.0x
 
 ## Setup instructions ##
-Check out the repo to Starsector/mods/Nexerelin (or some other folder name) and it can be played immediately. 
+Check out the repo to Starsector/mods/Nexerelin (or some other folder name). Follow the steps below to build the .jar in order to play.
 
-If you want to build Nexerelin locally, follow the steps below.
 Intellij and Eclipse forks are currently the most popular Java IDE out there.
 The following contains instructions on how to set this project up on Intellij. (Eclipse should be similar but you will need to figure out where those dialogs and settings are on your own.)
 
