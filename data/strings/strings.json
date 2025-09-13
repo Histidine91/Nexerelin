@@ -3124,6 +3124,8 @@
 		"tooltip_diplomacyEventFilterLevel":"0 = no filter, 1 = popup only events affecting player/commissioner faction, 2 = filter out all events. War/peace events are always shown.",
 		"name_agentEventFilterLevel":"Operative event filter level",
 		"tooltip_agentEventFilterLevel":"Works more or less the same way as the diplomacy filter.",
+		"name_ngcShowIntro":"Always show intro on new game",
+		"tooltip_ngcShowIntro":"Shows the intro text about this mod in the new game dialog. Normally it will only be shown once .",
 		
 		"name_enableHostileFleetEvents":"Enable hostile fleet events",
 		"tooltip_enableHostileFleetEvents":"If false, should disable all invasions, raids, etc. from this mod. Vanilla events such as pirate raids and colony crises will be unaffected.",

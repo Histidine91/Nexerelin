@@ -36,6 +36,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("ceasefireNotificationPopup", "boolean", NexConfig.ceasefireNotificationPopup);
         addSetting("diplomacyEventFilterLevel", "int", NexConfig.diplomacyEventFilterLevel, 0, 2);
         addSetting("agentEventFilterLevel", "int", NexConfig.agentEventFilterLevel, 0, 2);
+        addSetting("ngcShowIntro", "boolean", false);
 
         addHeader("invasions", tabFleets);
         addSetting("enableHostileFleetEvents", "boolean", tabFleets, NexConfig.enableHostileFleetEvents);

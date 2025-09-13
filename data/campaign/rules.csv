@@ -5,8 +5,8 @@ id,trigger,conditions,script,text,options,notes
 ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,"FireBest ExerelinNGCIntroPicker
 NGCGetExerelinDefaults",,,override SS+ NGC
 ,,,,,,
-ExerelinNGCSkipIntro,ExerelinNGCIntroPicker,NGCIntroPicker 0,FireAll ExerelinNGCStep1,,,
-ExerelinNGCDoIntro,ExerelinNGCIntroPicker,!NGCIntroPicker 0,"$isInIntro = true 0
+ExerelinNGCSkipIntro,ExerelinNGCIntroPicker,,FireAll ExerelinNGCStep1,,,
+ExerelinNGCDoIntro,ExerelinNGCIntroPicker,Nex_NGCIntroPicker false,"$isInIntro = true 0
 $introPage = 1.0 0
 FireAll ExerelinNGCIntroPage",,,
 ,,,,,,
@@ -16,7 +16,7 @@ ExerelinNGCIntroPrevPage,NewGameOptionSelected,$option==exerelinNGCIntroPrevPage
 FireAll ExerelinNGCIntroPage",,,
 ,,,,,,
 ExerelinNGCIntro1,ExerelinNGCIntroPage,"$introPage == 1.0
-$isInIntro","NGCIntroPicker true
+$isInIntro","Nex_NGCIntroPicker true
 SetShortcut exerelinNGCIntroNextPage RETURN
 SetShortcut exerelinNGCIntroEnd ESCAPE",">>> GREETINGS, STARFARER <<<
 
