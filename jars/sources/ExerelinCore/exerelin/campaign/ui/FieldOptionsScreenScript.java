@@ -4,53 +4,53 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.listeners.CampaignInputListener;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
+import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
 import org.lwjgl.input.Keyboard;
 
+import java.util.List;
 import java.util.Map;
 
-// adapted from UpdateNotificationScript in LazyWizard's Version Checker
-public class FieldOptionsScreenScript implements EveryFrameScript
-{
-	protected transient boolean keyDown = false;
+// used to be adapted from UpdateNotificationScript in LazyWizard's Version Checker, now used CampaignInputListener
+public class FieldOptionsScreenScript implements CampaignInputListener {
 
+	/**
+	 * Higher number = higher priority, i.e. gets to process input first.
+	 *
+	 * @return
+	 */
 	@Override
-	public boolean isDone()
-	{
-		return false;
+	public int getListenerInputPriority() {
+		return 3;
 	}
 
 	@Override
-	public boolean runWhilePaused()
-	{
-		return true;
+	public void processCampaignInputPreCore(List<InputEventAPI> events) {
+
 	}
 
-	
 	@Override
-	public void advance(float amount)
-	{
-		// Don't do anything while in a menu/dialog		
-		if (Global.getSector().isInNewGameAdvance() || Global.getSector().getCampaignUI().isShowingDialog() 
-				|| Global.getCurrentState() == GameState.TITLE)
-		{
+	public void processCampaignInputPreFleetControl(List<InputEventAPI> events) {
+
+		// Don't do anything while in a menu/dialog
+		if (Global.getSector().isInNewGameAdvance() || Global.getSector().getCampaignUI().isShowingDialog() || Global.getCurrentState() == GameState.TITLE){
 			return;
 		}
-		
-		if (Keyboard.isKeyDown(NexConfig.directoryDialogKey))
-		{
-			keyDown = true;
-		}
-		else {
-			if (keyDown) {
+
+		for (InputEventAPI event : events) {
+			if (event.isConsumed()) continue;
+
+			if (event.isKeyDownEvent() && event.getEventValue() == NexConfig.directoryDialogKey) {
+
 				CampaignFleetAPI player =  Global.getSector().getPlayerFleet();
 				boolean success = Global.getSector().getCampaignUI().showInteractionDialog(
 						new RuleBasedInteractionDialogPluginImpl(), player);
@@ -60,9 +60,15 @@ public class FieldOptionsScreenScript implements EveryFrameScript
 					dialog.getVisualPanel().showFleetInfo(null, player, null, null);
 					FireAll.fire(null, dialog, rbd.getMemoryMap(), "ExerelinMarketSpecial");
 				}
-				keyDown = false;
+
 			}
 		}
+	}
+
+	@Override
+	public void processCampaignInputPostCore(List<InputEventAPI> events) {
+
+
 	}
 
 	// now handled via rules

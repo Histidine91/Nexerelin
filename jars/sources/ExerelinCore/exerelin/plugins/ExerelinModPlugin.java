@@ -440,7 +440,8 @@ public class ExerelinModPlugin extends BaseModPlugin
 
     protected void addTransientScriptsAndListeners(boolean newGame) {
         SectorAPI sector = Global.getSector();
-        sector.addTransientScript(new FieldOptionsScreenScript());
+        //sector.addTransientScript(new FieldOptionsScreenScript());
+        sector.getListenerManager().addListener(new FieldOptionsScreenScript(), true);
         sector.addTransientScript(new SSP_AsteroidTracker());
         sector.addTransientListener(new EncounterLootHandler());
         PlayerInSystemTracker.create();
