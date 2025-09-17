@@ -109,6 +109,7 @@ public final class VCModPluginCustom
         if (script != null && !script.isDone())
         {
             Global.getSector().addTransientScript(script);
+            Global.getSector().getListenerManager().addListener(script, true);
         }
     }
 }

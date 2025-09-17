@@ -4,8 +4,13 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.ModSpecAPI;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.listeners.CampaignInputListener;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
+import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.rulecmd.FireAll;
+import com.fs.starfarer.api.input.InputEventAPI;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.versionchecker.UpdateInfo.ModInfo;
 import exerelin.utilities.versionchecker.UpdateInfo.VersionFile;
 import lombok.Getter;
@@ -24,7 +29,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public final class UpdateNotificationScript implements EveryFrameScript
+public final class UpdateNotificationScript implements EveryFrameScript, CampaignInputListener
 {
     private float timeUntilWarn = .75f; // Ensures text appears
     private boolean isUpdateCheckDone = false, hasWarned = false, isDone = false;
@@ -157,12 +162,48 @@ public final class UpdateNotificationScript implements EveryFrameScript
             timeUntilWarn -= amount;
         }
 
-        // User can press a key to summon a detailed update report
+        /*// User can press a key to summon a detailed update report
         if (Keyboard.isKeyDown(VCModPluginCustom.notificationKey))
         {
             ui.showInteractionDialog(new UpdateNotificationDialog(
                     updateInfo, unsupportedMods), Global.getSector().getPlayerFleet());
+        }*/
+    }
+
+
+    @Override
+    public int getListenerInputPriority() {
+        return 3;
+    }
+
+    @Override
+    public void processCampaignInputPreCore(List<InputEventAPI> events) {
+
+    }
+
+    @Override
+    public void processCampaignInputPreFleetControl(List<InputEventAPI> events) {
+        // Don't do anything while in a menu/dialog
+        CampaignUIAPI ui = Global.getSector().getCampaignUI();
+        if (Global.getSector().isInNewGameAdvance() || ui.isShowingDialog())
+        {
+            return;
         }
+
+        if (!isUpdateCheckDone) return;
+
+        for (InputEventAPI event : events) {
+            if (event.isConsumed()) continue;
+            if (event.isKeyDownEvent() && event.getEventValue() == VCModPluginCustom.notificationKey) {
+                ui.showInteractionDialog(new UpdateNotificationDialog(
+                        updateInfo, unsupportedMods), Global.getSector().getPlayerFleet());
+            }
+        }
+    }
+
+    @Override
+    public void processCampaignInputPostCore(List<InputEventAPI> events) {
+
     }
 
     private static class UpdateNotificationDialog implements InteractionDialogPlugin
