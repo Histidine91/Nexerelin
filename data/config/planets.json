@@ -18,7 +18,8 @@
 		"cloudTexture":"graphics/planets/wormhole_textureClouds.png",
 		"cloudColor":[255,255,255,100],
 		"cloudRotation":-5,
-		"cloudOffset":2
+		"cloudOffset":2,
+		"tags":["hide_in_codex"]
 	},
 	"wormholeA":{
 		"name":"WormholeFG",
@@ -39,7 +40,8 @@
 		"cloudColor":[255,255,255,64],
 		"cloudRotation":18,
 		"cloudOffset":3,
-		"glowTexture":"graphics/planets/wormhole_textureLightA.jpg"
+		"glowTexture":"graphics/planets/wormhole_textureLightA.jpg",
+		"tags":["hide_in_codex"]
 	},
 	"wormholeB":{
 		"name":"WormholeFG",
@@ -60,7 +62,8 @@
 		"cloudColor":[255,255,255,32],
 		"cloudRotation":-27,
 		"cloudOffset":4,
-		"glowTexture":"graphics/planets/wormhole_textureLightB.jpg"
+		"glowTexture":"graphics/planets/wormhole_textureLightB.jpg",
+		"tags":["hide_in_codex"]
 	},
 	"wormholeC":{
 		"name":"WormholeFG",
@@ -81,6 +84,7 @@
 		"cloudColor":[255,255,255,0],
 		"cloudRotation":-24,
 		"cloudOffset":5,
-		"glowTexture":"graphics/planets/wormhole_textureLightC.jpg"
+		"glowTexture":"graphics/planets/wormhole_textureLightC.jpg",
+		"tags":["hide_in_codex"]
 	},
 }
