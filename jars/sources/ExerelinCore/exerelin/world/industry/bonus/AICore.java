@@ -15,7 +15,7 @@ public abstract class AICore extends BonusGen {
 	public boolean canApply(Industry ind, ProcGenEntity entity) {
 		if (ind.getAICoreId() != null && ind.getAICoreId().equals(Commodities.ALPHA_CORE))
 			return false;
-		return true;
+		return super.canApply(ind, entity);
 	}
 	
 	@Override
