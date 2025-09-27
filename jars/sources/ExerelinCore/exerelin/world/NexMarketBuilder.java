@@ -82,7 +82,7 @@ public class NexMarketBuilder
 	@Getter protected static final Map<String, IndustryClassGen> industryClassesByIndustryId = new HashMap<>();
 	protected static final List<IndustryClassGen> specialIndustryClasses = new ArrayList<>();
 	protected static final List<BonusGen> bonuses = new ArrayList<>();
-	protected static final Map<String, BonusGen> bonusesById = new HashMap<>();
+	@Getter protected static final Map<String, BonusGen> bonusesById = new HashMap<>();
 	
 	// not a literally accurate count since it disregards HQs
 	// only used to handle the market size rotation
@@ -91,7 +91,7 @@ public class NexMarketBuilder
 	protected int numMoons = 0;
 	
 	protected List<ProcGenEntity> markets = new ArrayList<>();
-	protected Map<String, List<ProcGenEntity>> marketsByFactionId = new HashMap<>();
+	@Getter protected Map<String, List<ProcGenEntity>> marketsByFactionId = new HashMap<>();
 	
 	protected Map<String, Integer> currIndustryCounts = new HashMap<>();
 	

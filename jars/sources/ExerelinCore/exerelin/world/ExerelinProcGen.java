@@ -26,6 +26,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.utilities.*;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,8 +37,8 @@ import org.magiclib.terrain.MagicAsteroidBeltTerrainPlugin;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /*
 import data.scripts.campaign.ExigencyCommRelayAdder;
@@ -90,7 +91,7 @@ public class ExerelinProcGen {
 	protected Set<ProcGenEntity> desirablePlanets = new HashSet<>();
 	protected Set<ProcGenEntity> populatedPlanets = new HashSet<>();
 	protected List<ProcGenEntity> stations = new ArrayList<>();
-	protected Map<SectorEntityToken, ProcGenEntity> procGenEntitiesByToken = new HashMap<>();
+	@Getter	protected Map<SectorEntityToken, ProcGenEntity> procGenEntitiesByToken = new HashMap<>();
 	protected List<String> alreadyUsedStationNames = new ArrayList<>();
 	
 	protected Map<PlanetAPI, Float> planetDesirabilityCache = new HashMap<>();

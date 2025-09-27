@@ -275,12 +275,18 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 	
 	// runcode exerelin.campaign.ColonyManager.getManager().upsizeMarket(Global.getSector().getEconomy().getMarket("jangala"))
+	public void upsizeMarket(MarketAPI market)
+	{
+		upsizeMarket(market, true);
+	}
+
 	/**
 	 * Makes the specified market one size larger (with intel notification), 
-	 * and prompts it to build new industries.
+	 * and prompts it to build new industries (if specified).
 	 * @param market
+	 * @param build
 	 */
-	public void upsizeMarket(MarketAPI market) 
+	public void upsizeMarket(MarketAPI market, boolean build)
 	{
 		int oldSize = market.getSize();		
 		CoreImmigrationPluginImpl.increaseMarketSize(market);
@@ -307,8 +313,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 
 		if (!market.isPlayerOwned()) {
-			buildIndustries(market);
-			processNPCConstruction(market);
+			if (build) {
+				buildIndustries(market);
+				processNPCConstruction(market);
+			}
 			if (market.getSize() >= 5 && market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
 			{
 				market.setImmigrationIncentivesOn(null);

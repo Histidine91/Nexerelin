@@ -212,12 +212,7 @@ public class StartSetupPostTimePass {
 			new Nex_SpacerObligation();
 		}
 
-		// timestamp
-		CampaignClockAPI clock = Global.getSector().getClock();
-		Global.getSector().getMemoryWithoutUpdate().set("$nex_startTimestamp", clock.getTimestamp());
-		if (clock.getDay() == 1 && clock.getMonth() == 1) {
-			Global.getSector().getMemoryWithoutUpdate().set("$nex_startOn1Jan", true);
-		}
+		// timestamp stuff: moved to modplugin	
 	}
 
 	public static FleetLogIntel generateAlphaSiteIntel() {

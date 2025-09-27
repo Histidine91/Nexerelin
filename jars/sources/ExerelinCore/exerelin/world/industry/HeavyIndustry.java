@@ -57,8 +57,9 @@ public class HeavyIndustry extends IndustryClassGen {
 	@Override
 	public float getWeight(ProcGenEntity entity) {
 		// special handling for Derelict Empire: make sure capitals always have heavy industry
+		String scenarioId = ExerelinSetupData.getInstance().startScenario;
 		if (Global.getSector().isInNewGameAdvance() 
-				&& "derelict_empire".equals(ExerelinSetupData.getInstance().startScenario)) 
+				&& "derelict_empire".equals(scenarioId) || "derelict_empire_v2".equals(ExerelinSetupData.getInstance().startScenario))
 		{
 			if (entity.isHQ) {
 				//Global.getLogger(this.getClass()).info("Enforcing heavy industry for homeworld " + entity.name + "(" + entity.market.getFactionId() + ")");

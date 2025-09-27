@@ -639,6 +639,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         for (QuestChainSkipEntry chain : QuestChainSkipEntry.getEntries()) {
             chain.onNewGame();
         }
+
+        ScenarioManager.afterNewGame(Global.getSector());
     }
     
     @Override
@@ -753,6 +755,14 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onNewGameAfterTimePass() {
+        log.info("New game after time pass; " + isNewGame);
+
+        // timestamp
+        CampaignClockAPI clock = Global.getSector().getClock();
+        Global.getSector().getMemoryWithoutUpdate().set("$nex_startTimestamp", clock.getTimestamp());
+        if (clock.getDay() == 1 && clock.getMonth() == 1) {
+            Global.getSector().getMemoryWithoutUpdate().set("$nex_startOn1Jan", true);
+        }
 
         String backgroundID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background");
         String factionID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background_faction");
@@ -762,8 +772,6 @@ public class ExerelinModPlugin extends BaseModPlugin
                     background.getSpawnLocationOverwrite(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID)));
 
         }
-
-        log.info("New game after time pass; " + isNewGame);
 
         if (ExerelinSetupData.getInstance().corvusMode) {
             if (NexConfig.updateMarketDescOnCapture && MarketDescChanger.getInstance() == null) {

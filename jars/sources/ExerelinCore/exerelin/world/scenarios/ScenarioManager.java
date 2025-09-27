@@ -20,11 +20,17 @@ import java.util.Map;
  * Examples include "Derelict Empire" where all non-homeworld planets are controlled by derelicts.
  */
 public class ScenarioManager {
+
+	public static final boolean DEBUG_MODE = false;
 	
 	public static final String CONFIG_FILE = "data/config/exerelin/customScenarios.json";
 	protected static final List<StartScenarioDef> defs = new ArrayList<>();
 	protected static final Map<String, StartScenarioDef> defsByID = new HashMap<>();
-	
+
+	public static final String MEMORY_KEY_SCENARIO = "$nex_scenarioId";
+	public static final String MEMORY_KEY_SCENARIO_SCRIPT = "$nex_scenario_script";
+
+	protected static String scenarioId;
 	protected static Scenario scenario;
 	
 	static {
@@ -56,6 +62,8 @@ public class ScenarioManager {
 	}
 	
 	public static void prepScenario(String id) {
+		scenarioId = id;
+
 		if (id == null) {
 			scenario = null;
 			return;
@@ -68,10 +76,17 @@ public class ScenarioManager {
 	
 	public static void clearScenario() {
 		scenario = null;
+		scenarioId = null;
 	}
 	
 	public static void onCharacterCreation(CharacterCreationData data) {
 		if (scenario != null) scenario.onCharacterCreation(data);
+	}
+
+	public static void afterNewGame(SectorAPI sector) {
+		if (scenario != null) {
+			sector.getMemoryWithoutUpdate().set(MEMORY_KEY_SCENARIO, scenarioId);
+		}
 	}
 	
 	public static void afterProcGen(SectorAPI sector) {
@@ -83,7 +98,19 @@ public class ScenarioManager {
 	}
 	
 	public static void afterTimePass(SectorAPI sector) {
-		if (scenario != null) scenario.afterTimePass(sector);
+		if (scenario != null) {
+			if (!DEBUG_MODE) {
+				scenario.afterTimePass(sector);
+			} else {
+				Global.getSector().getMemoryWithoutUpdate().set(MEMORY_KEY_SCENARIO_SCRIPT, scenario);
+			}
+		}
+
+	}
+
+	// runcode exerelin.world.scenarios.ScenarioManager.getSavedScenario().afterTimePass(Global.getSector());
+	public static Scenario getSavedScenario() {
+		return (Scenario) Global.getSector().getMemoryWithoutUpdate().get(MEMORY_KEY_SCENARIO_SCRIPT);
 	}
 	
 	public static StartScenarioDef getScenarioDef(String id) {

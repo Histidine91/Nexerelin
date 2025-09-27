@@ -12,4 +12,22 @@
     "maxRelationships":{ "default":-0.6 },
     
     "specialForcesMaxFleets":0,
+    
+    # for Derelict Empire V2
+    "industrySeeds":[
+        {"id":"orbitalworks", "mult":0.1},
+        {"id":"refining", "mult":0.1},
+        {"id":"fuelprod", "mult":0.1},
+        {"id":"militarybase", "mult":0.1},
+        {"id":"lightindustry", "mult":0.1},
+    ],
+    
+    "bonusSeeds":[
+        {"id":"nanoforge_corrupted", "count":1},
+        {"id":"aiCore_military", "mult":0.4},
+        {"id":"aiCore_heavyindustry", "count":1},
+        {"id":"aiCore_heavyindustry", "count":1},    ## promote to alpha
+        {"id":"aiCore_fuelprod", "count":1},
+        {"id":"aiCore_fuelprod", "count":1},    ## promote to alpha
+    ],
 }
