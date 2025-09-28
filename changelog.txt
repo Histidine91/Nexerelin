@@ -1,15 +1,21 @@
 Version 0.12.1
 
-Thanks to b277a, roflsian, and JamesTripleQ for their pull requests in this update
+Thanks to b277a, roflsian, JamesTripleQ and Lukas04 for their pull requests in this update
+
+### Changes from beta 0.12.0x ###
+* Derelict Empire V2 planets will be larger and better-defended, developed and supplied
+* DE V2 works correctly in random sector
+* Random sector: fix bonus AI cores applying to random structures instead of the ones they were supposed to
+* Fix battle background wormholes appearing in codex
 
 ### Gameplay ###
 * Alliances will stop League, Diktat and Church colony crises
 * Expanded options for random colonies at game start
     * Can have up to 250 colonies
-	* Can set maximum size of these colonies (uniform distribution)
+    * Can set maximum size of these colonies (uniform distribution)
 * Add a Derelict Empire V2 scenario
     * Random colonies outside the core worlds belong to Derelicts
-	* Compatible with non-random sector
+    * Compatible with non-random sector
 * Faction strategic AI can request that player return a claimed market
 * Factions that would not normally sat bomb can do so if two sat bombings have occurred in the Sector 
     * This only detects sat bombing by player or through Nex NPC faction events 
