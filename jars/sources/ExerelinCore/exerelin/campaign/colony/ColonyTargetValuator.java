@@ -29,6 +29,7 @@ public class ColonyTargetValuator {
 	
 	public static final String RESOURCES_CSV_PATH = "data/config/exerelin/conditions_to_commodities.csv";
 	public static final String MEM_KEY_NO_COLONIZE = "$nex_do_not_colonize";
+	public static final String MEM_KEY_DISALLOW_CORE_WORLDS = "$nex_do_not_colonize_core";
 	protected static final Map<String, Float> DEFAULT_CONDITION_VALUES = new HashMap<>();
 	protected static final Map<String, Float> ORE_CONDITIONS = new HashMap<>();
 	protected static final Map<String, Float> RARE_ORE_CONDITIONS = new HashMap<>();
@@ -189,6 +190,10 @@ public class ColonyTargetValuator {
 				if (fleet.getFaction().isHostileTo(faction) && fleet.getFleetPoints() > 25)
 					return false;
 			}
+		}
+
+		if (Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_DISALLOW_CORE_WORLDS) && system.hasTag(Tags.THEME_CORE)) {
+			return false;
 		}
 		
 		if (!NexUtilsAstro.canHaveCommRelay(system)) {

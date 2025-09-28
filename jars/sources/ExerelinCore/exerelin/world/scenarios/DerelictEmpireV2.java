@@ -13,6 +13,7 @@ import exerelin.campaign.ColonyManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.utilities.NexUtils;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.NexMarketBuilder;
@@ -32,6 +33,8 @@ public class DerelictEmpireV2 extends Scenario {
             Scenario DEv1 = new DerelictEmpire();
             DEv1.afterEconomyLoad(sector);
         }
+
+        Global.getSector().getMemoryWithoutUpdate().set(ColonyTargetValuator.MEM_KEY_DISALLOW_CORE_WORLDS, true, 65);
     }
 
     @Override
@@ -119,7 +122,7 @@ public class DerelictEmpireV2 extends Scenario {
     public void onSelect(InteractionDialogAPI dialog) {
         ExerelinSetupData setup = ExerelinSetupData.getInstance();
         if (setup.randomColonies <= 0) {
-            setup.randomColonies = 24;
+            setup.randomColonies = 12;
         }
     }
 }

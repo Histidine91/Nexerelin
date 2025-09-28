@@ -11,7 +11,7 @@
 		{
 			"id":"derelict_empire_v2",
 			"name":"Derelict Empire V2",
-			"desc":"Eons ago, the exploration drones of the Domain were sent into the Persean Sector to terraform and develop its worlds, make them fitting for human civilization. The machines are still out there, working... but they refuse to hand over their creations. What will become of these worlds?\n\nWith this scenario, extra colonies (specified in sector generation settings) that are outside the core worlds will be assigned to the Derelicts.",
+			"desc":"Eons ago, the exploration drones of the Domain were sent into the Persean Sector to terraform and develop its worlds, make them fitting for human civilization. The machines are still out there, working... but they refuse to hand over their creations. What will become of these worlds?\n\nWith this scenario, extra colonies (specified in sector generation settings) all generate outside the core worlds and will be assigned to the Derelicts.",
 			"className":"exerelin.world.scenarios.DerelictEmpireV2",
 		},
 	],
