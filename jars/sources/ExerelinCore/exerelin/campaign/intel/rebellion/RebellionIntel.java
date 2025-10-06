@@ -909,11 +909,10 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		// pick source market
 		Vector2f targetLoc = market.getLocationInHyperspace();
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
-		List<MarketAPI> markets;
+		HashSet<MarketAPI> markets = new LinkedHashSet<>();
 		FactionAPI sender = smuggler ? rebelFaction : govtFaction;
 		FactionAPI enemy = smuggler ? govtFaction : rebelFaction;
 		if (indie) {
-			markets = new ArrayList<>();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 				if (market.isHidden()) continue;
 				if (market.getFaction().isHostileTo(Factions.INDEPENDENT)) continue;
@@ -921,10 +920,18 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			}
 		}
 		else {
-			if (AllianceManager.getFactionAlliance(sender.getId()) != null)
-				markets = AllianceManager.getFactionAlliance(sender.getId()).getAllianceMarkets();
-			else
-				markets = NexUtilsFaction.getFactionMarkets(sender.getId());
+			if (AllianceManager.getFactionAlliance(sender.getId()) != null) {
+				markets.addAll(AllianceManager.getFactionAlliance(sender.getId()).getAllianceMarkets());
+			}
+			else {
+				markets.addAll(NexUtilsFaction.getFactionMarkets(sender.getId()));
+			}
+		}
+		if (sender.isPlayerFaction() && Misc.getCommissionFaction() != null) {
+			markets.addAll(NexUtilsFaction.getFactionMarkets(Misc.getCommissionFactionId()));
+		}
+		if (sender == Misc.getCommissionFaction()) {
+			markets.addAll(NexUtilsFaction.getFactionMarkets(Factions.PLAYER));
 		}
 
 		Set<String> alliesOfEnemy = new HashSet<>();
@@ -938,14 +945,14 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 
 		for (MarketAPI maybeSource : markets)
 		{
-			if (maybeSource == this.market)
-				continue;
-			
+			if (maybeSource == this.market) continue;
+			if (maybeSource.isHidden()) continue;
 			if (!maybeSource.hasSpaceport()) continue;
-			
 			if (RebellionIntel.isOngoing(maybeSource)) continue;
 
-			if (maybeSource.getFaction().isPlayerFaction() || maybeSource.isPlayerOwned()) continue;
+			if (!sender.isPlayerFaction() && sender != PlayerFactionStore.getPlayerFaction()) {
+				if (maybeSource.getFaction().isPlayerFaction() || maybeSource.isPlayerOwned()) continue;
+			}
 
 			if (alliesOfEnemy.contains(maybeSource.getFaction().getId())) continue;
 			
@@ -1676,9 +1683,14 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		// request suppression fleet
 		if (!suppressionData.isActive() && (market.isPlayerOwned() || market.getFaction().isPlayerFaction() || AllianceManager.areFactionsAllied(PlayerFactionStore.getPlayerFactionId(), market.getFactionId())))
 		{
-			info.addButton(StringHelper.getString("nex_rebellion", "intelButtonRequestSuppr"), BUTTON_AUTO_SUPPRESS_FLEET,
+			ButtonAPI button = info.addButton(StringHelper.getString("nex_rebellion", "intelButtonRequestSuppr"), BUTTON_AUTO_SUPPRESS_FLEET,
 					getFactionForUIColors().getBaseUIColor(), getFactionForUIColors().getDarkUIColor(),
 					(int)(width), 20f, opad);
+			SupportFleetData temp = new SupportFleetData(true);
+			if (pickFleetSource(temp) == null) {
+				button.setEnabled(false);
+				//info.addTooltipToPrevious();
+			}
 		}
 		
 		// Devmode: fast resolve action
