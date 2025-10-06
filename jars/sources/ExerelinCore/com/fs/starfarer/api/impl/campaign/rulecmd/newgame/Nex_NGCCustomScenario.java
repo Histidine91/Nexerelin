@@ -37,7 +37,6 @@ public class Nex_NGCCustomScenario extends PaginatedOptionsPlus {
 				setMenuOptionText(memoryMap.get(MemKeys.LOCAL));
 				return true;
 			case "menu":
-				optionsPerPage = 5;
 				super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 				generateMenu(ruleId);
 				return true;

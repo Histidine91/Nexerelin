@@ -34,7 +34,6 @@ public class Nex_RemoteSuspendAutonomy extends PaginatedOptionsPlus {
 		switch (arg)
 		{
 			case "menu":
-				optionsPerPage = 5;
 				super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 				special = memoryMap.get(MemKeys.LOCAL).getBoolean("$nex_specialDialog");
 				listOptions();

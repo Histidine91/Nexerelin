@@ -35,7 +35,6 @@ public class Nex_DynamicPaginatedOptions extends PaginatedOptionsPlus {
 		{
 			case "show":
 				//Global.getLogger(this.getClass()).info("Showing options");
-				optionsPerPage = 5;
 				super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 				showOptions();
 				return true;

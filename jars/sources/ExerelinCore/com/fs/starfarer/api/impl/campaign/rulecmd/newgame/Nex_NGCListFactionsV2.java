@@ -91,7 +91,6 @@ public class Nex_NGCListFactionsV2 extends PaginatedOptionsPlus {
 				return true;
 				
 			case "listFactions":
-				//optionsPerPage = 6;
 				super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 				showFactionsMenu();
 				lastArg = arg;

@@ -43,7 +43,6 @@ public class Nex_NGCCustomStart extends PaginatedOptionsPlus {
 		switch (arg)
 		{
 			case "menu":
-				optionsPerPage = 5;
 				super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 				generateMenu(ruleId);
 				return true;

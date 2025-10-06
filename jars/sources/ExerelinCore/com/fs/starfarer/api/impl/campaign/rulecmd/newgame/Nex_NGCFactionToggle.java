@@ -12,14 +12,11 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 @Deprecated
 public class Nex_NGCFactionToggle extends PaginatedOptionsPlus {
@@ -108,7 +105,6 @@ public class Nex_NGCFactionToggle extends PaginatedOptionsPlus {
 	
 	protected void init(String ruleId, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap)
 	{
-		//optionsPerPage = 6;
 		super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 		listFactions();
 		addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "nex_NGCFactionToggleMenu_leave");

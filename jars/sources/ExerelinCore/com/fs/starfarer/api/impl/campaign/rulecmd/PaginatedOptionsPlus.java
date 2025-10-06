@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PaginatedOptionsPlus extends PaginatedOptions {
+
+	public static final int OPTIONS_PER_PAGE = 6;	// not counting next/previous page and 'go back'
 	
 	protected Map<String, String> optionTooltips = new HashMap<>();
 	protected Map<String, Color> optionColors = new HashMap<>();
@@ -36,7 +38,12 @@ public class PaginatedOptionsPlus extends PaginatedOptions {
 	public void addShortcut(String id, int code) {
 		optionShortcuts.put(id, code);
 	}
-	
+
+	public PaginatedOptionsPlus() {
+		super();
+		optionsPerPage = OPTIONS_PER_PAGE;
+	}
+
 	protected void processOption(PaginatedOption option) {
 		OptionPanelAPI opts = dialog.getOptionPanel();
 		String optId = option.id;

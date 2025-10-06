@@ -35,7 +35,6 @@ public class Nex_NGCListFactions extends PaginatedOptionsPlus {
 		switch (arg)
 		{
 			case "listGroups":
-				optionsPerPage = 6;
 				super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 				listGroups(dialog);
 				return true;
