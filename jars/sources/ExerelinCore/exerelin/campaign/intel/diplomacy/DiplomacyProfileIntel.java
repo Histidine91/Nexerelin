@@ -139,6 +139,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		
 		for (Pair<Alignment, Float> alignEntry : alignments) {
 			Alignment align = alignEntry.one;
+			if (align.deprecated) continue;
 			float strength = alignEntry.two;
 			String strengthStr = (strength > 0? "+": "") + strength;
 			
