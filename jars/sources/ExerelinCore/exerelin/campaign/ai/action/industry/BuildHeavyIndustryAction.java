@@ -75,6 +75,9 @@ public class BuildHeavyIndustryAction extends BuildIndustryAction {
         bestScore = 0;
         IndustryClassGen gen = NexMarketBuilder.getIndustryClassesByIndustryId().get(Industries.HEAVYINDUSTRY);
         for (MarketAPI market : markets) {
+            if (willExceedMaxIndustries(market, Industries.HEAVYINDUSTRY)) {
+                continue;
+            }
             ExerelinProcGen.ProcGenEntity entity = ExerelinProcGen.createEntityData(market.getPrimaryEntity());
             if (!gen.canApply(entity)) continue;
             float score = gen.getWeight(entity);
