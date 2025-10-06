@@ -74,9 +74,9 @@ public class RemnantQuestSkipPlugin extends BaseQuestSkipPlugin {
             addKnight();
 
             PersonAPI person = Global.getSector().getImportantPeople().getPerson(People.ARROYO);
-            person.getMemoryWithoutUpdate().set("$metAlready", true);
+            if (person != null) person.getMemoryWithoutUpdate().set("$metAlready", true);
             person = Global.getSector().getImportantPeople().getPerson(People.SIYAVONG);
-            person.getMemoryWithoutUpdate().set("$metAlready", true);
+            if (person != null) person.getMemoryWithoutUpdate().set("$metAlready", true);
 
             boolean haveBoggled = Global.getSettings().getModManager().isModEnabled("Terraforming & Station Construction");
             CargoAPI player = Global.getSector().getPlayerFleet().getCargo();
