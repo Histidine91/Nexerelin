@@ -22,14 +22,13 @@ import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.DelayedActionScript;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.customstart.Nex_SpacerObligation;
 import exerelin.campaign.intel.Nex_GalatianAcademyStipend;
 import exerelin.campaign.intel.agents.AgentIntel;
-import exerelin.campaign.ui.OwnFactionSetupScript;
 import exerelin.utilities.*;
-import exerelin.utilities.NexFactionConfig.SpecialItemSet;
 import exerelin.utilities.NexFactionConfig.StartFleetType;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.world.VanillaSystemsGenerator;
@@ -47,7 +46,8 @@ public class StartSetupPostTimePass {
 	{
 		Global.getLogger(StartSetupPostTimePass.class).info("Running start setup post time pass");
 		SectorAPI sector = Global.getSector();
-		if (Global.getSector().isInNewGameAdvance()) return;
+
+		Random random = new Random(NexUtils.getStartingSeed());
 
 		boolean corvusMode = SectorManager.getManager().isCorvusMode();
 		
@@ -70,7 +70,7 @@ public class StartSetupPostTimePass {
 		for (int i=0; i<numOfficers; i++)
 		{
 			int level = 1;	//numOfficers - i;
-			PersonAPI officer = OfficerManagerEvent.createOfficer(myFaction, level, false);
+			PersonAPI officer = OfficerManagerEvent.createOfficer(myFaction, level, OfficerManagerEvent.SkillPickPreference.ANY, random);
 			Misc.setMentored(officer, true);
 			officer.getStats().setBonusXp(Global.getSettings().getLevelupPlugin().getXPForLevel(maxLevel));
 			playerFleet.getFleetData().addOfficer(officer);
@@ -92,7 +92,7 @@ public class StartSetupPostTimePass {
 		// rename ships
 		for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy())
 		{
-			member.setShipName(myFaction.pickRandomShipName());
+			member.setShipName(myFaction.pickRandomShipName(random));
 		}
 		
 		boolean freeStart = SectorManager.getManager().isFreeStart();
@@ -132,7 +132,7 @@ public class StartSetupPostTimePass {
 		int numAgents = ExerelinSetupData.getInstance().numStartingOperatives;
 		for (int i=0; i<numAgents; i++)
 		{
-			PersonAPI agent = Global.getSector().getPlayerFaction().createRandomPerson();
+			PersonAPI agent = Global.getSector().getPlayerFaction().createRandomPerson(random);
 			agent.setRankId(Ranks.AGENT);
 			agent.setPostId(Ranks.POST_AGENT);
 			AgentIntel intel = new AgentIntel(agent, Global.getSector().getPlayerFaction(), 1);
@@ -163,15 +163,20 @@ public class StartSetupPostTimePass {
 					report.setDebt(0);
 					report.setPreviousDebt(0);
 				}
-				Global.getSector().addScript(new OwnFactionSetupScript());
+				//Global.getSector().addScript(new OwnFactionSetupScript());
 			}
 		}
 		// Starting blueprints
+		/*
 		else {
 			for (SpecialItemSet set : conf.startSpecialItems) {
 				set.pickItemsAndAddToCargo(Global.getSector().getPlayerFleet().getCargo(), 
-						StarSystemGenerator.random);
+						random);
 			}
+		}
+		*/
+		if (!freeStart || Global.getSettings().getBoolean("nex_useStartingCarePackage")) {
+			Global.getSector().addScript(new CreateCarePackageScript(startLocation));
 		}
 		
 		// gate handling and other stuff
@@ -554,5 +559,28 @@ public class StartSetupPostTimePass {
 			contact.addTag(Tags.CONTACT_TRADE);
 		}
 		
+	}
+
+	/**
+	 * Creates the care package after a negligible delay (because the pods are broken if generated in after-time-pass, but are fine after reloading the save??)
+	 */
+	public static class CreateCarePackageScript extends DelayedActionScript {
+		protected SectorEntityToken startLocation;
+
+		public CreateCarePackageScript(SectorEntityToken startLocation) {
+			super(0);
+			this.startLocation = startLocation;
+		}
+
+		@Override
+		public void doAction() {
+			CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+			Random random = new Random(NexUtils.getStartingSeed());
+
+			CustomCampaignEntityAPI pods = Misc.addCargoPods(playerFleet.getContainingLocation(), playerFleet.getLocation());
+			pods.getMemoryWithoutUpdate().set("$nex_startingCarePackage", true);
+			Misc.makeImportant(pods, "$nex_startingCarePackage_imp");
+			if (startLocation != null) pods.setCircularOrbitWithSpin(startLocation, random.nextFloat() * 360, startLocation.getRadius() + 100, 30, 15, 25);
+		}
 	}
 }

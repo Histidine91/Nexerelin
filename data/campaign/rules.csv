@@ -1631,6 +1631,17 @@ ShowDefaultVisual
 EndConversation","""So be it.""
 
 The $faction fleet shuts down comms and powers up combat systems.",,
+,,,,,,
+nex_startingCarePackage_start,OpenInteractionDialog,$nex_startingCarePackage score:1100,"Highlight ""Open to receive your bounty aplenty""
+ShowDefaultVisual
+CargoPods printDesc
+Nex_AddOptionConfirmation nex_startingCarePackage_destroy ""The care package will be permanently lost. Proceed?"" ""Yes"" ""No""","The pods transmit a low-power looping signal: ""Open to receive your bounty aplenty""","nex_startingCarePackage_select:Select starting bonus items
+nex_startingCarePackage_viewPlanet:View starting market (if applicable)
+nex_startingCarePackage_destroy:Destroy the pods
+defaultLeave:Leave",
+nex_startingCarePackage_select,DialogOptionSelected,$option == nex_startingCarePackage_select,Nex_NGCarePackage select,,,
+nex_startingCarePackage_viewPlanet,DialogOptionSelected,$option == nex_startingCarePackage_viewPlanet,Nex_NGCarePackage viewPlanet,,,
+nex_startingCarePackage_destroy,DialogOptionSelected,$option == nex_startingCarePackage_destroy,Nex_NGCarePackage destroy,,,
 #END bla,,,,,,
 ,,,,,,
 # Vanilla overrides,,,,,,

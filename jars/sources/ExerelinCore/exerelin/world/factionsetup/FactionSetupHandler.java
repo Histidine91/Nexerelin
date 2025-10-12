@@ -1,11 +1,7 @@
 package exerelin.world.factionsetup;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CargoStackAPI;
-import com.fs.starfarer.api.campaign.SpecialItemData;
-import com.fs.starfarer.api.campaign.SpecialItemPlugin;
-import com.fs.starfarer.api.campaign.SpecialItemSpecAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.ExerelinConstants;
@@ -13,17 +9,11 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.SpecialItemSet;
 import exerelin.utilities.NexUtils;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.*;
 
 public class FactionSetupHandler {
 	
@@ -65,6 +55,7 @@ public class FactionSetupHandler {
 				item.cost = itemJson.optInt("cost");
 				item.sprite = itemJson.optString("sprite");
 				item.className = itemJson.getString("className");
+				item.requireStartingColony = itemJson.optBoolean("requireStartingColony");
 				if (itemJson.has("params"))
 					item.params = NexUtils.jsonToMap(itemJson.getJSONObject("params"));
 				item.sortOrder = (float)itemJson.optDouble("sortOrder", 100);
@@ -205,6 +196,7 @@ public class FactionSetupHandler {
 		public String className;
 		public String desc;
 		public String sprite;
+		public boolean requireStartingColony;
 		public Map<String, Object> params = new HashMap<>();
 		public int cost;
 		public int count = 1;

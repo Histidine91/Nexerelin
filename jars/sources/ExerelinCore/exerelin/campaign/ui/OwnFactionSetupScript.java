@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * When picking the own faction start, present some options to customize player planet
+ * When picking the own faction start, present some options to customize player planet. Superseded by Nex_NGCarePackage
  */
+@Deprecated
 public class OwnFactionSetupScript extends DelayedDialogScreenScript
 {
 	

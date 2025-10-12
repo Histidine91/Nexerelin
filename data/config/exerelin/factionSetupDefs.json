@@ -13,6 +13,7 @@
 			"cost":20,
 			"sprite":"graphics/exerelin/icons/population.png",
 			"className":"exerelin.world.factionsetup.PopulationUpsize",
+			"requireStartingColony":true,
 			"sortOrder":1,
 		},
 		"military_base":{
@@ -24,6 +25,7 @@
 				"upgradeTo":"militarybase",
 				"add":"militarybase",
 			},
+			"requireStartingColony":true,
 			"className":"exerelin.world.factionsetup.AddOrUpgradeIndustry",
 			"sortOrder":2,
 		},
@@ -36,6 +38,7 @@
 				"upgradeTo":"orbitalworks",	# force upgrade target, currently use for Ashes of the Domain compatibility
 				"add":"heavyindustry",
 			},
+			"requireStartingColony":true,
 			"className":"exerelin.world.factionsetup.AddOrUpgradeIndustry",
 			"sortOrder":3,
 		},
@@ -47,6 +50,7 @@
 				"type":"farming",	# hardcoded references in class
 				"resourceName":"Farming",
 			},
+			"requireStartingColony":true,
 			"className":"exerelin.world.factionsetup.ResourceUpgrade",
 			"sortOrder":4,
 		},
@@ -57,6 +61,7 @@
 			"params": {
 				"type":"ore",
 			},
+			"requireStartingColony":true,
 			"className":"exerelin.world.factionsetup.ResourceUpgrade",
 			"sortOrder":5,
 		},
@@ -67,6 +72,7 @@
 			"params": {
 				"type":"rare_ore",
 			},
+			"requireStartingColony":true,
 			"className":"exerelin.world.factionsetup.ResourceUpgrade",
 			"sortOrder":6,
 		},
@@ -77,6 +83,7 @@
 			"params": {
 				"type":"organics",
 			},
+			"requireStartingColony":true,
 			"className":"exerelin.world.factionsetup.ResourceUpgrade",
 			"sortOrder":7,
 		},
@@ -87,6 +94,7 @@
 			"params": {
 				"type":"volatiles",
 			},
+			"requireStartingColony":true,
 			"className":"exerelin.world.factionsetup.ResourceUpgrade",
 			"sortOrder":8,
 		},
