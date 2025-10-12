@@ -2445,6 +2445,7 @@
 
 		"intelButtonRequestSuppr":"Request suppression fleet",
 		"intelButtonRequestSupprConfirm":"This will request a suppression fleet from a random location to help subdue the rebellion, costing %s. You have %s.",
+		"intelButtonRequestSuppr_tooltipNoSource":"No source market found to send the fleet from.",
 		
 		"intelTag":"Rebellions",
 		

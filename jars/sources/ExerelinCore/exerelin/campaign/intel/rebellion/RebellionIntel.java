@@ -1689,7 +1689,8 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			SupportFleetData temp = new SupportFleetData(true);
 			if (pickFleetSource(temp) == null) {
 				button.setEnabled(false);
-				//info.addTooltipToPrevious();
+				String tt = StringHelper.getString("nex_rebellion", "intelButtonRequestSuppr_tooltipNoSource");
+				info.addTooltipToPrevious(NexUtilsGUI.createSimpleTextTooltip(tt, width), TooltipMakerAPI.TooltipLocation.BELOW);
 			}
 		}
 		
