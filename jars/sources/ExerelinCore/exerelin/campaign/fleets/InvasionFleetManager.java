@@ -326,7 +326,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		if (defensiveStr > max)
 			defensiveStr = max;
 
-		log.info("\tWanted fleet size vs. " + target.getName() + ": " + defensiveStr);
+		//log.info("\tWanted fleet size vs. " + target.getName() + ": " + defensiveStr);
 		return Math.max(defensiveStr, 30);
 	}
 	
