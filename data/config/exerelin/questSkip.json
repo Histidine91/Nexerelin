@@ -155,6 +155,7 @@
 			},
 			"playerMemFlags":{
 				"$metElek":true,
+				"$hasThreatDetectionSensorMods":true,
 				"$encounteredThreat":true,
 				"$encounteredWeird":true
 			}
