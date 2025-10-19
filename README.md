@@ -2,7 +2,7 @@
 
 Nexerelin is a mod for the game [Starsector](http://fractalsoftworks.com). It implements 4X-style gameplay with faction wars, diplomacy and planetary conquest.
 
-Current repo version: v0.12.1
+Current repo version: v0.12.1b
 
 ## Setup instructions ##
 Check out the repo to Starsector/mods/Nexerelin (or some other folder name). Follow the steps below to build the .jar in order to play.

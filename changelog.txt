@@ -1,10 +1,21 @@
+Version 0.12.1b
+
+* Rework the own faction setup dialog into a 'care package' that also appears in free start
+* Fix rebellion's suppression fleet request only allowing allied markets as origin
+    * Also now works from commissioning faction (and not from outposts)
+* Fix new game crash when not running LunaLib
+* Fix Remnant quest skip crashing in random sector
+* Fix Abyssal Space Oddity quest skip not giving Threat detection
+* Fix strategic AI build heavy industry action not checking for market's industry capacity
+* Ideological alignment actually deprecated now
+
 Version 0.12.1
 
-Thanks to b277a, roflsian, JamesTripleQ and Lukas04 for their pull requests in this update
+Thanks to b277a, roflsian, JamesTripleQ and Lukas04 for their pull requests in this update.
 
 ### Changes from beta 0.12.0x ###
-* Derelict Empire V2 planets will be larger and better-defended, developed and supplied
-* DE V2 works correctly in random sector
+* Derelict Empire V2 planets are larger and better-defended, developed and supplied
+* DE V2 works correctly in random sector (identical to V1)
 * Random sector: fix bonus AI cores applying to random structures instead of the ones they were supposed to
 * Fix battle background wormholes appearing in codex
 
