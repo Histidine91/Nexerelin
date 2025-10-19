@@ -299,7 +299,7 @@ public class Alliance
 		HIERARCHICAL(Color.MAGENTA),
 		@Deprecated HIERARCHIAL(Color.MAGENTA, HIERARCHICAL),	// reverse compatibility hax
 		DIPLOMATIC(Color.YELLOW),
-		@Deprecated IDEOLOGICAL(Color.GREEN);
+		@Deprecated IDEOLOGICAL(Color.GREEN, true);
 		
 		public final Color color;
 		public final Alignment redirect;
@@ -329,6 +329,7 @@ public class Alliance
 			List<Alignment> alignments = new ArrayList<>();
 			for (Alignment candidate : Alignment.values()) {
 				if (candidate.redirect != null) continue;
+				if (candidate.deprecated) continue;
 				alignments.add(candidate);
 			}
 			return alignments;
