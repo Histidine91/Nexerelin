@@ -67,6 +67,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final String MEMORY_KEY_POINTS_LAST_TICK_STAT = "$nex_invasionPointsLastTickStat";
 	public static final String MEMORY_KEY_BASE_POINTS_LAST_TICK = "$nex_invasionPointsLastTickBase";
 	public static final String MEMORY_KEY_REVANCHE = "$nex_invasionPointsDecayingRevancheBonus";
+	public static final String MEMORY_KEY_PREVIOUS_OWNER_FOR_INVASION_RESTRICTION = "$nex_previousOwnerForInvasionRestriction";
 	
 	public static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
 	public static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
@@ -108,6 +109,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
 	
 	public static final int MAX_ONGOING_INTEL = 10;
+
+	public static float PREVIOUS_OWNER_RESTRICTION_TIMEOUT = 75;
 	
 	public static Logger log = Global.getLogger(InvasionFleetManager.class);
 	
@@ -635,6 +638,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 
 		// Tiandong can't invade Point Mogui
 		if (factionId.equals("tiandong") && market.getId().equals("tiandong_mogui_market"))
+			return false;
+
+		// freshly captured markets can't be attacked by third parties for a while
+		String prevOwnerRestrict = market.getMemoryWithoutUpdate().getString(MEMORY_KEY_PREVIOUS_OWNER_FOR_INVASION_RESTRICTION);
+		if (prevOwnerRestrict != null && !AllianceManager.areFactionsAllied(factionId, prevOwnerRestrict))
 			return false;
 
 		if (type == EventType.INVASION && GroundBattleIntel.getOngoing(market) != null)

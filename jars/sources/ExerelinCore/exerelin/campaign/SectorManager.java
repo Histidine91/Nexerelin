@@ -1333,6 +1333,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (playerInvolved) {
             market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER, true, 60);
         }
+        market.getMemoryWithoutUpdate().set(InvasionFleetManager.MEMORY_KEY_PREVIOUS_OWNER_FOR_INVASION_RESTRICTION, oldOwnerId, InvasionFleetManager.PREVIOUS_OWNER_RESTRICTION_TIMEOUT);
         
         // valid for mission target?
         boolean oldAllowMissions = !NexConfig.getFactionConfig(oldOwnerId).noMissionTarget;
