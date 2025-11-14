@@ -128,7 +128,7 @@ public class DestroyCommodityStocks extends CovertActionIntel {
 	public List<Object> dialogGetTargets(AgentOrdersDialog dialog) {
 		List<Object> targets = new ArrayList<>();
 		for (CommodityOnMarketAPI commodity : market.getCommoditiesCopy()) {
-			if (commodity.isNonEcon() || commodity.isIllegal()) continue;
+			if (commodity.isNonEcon()) continue;
 			if (commodity.isPersonnel()) continue;
 			if (commodity.getAvailable() < 2) continue;
 			targets.add(commodity.getId());
