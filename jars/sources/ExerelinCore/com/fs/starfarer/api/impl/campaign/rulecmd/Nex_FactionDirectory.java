@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.MarketConditionSpecAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
@@ -21,8 +22,8 @@ import exerelin.utilities.NexUtilsGUI.CustomPanelGenResult;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 public class Nex_FactionDirectory extends BaseCommandPlugin {
 	
@@ -415,8 +416,16 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			String distStr = String.format("%.1f", dist);
 			String locText = StringHelper.getStringAndSubstituteToken("exerelin_markets", "marketDirectoryEntryForPickerNoMarket", "$target", loc.getNameWithNoType());
 			locText = StringHelper.substituteToken(locText, "$distance", distStr);
-			
-			String sizeImg = Global.getSettings().getMarketConditionSpec("population_" + size).getIcon();
+
+			MarketConditionSpecAPI spec = Global.getSettings().getMarketConditionSpec("population_" + size);
+			// check if someone added an out-of-bounds market size without having a condition for it
+			if (spec == null) {
+				int clampedSize = size;
+				if (size < 1) size = 1;
+				if (size > 10) size = 10;
+				spec = Global.getSettings().getMarketConditionSpec("population_" + clampedSize);
+			}
+			String sizeImg = spec.getIcon();
 			
 			CustomPanelGenResult gen = NexUtilsGUI.addPanelWithFixedWidthImage(
 					Nex_VisualCustomPanel.getPanel(), 
