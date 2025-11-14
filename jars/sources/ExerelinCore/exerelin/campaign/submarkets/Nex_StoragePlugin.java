@@ -9,6 +9,8 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.StringHelper;
 
 public class Nex_StoragePlugin extends StoragePlugin {
+
+	public static final String MEM_KEY_WAIVE_FEE = "$nex_storage_waiveFee";
 	
 	public boolean isFree() {
 		return market.isPlayerOwned() || Nex_IsFactionRuler.isRuler(market.getFactionId());

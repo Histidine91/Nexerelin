@@ -49,6 +49,7 @@ import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.groundbattle.GBUtils;
 import exerelin.campaign.intel.missions.ConquestMissionIntel;
+import exerelin.campaign.submarkets.Nex_StoragePlugin;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 import exerelin.world.ExerelinProcGen;
@@ -575,8 +576,10 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		float storageFraction = Global.getSettings().getFloat("storageFreeFraction");
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-			if (!market.isPlayerOwned() && Nex_IsFactionRuler.isRuler(market.getFactionId()) 
-					&& Misc.playerHasStorageAccess(market)) {
+			boolean hasFee = !market.isPlayerOwned() && Misc.playerHasStorageAccess(market);
+			boolean rebate = hasFee && (Nex_IsFactionRuler.isRuler(market.getFactionId()) || market.getMemoryWithoutUpdate().getBoolean(Nex_StoragePlugin.MEM_KEY_WAIVE_FEE));
+
+			if (rebate) {
 				float vc = Misc.getStorageCargoValue(market);
 				float vs = Misc.getStorageShipValue(market);
 				

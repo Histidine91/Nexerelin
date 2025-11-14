@@ -42,6 +42,7 @@ import exerelin.campaign.intel.raid.RemnantRaidFleetInteractionConfigGen;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.submarkets.Nex_LocalResourcesSubmarketPlugin;
+import exerelin.campaign.submarkets.Nex_StoragePlugin;
 import exerelin.campaign.ui.PlayerFactionSetupNag;
 import exerelin.campaign.ui.VictoryScreenScript;
 import exerelin.campaign.ui.VictoryScreenScript.CustomVictoryParams;
@@ -104,6 +105,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     }));
     
     public static final Set<String> DO_NOT_RESPAWN_FACTIONS = new HashSet<>();
+
+    public static final float STORAGE_FREE_GRACE_ON_MARKET_LOSS = 90;
     
     protected List<String> factionIdsAtStart = new ArrayList<>();
     protected Set<String> liveFactionIds = new HashSet<>();
@@ -1332,6 +1335,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         if (playerInvolved) {
             market.getMemoryWithoutUpdate().set(MEMORY_KEY_RECENTLY_CAPTURED_BY_PLAYER, true, 60);
+        }
+        if (wasPlayerOwned || oldOwner.isPlayerFaction()) {
+            Misc.setFlagWithReason(market.getMemoryWithoutUpdate(), Nex_StoragePlugin.MEM_KEY_WAIVE_FEE,
+                    "$nex_recentlyCapturedFromPlayer", true, STORAGE_FREE_GRACE_ON_MARKET_LOSS);
         }
         market.getMemoryWithoutUpdate().set(InvasionFleetManager.MEMORY_KEY_PREVIOUS_OWNER_FOR_INVASION_RESTRICTION, oldOwnerId, InvasionFleetManager.PREVIOUS_OWNER_RESTRICTION_TIMEOUT);
         
