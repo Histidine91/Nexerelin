@@ -17,7 +17,7 @@ public class TransferMarketAction extends BaseStrategicAction implements Strateg
         MarketAPI market = concern.getMarket();
 
         // if the player is the owning faction, offer to buy it
-        if (Nex_IsFactionRuler.isRuler(market.getFaction())) {
+        if (Nex_IsFactionRuler.isRuler(market.getFaction()) || market.isPlayerOwned()) {
             RequestMarketIntel intel = new RequestMarketIntel(market, ai.getFactionId());
             intel.init();
             delegate = intel;
