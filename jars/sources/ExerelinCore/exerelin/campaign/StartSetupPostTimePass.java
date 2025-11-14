@@ -94,7 +94,8 @@ public class StartSetupPostTimePass {
 		{
 			member.setShipName(myFaction.pickRandomShipName(random));
 		}
-		
+
+		boolean isPlayer = selectedFactionId.equals(Factions.PLAYER);
 		boolean freeStart = SectorManager.getManager().isFreeStart();
 		
 		// spawn as a different faction if config says we should
@@ -151,32 +152,30 @@ public class StartSetupPostTimePass {
 		{
 			new Nex_GalatianAcademyStipend();
 		}
-		
+
+		boolean useCarePackage = Global.getSettings().getBoolean("nex_useStartingCarePackage");
 		// remove debt in own faction start
-		if (selectedFactionId.equals(Factions.PLAYER)) {
-			if (!freeStart) {
-				// clear player debt from colony being unprofitable during new game time pass (if any)
-				MonthlyReport report = SharedData.getData().getPreviousReport();
-				// TODO: maybe do the thing SCC said and give player money instead?
-				if (report != null) {
-					int debt = report.getPreviousDebt();
-					report.setDebt(0);
-					report.setPreviousDebt(0);
-				}
-				//Global.getSector().addScript(new OwnFactionSetupScript());
+		if (isPlayer && !freeStart) {
+			// clear player debt from colony being unprofitable during new game time pass (if any)
+			MonthlyReport report = SharedData.getData().getPreviousReport();
+			// TODO: maybe do the thing SCC said and give player money instead?
+			if (report != null) {
+				int debt = report.getPreviousDebt();
+				report.setDebt(0);
+				report.setPreviousDebt(0);
 			}
+			//Global.getSector().addScript(new OwnFactionSetupScript());
 		}
-		// Starting blueprints
-		/*
+
+		// Starting blueprints or care package
+		if (useCarePackage || (isPlayer && !freeStart)) {
+			Global.getSector().addScript(new CreateCarePackageScript(startLocation));
+		}
 		else {
-			for (SpecialItemSet set : conf.startSpecialItems) {
+			for (NexFactionConfig.SpecialItemSet set : conf.startSpecialItems) {
 				set.pickItemsAndAddToCargo(Global.getSector().getPlayerFleet().getCargo(), 
 						random);
 			}
-		}
-		*/
-		if (!freeStart || Global.getSettings().getBoolean("nex_useStartingCarePackage")) {
-			Global.getSector().addScript(new CreateCarePackageScript(startLocation));
 		}
 		
 		// gate handling and other stuff
@@ -568,7 +567,7 @@ public class StartSetupPostTimePass {
 		protected SectorEntityToken startLocation;
 
 		public CreateCarePackageScript(SectorEntityToken startLocation) {
-			super(0);
+			super(0.01f);
 			this.startLocation = startLocation;
 		}
 
