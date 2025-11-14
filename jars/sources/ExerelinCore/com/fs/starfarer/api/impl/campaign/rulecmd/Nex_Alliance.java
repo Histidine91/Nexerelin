@@ -176,8 +176,8 @@ public class Nex_Alliance extends BaseCommandPlugin {
 	public void merge(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap, boolean reverse) 
 	{
 		String factionId = dialog.getInteractionTarget().getFaction().getId();
-		Alliance first = AllianceManager.getPlayerAlliance(false);
-		Alliance second = AllianceManager.getFactionAlliance(factionId);
+		Alliance first = AllianceManager.getFactionAlliance(factionId);
+		Alliance second = AllianceManager.getPlayerAlliance(false);
 		
 		if (reverse) {
 			Alliance temp = first;
@@ -188,7 +188,7 @@ public class Nex_Alliance extends BaseCommandPlugin {
 		TextPanelAPI text = dialog.getTextPanel();
 		
 		AllianceManager.setPlayerInteractionTarget(dialog.getInteractionTarget());
-		AllianceManager.getManager().mergeAlliance(first, second);
+		AllianceManager.getManager().mergeAlliance(second, first);
 		AllianceManager.setPlayerInteractionTarget(null);
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);

@@ -89,11 +89,13 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             JSONArray namePrefixesCommon = namePrefixes.getJSONArray("common");
             
             allianceNameCommonPrefixes = NexUtils.JSONArrayToArrayList(namePrefixesCommon);
-            for (Alignment alignment : Alignment.getAlignments())
+            for (Alignment alignment : Alignment.values())
             {
-                List<String> names =  NexUtils.JSONArrayToArrayList( namesByAlignment.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
+                String key = alignment.toString().toLowerCase(Locale.ROOT);
+                if (!namesByAlignment.has(key) || !namePrefixes.has(key)) continue;
+                List<String> names = NexUtils.JSONArrayToArrayList( namesByAlignment.getJSONArray(key) );
                 allianceNamesByAlignment.put(alignment, names);
-                List<String> prefixes = NexUtils.JSONArrayToArrayList( namePrefixes.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
+                List<String> prefixes = NexUtils.JSONArrayToArrayList( namePrefixes.getJSONArray(key) );
                 alliancePrefixesByAlignment.put(alignment, prefixes);
             }
 			
@@ -347,27 +349,27 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     
     /**
      * Merges the two alliances by moving the members of {@code second} into {@code first}.
-     * @param first
-     * @param second
+     * @param into
+     * @param other
      */
-    public void mergeAlliance(Alliance first, Alliance second) {
-        if (first == second) return;
+    public void mergeAlliance(Alliance into, Alliance other) {
+        if (into == other) return;
         
-        for (String permaMember : second.getPermaMembersCopy()) {
-            first.addPermaMember(permaMember);
+        for (String permaMember : other.getPermaMembersCopy()) {
+            into.addPermaMember(permaMember);
         } 
-        List<String> toMove = new ArrayList<>(second.getMembersCopy());
-        dissolveAlliance(second, true);
+        List<String> toMove = new ArrayList<>(other.getMembersCopy());
+        dissolveAlliance(other, true);
         for (String factionId : toMove) {
-            first.addMember(factionId);
-            alliancesByFactionId.put(factionId, first);
+            into.addMember(factionId);
+            alliancesByFactionId.put(factionId, into);
         }
         
         Map<String, Object> infoParam = new HashMap<>(); 
         infoParam.put("type", AllianceIntel.UpdateType.MERGED);
-        infoParam.put("other", second);
+        infoParam.put("other", other);
         
-        first.getIntel().sendUpdateIfPlayerHasIntel(infoParam, false);
+        into.getIntel().sendUpdateIfPlayerHasIntel(infoParam, false);
     }
     
     public void leaveAlliance(String factionId, Alliance alliance, boolean noEvent, boolean force)
