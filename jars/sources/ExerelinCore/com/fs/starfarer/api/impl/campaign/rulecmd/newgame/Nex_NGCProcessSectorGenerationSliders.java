@@ -1,9 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -12,8 +9,11 @@ import com.fs.starfarer.api.ui.ValueDisplayMode;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.List;
+import java.util.Map;
 
 
 public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
@@ -75,6 +75,16 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 			opts.addSelector(getString("maxMarketsTitle"), "marketMaxSelector", Color.orange, BAR_WIDTH, 48, 1, 8, ValueDisplayMode.VALUE, null);
 			opts.setSelectorValue("marketMaxSelector", data.maxMarketsPerSystem);
 
+			opts.addSelector(getString("populatedSystemsTitle"), "systemCountSelector",
+					Color.YELLOW, BAR_WIDTH, 48, 4, maxSystems, ValueDisplayMode.VALUE,
+					getString("populatedSystemsTooltip"));
+			opts.setSelectorValue("systemCountSelector", data.numSystems);
+
+			opts.addSelector(getString("sizeOffsetTitle"), "sizeOffsetSelector",
+					Color.PINK, BAR_WIDTH, 48, 0, 3, ValueDisplayMode.VALUE,
+					getString("sizeOffsetTooltip"));
+			opts.setSelectorValue("sizeOffsetSelector", data.procGenColonySizeOffset);
+
 			opts.addOption(StringHelper.getString("reset", true), "exerelinNGCSectorOptionsReset");
 		}
 		else {
@@ -106,6 +116,7 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 			data.numStations = Math.round(opts.getSelectorValue("stationCountSelector"));
 			data.maxPlanetsPerSystem = Math.round(opts.getSelectorValue("planetMaxSelector"));
 			data.maxMarketsPerSystem = Math.round(opts.getSelectorValue("marketMaxSelector"));
+			data.procGenColonySizeOffset = Math.round(opts.getSelectorValue("sizeOffsetSelector"));
 		}
 	}
 	

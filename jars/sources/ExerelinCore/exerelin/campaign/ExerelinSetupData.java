@@ -14,7 +14,6 @@ import java.util.Map;
 /* This class functions as a data structure for Exerelin setup
  */
 
-@SuppressWarnings("unchecked")
 public class ExerelinSetupData
 {
 	public static final int NUM_DMOD_LEVELS = 4;
@@ -31,6 +30,7 @@ public class ExerelinSetupData
 	public int maxMarketsPerSystem = 4;	// includes stations
 	public int randomColonies = 0;
 	public int randomColoniesMaxSize = 4;
+	public int procGenColonySizeOffset = 0;
 	public Map<String, Boolean> factions = new HashMap<>();
 	
 	// Game defaults

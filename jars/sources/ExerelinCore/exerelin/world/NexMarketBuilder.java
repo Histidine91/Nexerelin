@@ -15,6 +15,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ColonyManager;
 import exerelin.campaign.ColonyManager.QueuedIndustry.QueueType;
+import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
@@ -71,10 +72,11 @@ public class NexMarketBuilder
 	
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.3f;
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 0.5f;	// lower than min so it can swap autofacs for shipbreakers if needed
-	
+
+	// values less than 3 will be floored to 3, are mostly for the size offset setting
 	protected static final int[] PLANET_SIZE_ROTATION = new int[] {4, 5, 6, 7, 6, 5};
 	protected static final int[] MOON_SIZE_ROTATION = new int[] {3, 4, 5, 6, 5, 4};
-	protected static final int[] STATION_SIZE_ROTATION = new int[] {3, 4, 5, 4, 3};
+	protected static final int[] STATION_SIZE_ROTATION = new int[] {3, 4, 5, 4, 2};
 	
 	protected static final List<IndustryClassGen> industryClasses = new ArrayList<>();
 	protected static final List<IndustryClassGen> industryClassesOrdered = new ArrayList<>();	// sorted by priority
@@ -253,11 +255,19 @@ public class NexMarketBuilder
 			else if (isMoon) size = getSizeFromRotation(MOON_SIZE_ROTATION, numMoons);
 			else size = getSizeFromRotation(PLANET_SIZE_ROTATION, numPlanets);
 		}
+
+		boolean playerHomeworld = data.isHQ && factionId.equals(Factions.PLAYER);
+		if (!playerHomeworld) {
+			size += ExerelinSetupData.getInstance().procGenColonySizeOffset;
+		}
 		
 		if (NexUtilsFaction.isPirateFaction(factionId)) {
 			size--;
-			if (size < 3) size = 3;
 		}
+
+		if (size < 3) size = 3;
+		if (size > 10 && Global.getSettings().getMarketConditionSpec("population_11") == null)
+			size = 10;
 		
 		return size;
 	}
