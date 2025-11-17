@@ -405,6 +405,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	public static StrategicAI addIntel(String factionId) {
 		StrategicAI ai = new StrategicAI(Global.getSector().getFaction(factionId));
 		ai.init();
+		SAIUtils.reportAIAdded(factionId, ai);
 		return ai;
 	}
 
@@ -420,6 +421,7 @@ public class StrategicAI extends BaseIntelPlugin {
 		if (ai != null) {
 			ai.endImmediately();
 			Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().unset(MEMORY_KEY);
+			SAIUtils.reportAIRemoved(factionId, ai);
 		}
 	}
 

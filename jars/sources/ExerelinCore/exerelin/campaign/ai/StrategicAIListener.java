@@ -6,6 +6,8 @@ import exerelin.campaign.ai.concern.StrategicConcern;
 
 public interface StrategicAIListener  {
 
+    void reportAIAdded(String factionId, StrategicAI ai);
+    void reportAIRemoved(String factionId, StrategicAI ai);
     void reportStrategyMeetingHeld(StrategicAI ai);
     boolean allowConcern(StrategicAI ai, StrategicConcern concern);
     void reportConcernAdded(StrategicAI ai, StrategicConcern concern);

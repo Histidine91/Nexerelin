@@ -311,6 +311,16 @@ public class DebugIntel extends BaseIntelPlugin implements StrategicAIListener, 
 	}
 
 	@Override
+	public void reportAIAdded(String factionId, StrategicAI ai) {
+
+	}
+
+	@Override
+	public void reportAIRemoved(String factionId, StrategicAI ai) {
+
+	}
+
+	@Override
 	public void reportStrategyMeetingHeld(StrategicAI ai) {
 
 	}

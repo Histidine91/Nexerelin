@@ -80,6 +80,18 @@ public class SAIUtils {
         log.info(msg);
     }
 
+    public static void reportAIAdded(String factionId, StrategicAI ai) {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            x.reportAIAdded(factionId, ai);
+        }
+    }
+
+    public static void reportAIRemoved(String factionId, StrategicAI ai) {
+        for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
+            x.reportAIRemoved(factionId, ai);
+        }
+    }
+
     public static void reportStrategyMeetingHeld(StrategicAI ai)
     {
         for (StrategicAIListener x : Global.getSector().getListenerManager().getListeners(StrategicAIListener.class)) {
