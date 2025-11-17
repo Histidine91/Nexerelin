@@ -53,6 +53,7 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
             InvasionFleetManager.getManager().modifySpawnCounterV2(ai.getFactionId(), -cost);
             intel.setInvPointsSpent((int)cost);
             setDelegate(intel);
+            this.faction = target.getFaction();
             return true;
         }
 

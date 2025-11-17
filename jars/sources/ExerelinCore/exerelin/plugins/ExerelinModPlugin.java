@@ -39,6 +39,7 @@ import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.*;
 import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
+import exerelin.campaign.ai.SAIKantasProtectionListener;
 import exerelin.campaign.ai.MilitaryInfoHelper;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.backgrounds.BaseCharacterBackground;
@@ -469,6 +470,10 @@ public class ExerelinModPlugin extends BaseModPlugin
 
         sector.addTransientScript(new BattleForceJoinHelper());
         sector.getListenerManager().addListener(new NexAutoresolveListener(), true);
+
+        if (NexConfig.enableStrategicAI && NexConfig.getFactionConfig(Factions.PIRATES).useStrategicAI) {
+            sector.getListenerManager().addListener(new SAIKantasProtectionListener(), true);
+        }
     }
     
     @Override
