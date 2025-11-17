@@ -24,15 +24,15 @@ import java.util.Map;
 
 import static exerelin.campaign.intel.agents.AgentOrdersDialog.getString;
 
-public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
+public class ProcurementDestinationDialog implements InteractionDialogPlugin {
 	
-	public static Logger log = Global.getLogger(ProcureShipDestinationDialog.class);
+	public static Logger log = Global.getLogger(ProcurementDestinationDialog.class);
 	
 	public static final int ENTRIES_PER_PAGE = 6;
 	
 	protected AgentIntel agent;
 	protected IntelUIAPI ui;
-	protected ProcureShip action;
+	protected HasDestinationDialog action;
 	protected InteractionDialogAPI dialog;
 	protected TextPanelAPI text;
 	protected OptionPanelAPI options;
@@ -53,8 +53,8 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 	}
 	
 	
-	public ProcureShipDestinationDialog(AgentIntel agent, ProcureShip action, 
-			MarketAPI currDestination, IntelUIAPI ui) {
+	public ProcurementDestinationDialog(AgentIntel agent, HasDestinationDialog action,
+										MarketAPI currDestination, IntelUIAPI ui) {
 		this.agent = agent;
 		destination = currDestination;
 		this.action = action;
@@ -161,7 +161,7 @@ public class ProcureShipDestinationDialog implements InteractionDialogPlugin {
 	protected List<IntelInfoPlugin.ArrowData> getDestinationArrows() {
 		List<IntelInfoPlugin.ArrowData> arrows = new ArrayList<>();
 		if (destination != null) {
-			arrows.add(new IntelInfoPlugin.ArrowData(action.market.getPrimaryEntity(), destination.getPrimaryEntity()));
+			arrows.add(new IntelInfoPlugin.ArrowData(action.getMarket().getPrimaryEntity(), destination.getPrimaryEntity()));
 		}
 		return arrows;
 	}

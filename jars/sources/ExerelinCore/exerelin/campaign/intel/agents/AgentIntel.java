@@ -176,6 +176,10 @@ public class AgentIntel extends BaseIntelPlugin {
 	public boolean canStealShip() {
 		return !NexConfig.useAgentSpecializations || specializations.isEmpty() || specializations.contains(Specialization.NEGOTIATOR);
 	}
+
+	public boolean canStealWeapons() {
+		return !NexConfig.useAgentSpecializations || specializations.isEmpty() || specializations.contains(Specialization.NEGOTIATOR) || specializations.contains(Specialization.HYBRID);
+	}
 	
 	public MarketAPI getMarket() {
 		return market;
@@ -708,7 +712,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			info.addPara(str, opad, h, daysNum);
 			
 			float nextPad = opad;
-			if (currentAction.getDefId().equals(CovertActionType.PROCURE_SHIP))
+			if (currentAction instanceof HasDestinationDialog)
 			{
 				info.addButton(StringHelper.getString("nex_agentActions", 
 						"intelButton_procureShipSetDestination", true), 
@@ -765,7 +769,7 @@ public class AgentIntel extends BaseIntelPlugin {
 			}
 			
 			float nextPad = opad;
-			if (nextAction.getDefId().equals(CovertActionType.PROCURE_SHIP))
+			if (nextAction instanceof HasDestinationDialog)
 			{
 				info.addButton(StringHelper.getString("nex_agentActions", 
 						"intelButton_procureShipSetDestination", true), 
@@ -936,9 +940,9 @@ public class AgentIntel extends BaseIntelPlugin {
 			actionQueue.remove(nextAction);
 		} else if (buttonId == BUTTON_REPEAT_ACTION) {
 			repeatLastAction(false);
-		} else if (buttonId instanceof ProcureShip) {
-			ProcureShip procure = (ProcureShip)buttonId;
-			ui.showDialog(null, new ProcureShipDestinationDialog(this, procure, procure.destination, ui));
+		} else if (buttonId instanceof HasDestinationDialog) {
+			HasDestinationDialog procure = (HasDestinationDialog)buttonId;
+			ui.showDialog(null, new ProcurementDestinationDialog(this, procure, procure.getDestination(), ui));
 		} else if (buttonId == BUTTON_MASTERY) {
 			this.specializations.clear();
 			Global.getSector().getPlayerStats().spendStoryPoints(1, true, null, true, 0, getMasteryLogString());

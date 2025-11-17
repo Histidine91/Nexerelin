@@ -43,13 +43,12 @@ import static com.fs.starfarer.api.util.Misc.random;
  * Obtains semi-illegally a ship from the target faction and sends it to a specified location.
  */
 @NoArgsConstructor
-public class ProcureShip extends CovertActionIntel {
+public class ProcureShip extends CovertActionIntel implements HasDestinationDialog {
 	
 	public static final float FAILURE_REFUND_MULT = 0.75f;
 	@Deprecated public static final String BUTTON_CHANGE_DESTINATION = "changeDestination";
 	public static final List<String> ALLOWED_SUBMARKETS = new ArrayList<>(Arrays.asList(new String[] {
-		Submarkets.SUBMARKET_OPEN, Submarkets.SUBMARKET_BLACK, 
-		Submarkets.GENERIC_MILITARY, "AL_militaryMarket"
+		Submarkets.SUBMARKET_OPEN, Submarkets.SUBMARKET_BLACK, Submarkets.GENERIC_MILITARY, "AL_militaryMarket", "ii_ebay"
 	}));
 	
 	protected FleetMemberAPI ship;
@@ -394,6 +393,7 @@ public class ProcureShip extends CovertActionIntel {
 		super.addBulletPoints(info, mode, isUpdate, tc, initPad);
 		if (result != null && result.isSuccessful()) {
 			String destName = destination.getName();
+			Color hl = Misc.getHighlightColor();
 			
 			if (delivered) {
 				info.addPara(getString("shipDeliveryInfoCompleteShort"), 0, tc,
@@ -406,9 +406,9 @@ public class ProcureShip extends CovertActionIntel {
 			str = StringHelper.substituteToken(str, "$market", destName);
 			str = StringHelper.substituteToken(str, "$time", days);
 			
-			LabelAPI label = info.addPara(str, 0, tc);
+			LabelAPI label = info.addPara(str, tc,0);
 			label.setHighlight(destName, days);
-			label.setHighlightColors(destination.getTextColorForFactionOrPlanet(), Misc.getHighlightColor());
+			label.setHighlightColors(destination.getTextColorForFactionOrPlanet(), hl);
 		}
 	}
 	
@@ -572,14 +572,14 @@ public class ProcureShip extends CovertActionIntel {
 				if (!ALLOWED_SUBMARKETS.contains(submarket.getSpecId()))
 					continue;
 				
-				Global.getLogger(ProcureShip.class).info("Checking submarket " + submarket.getSpecId());
+				//Global.getLogger(ProcureShip.class).info("Checking submarket " + submarket.getSpecId());
 				submarket.getPlugin().updateCargoPrePlayerInteraction();	// make them refresh their cargo if needed
 				
 				for (FleetMemberAPI member : submarket.getCargo().getMothballedShips().getMembersListCopy()) 
 				{
 					String hullId = member.getHullSpec().getDParentHullId();
 					if (hullId == null) hullId = member.getHullSpec().getHullId();
-					Global.getLogger(ProcureShip.class).info(" Adding ship " + hullId);
+					//Global.getLogger(ProcureShip.class).info(" Adding ship " + hullId);
 					hullsToCheck.add(hullId);
 				}
 			}

@@ -381,6 +381,7 @@
 		"intelStatus_infiltrateCell":"Infiltrating Luddic cell",
 		"intelStatus_counterInsurgency":"Conducting counterinsurgency operation",
 		"intelStatus_procureShip":"Procuring $ship, delivering to $market",
+		"intelStatus_procureEquipment":"Procuring $price of equipment, delivering to $market",
 		"intelStatus_findPirateBase":"Finding pirate base",
 		"intelStatus_instigateRebellion":"Instigating rebellion",
 		"intelStatus_recruitAgent":"Recruiting %s agent",
@@ -440,6 +441,9 @@
 		"intelDesc_procureShip_failureDetected":"An attempt by an operative of $theAgentFaction to illegally procure a $ship $orOnAt market was thwarted by by $faction authorities.",
 		"intelDesc_procureShip_failureDetectedPlayer":"$Faction authorities have stopped an attempt by $agentName to illegally procure a $ship $onOrAt $market. They will not be pleased with $theAgentFaction.",
 		
+		"intelDesc_procureEquipment_success":"An $agentFaction has arranged a purchase of ship equipment $onOrAt $market.",
+		"intelDesc_procureEquipment_successPlayer":"Your operative $agentName has procured ship equipment $onOrAt $market.",
+		
 		"intelDesc_instigateRebellion_success":"A $agentFaction operative has instigated a rebellion $onOrAt $market. $Faction authorities have been taken by surprise.",
 		"intelDesc_instigateRebellion_successPlayer":"Your operative $agentName has instigated a rebellion $onOrAt $market. $Faction authorities have not identified your involvement.",
 		"intelDesc_instigateRebellion_successDetected":"A $agentFaction operative has instigated a rebellion $onOrAt $market. $TheFaction has taken umbrage at this hostile act.",
@@ -471,6 +475,7 @@
 		"intel_lastMessage_infiltrateCell_failure":"\"Infiltration of $faction cell on $market... has failed.\"",
 		"intel_lastMessage_procureShip_success":"\"We now have a shiny new $ship.\"",
 		"intel_lastMessage_procureShip_failure":"\"Failed to procure a $ship at $market.\"",
+		"intel_lastMessage_procureEquipment_success":"\"Groceries collected.\"",
 		"intel_lastMessage_instigateRebellion_success":"\"$market has risen in revolt. Viva la revolución!\"",
 		"intel_lastMessage_instigateRebellion_failure":"\"Our efforts to start a rebellion on $market have been suppressed.\"",
 		"intel_lastMessage_counterInsurgency_success":"\"Successfully infiltrated the rebels among us on $market.\"",
@@ -508,6 +513,8 @@
 		"shipDeliveryInfoCompleteShort":"Delivered to %s",
 		"shipDeliveryInfo":"$shipName, $shipClass will be delivered to $market in $time day(s).",
 		"shipDeliveryInfoComplete":"$shipName, $shipClass delivered to $market.",
+		"equipmentDeliveryInfo":"Items will be delivered to $market in $time day(s).",
+		"equipmentDeliveryInfoComplete":"Items delivered to $market.",
 		
 		"dialogIntro":"Preparing new mission for operative...",
 		"dialogOption_action":"Action type: $action",
@@ -528,7 +535,9 @@
 		"dialogProcureShipIntro2":"Ship will have a random variant and be subject to D-mods. Not all ships known to the faction may be available.",
 		"dialogProcureShipIntro3":"If the attempt fails, %s of the action cost will be refunded.",
 		"dialogProcureShipIntroSpecialization":"%s specialization is required to procure non-legal ships.",
-		"dialogProcureShipDestinationIntro":"Select a planet or station to deliver the ship to. It will be placed in storage upon arrival.",
+		"dialogProcureEquipmentIntro":"Purchases are made at %s of base cost.",
+		"dialogProcureEquipmentIntroSpecialization":"%s specialization can only buy items that are legal on the open market.",
+		"dialogProcureShipDestinationIntro":"Select a planet or station to deliver the purchase to. It will be placed in storage upon arrival.",
 		
 		"dialogInfoHeaderTravel":"Travel to %s",
 		"dialogInfoHeaderRaiseRelations":"Raise relations with %s",
@@ -537,6 +546,7 @@
 		"dialogInfoHeaderDestroyCommodities":"Destroy %s stockpiles on %s",
 		"dialogInfoHeaderSabotageIndustry":"Sabotage %s on %s",
 		"dialogInfoHeaderProcureShip":"Procure %s",
+		"dialogInfoHeaderProcureEquipment":"Procuring equipment",
 		"dialogInfoHeaderInstigateRebellion":"Instigate rebellion on %s",
 		"dialogInfoHeaderRecruitAgent":"Recruit %s operative",
 		"dialogInfoSuccessChance":"Success chance: %s",

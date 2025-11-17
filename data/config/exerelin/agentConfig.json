@@ -191,6 +191,22 @@
 			#"specializations":[],	# handled in code
 			"sortOrder":10,
 		},
+		"procureEquipment":{
+			"time":30,
+			"name":"Procure Equipment",
+			"className":"exerelin.campaign.intel.agents.ProcureEquipment",
+			"detectionChance":0,
+			"detectionChanceFail":0,
+			"effectMin":50000,	# multiplied by agent level
+			"effectMax":50000,
+			"alertLevelIncrease":0.15,
+			"baseCost":1.2,
+			"costScaling":false,
+			"injuryChanceMult":0,
+			"xp":300,
+			#"specializations":[],	# handled in code
+			"sortOrder":10.5,
+		},
 		"findPirateBase":{
 			"name":"Find Pirate Base",
 			"className":"exerelin.campaign.intel.agents.FindPirateBase",
