@@ -26,7 +26,7 @@ public class ExerelinSetupData
 	protected static ExerelinSetupData instance = null;
 
 	public static final Set<String> NO_SAVE_FIELDS = new HashSet<>(Arrays.asList(
-		"NO_SAVE_FIELDS", "NUM_DMOD_LEVELS", "MEM_KEY_START_FLEET_TYPE", "SAVE_FILE_PATH", "log", "instance", "randomStartRelationships", "randomStartRelationshipsPirate",
+		"NO_SAVE_FIELDS", "NUM_DMOD_LEVELS", "MEM_KEY_START_FLEET_TYPE", "SAVE_FILE_PATH", "log", "instance", "freeStart", "randomStartRelationships", "randomStartRelationshipsPirate",
 			"randomStartShips", "skipStory", "startFleetType"
 	));
 
@@ -153,11 +153,16 @@ public class ExerelinSetupData
 
 
 	protected JSONObject toJson() throws JSONException {
+		ExerelinSetupData defaults = new ExerelinSetupData();
 		JSONObject json = new JSONObject();
 		for (ReflectionUtils.ReflectedField field : ReflectionUtils.getFieldsMatching(this.getClass())) {
 			String name = field.getName();
 			if (NO_SAVE_FIELDS.contains(name)) continue;
-			json.put(name, ReflectionUtils.get(this, name));
+			// don't save default values
+			Object value = ReflectionUtils.get(this, name);
+			Object defValue = ReflectionUtils.get(defaults, name);
+			if (value == defValue) continue;
+			json.put(name, value);
 		}
 		return json;
 	}

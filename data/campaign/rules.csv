@@ -2,8 +2,7 @@ id,trigger,conditions,script,text,options,notes
 #RULESET_NAME Nexerelin,,,,,,
 ,,,,,,
 # NGC options,,,,,,
-ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,"FireBest ExerelinNGCIntroPicker
-NGCGetExerelinDefaults",,,override SS+ NGC
+ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,FireBest ExerelinNGCIntroPicker,,,override SS+ NGC
 ,,,,,,
 ExerelinNGCSkipIntro,ExerelinNGCIntroPicker,,FireAll ExerelinNGCStep1,,,
 ExerelinNGCDoIntro,ExerelinNGCIntroPicker,Nex_NGCIntroPicker false,"$isInIntro = true 0
@@ -44,13 +43,17 @@ ExerelinNGCIntroDevStart,ExerelinNGCIntroPage,$global.isDevMode,,,"99:nex_NGCDev
 100:nex_NGCDevStartFast:>> (dev) quick start no time pass",
 ,,,,,,
 ,,,,,,
-ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,FireAll ExerelinNGCOptions,Configure the Sector?,,"make sure this runs once per new game, so that Exerelin sector generation data is set up properly"
+ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,"NGCGetExerelinDefaults
+FireAll ExerelinNGCOptions",Configure the Sector?,,"make sure this runs once per new game, so that Exerelin sector generation data is set up properly"
 ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptionsBack,"Nex_VisualCustomPanel clear
+Nex_NGCSetupData save
 FireAll ExerelinNGCOptions",,,
-ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOptionsDone RETURN,,"exerelinNGCOptionsDone:Proceed
+ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,"SetShortcut exerelinNGCOptionsDone RETURN
+Nex_AddOptionConfirmation nex_NGCResetSetupData ""Reset new game settings to defaults?"" ""Yes"" ""No""",,"exerelinNGCOptionsDone:Proceed
 7:exerelinNGCSectorOptions:Sector generation
 8:exerelinNGCFactionOptions:Faction settings
-9:exerelinNGCOtherOptions:Other options",
+9:exerelinNGCOtherOptions:Other options
+10:nex_NGCResetSetupData:Restore defaults",
 ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems. The Academy storyline will be disabled in random sector, and some features (such as missions or Colony Crises) from the base game or other mods may not be usable.""
 SetTooltipHighlights exerelinNGCEnableCorvusMode ""Academy storyline"" disabled features ""not be usable""",,exerelinNGCEnableCorvusMode:Disable random core worlds,
 ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems. The Academy storyline will be disabled in random sector, and some features (such as missions or Colony Crises) from the base game or other mods may not be usable.""
@@ -65,6 +68,8 @@ SetTooltip nex_NGCFactionToggleMenu ""Only works with random core worlds setting
 ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,"99:nex_NGCDevStart:>> (dev) quick start
 100:nex_NGCDevStartFast:>> (dev) quick start no time pass",
 ,,,,,,
+nex_NGCResetSetupData,NewGameOptionSelected,$option==nex_NGCResetSetupData,"Nex_NGCSetupData reset
+FireAll ExerelinNGCOptions",,,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
 ,,,,,,
 nex_NGCFactionToggleMenu,NewGameOptionSelected,$option==nex_NGCFactionToggleMenu,"Nex_VisualCustomPanel create true
@@ -101,8 +106,10 @@ Nex_DynamicPaginatedOptions addShortcut exerelinNGCOptionsBack ESCAPE",,,
 nex_NGCOtherOptions_show,ExerelinNGCOtherOptions,,Nex_DynamicPaginatedOptions show,,,
 ,,,,,,
 ExerelinNGCEnableCorvusMode,NewGameOptionSelected,$option==exerelinNGCEnableCorvusMode,"NGCSetCorvusMode true
+Nex_NGCSetupData save
 FireAll ExerelinNGCOptions",,,
 ExerelinNGCDisableCorvusMode,NewGameOptionSelected,$option==exerelinNGCDisableCorvusMode,"NGCSetCorvusMode false
+Nex_NGCSetupData save
 Nex_NGCFactionToggle processRecommendedSize
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
@@ -264,6 +271,7 @@ $option = nex_NGCDone
 FireBest NewGameOptionSelected",,,
 ,,,,,,
 nex_NGCDoneOption,NewGameOptionSelected,$option == nex_NGCDone,"Nex_NGCFinalize
+Nex_NGCSetupData save
 NGCDone",,,
 #END NGC options,,,,,,
 ,,,,,,

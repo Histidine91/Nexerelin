@@ -16,12 +16,24 @@ import java.util.Map;
 
 
 public class NGCGetExerelinDefaults extends BaseCommandPlugin {
-	 
+
+	public static boolean loaded = false;
+
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		//ExerelinSetupData.resetInstance();
-		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
+		if (!loaded) {
+			ExerelinSetupData.readFromFile();
+			loaded = true;
+		}
 		MemoryAPI map = memoryMap.get(MemKeys.LOCAL);
+		loadMemoryKeysAndMisc(map);
+		
+		return true;
+	}
+
+	public static void loadMemoryKeysAndMisc(MemoryAPI map) {
+		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		map.set("$numSystems", setupData.numSystems, 0);
 		map.set("$numPlanets", setupData.numPlanets, 0);
 		map.set("$numStations", setupData.numStations, 0);
@@ -32,26 +44,24 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$onlyRespawnStartingFactions", setupData.onlyRespawnStartingFactions, 0);
 		map.set("$useFactionWeights", setupData.useFactionWeights, 0);
 		map.set("$randomFactionWeights", setupData.randomFactionWeights, 0);
-		
+
 		map.set("$corvusMode", setupData.corvusMode, 0);
 		map.set("$hardMode", setupData.hardMode, 0);
 		map.set("$randomStartLocation", setupData.randomStartLocation, 0);
 		map.set("$nex_customScenarioName", StringHelper.getString("none"));
 		map.set("$nex_antiochInRandom", setupData.randomAntiochEnabled, 0);
-		
+
 		map.set("$easyMode", setupData.easyMode, 0);
-		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
+		CharacterCreationData data = (CharacterCreationData) map.get("$characterData");
 		if (setupData.easyMode)  data.setDifficulty("easy");
 		else data.setDifficulty("normal");
-		
+
 		map.set("$nex_legacyInsurance", NexConfig.legacyInsurance);
-		
+
 		String str = ExerelinSetupData.getDModCountText(setupData.dModLevel);
 		map.set("$nex_ngcDModsString", str);
 
 		if (QuestChainSkipEntry.getEntries() == null)
 			QuestChainSkipEntry.initEntries();
-		
-		return true;
 	}
 }
