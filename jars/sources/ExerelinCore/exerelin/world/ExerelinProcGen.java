@@ -129,11 +129,12 @@ public class ExerelinProcGen {
 		for (Map.Entry<String, Boolean> tmp : setup.factions.entrySet())
 		{
 			String factionId = tmp.getKey();
-			if (tmp.getValue())
-			{
-				factions.add(factionId);
-				log.info("Added starting faction: " + factionId);
-			}
+			if (!tmp.getValue()) continue;
+			boolean exists = Global.getSettings().getFactionSpec(factionId) != null;
+			if (!exists) continue;
+
+			factions.add(factionId);
+			log.info("Added starting faction: " + factionId);
 		}
 		String playerFaction = PlayerFactionStore.getPlayerFactionIdNGC();
 		if (!playerFaction.equals(Factions.PLAYER) && !setup.freeStart)
