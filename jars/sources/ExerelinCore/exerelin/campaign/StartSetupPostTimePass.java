@@ -46,6 +46,7 @@ public class StartSetupPostTimePass {
 	{
 		Global.getLogger(StartSetupPostTimePass.class).info("Running start setup post time pass");
 		SectorAPI sector = Global.getSector();
+		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 
 		Random random = new Random(NexUtils.getStartingSeed());
 
@@ -62,10 +63,10 @@ public class StartSetupPostTimePass {
 		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
 		
 		Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(
-				ExerelinSetupData.MEM_KEY_START_FLEET_TYPE, ExerelinSetupData.getInstance().startFleetType);
+				ExerelinSetupData.MEM_KEY_START_FLEET_TYPE, setupData.startFleetType);
 		
 		// assign officers
-		int numOfficers = ExerelinSetupData.getInstance().numStartingOfficers;
+		int numOfficers = setupData.numStartingOfficers;
 		int maxLevel = Global.getSettings().getLevelupPlugin().getMaxLevel();
 		for (int i=0; i<numOfficers; i++)
 		{
@@ -153,7 +154,16 @@ public class StartSetupPostTimePass {
 			new Nex_GalatianAcademyStipend();
 		}
 
-		boolean useCarePackage = Global.getSettings().getBoolean("nex_useStartingCarePackage");
+		boolean useCarePackage = false;
+		if (setupData.enableCarePackage == 1) {
+			String startFactionId = spawnAsFactionId != null ? spawnAsFactionId : factionId;
+			useCarePackage = Factions.PLAYER.equals(startFactionId) && !freeStart && !Misc.isSpacerStart();
+		} else if (setupData.enableCarePackage == 2) {
+			useCarePackage = true;
+		}
+		if (Global.getSector().getMemoryWithoutUpdate().getBoolean("$nex_tutorialStart"))
+			useCarePackage = false;
+
 		// remove debt in own faction start
 		if (isPlayer && !freeStart) {
 			// clear player debt from colony being unprofitable during new game time pass (if any)
@@ -179,7 +189,7 @@ public class StartSetupPostTimePass {
 		}
 		
 		// gate handling and other stuff
-		if (!corvusMode || ExerelinSetupData.getInstance().skipStory) {
+		if (!corvusMode || setupData.skipStory) {
 			Global.getSector().getPlayerFleet().getCargo().addSpecial(new SpecialItemData(Items.JANUS, null), 1);
 			MemoryAPI mem = Global.getSector().getMemoryWithoutUpdate();
 			MemoryAPI playMem = Global.getSector().getCharacterData().getMemoryWithoutUpdate();
@@ -212,7 +222,7 @@ public class StartSetupPostTimePass {
 		
 		// Spacer obligation
 		String backgroundID = Global.getSector().getMemoryWithoutUpdate().getString("$nex_selected_background");
-		if (ExerelinSetupData.getInstance().spacerObligation && (backgroundID == null || !backgroundID.equals("nex_unpaid_debt"))) {
+		if (setupData.spacerObligation && (backgroundID == null || !backgroundID.equals("nex_unpaid_debt"))) {
 			new Nex_SpacerObligation();
 		}
 

@@ -308,7 +308,9 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				},
 				createTooltip(tooltipStr, highlights, null)
 		);
-		
+
+		addCarePackageOptions(panel, info, plugin);
+
 		// random start location
 		highlights = new ArrayList<>();
 		addCheckboxOption(panel, info, getString("optionRandomStartLocation"), "nex_randomStartLocation", 
@@ -390,6 +392,38 @@ public class Nex_NGCPopulateCustomPanelOptions extends BaseCommandPlugin {
 				public void onToggleImpl() {
 					data.dModLevel = index;
 					//Global.getLogger(this.getClass()).info("D-mod level: " + data.dModLevel);
+				}
+			};
+			buttonEntries.add(radio);
+			plugin.addButton(radio);
+		}
+	}
+
+	public void addCarePackageOptions(CustomPanelAPI panel, TooltipMakerAPI info,
+							   InteractionDialogCustomPanelPlugin plugin)
+	{
+		CustomPanelAPI buttonPanel = prepOption(panel, info, getString("optionCarePackage"),
+				"graphics/icons/intel/stabilized_pods.png", null,
+				createTooltip(getString("tooltipCarePackage"), null, null));
+
+		final List<ButtonAPI> buttons = new ArrayList<>();
+		TooltipMakerAPI lastHolder = null;
+		final ExerelinSetupData data = ExerelinSetupData.getInstance();
+
+		for (int i=0; i<=2; i++) {
+			String name = Misc.ucFirst(getString("optionCarePackage_"+i));
+			lastHolder = initRadioButton("nex_carePackage_" + i, name, i == ExerelinSetupData.getInstance().enableCarePackage,
+					buttonPanel, lastHolder, buttons);
+		}
+		final List<RadioButtonEntry> buttonEntries = new ArrayList<>();
+
+		for (int i=0; i<=2; i++) {
+			final int index = i;
+			RadioButtonEntry radio = new RadioButtonEntry(buttons.get(i), "nex_carePackage_" + i, buttonEntries)
+			{
+				@Override
+				public void onToggleImpl() {
+					data.enableCarePackage = index;
 				}
 			};
 			buttonEntries.add(radio);

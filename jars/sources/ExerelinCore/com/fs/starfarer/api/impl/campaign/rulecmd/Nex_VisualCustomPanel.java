@@ -1,8 +1,5 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.VisualPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -13,6 +10,9 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Used to create a CustomPanelAPI in an InteractionDialogAPI.
  * Make sure to call {@code clearPanel} when no longer needed, to avoid memory leaks.
@@ -21,7 +21,7 @@ import exerelin.campaign.ui.InteractionDialogCustomPanelPlugin;
 public class Nex_VisualCustomPanel extends BaseCommandPlugin {
 	
 	public static final float PANEL_WIDTH = 600;
-	public static final float PANEL_HEIGHT = 480;
+	public static final float PANEL_HEIGHT = 540;
 	
 	protected static CustomPanelAPI panel;
 	protected static TooltipMakerAPI tooltip;

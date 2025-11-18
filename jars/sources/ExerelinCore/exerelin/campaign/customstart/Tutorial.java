@@ -45,7 +45,6 @@ public class Tutorial extends CustomStart {
 					fleet.clearFloatingText();
 					fleet.setTransponderOn(false);
 					
-					
 					StarSystemAPI system = Global.getSector().getStarSystem("galatia");
 					system.addScript(new CampaignTutorialScript(system));
 				}
@@ -55,6 +54,7 @@ public class Tutorial extends CustomStart {
 		data.addScriptBeforeTimePass(new Script() {
 			public void run() {
 				Global.getSector().getMemoryWithoutUpdate().set(CampaignTutorialScript.USE_TUTORIAL_RESPAWN, true);
+				Global.getSector().getMemoryWithoutUpdate().set("$nex_tutorialStart", true);
 			}
 		});
 		

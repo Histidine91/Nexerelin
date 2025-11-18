@@ -40,8 +40,6 @@
 	"nex_enableMiningHarass":true,	# raiders bother a mining player
 	"nex_miningHarassThreshold": 11,
 	
-	"nex_useStartingCarePackage":true,
-	
 	"nex_conquestMissionIntervalRateMult":0.05,
 	"nex_disruptMissionIntervalRateMult":0.125,
 	"nex_pirateRageIncrement":0.02,

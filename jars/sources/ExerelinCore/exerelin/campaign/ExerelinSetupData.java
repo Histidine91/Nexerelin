@@ -69,6 +69,7 @@ public class ExerelinSetupData
 	public boolean enableStipend = true;
 	public String backgroundId = null;
 	public String selectedFactionForBackground = null;
+	public int enableCarePackage = 2;
 
 	/**
 	 * Replaced by quest-specific handling.
