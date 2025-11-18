@@ -150,7 +150,7 @@ public class Nex_NGCQuestSkipPanel {
 
         @Override
         public void customDialogConfirm() {
-
+            QuestChainSkipEntry.saveSkippedQuests();
         }
 
         @Override
@@ -218,11 +218,7 @@ public class Nex_NGCQuestSkipPanel {
          */
         public void setEnabled(boolean enabled, boolean updateOtherQuests) {
             setState(enabled);
-            quest.isEnabled = enabled;
-            if (quest.plugin != null) {
-                if (enabled) quest.plugin.onEnabled();
-                else quest.plugin.onDisabled();
-            }
+            quest.setEnabled(enabled);
             if (updateOtherQuests) {
                 updateOtherQuests(enabled);
             }

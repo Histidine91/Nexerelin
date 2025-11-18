@@ -5,8 +5,9 @@ import exerelin.ExerelinConstants
 import exerelin.utilities.NexUtils
 import org.apache.log4j.Logger
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
-import org.magiclib.util.MagicSettings
+import java.io.IOException
 import java.util.*
 
 /**
@@ -53,7 +54,6 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
                 val entry = QuestSkipEntry(questId, name, this)
                 entry.tooltip = questJson.optString("tooltip", null)
 
-
                 entry.idsToForceOnWhenEnabled.addAll(NexUtils.jsonToList(questJson.optJSONArray("idsToForceOnWhenEnabled") ?: emptyArray).filterIsInstance<String>())
                 entry.idsToForceOffWhenEnabled.addAll(NexUtils.jsonToList(questJson.optJSONArray("idsToForceOffWhenEnabled") ?: emptyArray).filterIsInstance<String>())
                 entry.idsToForceOnWhenDisabled.addAll(NexUtils.jsonToList(questJson.optJSONArray("idsToForceOnWhenDisabled") ?: emptyArray).filterIsInstance<String>())
@@ -61,6 +61,11 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
                 entry.playerMemflags.putAll(NexUtils.jsonToMap(questJson.optJSONObject("playerMemFlags") ?: emptyMap))
                 entry.sectorMemflags.putAll(NexUtils.jsonToMap(questJson.optJSONObject("sectorMemFlags") ?: emptyMap))
                 entry.peopleToUnhide.addAll(NexUtils.jsonToList(questJson.optJSONArray("peopleToUnhide") ?: emptyArray).filterIsInstance<String>())
+
+                if (skippedQuestsFromFile.contains(entry.id)) {
+                    entry.setEnabled(true)
+                }
+
                 entry.setPluginClass(questJson.optString("plugin", null))
                 entry.tooltipCreatorClass = questJson.optString("tooltipCreator", null)
                 quests.add(entry)
@@ -77,6 +82,12 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
             map[quest.id] = quest.isEnabled
         }
         return map
+    }
+
+    fun getEnabledQuestSet(): Set<String> {
+        val set = LinkedHashSet<String>()
+        set.addAll(quests.filter { it.isEnabled }.map { it.id } )
+        return set
     }
 
     fun isQuestEnabled(id : String) : Boolean {
@@ -135,17 +146,47 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
         const val CHAIN_SETTINGS_KEY = "questChains"
         const val QUEST_SETTINGS_KEY = "quests"
         const val SETTINGS_FILE_PATH = "data/config/exerelin/questSkip.json"
+        const val SAVE_PATH = "nex_questSkip"
 
         @JvmField var entries: List<QuestChainSkipEntry>? = null
+        @JvmField var skippedQuestsFromFile: MutableSet<String> = LinkedHashSet()
 
         @JvmStatic
         fun getEntries(): List<QuestChainSkipEntry>? {
             return entries
         }
 
+        @JvmStatic
+        fun saveSkippedQuests() {
+            skippedQuestsFromFile.clear()
+            for (chain in entries!!) {
+                skippedQuestsFromFile.addAll(chain.quests.filter { it.isEnabled }.map { it.id })
+            }
+            val toSave = JSONObject();
+            toSave.put("quests", skippedQuestsFromFile)
+            try {
+                Global.getSettings().writeJSONToCommon(SAVE_PATH, toSave, true)
+            } catch (ex: JSONException) {
+                log.error("Failed to save quest skip list", ex)
+            } catch (ex : IOException) {
+                log.error("Failed to save quest skip list", ex)
+            }
+        }
+
         // runcode exerelin.campaign.questskip.QuestChainSkipEntry.initEntries()
         @JvmStatic
         fun initEntries() {
+            try {
+                var savedSkipJson = Global.getSettings().readJSONFromCommon(SAVE_PATH, true)
+                var quests = savedSkipJson.getJSONArray("quests")
+                skippedQuestsFromFile.addAll(NexUtils.JSONArrayToArrayList(quests))
+                //log.info("" + skippedQuestsFromFile.size + " saved quests found")
+            } catch (ex: JSONException) {
+                log.warn("Failed to load quest skip list", ex)
+            } catch (ex : IOException) {
+                log.warn("Failed to load quest skip list", ex)
+            }
+
             entries = ArrayList<QuestChainSkipEntry>()
             var id: String? = null
             try {

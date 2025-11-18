@@ -70,6 +70,14 @@ public class QuestSkipEntry {
         }
     }
 
+    public void setEnabled(boolean enabled) {
+        this.isEnabled = enabled;
+        if (plugin != null) {
+            if (enabled) plugin.onEnabled();
+            else plugin.onDisabled();
+        }
+    }
+
     @Override
     public String toString() {
         return this.id;
