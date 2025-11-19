@@ -52,6 +52,9 @@ public abstract class BaseQuestSkipPlugin implements QuestSkipPlugin {
     }
 
     @Override
+    public boolean shouldEnableByDefault(QuestSkipEntry entry) { return false; }
+
+    @Override
     public void setQuest(QuestSkipEntry quest) {
         this.quest = quest;
     }

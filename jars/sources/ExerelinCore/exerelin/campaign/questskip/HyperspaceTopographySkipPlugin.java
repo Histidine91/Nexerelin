@@ -28,11 +28,11 @@ public class HyperspaceTopographySkipPlugin extends BaseQuestSkipPlugin {
     }
 
     @Override
-    public void init() {
-        if (Global.getSettings().getBoolean("nex_skipStoryDefault")) {
-            if (chain == null) return;
-            chain.quests.get(0).isEnabled = true;
+    public boolean shouldEnableByDefault(QuestSkipEntry entry) {
+        if (Global.getSettings().getBoolean("nex_skipStoryDefault") && entry.id.equals("topography_250")) {
+            return true;
         }
+        return false;
     }
 
     protected HyperspaceTopographyEventIntel getOrCreateIntel() {

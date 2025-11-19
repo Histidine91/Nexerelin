@@ -14,13 +14,20 @@ public interface QuestSkipPlugin {
     void onNewGameAfterEconomyLoad();
     void onNewGameAfterTimePass();
 
-    boolean shouldShow();
     /**
-     * Use this version to control hiding of individual quests from a single chain plugin.
+     * For quest plugins, whether an individual quest should be shown. For chain plugins, whether the whole chain should be shown.
+     * @return
+     */
+    boolean shouldShow();
+
+    /**
+     * Whether to hide the specified entry; only called for chain plugins.
      * @param entry
      * @return
      */
     boolean shouldShow(QuestSkipEntry entry);
+
+    boolean shouldEnableByDefault(QuestSkipEntry entry);
 
     void setQuest(QuestSkipEntry quest);
     QuestSkipEntry getQuest();

@@ -201,14 +201,11 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
     }
 
     @Override
-    public void init() {
-        if (Global.getSettings().getBoolean("nex_skipStoryDefault")) {
-            if (chain == null) return;
-            for (QuestSkipEntry quest : chain.quests) {
-                if (quest.id.equals("abyssalSpaceOddity")) continue;
-                quest.isEnabled = true;
-            }
+    public boolean shouldEnableByDefault(QuestSkipEntry entry) {
+        if (Global.getSettings().getBoolean("nex_skipStoryDefault") && !entry.id.equals("abyssalSpaceOddity")) {
+            return true;
         }
+        return false;
     }
 
     public HubMission startAcademyMission(String missionId) {

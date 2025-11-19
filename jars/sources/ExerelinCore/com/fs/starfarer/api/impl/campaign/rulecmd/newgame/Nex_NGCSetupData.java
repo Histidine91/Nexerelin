@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.questskip.QuestChainSkipEntry;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class Nex_NGCSetupData extends BaseCommandPlugin {
             case "reset":
                 ExerelinSetupData.resetInstance();
                 ExerelinSetupData.writeToFile();
+                QuestChainSkipEntry.resetEnabledEntries();
                 NGCGetExerelinDefaults.loadMemoryKeysAndMisc(memoryMap.get(MemKeys.LOCAL));
                 return true;
             case "debug":

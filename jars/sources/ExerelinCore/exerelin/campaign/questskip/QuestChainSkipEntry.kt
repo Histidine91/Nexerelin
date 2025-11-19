@@ -13,7 +13,7 @@ import java.util.*
 /**
  * Replaces the old single-switch "skip story" system.
  */
-// converting this class to Kotlin was a mistake
+// converting this class to Kotlin was a mistake // no it wasn't
 open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: String, @JvmField var image: String, @JvmField var sortKey: String) :
     Comparable<QuestChainSkipEntry> {
 
@@ -61,17 +61,24 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
                 entry.playerMemflags.putAll(NexUtils.jsonToMap(questJson.optJSONObject("playerMemFlags") ?: emptyMap))
                 entry.sectorMemflags.putAll(NexUtils.jsonToMap(questJson.optJSONObject("sectorMemFlags") ?: emptyMap))
                 entry.peopleToUnhide.addAll(NexUtils.jsonToList(questJson.optJSONArray("peopleToUnhide") ?: emptyArray).filterIsInstance<String>())
-
-                if (skippedQuestsFromFile.contains(entry.id)) {
-                    entry.setEnabled(true)
-                }
-
                 entry.setPluginClass(questJson.optString("plugin", null))
                 entry.tooltipCreatorClass = questJson.optString("tooltipCreator", null)
                 quests.add(entry)
+
+                autoEnableIfNeeded(entry)
             }
         } catch (ex: Exception) {
             log.error("Failed to load quest skip entries, last quest ID: $id", ex)
+        }
+    }
+
+    fun autoEnableIfNeeded(entry : QuestSkipEntry, reset : Boolean = false) {
+        val shouldEnable = (!reset && skippedQuestsFromFile.contains(entry.id)) || entry.plugin?.shouldEnableByDefault(entry) == true || this.plugin?.shouldEnableByDefault(entry) == true
+        if (shouldEnable) {
+            entry.setEnabled(true)
+        }
+        else if (reset) {
+            entry.setEnabled(false)
         }
     }
 
@@ -212,6 +219,16 @@ open class QuestChainSkipEntry(@JvmField var id: String?, @JvmField var name: St
             } catch (ex: Exception) {
                 log.error("Failed to load quest skip entries, last chain ID: $id", ex)
             }
+        }
+
+        @JvmStatic
+        fun resetEnabledEntries() {
+            for (chain in entries ?: return) {
+                for (quest in chain.quests) {
+                    chain.autoEnableIfNeeded(quest, true)
+                }
+            }
+            saveSkippedQuests()
         }
     }
 }

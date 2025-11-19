@@ -54,7 +54,7 @@ public class LuddicChurchQuestSkipPlugin extends BaseQuestSkipPlugin {
     }
 
     @Override
-    public boolean shouldShow() {
+    public boolean shouldShow(QuestSkipEntry entry) {
         return ExerelinSetupData.getInstance().corvusMode;
     }
 
