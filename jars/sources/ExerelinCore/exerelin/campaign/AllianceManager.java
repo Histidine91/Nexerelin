@@ -618,6 +618,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     }
     
     public static boolean canMerge(Alliance first, Alliance second) {
+        // merger of two alliances with perma-members gets weird (e.g. Church + KoL and Heg + Iron Shell, who can end up going to war with each other while still being allied)
+        if (!first.getPermaMembersCopy().isEmpty() && !second.getPermaMembersCopy().isEmpty())
+            return false;
+
         for (String newMemberId : second.getMembersCopy()) {
             if (!isAlignmentCompatible(newMemberId, first)) {
                 //log.info(String.format("%s incompatible allignment with %s", newMemberId, first.getName()));
