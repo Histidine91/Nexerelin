@@ -141,6 +141,12 @@ NGCDone",,,
 nex_NGCRandomFaction,NewGameOptionSelected,$option == nex_NGCJoinRandomFaction,"NGCSetPlayerFaction ""random""
 $factionGroup = 0
 FireAll ExerelinNGCStep3",,,
+nex_NGCRandomEverything,NewGameOptionSelected,$option == nex_NGCFullyRandomizedStart,"NGCSetPlayerFaction ""random""
+$factionGroup = 0
+NGCAddStartingShipsByFleetType RANDOM
+Nex_NGCStartResources randomize
+NGCAddCharacterPoints 1
+FireBest NewGameBackgroundSelection",,,
 nex_NGCOwnFaction,NewGameOptionSelected,$option == nex_NGCJoinOwnFaction,"NGCSetPlayerFaction ""player""
 NGCSetFreeStart false
 $factionGroup = 0
@@ -269,6 +275,10 @@ nex_NGCSelectBackground,NewGameBackgroundSelection,,Nex_NGCBackgroundSelection s
 nex_NGCSelectBackgroundFinished,NewGameOptionSelected,$option == nex_NGCDoneWithBackground,"Nex_NGCBackgroundSelection confirmSelection
 $option = nex_NGCDone
 FireBest NewGameOptionSelected",,,
+nex_NGCSelectBackgroundGoBack,NewGameOptionSelected,$option == nex_NGCBackgroundGoBack,"FireBest ExerelinNGCStep4
+FireBest ExerelinNGCStep4Plus
+Nex_NGCStartResources reset
+Nex_NGCMisc showFleet",,,
 ,,,,,,
 nex_NGCDoneOption,NewGameOptionSelected,$option == nex_NGCDone,"Nex_NGCFinalize
 Nex_NGCSetupData save

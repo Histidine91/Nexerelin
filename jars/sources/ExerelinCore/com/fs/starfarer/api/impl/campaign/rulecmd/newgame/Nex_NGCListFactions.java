@@ -111,6 +111,7 @@ public class Nex_NGCListFactions extends PaginatedOptionsPlus {
 		addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "freeStartHard")), "nex_NGCFreeStart");
 		
 		addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "randomFaction")), "nex_NGCJoinRandomFaction");
+		addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "randomEverything")), "nex_NGCFullyRandomizedStart");
 		addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "customStart")), "nex_NGCCustomStart");
 
 		if (Global.getSettings().isDevMode())

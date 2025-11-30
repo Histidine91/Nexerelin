@@ -1213,7 +1213,9 @@ public class NexFactionConfig
     {
         StartFleetType type = StartFleetType.getType(typeStr);
         boolean random = index < 0;
-                
+
+        if (type == StartFleetType.RANDOM) type = StartFleetType.getRandom(new Random(), this.startShips.keySet());
+        
         if (random && (type != StartFleetType.SUPER) && (startShips.containsKey(type)))
         {
             int tries = 0;
@@ -1362,14 +1364,33 @@ public class NexFactionConfig
 		}
 	}
 	
-	public static enum StartFleetType {
+	public enum StartFleetType {
 		SOLO, COMBAT_SMALL, COMBAT_LARGE, TRADE_SMALL, TRADE_LARGE,
 		EXPLORER_SMALL, EXPLORER_LARGE, CARRIER_SMALL, CARRIER_LARGE, 
-		SUPER, GRAND_FLEET, CUSTOM;
+		SUPER, GRAND_FLEET, CUSTOM(false), RANDOM(false);
+
+		public final boolean canPickAsRandom;
+
+		StartFleetType() {
+				this(true);
+		}
+
+		StartFleetType(boolean canPickAsRandom) {
+				this.canPickAsRandom = canPickAsRandom;
+		}
 		
 		public static StartFleetType getType(String str)
 		{
 			return StartFleetType.valueOf(str.toUpperCase());
+		}
+
+		public static StartFleetType getRandom(Random random, Collection<StartFleetType> allowed) {
+				WeightedRandomPicker<StartFleetType> picker = new WeightedRandomPicker<>(random);
+				for (StartFleetType type : allowed) {
+						if (!type.canPickAsRandom) continue;
+						picker.add(type);
+				}
+				return picker.pick();
 		}
 		
 		public boolean isTrade() {

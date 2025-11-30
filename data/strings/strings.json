@@ -1943,6 +1943,7 @@
 		"factions":"factions",
 		"mainFactions":"main factions",
 		"randomFaction":"random faction",
+		"randomEverything":"fully random starting path",
 		"ownFaction":"own faction",
 		"freeStart":"free start",
 		"freeStartHard":"free start (hard)",

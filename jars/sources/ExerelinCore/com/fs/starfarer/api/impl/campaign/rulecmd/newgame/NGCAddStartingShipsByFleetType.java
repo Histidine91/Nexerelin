@@ -51,9 +51,14 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		
 		return true;
 	}
+
+	public static void generateFleetFromVariantIds(InteractionDialogAPI dialog,
+												   CharacterCreationData data, String fleetTypeStr, List<String> startingVariants) {
+		generateFleetFromVariantIds(dialog, data, fleetTypeStr, startingVariants, false);
+	}
 	
 	public static void generateFleetFromVariantIds(InteractionDialogAPI dialog, 
-			CharacterCreationData data, String fleetTypeStr, List<String> startingVariants) {
+			CharacterCreationData data, String fleetTypeStr, List<String> startingVariants, boolean visualOnly) {
 		int crew = 0;
 		int supplies = 0;
 		int machinery = 0;
@@ -70,7 +75,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 				if (variantId.endsWith("_wing")) {
 					type = FleetMemberType.FIGHTER_WING; 
 				}
-				data.addStartingFleetMember(variantId, type);
+				if (!visualOnly) data.addStartingFleetMember(variantId, type);
 
 				FleetMemberAPI temp = Global.getFactory().createFleetMember(type, variantId);
 				crew += (int)Math.min(temp.getNeededCrew() * 1.2f, temp.getMaxCrew());
@@ -96,19 +101,21 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 					first = false;
 				}
 
-				AddRemoveCommodity.addFleetMemberGainText(temp.getVariant(), dialog.getTextPanel());
+				if (!visualOnly) AddRemoveCommodity.addFleetMemberGainText(temp.getVariant(), dialog.getTextPanel());
 			} catch (RuntimeException rex) {	// probably variant not found
 				Global.getLogger(NGCAddStartingShipsByFleetType.class).error(rex.getMessage());
 				dialog.getTextPanel().addParagraph(rex.getMessage());
 			}	
 		}
 		tempFleet.forceSync();
-		
-		TextPanelAPI text = dialog.getTextPanel();
-		addCargo(data, Commodities.CREW, crew, text);
-		addCargo(data, Commodities.SUPPLIES, supplies, text);
-		addCargo(data, Commodities.HEAVY_MACHINERY, machinery, text);
-		addCargo(data, Commodities.FUEL, fuel, text);
+
+		if (!visualOnly) {
+			TextPanelAPI text = dialog.getTextPanel();
+			addCargo(data, Commodities.CREW, crew, text);
+			addCargo(data, Commodities.SUPPLIES, supplies, text);
+			addCargo(data, Commodities.HEAVY_MACHINERY, machinery, text);
+			addCargo(data, Commodities.FUEL, fuel, text);
+		}
 		
 		dialog.getVisualPanel().showFleetInfo(StringHelper.getString("exerelin_ngc", "playerFleet", true), 
 				tempFleet, null, null);

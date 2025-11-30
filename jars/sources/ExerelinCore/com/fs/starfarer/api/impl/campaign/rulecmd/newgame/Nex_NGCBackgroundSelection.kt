@@ -38,30 +38,37 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
         this.textPanel = dialog.textPanel
 
         var arg = params!!.get(0).getString(memoryMap)
+        val mem = memoryMap.get(MemKeys.LOCAL);
 
         if (arg == "confirmSelection") {
-            var backgroundID = memoryMap.get(MemKeys.LOCAL)!!.getString("\$nex_selected_background")
-            var factionID  = memoryMap.get(MemKeys.LOCAL)!!.getString("\$nex_selected_faction_for_background")
+            var backgroundID = mem!!.getString("\$nex_selected_background")
+            var factionID  = mem!!.getString("\$nex_selected_faction_for_background")
             ExerelinSetupData.getInstance().backgroundId = backgroundID
             ExerelinSetupData.getInstance().selectedFactionForBackground = factionID
         }
 
-        val data = memoryMap.get(MemKeys.LOCAL)!!.get("\$characterData") as CharacterCreationData
+        val data = mem!!.get("\$characterData") as CharacterCreationData
 
         if (arg != "selectBackground") return false
 
         val factionId = memoryMap[MemKeys.LOCAL]!!.getString("\$playerFaction") ?: Factions.PLAYER
         var factionSpec = Global.getSettings().getFactionSpec(factionId)
         val factionConfig = NexConfig.getFactionConfig(factionId)
-        memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_faction_for_background", factionId)
+        mem!!.set("\$nex_selected_faction_for_background", factionId)
 
         optionPanel.clearOptions()
-        textPanel.addPara(StringHelper.getString("nex_backgrounds", "dialogTitle"), Misc.getBasePlayerColor(), Misc.getBasePlayerColor())
-        textPanel.addPara(StringHelper.getString("nex_backgrounds", "dialogPara1"))
-        textPanel.addPara(StringHelper.getString("nex_backgrounds", "dialogPara2"))
+        if (!mem.getBoolean("\$nex_seenBackgroundIntro")) {
+            textPanel.addPara(StringHelper.getString("nex_backgrounds", "dialogTitle"), Misc.getBasePlayerColor(), Misc.getBasePlayerColor())
+            textPanel.addPara(StringHelper.getString("nex_backgrounds", "dialogPara1"))
+            textPanel.addPara(StringHelper.getString("nex_backgrounds", "dialogPara2"))
+            mem.set("\$nex_seenBackgroundIntro", true);
+        }
 
-        optionPanel.addOption("Done", "nex_NGCDoneWithBackground")
-        optionPanel.setShortcut("nex_NGCDone", Keyboard.KEY_RETURN, false, false, false, false)
+        Misc.ucFirst(StringHelper.getString("done"))
+        optionPanel.addOption(Misc.ucFirst(StringHelper.getString("done")), "nex_NGCDoneWithBackground")
+        optionPanel.addOption(Misc.ucFirst(StringHelper.getString("goBack")), "nex_NGCBackgroundGoBack")
+        optionPanel.setShortcut("nex_NGCDoneWithBackground", Keyboard.KEY_RETURN, false, false, false, false)
+        optionPanel.setShortcut("nex_NGCBackgroundGoBack", Keyboard.KEY_ESCAPE, false, false, false, false)
 
         var width = 600f
         var height = 400f
