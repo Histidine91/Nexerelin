@@ -2,12 +2,13 @@ package exerelin.world;
 
 import com.fs.starfarer.api.Global;
 import exerelin.ExerelinConstants;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 // should probably be a singleton instead of static but meh
 public class ExerelinCorvusLocations {
@@ -23,11 +24,13 @@ public class ExerelinCorvusLocations {
             {
                 JSONObject row = spawnPointsCsv.getJSONObject(x);
                 SpawnPointEntry spawnPoint = new SpawnPointEntry();
-                String systemName = row.getString("system");
-                String entityId = row.getString("entityID");
-                if (!systemName.isEmpty()) spawnPoint.systemName = systemName;
-                if (!entityId.isEmpty()) spawnPoint.entityId = entityId;
-                SPAWN_POINTS.put(row.getString("faction"), spawnPoint);
+                String systemName = row.optString("system", "");
+                String entityId = row.optString("entityID", "");
+                String factionId = row.optString("faction", "");
+                if (systemName.isEmpty() || entityId.isEmpty() || factionId.isEmpty()) continue;
+                spawnPoint.systemName = systemName;
+                spawnPoint.entityId = entityId;
+                SPAWN_POINTS.put(factionId, spawnPoint);
             }
             //MagicSettings.getStringMap("nexerelin", "faction_spawn_points");
         } catch (IOException | JSONException ex) {
