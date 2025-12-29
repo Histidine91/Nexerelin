@@ -191,14 +191,21 @@ public class VanillaSystemsGenerator {
 		asher.addIndustry(Industries.ORBITALSTATION_MID);
 		asher.removeIndustry(Industries.GROUNDDEFENSES, null, false);
 		asher.addIndustry(Industries.HEAVYBATTERIES);
+
+		MarketAPI cethlenn = getMarket("cethlenn");
+		cethlenn.addCondition(Conditions.THIN_ATMOSPHERE);
 		
 		MarketAPI chalcedon = getMarket("chalcedon");
 		//chalcedon.addIndustry(Industries.ORBITALSTATION);
 		chalcedon.addIndustry(Industries.WAYSTATION);
+
+		MarketAPI cibola = getMarket("cibola");
+		cethlenn.addCondition(Conditions.HOT);
 		
 		MarketAPI culann = getMarket("culann");
 		culann.getIndustry(Industries.BATTLESTATION_HIGH).setAICoreId("alpha_core");
 		culann.getIndustry(Industries.MILITARYBASE).setAICoreId("alpha_core");
+		culann.getIndustry(Industries.MILITARYBASE).setSpecialItem(new SpecialItemData(Items.CRYOARITHMETIC_ENGINE, null));
 		
 		//MarketAPI derinkuyu = getMarket("derinkuyu_market");
 		derinkuyu.addCondition(Conditions.ORE_SPARSE);
@@ -208,6 +215,9 @@ public class VanillaSystemsGenerator {
 		
 		MarketAPI eldfell = getMarket("eldfell");
 		eldfell.addIndustry(Industries.GROUNDDEFENSES);
+		eldfell.removeCondition(Conditions.NO_ATMOSPHERE);
+		eldfell.addCondition(Conditions.THIN_ATMOSPHERE);
+		eldfell.addCondition(Conditions.ORE_SPARSE);
 		
 		MarketAPI epiphany = getMarket("epiphany");
 		epiphany.addIndustry(Industries.WAYSTATION);
@@ -221,6 +231,13 @@ public class VanillaSystemsGenerator {
 		MarketAPI fikenhild = getMarket("fikenhild");
 		//fikenhild.removeIndustry(Industries.PATROLHQ, null, false);
 		//fikenhild.addIndustry(Industries.MILITARYBASE);
+
+		MarketAPI hesperus = getMarket("hesperus");
+		hesperus.getIndustry(Industries.ORBITALSTATION).startUpgrading();
+		hesperus.getIndustry(Industries.ORBITALSTATION).finishBuildingOrUpgrading();
+
+		MarketAPI madeira = getMarket("madeira");
+		cethlenn.addCondition(Conditions.COLD);
 		
 		MarketAPI mazalot = getMarket("mazalot");
 		//mazalot.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, Factions.LUDDIC_CHURCH);
@@ -240,7 +257,7 @@ public class VanillaSystemsGenerator {
 		tigraCity.getCondition(Conditions.ORE_SPARSE).setSurveyed(true);
 		tigraCity.addCondition(Conditions.FARMLAND_POOR);
 		tigraCity.getCondition(Conditions.FARMLAND_POOR).setSurveyed(true);
-		tigraCity.addIndustry(Industries.MINING);
+		//tigraCity.addIndustry(Industries.MINING);
 		tigraCity.addIndustry(Industries.FARMING);
 	}
 	
