@@ -696,6 +696,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		if (factionId.equals(Factions.PLAYER))
 			isPirateFaction = isPirateFaction || NexUtilsFaction.isPirateFaction(
 					PlayerFactionStore.getPlayerFactionId());
+
+
+		float curPool = FleetPoolManager.getManager().getCurrentPool(factionId);
+		float invPoints = getSpawnCounter(factionId);
+		float baseline = NexConfig.pointsRequiredForInvasionFleet;
 		
 		for (MarketAPI market : markets) 
 		{
@@ -736,18 +741,18 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			weight *= 10000/defStr;
 			weight *= market.getSize();
 
+
+
 			// try not to target markets larger than our invasion pool/fleet points
 			float fpMult = 1;
 			if (FleetPoolManager.USE_POOL) {
-				float curPool = FleetPoolManager.getManager().getCurrentPool(factionId);
 				fpMult = curPool/defStr;
 			} else {
-				float invPoints = getSpawnCounter(factionId);
-				float baseline = NexConfig.pointsRequiredForInvasionFleet;
 				float ratio = invPoints/baseline;
 				fpMult = ratio * BASE_INVASION_SIZE / defStr;
 			}
-			if (isRemnantRaid) fpMult = 1;
+
+			if (isRemnantRaid) fpMult = Global.getSettings().getFloat("nex_remnantRaidSizeMult");
 
 			if (fpMult < SAIConstants.MIN_FP_RATIO_THRESHOLD) {
 				continue;	// we're too weak to attack this target

@@ -142,6 +142,7 @@ public class NexConfig
     public static boolean enableColonyExpeditions = true;
     public static float colonyExpeditionInterval = 270;
     public static boolean colonyExpeditionsOnlyAfterPlayerColony = false;
+    public static boolean colonizeOutsideCore = true;
     
     public static float specialForcesPointMult = 1;
     public static float specialForcesSizeMult = 1;
@@ -290,6 +291,7 @@ public class NexConfig
             enableColonyExpeditions = settings.optBoolean("enableColonyExpeditions", enableColonyExpeditions);
             colonyExpeditionInterval = (float)settings.optDouble("colonyExpeditionInterval", colonyExpeditionInterval);
             colonyExpeditionsOnlyAfterPlayerColony = settings.optBoolean("colonyExpeditionsOnlyAfterPlayerColony", colonyExpeditionsOnlyAfterPlayerColony);
+            colonizeOutsideCore = settings.optBoolean("colonizeOutsideCore", colonizeOutsideCore);
             
             specialForcesPointMult = (float)settings.optDouble("specialForcesPointMult", specialForcesPointMult);
             specialForcesSizeMult = (float)settings.optDouble("specialForcesPointMult", specialForcesSizeMult);

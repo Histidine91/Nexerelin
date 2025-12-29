@@ -57,6 +57,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("invasionFleetSizeMult", "float", tabFleets, NexConfig.invasionFleetSizeMult, 0.1, 10);
         addSetting("fleetRequestCostPerFP", "int", tabFleets, Math.round(NexConfig.fleetRequestCostPerFP), 1, 10000);
         addSetting("creditLossOnColonyLossMult", "float", tabFleets, NexConfig.creditLossOnColonyLossMult, 0, 1);
+        addSetting("remnantRaidSizeMult", "float", tabFleets, Global.getSettings().getFloat("nex_remnantRaidSizeMult"), 0.25f, 5);
 
         addHeader("groundBattles", tabFleets);
         addSetting("groundBattleDamageMult", "float", tabFleets, NexConfig.groundBattleDamageMult, 0, 5);
@@ -110,6 +111,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("enableColonyExpeditions", "boolean", tabFleets, NexConfig.enableColonyExpeditions);
         addSetting("colonyExpeditionInterval", "int", tabFleets, NexConfig.colonyExpeditionInterval, 15, 10000);
         addSetting("colonyExpeditionsOnlyAfterPlayerColony", "boolean", tabFleets, NexConfig.colonyExpeditionsOnlyAfterPlayerColony);
+        addSetting("colonizeOutsideCore", "boolean", tabFleets, NexConfig.colonizeOutsideCore);
         addSetting("colonyExpeditionsOnlyAfterGalatia", "boolean", tabFleets, Global.getSettings().getBoolean("nex_colonyExpeditionOnlyAfterGalatia"));
         addSetting("specialForcesPointMult", "float", tabFleets, NexConfig.specialForcesPointMult, 0, 10);
         addSetting("specialForcesSizeMult", "float", tabFleets, NexConfig.specialForcesSizeMult, 0.2, 5);
@@ -188,6 +190,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.invasionFleetSizeMult = (float)loadSetting("invasionFleetSizeMult", "float");
         NexConfig.fleetRequestCostPerFP = (int)loadSetting("fleetRequestCostPerFP", "int");
         NexConfig.creditLossOnColonyLossMult = (float)loadSetting("creditLossOnColonyLossMult", "float");
+        Global.getSettings().setFloat("nex_remnantRaidSizeMult", (float)loadSetting("remnantRaidSizeMult", "float"));
 
         NexConfig.groundBattleDamageMult = (float)loadSetting("groundBattleDamageMult", "float");
         NexConfig.groundBattleGarrisonSizeMult = (float)loadSetting("groundBattleGarrisonSizeMult", "float");
@@ -234,6 +237,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.colonyExpeditionInterval = (int)loadSetting("colonyExpeditionInterval", "int");
         NexConfig.colonyExpeditionsOnlyAfterPlayerColony = (boolean)loadSetting("colonyExpeditionsOnlyAfterPlayerColony", "boolean");
         Global.getSettings().setBoolean("nex_colonyExpeditionOnlyAfterGalatia", (boolean)loadSetting("colonyExpeditionsOnlyAfterGalatia", "boolean"));
+        NexConfig.colonizeOutsideCore = (boolean)loadSetting("colonizeOutsideCore", "boolean");
         NexConfig.specialForcesPointMult = (float)loadSetting("specialForcesPointMult", "float");
         NexConfig.specialForcesSizeMult = (float)loadSetting("specialForcesSizeMult", "float");
         NexConfig.specialForcesMaintMult = (float)loadSetting("specialForcesMaintMult", "float");

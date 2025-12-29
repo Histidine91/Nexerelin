@@ -91,6 +91,8 @@
 	"nex_brawlMode_maxMult":3,
 	"nex_brawlMode_randomFactionGearChance":0,	# 0.6
 	
+	"nex_remnantRaidSizeMult":1,
+	
 	"nex_sectorDefenderMode":false,	# invasions can only be launched by or against hostile-to-all factions
 	
 	"nex_officerBaseEscapeChance":0.5,	# modified by crew loss mult
@@ -189,7 +191,7 @@
 	
 	"nex_customStartFleetThresholds":[0, 80000, 160000, 240000, 500000, 1000000],
 	
-	"nex_factionSetupMaxPoints":100,
+	"nex_factionSetupMaxPoints":100,	# care package value
 	"nex_factionSetupNumFont":"graphics/fonts/insignia21LTaa.fnt",
 	
 	"plugins":{

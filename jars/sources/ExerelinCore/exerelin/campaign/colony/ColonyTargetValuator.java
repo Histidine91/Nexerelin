@@ -192,7 +192,11 @@ public class ColonyTargetValuator {
 			}
 		}
 
-		if (Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_DISALLOW_CORE_WORLDS) && system.hasTag(Tags.THEME_CORE)) {
+		boolean isCore = system.hasTag(Tags.THEME_CORE);
+		if (isCore && Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_DISALLOW_CORE_WORLDS)) {
+			return false;
+		}
+		if (!isCore && !NexConfig.colonizeOutsideCore) {
 			return false;
 		}
 		
@@ -229,6 +233,11 @@ public class ColonyTargetValuator {
 			return false;
 		}
 		if (Misc.doesMarketHaveMissionImportantPeopleOrIsMarketMissionImportant(market.getPrimaryEntity())) {
+			return false;
+		}
+
+		// AotD stuff
+		if (market.hasCondition("pre_collapse_facility") && !market.getMemoryWithoutUpdate().getBoolean("$aotd_defeated_pcf")) {
 			return false;
 		}
 		
