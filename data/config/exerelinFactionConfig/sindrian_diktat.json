@@ -23,7 +23,7 @@
     "specialForcesMaxFleets":1,
     
     # chance of the faction being picked to send a colony expedition. Default 0 (disabled)
-    "colonyExpeditionChance":0.75,	# not really their kind of thing...? I guess
+    "colonyExpeditionChance":0.75,	# inward focus
     
     "startShipsSolo":[
       ["centurion_LG_Assault"]

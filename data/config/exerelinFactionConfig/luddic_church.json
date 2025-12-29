@@ -6,10 +6,10 @@
     
     "directoryUseShortName":true,
 
-    "startRelationships":{ "tritachyon":-0.6 },
+    "startRelationships":{ "tritachyon":-0.6, "sindrian_diktat":-0.15 },
     "maxRelationships":{ "tritachyon":-0.1, "remnant":-0.51},
-    "diplomacyPositiveChance":{ "tritachyon":0.8 },
-    "diplomacyNegativeChance":{ "tritachyon":1.2 },
+    "diplomacyPositiveChance":{ "tritachyon":0.8, "sindrian_diktat":0.8 },
+    "diplomacyNegativeChance":{ "tritachyon":1.2, "sindrian_diktat":1.2 },
     "morality":"good",
     
     "alignments":{

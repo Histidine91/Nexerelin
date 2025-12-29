@@ -25,7 +25,7 @@
     "diplomacyTraits":["paranoid", "stalwart", "dislikes_ai", "law_and_order", "envious"],
     
     # chance of the faction being picked to send a colony expedition. Default 0 (disabled)
-    "colonyExpeditionChance":1,	# baseline expansion behaviour
+    "colonyExpeditionChance":0.75,  # they're big enough as it is
     "colonyTargetValuator":"exerelin.campaign.colony.IndustrialColonyTargetValuator",
     
     "groundBattleSettings":{
