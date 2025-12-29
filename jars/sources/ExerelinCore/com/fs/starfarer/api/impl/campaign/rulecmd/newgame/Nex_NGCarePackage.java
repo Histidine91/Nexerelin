@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
@@ -33,6 +34,10 @@ public class Nex_NGCarePackage extends BaseCommandPlugin {
                 return true;
             case "viewPlanet":
                 dialog.getVisualPanel().showCore(CoreUITabId.CARGO, getPlayerHome(), new NexUtilsGUI.NullCoreInteractionListener());
+                return true;
+            case "spawnAtCurrentLocation":
+                SectorEntityToken token = dialog.getInteractionTarget();
+                Global.getSector().addScript(new StartSetupPostTimePass.CreateCarePackageScript(token));
                 return true;
         }
 
@@ -64,6 +69,8 @@ public class Nex_NGCarePackage extends BaseCommandPlugin {
         }
         copy.sort();
 
+        final int max = Global.getSettings().getInt("nex_factionSetupMaxPoints") / (home == null ? 2 : 1);
+
         final float sideWidth = 210f;
         final float screenWidth = Global.getSettings().getScreenWidth() * 3/4;
         final float screenHeight = Global.getSettings().getScreenHeight() * 4/5;
@@ -89,8 +96,6 @@ public class Nex_NGCarePackage extends BaseCommandPlugin {
                     public void recreateTextPanel(TooltipMakerAPI panel, CargoAPI cargo, CargoStackAPI pickedUp, boolean pickedUpFromSource, CargoAPI combined) {
 
                         int cost = getCargoCost(combined);
-                        int max = Global.getSettings().getInt("nex_factionSetupMaxPoints");
-
                         float opad = 10f;
 
                         String str = getString("pickerFancyText");

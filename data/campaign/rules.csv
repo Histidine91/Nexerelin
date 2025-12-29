@@ -1704,10 +1704,12 @@ RemoveOption bqfs_askForSupplies","$HeOrShe back looks to you, perplexed. ""You 
 
 $HeOrShe doesn't look amused, and doesn't manage to imbue $hisOrHer words with quite the tone of respect $hisOrHer words alone would imply.",,
 ,,,,,,
-tut_janContactReport3,DialogOptionSelected,$option == tutReport3,"AddAbility exerelin_follow_me 7
-SetShortcut cutCommLinkPolite ""ESCAPE""","""Finally, you could take a commission with the Hegemony - due to the Galatia business, your standing is high enough that such a request would be accepted.
+nex_tut_janContactReport3,DialogOptionSelected,$option == tutReport3 score:5,"$player.finishedTutorial = true
+AddAbility exerelin_follow_me 7
+SetShortcut cutCommLinkPolite ""ESCAPE""
+Nex_NGCarePackage spawnAtCurrentLocation","""Finally, you could take a commission with the Hegemony - due to the Galatia business, your standing is high enough that such a request would be accepted.""
 
-You'll be expected to fight our enemies, though, so it's quite a commitment. If I were you, I'd hold off on it until you've got a more solid fleet behind you.""","cutCommLinkPolite:""Thanks, I'll think about it.""",
+""You'll be expected to fight our enemies, though, so it's quite a commitment. If I were you, I'd hold off on it until you've got a more solid fleet behind you.""","cutCommLinkPolite:""Thanks, I'll think about it.""",
 ,,,,,,
 sdtuSafehouseEndInterrupt,DialogOptionSelected,"$option == sdtu_safehouseEnd
 RepLTE sindrian_diktat INHOSPITABLE
@@ -1801,6 +1803,11 @@ Commission personCanGiveCommission
 !$player.defeatedDiktatAttack
 Nex_IsModActive PAGSM
 Nex_HA_CMD diktatConcernedByFuelProd",,,"sdMakeDeal:""The Company sends attack fleets against me despite my commission. This oversight must be corrected!""",
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
 ,,,,,,
 nex_sdtuMacReasonRemnant,SDTUMacIntroReasoning,"$global.nex_remBrawl_missionCompleted
 !$global.nex_remBrawl_betrayedMidnight",,"""You have a relationship with—of all entities—the AI Remnants!""
