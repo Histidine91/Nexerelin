@@ -1,25 +1,19 @@
 package exerelin.campaign.intel;
 
-import java.awt.Color;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
-import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
+import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -33,9 +27,16 @@ import exerelin.campaign.SectorManager;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.utilities.StringHelper;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
+
+import java.awt.*;
 import java.util.Arrays;
 import java.util.HashSet;
-import org.lazywizard.lazylib.MathUtils;
+import java.util.List;
+import java.util.Set;
 
 // adapted from SystemBountyIntel
 public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScript, FleetEventListener {
@@ -49,7 +50,7 @@ public class FactionBountyIntel extends BaseIntelPlugin implements EveryFrameScr
 	public static final float MAX_DURATION = 90;
 	
 	protected float elapsedDays = 0f;
-	protected float duration = MAX_DURATION;
+	@Getter	@Setter	protected float duration = MAX_DURATION;
 	
 	protected float baseBounty = 0;
 	
