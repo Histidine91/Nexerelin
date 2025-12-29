@@ -85,6 +85,7 @@ public class DestroyCommodityStocksAction extends CovertAction {
 
     @Override
     public boolean canUse(StrategicConcern concern) {
+        if (!super.canUse(concern)) return false;
         return concern.getDef().hasTag("canDestroyCommodity") || concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM);
     }
 

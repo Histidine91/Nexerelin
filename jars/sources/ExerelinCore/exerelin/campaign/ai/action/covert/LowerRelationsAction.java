@@ -56,6 +56,8 @@ public class LowerRelationsAction extends CovertAction {
 
     @Override
     public boolean canUse(StrategicConcern concern) {
+        if (!super.canUse(concern)) return false;
+
         if (Global.getSector().getMemoryWithoutUpdate().getBoolean(DiplomacyAction.MEM_KEY_GLOBAL_COOLDOWN))
             return false;
         if (!concern.getDef().hasTag("diplomacy_negative")) return false;

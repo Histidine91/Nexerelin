@@ -43,6 +43,8 @@ public class InstigateRebellionAction extends CovertAction {
         if (!NexConfig.enableHostileFleetEvents) return false;
         if (!NexConfig.enableInvasions) return false;
         if (!RebellionCreator.ENABLE_REBELLIONS) return false;
+        if (!super.canUse(concern)) return false;
+
         if (!concern.getDef().hasTag("canInvade") && !concern.getDef().hasTag("canInstigateRebellion"))
             return false;
         MarketAPI concernTarget = concern.getMarket();

@@ -55,6 +55,9 @@ public abstract class CovertAction extends BaseStrategicAction {
 
     @Override
     public boolean canUse(StrategicConcern concern) {
+        if (!NexConfig.getFactionConfig(ai.getFactionId()).allowAgentActions)
+            return false;
+
         if (ai.getFaction().isPlayerFaction() && !NexConfig.followersAgents)
             return false;
 
