@@ -44,11 +44,12 @@ import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.ui.FieldOptionsScreenScript;
 import exerelin.utilities.*;
 import exerelin.utilities.NexUtilsMarket.CampaignEntityPickerWrapper;
+import kaysaar.aotd_question_of_loyalty.data.scripts.commision.AoTDCommissionDataManager;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * Handles fleet requests: spawns fleets with specific origins and objectives based on their targets.
@@ -90,6 +91,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		
 		String arg = params.get(0).getString(memoryMap);
 		//MarketAPI market = dialog.getInteractionTarget().getMarket();
+		TextPanelAPI text = dialog.getTextPanel();
 		initVars(dialog, memoryMap);
 		
 		switch(arg)
@@ -107,7 +109,12 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				break;
 			case "setType":
 				String type = option.substring(TYPE_OPTION_PREFIX.length());
-				setFleetType(FleetType.getTypeFromString(type));
+				FleetType type2 = FleetType.getTypeFromString(type);
+				setFleetType(type2);
+				if (type2 == FleetType.COLONY && Global.getSettings().getModManager().isModEnabled("aotd_qol")) {
+					printQolColonyCountCheck(text);
+				}
+
 				break;
 			case "strengthMenu":
 				showFleetStrengthMenu();
@@ -560,6 +567,10 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 						MarketAPI market = planet.getMarket();
 						if (market == null || !market.isPlanetConditionMarketOnly()) continue;
 						if (market.getSurveyLevel() != SurveyLevel.FULL) continue;
+						// AotD stuff
+						if (market.hasCondition("pre_collapse_facility") && !market.getMemoryWithoutUpdate().getBoolean("$aotd_defeated_pcf")) {
+							continue;
+						}
 						markets.add(market);
 					}
 				}
@@ -980,6 +991,20 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			Color hl = Misc.getHighlightColor();
 			info.addPara(str, 0, hl, distStr);
 		}	
+	}
+
+	protected void printQolColonyCountCheck(TextPanelAPI text) {
+		String commFacId = Misc.getCommissionFactionId();
+		if (commFacId == null) return;
+		text.setFontSmallInsignia();
+		int maxColonies = AoTDCommissionDataManager.getInstance().getCommisionData(commFacId).getPlugin().getCurrentRankData().getAmountOfColoniesAbleToColonize();
+		int curr = NexUtilsFaction.getPlayerMarkets(false, false, true).size();
+		text.addPara(getString("aotdQol_colonyCount"), Misc.getTextColor(), Misc.getHighlightColor(), curr + "", maxColonies + "");
+		if (curr >= maxColonies) {
+			text.addPara(getString("atodQol_colonyWarning"), Misc.getNegativeHighlightColor());
+		}
+
+		text.setFontInsignia();
 	}
 	
 	protected static String getString(String id) {

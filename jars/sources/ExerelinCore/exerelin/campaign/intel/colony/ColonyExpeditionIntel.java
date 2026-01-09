@@ -34,6 +34,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.utilities.*;
+import kaysaar.aotd_question_of_loyalty.data.scripts.commision.AoTDCommissionDataManager;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
@@ -361,10 +362,28 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	public void createColony() {
 		MarketAPI target = getTarget();
 		String oldName = target.getName();
-		createColonyStatic(target, planet, faction, false, playerSpawned, 3);
+
+
+		// AotD Question of Loyalty: don't go over limit that commission allows
+		boolean aotdHandover = false;
+		FactionAPI faction = this.faction;
+		if (playerSpawned && Global.getSettings().getModManager().isModEnabled("aotd_qol")) {
+			FactionAPI comFac = Misc.getCommissionFaction();
+			if (comFac != null) {
+				int maxColonies = AoTDCommissionDataManager.getInstance().getCommisionData(comFac.getId()).getPlugin().getCurrentRankData().getAmountOfColoniesAbleToColonize();
+				int curr = NexUtilsFaction.getPlayerMarkets(false, false, true).size();
+				if (curr >= maxColonies) {
+					aotdHandover = true;
+					faction = comFac;
+				}
+			}
+		}
+
+		createColonyStatic(target, planet, faction, false, playerSpawned && !aotdHandover, 3);
 		String newName = target.getName();
 		if (!oldName.equals(newName))
 			this.newName = newName;
+
 	}
 	
 	public static void createColonyStatic(MarketAPI market, PlanetAPI planet, 

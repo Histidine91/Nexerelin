@@ -95,14 +95,20 @@ public class NexUtilsFaction {
 
     public static List<MarketAPI> getPlayerMarkets(boolean includeAutonomous, boolean includeHidden)
     {
+        return getPlayerMarkets(includeAutonomous, includeHidden, false);
+    }
+
+    public static List<MarketAPI> getPlayerMarkets(boolean includeAutonomous, boolean includeHidden, boolean includeGoverned)
+    {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
         List<MarketAPI> ret = new ArrayList<>();
         for (MarketAPI market : allMarkets)
         {
             if (!includeHidden && market.isHidden()) continue;
             if (!includeAutonomous && !market.isPlayerOwned()) continue;
-            if (market.getFactionId().equals(Factions.PLAYER))
-                ret.add(market);
+            boolean player = market.getFactionId().equals(Factions.PLAYER);
+            if (includeGoverned) player |= market.isPlayerOwned();
+            if (player) ret.add(market);
         }
         return ret;
     }
