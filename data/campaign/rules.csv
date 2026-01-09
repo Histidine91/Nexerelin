@@ -1520,6 +1520,9 @@ SetTooltip nex_outpostPreview ""A nearby hostile fleet is tracking your movement
 nex_outpostOptionAbyss,PopulateOptions,"$nex_canMine
 $player.locTag:temporary_location score:100","SetEnabled nex_outpostPreview false
 SetTooltip nex_outpostPreview ""This location will be unlikely to be found again in the future and an outpost here would be lost.""",,,
+nex_outpostOptionDeepSpace,PopulateOptions,"$nex_canMine
+Nex_PlayerOutpost isDeepSpace","SetEnabled nex_outpostPreview false
+SetTooltip nex_outpostPreview ""Cannot be built in deep space locations.""",,,
 nex_outpostPreview,DialogOptionSelected,$option == nex_outpostPreview,"Nex_PlayerOutpost buildInfo
 FireAll Nex_OutpostOption","You can build an automated outpost here. It will automatically stock supplies and fuel for you to take, and can be used as storage.",,
 nex_outpostBuildOption,Nex_OutpostOption,,"SetEnabled nex_outpostBuildStart true
@@ -1527,7 +1530,7 @@ SetShortcut nex_outpostBuildStart RETURN
 SetShortcut nex_outpostBack ESCAPE",,"nex_outpostBuildStart:Proceed with construction
 nex_outpostBack:Go back",
 nex_outpostBuildOptionInsufficientResources,Nex_OutpostOption,!$nex_canBuildOutpost,"SetEnabled nex_outpostBuildStart false
-SetTooltip  nex_outpostBuildStar ""You have insufficient resources to build an outpost.""",,,
+SetTooltip  nex_outpostBuildStart ""You have insufficient resources to build an outpost.""",,,
 nex_outpostBuild,DialogOptionSelected,"$nex_canBuildOutpost
 $option == nex_outpostBuildStart","Nex_PlayerOutpost build
 UpdateMemory

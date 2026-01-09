@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.ui.Alignment;
@@ -46,6 +47,9 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 				return true;
 			case "dismantle":
 				dismantleOutpost(dialog.getInteractionTarget(), dialog);
+				return true;
+			case "isDeepSpace":
+				return isDeepSpace(dialog.getInteractionTarget());
 		}
 			
 		return true;
@@ -61,6 +65,10 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 		cost.setAlignment(Alignment.LMID);
 		return cost;
     }
+
+	protected static boolean isDeepSpace(SectorEntityToken entity) {
+		return entity.getStarSystem() != null && entity.getStarSystem().getType() == StarSystemGenerator.StarSystemType.DEEP_SPACE;
+	}
 	
 	protected boolean addCostEntry(ResourceCostPanelAPI cost, String commodityId, int needed)
 	{
