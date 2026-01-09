@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.*;
@@ -50,7 +51,8 @@ public class StrategicAI extends BaseIntelPlugin {
 		Examples of actions: diplomatic actions, invasions, raids, agent sabotage
 	 */
 
-	public static final String MEMORY_KEY = "$nex_strategicAI";
+	@Deprecated public static final String MEMORY_KEY = "$nex_strategicAI";
+	public static final String PERSISTENT_DATA_KEY = "nex_strategicAI";
 	public static final String UPDATE_NEW_CONCERNS = "new_concerns";
 	public static final float MARGIN = 40;
 	public static final Object BUTTON_MEETING = new Object();
@@ -76,11 +78,19 @@ public class StrategicAI extends BaseIntelPlugin {
 	public StrategicAI(FactionAPI faction) {
 		this.faction = faction;
 	}
+
+	public static Map<String, StrategicAI> getAIsMap() {
+		if (!Global.getSector().getPersistentData().containsKey(PERSISTENT_DATA_KEY));
+		Global.getSector().getPersistentData().put(PERSISTENT_DATA_KEY, new HashMap<String, StrategicAI>());
+
+		return (Map<String, StrategicAI>)Global.getSector().getPersistentData().get(PERSISTENT_DATA_KEY);
+	}
 	
 	public StrategicAI init() {
 		Global.getSector().getIntelManager().addIntel(this, true);
 		Global.getSector().addScript(this);
-		faction.getMemoryWithoutUpdate().set(MEMORY_KEY, this);
+		//faction.getMemoryWithoutUpdate().set(MEMORY_KEY, this);
+		getAIsMap().put(faction.getId(), this);
 
 		econModule = new EconomicAIModule(this, StrategicDefManager.ModuleType.ECONOMIC);
 		diploModule = new DiplomaticAIModule(this, StrategicDefManager.ModuleType.DIPLOMATIC);
@@ -105,8 +115,20 @@ public class StrategicAI extends BaseIntelPlugin {
 		if (intervalShort == null) intervalShort = new IntervalUtil(0.48f, 0.52f);
 		return this;
 	}
+
+	public void reverseCompatibility() {
+		MemoryAPI mem = Global.getSector().getFaction(faction.getId()).getMemoryWithoutUpdate();
+		if (mem.contains(MEMORY_KEY)) {
+			mem.unset(MEMORY_KEY);
+			getAIsMap().put(faction.getId(), this);
+		}
+	}
 	
 	public static StrategicAI getAI(String factionId) {
+		return getAIsMap().get(factionId);
+	}
+
+	protected static StrategicAI getAIOld(String factionId) {
 		return (StrategicAI)Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().get(MEMORY_KEY);
 	}
 
@@ -121,6 +143,8 @@ public class StrategicAI extends BaseIntelPlugin {
 
 	@Override
 	protected void advanceImpl(float amount) {
+		if (Global.getSector().isInNewGameAdvance()) return;
+
 		float days = Global.getSector().getClock().convertToDays(amount);
 
 		intervalShort.advance(days);
@@ -410,7 +434,13 @@ public class StrategicAI extends BaseIntelPlugin {
 	}
 
 	public static StrategicAI addAIIfNeeded(String factionId) {
-		if (getAI(factionId) == null) {
+		StrategicAI curr = getAIOld(factionId);
+		if (curr != null) {
+			curr.reverseCompatibility();
+		}
+
+		curr = getAI(factionId);
+		if (curr != null) {
 			return addIntel(factionId);
 		}
 		return null;
