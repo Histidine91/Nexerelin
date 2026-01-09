@@ -145,7 +145,7 @@ public class RemnantQuestUtils {
 			
 			if (weight > 0) picker.add(factionId);
 		}
-		picker.add(Factions.INDEPENDENT, 1);
+		if (allowIndependent) picker.add(Factions.INDEPENDENT, 1);
 		return picker.pick();
 	}
 
