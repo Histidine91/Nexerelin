@@ -33,6 +33,7 @@ import exerelin.utilities.NexFactionConfig.StartFleetType;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.world.VanillaSystemsGenerator;
 import lombok.extern.log4j.Log4j;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.util.Collections;
@@ -229,7 +230,10 @@ public class StartSetupPostTimePass {
 		// timestamp stuff: moved to modplugin	
 	}
 
+	@Nullable
 	public static FleetLogIntel generateAlphaSiteIntel() {
+		if (Global.getSector().getEntityById("site_alpha") == null) return null;
+
 		FleetLogIntel intel = new FleetLogIntel() {
 
 			@Override

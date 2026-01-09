@@ -16,6 +16,7 @@ public class SpaceOddityQuestSkipPlugin extends BaseQuestSkipPlugin {
         if (quest != null && quest.isEnabled) quest.applyMemKeys();
 
         SectorEntityToken rock = Global.getSector().getEntityById("nameless_rock");
+        if (rock == null) return;
         LocationAPI loc = rock.getContainingLocation();
         for (SectorEntityToken token : loc.getAllEntities()) {
             if (!token.getMemoryWithoutUpdate().getBoolean("$onslaughtMkI")) continue;
