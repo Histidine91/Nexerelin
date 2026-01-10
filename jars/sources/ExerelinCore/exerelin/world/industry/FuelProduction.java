@@ -12,13 +12,14 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig.BonusSeed;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.industry.aotd.AotDIndustries;
 import exerelin.world.industry.bonus.Synchrotron;
 import java.util.List;
 
 public class FuelProduction extends IndustryClassGen {
 
 	public FuelProduction() {
-		super(Industries.FUELPROD);
+		super(Industries.FUELPROD, AotDIndustries.FUEL_REFINERY);
 	}
 	
 	public static boolean factionHasSynchrotronSeed(String factionId) {

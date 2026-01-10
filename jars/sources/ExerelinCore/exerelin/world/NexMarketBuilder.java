@@ -8,7 +8,6 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.*;
-import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -344,15 +343,18 @@ public class NexMarketBuilder
 	public static void addIndustry(MarketAPI market, String id, String idForIncrement, boolean instant) {
 		if (alreadyHaveCanUpgrade(market, id)) {
 			Industry ind = market.getIndustry(id);
-			ind.startUpgrading();
-			if (instant) ind.finishBuildingOrUpgrading();
+			String targetId = null;
+			// TODO? upgrade to specified ID
+			if (ExerelinModPlugin.HAVE_VOK) {
+
+			}
+			NexUtilsMarket.upgradeIndustryToTarget(ind, targetId, false, instant);
 			return;
 		}
 		else if (canGetViaUpgrade(market, id)) {
 			String downgrade = Global.getSettings().getIndustrySpec(id).getDowngrade();
 			Industry ind = market.getIndustry(downgrade);
-			ind.startUpgrading();
-			if (instant) ind.finishBuildingOrUpgrading();
+			NexUtilsMarket.upgradeIndustryToTarget(ind, null, false, instant);
 			return;
 		}
 
@@ -368,19 +370,17 @@ public class NexMarketBuilder
 		}
 	}
 
-	protected static boolean canGetViaUpgrade(MarketAPI market, String industryId) {
+	public static boolean canGetViaUpgrade(MarketAPI market, String industryId) {
 		String downgrade = Global.getSettings().getIndustrySpec(industryId).getDowngrade();
 		if (downgrade == null) return false;
 
 		if (!market.getIndustries().contains(downgrade)) return false;
-		IndustrySpecAPI spec = Global.getSettings().getIndustrySpec(downgrade);
-		return (spec.getUpgrade() != null) && (market.getIndustry(downgrade).canUpgrade());
+		return (NexUtilsMarket.getIndustryUpgradeTarget(downgrade) != null) && (market.getIndustry(downgrade).canUpgrade());
 	}
 
-	protected static boolean alreadyHaveCanUpgrade(MarketAPI market, String industryId) {
-		if (!market.getIndustries().contains(industryId)) return false;
-		IndustrySpecAPI spec = Global.getSettings().getIndustrySpec(industryId);
-		return (spec.getUpgrade() != null) && (market.getIndustry(industryId).canUpgrade());
+	public static boolean alreadyHaveCanUpgrade(MarketAPI market, String industryId) {
+		if (!market.hasIndustry(industryId)) return false;
+		return (NexUtilsMarket.getIndustryUpgradeTarget(industryId) != null) && (market.getIndustry(industryId).canUpgrade());
 	}
 	
 	public static void addIndustry(MarketAPI market, String id, boolean instant) {

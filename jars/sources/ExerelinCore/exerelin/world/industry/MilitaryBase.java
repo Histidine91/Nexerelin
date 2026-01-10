@@ -2,7 +2,6 @@ package exerelin.world.industry;
 
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
-import exerelin.world.NexMarketBuilder;
 
 public class MilitaryBase extends IndustryClassGen {
 
@@ -27,7 +26,7 @@ public class MilitaryBase extends IndustryClassGen {
 	@Override
 	public void apply(ProcGenEntity entity, boolean instant) {
 		// addIndustry will now automatically upgrade Patrol HQ if it exists, or upgrade Military Base if it exists
-		NexMarketBuilder.addIndustry(entity.market, Industries.MILITARYBASE, this.id, instant);
+		addIndustry(entity.market, Industries.MILITARYBASE, instant);
 		entity.numProductiveIndustries += 1;
 	}
 	

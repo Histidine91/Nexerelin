@@ -1,12 +1,14 @@
 package exerelin.world.industry;
 
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.industry.aotd.AotDIndustries;
 
 public class Commerce extends IndustryClassGen {
 
 	public Commerce() {
-		super("commerce");
+		super(Industries.COMMERCE, AotDIndustries.TRADE_POST, AotDIndustries.UNDERWORLD);
 	}
 	
 	@Override

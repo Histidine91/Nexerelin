@@ -15,6 +15,8 @@ public class ProductionMap {
     public static final Map<String, CommodityEntry> COMMODITIES = new HashMap<>();
     public static final Map<String, ConditionEntry> CONDITIONS = new HashMap<>();
 
+    // TODO: AotD handling?
+
     static {
         addExtraction(Industries.MINING, Commodities.ORE, Conditions.ORE_SPARSE);
         addExtraction(Industries.MINING, Commodities.ORE, Conditions.ORE_MODERATE);

@@ -7,6 +7,7 @@ import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.NexMarketBuilder;
 import lombok.Getter;
@@ -115,7 +116,7 @@ public abstract class IndustryClassGen implements Comparable {
 		{
 			Industry ind = entity.market.getIndustry(id);
 			if (ind == null) continue;
-			if (ind.getSpec().getUpgrade() == null || !ind.canUpgrade())
+			if (NexUtilsMarket.getIndustryUpgradeTarget(id) == null || !ind.canUpgrade())
 				return true;
 		}
 		return false;
@@ -169,7 +170,7 @@ public abstract class IndustryClassGen implements Comparable {
 	 * @param instant If false, industry starts construction
 	 */
 	public void apply(ProcGenEntity entity, boolean instant) {
-		String id = industryIds.toArray(new String[0])[0];
+		String id = getIndustryIdToApply(entity);
 
 		addIndustry(entity.market, id, instant);
 
@@ -183,21 +184,33 @@ public abstract class IndustryClassGen implements Comparable {
 	 * @param instant
 	 */
 	public void addIndustry(MarketAPI market, String id, boolean instant) {
-		if (Global.getSector().isInNewGameAdvance()) NexMarketBuilder.addIndustry(market, id, this.id, instant);
-		else addLowestIndustryInChain(market, getLowestIndustryInChain(id).getId(), instant);
+		if (instant || Global.getSector().isInNewGameAdvance())
+			NexMarketBuilder.addIndustry(market, id, this.id, instant);
+		else addLowestIndustryInChain(market, id, instant);
 	}
 
 	public void addLowestIndustryInChain(MarketAPI market, String id, boolean instant) {
-		IndustrySpecAPI lowest = getLowestIndustryInChain(id);
+		IndustrySpecAPI lowest = getLowestNonExtantIndustryInChain(market, id);
 		NexMarketBuilder.addIndustry(market, lowest.getId(), this.id, instant);
 	}
 
-	protected IndustrySpecAPI getLowestIndustryInChain(String industryId) {
+	protected IndustrySpecAPI getLowestNonExtantIndustryInChain(MarketAPI market, String industryId) {
 		IndustrySpecAPI curr = Global.getSettings().getIndustrySpec(industryId);
-		if (curr.getDowngrade() != null) {
-			return getLowestIndustryInChain(curr.getDowngrade());
+		String downgrade = curr.getDowngrade();
+		if (downgrade != null && !market.hasIndustry(downgrade)) {
+			return getLowestNonExtantIndustryInChain(market, curr.getDowngrade());
 		}
 		return curr;
+	}
+
+	/**
+	 * Not guaranteed to be implemented by any particular subclass.
+	 * @param entity
+	 * @return
+	 */
+	protected String getIndustryIdToApply(ProcGenEntity entity) {
+		String firstId = industryIds.iterator().next();
+		return firstId;
 	}
 	
 	public Set<String> getIndustryIds() {

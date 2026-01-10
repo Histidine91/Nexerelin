@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI.EntryType;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
@@ -14,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.TempDataInvasion;
+import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.ui.MarkerData;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -24,6 +26,8 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.groundbattle.GBConstants;
 import exerelin.campaign.intel.missions.ConquestMissionIntel;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
+import exerelin.plugins.ExerelinModPlugin;
+import exerelin.world.industry.aotd.AotDUpgradeMap;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
@@ -468,8 +472,7 @@ public class NexUtilsMarket {
 	public static boolean upgradeIndustryIfCan(Industry ind, boolean instant) {
 		if (!canUpgradeIndustry(ind)) return false;
 
-		ind.startUpgrading();
-		if (instant) ind.finishBuildingOrUpgrading();
+		NexUtilsMarket.upgradeIndustryToTarget(ind, null, false, instant);
 		return true;
 	}
 
@@ -480,7 +483,7 @@ public class NexUtilsMarket {
 	public static boolean canUpgradeIndustry(Industry ind) {
 		if (ind == null) return false;
 		if (!ind.canUpgrade()) return false;
-		String upg = ind.getSpec().getUpgrade();
+		String upg = getIndustryUpgradeTarget(ind.getId());
 		if (upg == null) return false;
 
 		// I could add a check for whether the upgrade actually exists here, but we only want to check for things that don't reflect underlying errors
@@ -488,8 +491,16 @@ public class NexUtilsMarket {
 		return true;
 	}
 
+	public static String getIndustryUpgradeTarget(String industryId) {
+		IndustrySpecAPI spec = Global.getSettings().getIndustrySpec(industryId);
+		if (spec == null) return null;
+		if (spec.getUpgrade() != null) return spec.getUpgrade();
+		if (!ExerelinModPlugin.HAVE_VOK) return null;
+		return AotDUpgradeMap.getUpgradeId(industryId);
+	}
+
 	/**
-	 * Upgrades the industry to the specified type (doesn't need to be its 'normal' upgrade option).
+	 * Upgrades the industry to the specified type (doesn't need to be its 'normal' upgrade option). If the target type isn't specified, use the one in the industry spec.
 	 * Obeys {@code IndustryAPI.canUpgrade()} unless {@code force} is used.
 	 * @param ind
 	 * @param upgradeId
@@ -497,15 +508,23 @@ public class NexUtilsMarket {
 	public static boolean upgradeIndustryToTarget(Industry ind, String upgradeId, boolean force, boolean instant) {
 		if (ind == null) return false;
 		if (upgradeId == null) {
-			log.error("upgradeIndustryToTarget called with null upgradeId");
+			upgradeId = getIndustryUpgradeTarget(ind.getId());
+		}
+		if (upgradeId == null) {
+			log.error("upgradeIndustryToTarget called with null upgradeId, and automatic lookup failed");
 			return false;
 		}
 		if (!ind.canUpgrade() && !force) return false;
 
 		String prevUpgradeId = ind.getSpec().getUpgrade();
-		ind.getSpec().setUpgrade(upgradeId);
-		ind.startUpgrading();
-		ind.getSpec().setUpgrade(prevUpgradeId);
+		if (upgradeId.equals(prevUpgradeId)) {	// am I too fussy?
+			ind.startUpgrading();
+		} else {
+			ind.getSpec().setUpgrade(upgradeId);
+			ind.startUpgrading();
+			ind.getSpec().setUpgrade(prevUpgradeId);
+		}
+
 		if (instant) ind.finishBuildingOrUpgrading();
 		return true;
 	}
@@ -575,6 +594,42 @@ public class NexUtilsMarket {
 				}
 			});
 	}
+
+	/**
+	 * Adds a temporary industry to a (copy of) a market so we can see what that industry would produce on that market. Copied from {@code BaseIndustry}'s tooltip generation.<br/>
+	 * Make sure to call {@code endAddIndustryForPreview} when you're done!
+	 * @param temp
+	 * @param market
+	 * @return
+	 */
+	public static MarketAPI beginAddIndustryForPreview(Industry temp, MarketAPI market) {
+		MarketAPI copy = market.clone();
+		// the copy is a shallow copy and its conditions point to the original market
+		// so, make it share the suppressed conditions list, too, otherwise
+		// e.g. SolarArray will suppress conditions in the original market and the copy will still apply them
+		copy.setSuppressedConditions(market.getSuppressedConditions());
+		copy.setRetainSuppressedConditionsSetWhenEmpty(true);
+		market.setRetainSuppressedConditionsSetWhenEmpty(true);
+		copy.getIndustries().add(temp);
+		copy.clearCommodities();
+		for (CommodityOnMarketAPI curr : copy.getAllCommodities()) {
+			curr.getAvailableStat().setBaseValue(100);
+		}
+		copy.reapplyConditions();
+		return copy;
+	}
+
+	/**
+	 * Call after {@code beginAddIndustryForPreview} to return things 'back to reality'.
+	 * @param temp
+	 * @param market
+	 * @param copy The temporary clone of the market created from {@code beginAddIndustryForPreview}.
+	 */
+	public static void endAddIndustryForPreview(Industry temp, MarketAPI market, MarketAPI copy) {
+		copy.getIndustries().remove(temp);
+		market.setRetainSuppressedConditionsSetWhenEmpty(null);
+		market.reapplyConditions();
+	}
 	
 	public static void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market, 
 			TempDataInvasion actionData, CargoAPI cargo) 
@@ -641,9 +696,9 @@ public class NexUtilsMarket {
 		}
 	}
 	
-	public static interface CampaignEntityPickerWrapper {
-		public void reportEntityPicked(SectorEntityToken entity);
-		public void reportEntityPickCancelled();
-		public void createInfoText(TooltipMakerAPI info, SectorEntityToken entity);
+	public interface CampaignEntityPickerWrapper {
+		void reportEntityPicked(SectorEntityToken entity);
+		void reportEntityPickCancelled();
+		void createInfoText(TooltipMakerAPI info, SectorEntityToken entity);
 	}
 }

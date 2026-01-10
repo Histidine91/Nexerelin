@@ -7,6 +7,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.world.ExerelinProcGen.EntityType;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.industry.aotd.AotDIndustries;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,8 +19,10 @@ public class Farming extends IndustryClassGen {
 		Conditions.FARMLAND_POOR, Conditions.FARMLAND_ADEQUATE, Conditions.FARMLAND_RICH, Conditions.FARMLAND_BOUNTIFUL
 	));
 
+	// TODO add remaining AotD industries
 	public Farming() {
-		super(Industries.FARMING, Industries.AQUACULTURE);
+		super(Industries.FARMING, Industries.AQUACULTURE, AotDIndustries.MONOCULTURE,
+				AotDIndustries.ARTISANAL_FARMING, AotDIndustries.SUBSIDISED_FARMING, AotDIndustries.FISHING);
 	}
 	
 	public boolean isWater(ProcGenEntity entity) {
@@ -82,11 +85,20 @@ public class Farming extends IndustryClassGen {
 				market.addCondition(Conditions.VOLTURNIAN_LOBSTER_PENS);
 		}
 		
-		String id = Industries.FARMING;
-		if (isWater(entity))
-			id = Industries.AQUACULTURE;
+		String id = getIndustryIdToApply(entity);
 
 		addIndustry(entity.market, id, instant);
 		entity.numProductiveIndustries += 1;
+	}
+
+	protected String getIndustryIdToApply(ProcGenEntity entity) {
+		boolean water = isWater(entity);
+		String id = Industries.FARMING;
+		if (water)
+			id = Industries.AQUACULTURE;
+
+		if (Global.getSector().isInNewGameAdvance()) return id;
+
+		return getLowestNonExtantIndustryInChain(entity.market, id).getId();
 	}
 }

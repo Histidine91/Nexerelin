@@ -101,9 +101,8 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
         // have free slots anyway
         if (Misc.getNumIndustries(market) < Misc.getMaxIndustries(market)) return false;
 
-        // can we upgrade?
-        // actually upgrading should be its own action maybe, this is getting too complicated
-
+        // can we get this via upgrade?
+        if (!NexMarketBuilder.canGetViaUpgrade(market, industryId) && !NexMarketBuilder.alreadyHaveCanUpgrade(market, industryId)) return false;
 
         return true;
     }
@@ -233,7 +232,7 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
         MarketAPI market = concern.getMarket();
         if (market != null && market.isPlayerOwned() && !market.getFaction().isPlayerFaction()) return false;
 
-        return !ai.getFaction().isPlayerFaction();
+        return true;
     }
 
     @Override

@@ -12,6 +12,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.industry.aotd.AotDIndustries;
 
 import java.util.*;
 
@@ -19,7 +20,9 @@ public class HeavyIndustry extends IndustryClassGen {
 	
 	public static final Set<String> HEAVY_INDUSTRY = new HashSet<>(Arrays.asList(
 		Industries.HEAVYINDUSTRY, Industries.ORBITALWORKS, "ms_modularFac", 
-			"ms_massIndustry", "ms_militaryProduction", "ms_orbitalShipyard"));
+			"ms_massIndustry", "ms_militaryProduction", "ms_orbitalShipyard",
+			AotDIndustries.CIVILIAN_HEAVY, AotDIndustries.MACRO_INDUSTRIAL,
+			AotDIndustries.SKUNKWORKS, AotDIndustries.FLEETWORKS));
 
 	public static final String MEM_KEY_WANTED_SHADOWYARDS_UPGRADE = "$nex_sraModularFab_wantedUpgrade";
 	/**

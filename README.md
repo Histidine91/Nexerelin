@@ -94,6 +94,7 @@ These are all the external libraries and referenced mods required to locally bui
 - [Unofficial New Game Plus](https://fractalsoftworks.com/forum/index.php?topic=16680.0)
 - [Vayra's Sector](https://fractalsoftworks.com/forum/index.php?topic=16058.0)
 - [Volkov Industrial Conglomerate](https://fractalsoftworks.com/forum/index.php?topic=19603.0)
+- [Ashes of the Domain: Question of Loyalty](https://fractalsoftworks.com/forum/index.php?topic=26307)
 
 ## License ##
 The Prism Freeport code and art assets are taken or adapted from the [Scy Nation mod](http://fractalsoftworks.com/forum/index.php?topic=8010.0) by Tartiflette and licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-nc-sa/4.0/).

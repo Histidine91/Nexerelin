@@ -9,6 +9,7 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.concern.*;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.ProductionMap;
+import exerelin.utilities.NexUtilsMarket;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.NexMarketBuilder;
 import exerelin.world.industry.IndustryClassGen;
@@ -87,21 +88,24 @@ public class BuildEconAction extends BuildIndustryAction {
         if (concern instanceof ImportDependencyConcern) {
             ImportDependencyConcern idc = (ImportDependencyConcern)concern;
             String commodityId = idc.getCommodityId();
-            Industry temp = market.instantiateIndustry(industryId);
-            if (temp != null && temp.getSupply(commodityId) != null) {
-                int potentialSupply = temp.getSupply(idc.getCommodityId()).getQuantity().getModifiedInt();
+            int existingProduction = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
+
+            Industry tempInd = market.instantiateIndustry(industryId);
+            if (tempInd != null && tempInd.getSupply(commodityId) != null) {
+                MarketAPI tempMarket = NexUtilsMarket.beginAddIndustryForPreview(tempInd, market);
+                int potentialSupply = tempInd.getSupply(idc.getCommodityId()).getQuantity().getModifiedInt();
                 if (potentialSupply >= idc.getRequired()) {
                     score *= 5;
                 }
                 else {
                     // already have higher in-faction supply than we'll get here?
-                    int existingProduction = EconomyInfoHelper.getInstance().getFactionCommodityProduction(ai.getFactionId(), commodityId);
                     if (existingProduction >= potentialSupply) {
-                        return -1;
+                        score = -1;
                     }
                 }
+                NexUtilsMarket.endAddIndustryForPreview(tempInd, market, tempMarket);
             }
-            else return -1; // should already be checked by getBestProducerForMarket I think
+            else score = -1; // should already be checked by getBestProducerForMarket I think
         }
 
         return score;

@@ -8,11 +8,12 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.industry.aotd.AotDIndustries;
 
 public class Refining extends IndustryClassGen {
 
 	public Refining() {
-		super(Industries.REFINING);
+		super(Industries.REFINING, AotDIndustries.SMELTING, AotDIndustries.CRYSTALIZATOR, AotDIndustries.ENRICHMENT);
 	}
 
 	@Override

@@ -10,11 +10,12 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.world.ExerelinProcGen.EntityType;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.industry.aotd.AotDIndustries;
 
 public class LightIndustry extends IndustryClassGen {
 
 	public LightIndustry() {
-		super(Industries.LIGHTINDUSTRY);
+		super(Industries.LIGHTINDUSTRY, AotDIndustries.LIGHT_PRODUCTION, AotDIndustries.COMMERCIAL_FAC, AotDIndustries.DRUGLAB, AotDIndustries.HIGHTECH_INDUSTRY);
 	}
 
 	@Override

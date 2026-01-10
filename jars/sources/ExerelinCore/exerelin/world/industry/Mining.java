@@ -5,11 +5,12 @@ import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
+import exerelin.world.industry.aotd.AotDIndustries;
 
 public class Mining extends IndustryClassGen {
 
 	public Mining() {
-		super(Industries.MINING);
+		super(Industries.MINING, AotDIndustries.EXTRACTIVE, AotDIndustries.PLASMA_HARVESTER, AotDIndustries.MINING_MEGAPLEX);
 	}
 
 	@Override
