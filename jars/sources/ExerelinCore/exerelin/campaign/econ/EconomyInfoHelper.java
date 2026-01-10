@@ -160,6 +160,9 @@ public class EconomyInfoHelper implements EconomyTickListener {
 
 				// get local supply
 				int supply = producer.getCommodityData(commodityId).getMaxSupply();
+				if (producer.isPlayerOwned() && commodityId.equals(Commodities.FOOD)) {
+					log.info(String.format("%s produces %s food", producer.getName(), supply));
+				}
 				if (supply <= 0) continue;
 				
 				String factionId = producer.getFactionId();
@@ -173,11 +176,11 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				{
 					factionProductionByFaction.put(factionId, new HashMap<String, Integer>());
 				}
-				
-				int output = producer.getCommodityData(commodityId).getAvailable();
+
+				int available = producer.getCommodityData(commodityId).getAvailable();
 				
 				// create and store producer entry
-				ProducerEntry entry = new ProducerEntry(commodityId, factionId, producer, output);
+				ProducerEntry entry = new ProducerEntry(commodityId, factionId, producer, supply);
 				producersByCommodity.get(commodityId).add(entry);
 				producersByFaction.get(factionId).add(entry);
 				
@@ -185,11 +188,11 @@ public class EconomyInfoHelper implements EconomyTickListener {
 				if (factionProductionByFaction.get(factionId).containsKey(commodityId)) {
 					factionsBest = factionProductionByFaction.get(factionId).get(commodityId);
 				}
-				if (output > factionsBest) {
-					factionProductionByFaction.get(factionId).put(commodityId, output);
+				if (supply > factionsBest) {
+					factionProductionByFaction.get(factionId).put(commodityId, supply);
 				}
 
-				NexUtils.modifyMapEntry(totalSupplyByCommodity, commodityId, output);
+				NexUtils.modifyMapEntry(totalSupplyByCommodity, commodityId, supply);
 			}
 
 			// iterate over all importers
