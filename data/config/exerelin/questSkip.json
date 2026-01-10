@@ -142,7 +142,7 @@
 		},
 		"abyssalSpaceOddity":{
 			"name":"Ab. Space Oddity",
-			"tooltip":"The player investigates unusual readings from a deep space array.",
+			"tooltip":"The player investigates unusual readings from a deep space array.\n\nWill receive the ==Onslaught Mk.I==.",
 			"plugin":"exerelin.campaign.questskip.SpaceOddityQuestSkipPlugin",
 			"peopleToUnhide":["elek"],
 			"sectorMemFlags":{
