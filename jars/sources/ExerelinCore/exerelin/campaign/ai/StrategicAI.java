@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -25,8 +24,8 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * High-level strategy AI for factions.
@@ -80,8 +79,8 @@ public class StrategicAI extends BaseIntelPlugin {
 	}
 
 	public static Map<String, StrategicAI> getAIsMap() {
-		if (!Global.getSector().getPersistentData().containsKey(PERSISTENT_DATA_KEY));
-		Global.getSector().getPersistentData().put(PERSISTENT_DATA_KEY, new HashMap<String, StrategicAI>());
+		if (!Global.getSector().getPersistentData().containsKey(PERSISTENT_DATA_KEY))
+			Global.getSector().getPersistentData().put(PERSISTENT_DATA_KEY, new HashMap<String, StrategicAI>());
 
 		return (Map<String, StrategicAI>)Global.getSector().getPersistentData().get(PERSISTENT_DATA_KEY);
 	}
@@ -440,7 +439,7 @@ public class StrategicAI extends BaseIntelPlugin {
 		}
 
 		curr = getAI(factionId);
-		if (curr != null) {
+		if (curr == null) {
 			return addIntel(factionId);
 		}
 		return null;
@@ -458,7 +457,6 @@ public class StrategicAI extends BaseIntelPlugin {
 	public static void addAIsIfNeeded() {
 		Random random = new Random(NexUtils.getStartingSeed());
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
-			if (factionId.equals(Factions.PLAYER)) continue;
 			if (!NexConfig.getFactionConfig(factionId).useStrategicAI) continue;
 			StrategicAI ai = addAIIfNeeded(factionId);
 
@@ -470,6 +468,7 @@ public class StrategicAI extends BaseIntelPlugin {
 		}
 	}
 
+	// runcode exerelin.campaign.ai.StrategicAI.removeAIs()
 	public static void removeAIs() {
 		for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
 			//if (factionId.equals(Factions.PLAYER)) continue;

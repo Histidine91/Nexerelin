@@ -1,6 +1,7 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
+    "useStrategicAI":false,
     
     "specialForcesMaxFleets":0,
     
