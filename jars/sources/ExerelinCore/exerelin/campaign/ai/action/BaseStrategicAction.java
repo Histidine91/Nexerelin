@@ -32,6 +32,7 @@ public abstract class BaseStrategicAction implements StrategicAction {
     @Getter protected boolean isEnded;
     @Getter @Setter protected int meetingsSinceEnded;
     @Getter @Setter protected FactionAPI faction;
+    @Getter @Setter protected float age;
 
     @Override
     public StrategicAI getAI() {
@@ -118,6 +119,8 @@ public abstract class BaseStrategicAction implements StrategicAction {
 
     @Override
     public void advance(float days) {
+        age += days;
+
         StrategicActionDelegate.ActionStatus currStatus = delegate.getStrategicActionStatus();
         if (status != currStatus) {
             if (currStatus.ended) {

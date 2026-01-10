@@ -28,6 +28,8 @@ import java.util.List;
 @Log4j
 public abstract class BuildIndustryAction extends BaseStrategicAction implements StrategicActionDelegate {
 
+    public static final float MAX_AGE = 180;
+
     /*
         How should it work?
 
@@ -213,6 +215,13 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
 
         if (market != null && !market.isInEconomy()) {
             this.end(ActionStatus.FAILURE);
+            return;
+        }
+
+        // no progress
+        if (age > MAX_AGE && getStrategicActionDaysRemaining() < 0) {
+            this.end(ActionStatus.FAILURE);
+            return;
         }
 
         if (market != null && industryUnderConstruction == null) {
@@ -222,7 +231,6 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
         }
 
         if (industryUnderConstruction != null && !industryUnderConstruction.isBuilding() && !industryUnderConstruction.isUpgrading()) {
-            //Global.getLogger(this.getClass()).info("boom chaka chaka wow ");
             this.end(ActionStatus.SUCCESS);
         }
     }
