@@ -117,7 +117,7 @@ public class MiningFleetManagerV2 extends DisposableFleetManager
 		FactionAPI faction = origin.getFaction();
 		if (faction.getId().equals("templars")) return null;
 		int marketSize = origin.getSize();
-		int maxFP = (int)(Math.pow(marketSize, 1.5f) * 5);
+		int maxFP = (marketSize + 2) * 6;
 		
 		//float qf = origin.getShipQualityFactor();
 		//qf = Math.max(qf, 0.7f);
