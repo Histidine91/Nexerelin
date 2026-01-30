@@ -32,8 +32,6 @@ public class NexBlockadeFGI extends BlockadeFGI {
     @Override
     public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
         super.createSmallDescription(info, width, height);
-        Global.getLogger(this.getClass()).info("wololo");
-
         addStrategicActionInfo(info, width);
     }
 
