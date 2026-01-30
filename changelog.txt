@@ -1,3 +1,47 @@
+Version 0.12.1c
+
+### Gameplay ###
+* Add 'procure equipment' operative action
+* Illegal goods can be targeted for Destroy Commodity Stocks action
+* When a player market is taken by someone else, storage fees are waived for 90 days
+* Freshly captured markets won't be targeted for offensive action by unrelated third parties for 75 days
+* Add a global size offset setting for random sector colony generation
+* Independents (except mercs) don't send fleets to bother player over build station missions
+* Kanta's Protection should stop aggressive actions by pirate strategic AI if enabled
+* Adjust some faction colonization chances and diplomatic attitudes for lore accuracy
+* Adjust some vanilla planets' conditions for lore accuracy
+    * Culann gets a Cryoarithmetic Engine and Hesperus gets a battlestation
+* Two alliances can't merge if they both have permanent members
+* Don't allow building outposts in deep space locations
+* NPC mining fleets are smaller in general
+* Fresh NPC colonies build defenses as intended
+
+### UI ###
+* New game settings are saved between application runs
+* Reduce volume of victory sound effect
+* Add a 'fully randomized start'
+
+### Fixes ###
+* Strategic AI fixes
+	* Greatly reduce memory usage for saving
+	* Commisioning faction won't cede player-governed colonies to third parties
+	* Fix errors in computing/predicting output of industries
+	* Fix AI using covert actions when prohibited by the faction config
+	* Build industry action auto-fails if not started in 120 days
+* Fix crash if something tries to create an alliance in code with deprecated alignment
+* Fix crash from Fragments mission picking system with no jump points
+* Fix alliances being confused about the direction of merger
+* Faction directory: safety for out-of-bounds market size
+* Disabling care package restores old free starting blueprint
+
+### Modding ###
+* Refactor industry generation for AotD support
+* Fix colony expedition requests being able to circumvent AotD pre-collapse defenders or commission colony limits
+* Add config settings for Remnant raid size and whether factions create new colonies outside core worlds
+* Fix crashes if another mod removes Alpha Site or the Nameless Rock
+* Mission "Salvation" no longer gives TASC planetkiller if that mod is enabled (since item no longer exists)
+
+
 Version 0.12.1b
 
 * Rework the own faction setup dialog into a 'care package' that also appears in free start
@@ -8,6 +52,7 @@ Version 0.12.1b
 * Fix Abyssal Space Oddity quest skip not giving Threat detection
 * Fix strategic AI build heavy industry action not checking for market's industry capacity
 * Ideological alignment actually deprecated now
+
 
 Version 0.12.1
 
