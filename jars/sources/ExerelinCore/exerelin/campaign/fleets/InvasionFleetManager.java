@@ -98,6 +98,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final float RAID_SIZE_MULT = 0.85f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
 	public static final float BLOCKADE_SIZE_MULT = 1.2f;
+	public static final float MIN_BLOCKADE_SIZE = 240 / BLOCKADE_SIZE_MULT;
+	public static final float BLOCKADE_FLAT_FP_BONUS = 120;
 	public static final float PIRATE_RAGE_THRESHOLD = 125;
 	public static final int ATTACK_PLAYER_COOLDOWN = 60;
 	public static final boolean PREFER_MILITARY_FOR_ORIGIN = false;
@@ -698,8 +700,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 					PlayerFactionStore.getPlayerFactionId());
 
 
-		float curPool = FleetPoolManager.getManager().getCurrentPool(factionId);
-		float invPoints = getSpawnCounter(factionId);
+		float curPool = isRemnantRaid ? 999999 : FleetPoolManager.getManager().getCurrentPool(factionId);
+		float invPoints = isRemnantRaid ? 999999 : getSpawnCounter(factionId);
 		float baseline = NexConfig.pointsRequiredForInvasionFleet;
 		
 		for (MarketAPI market : markets) 
@@ -718,6 +720,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 
 			FactionAPI marketFaction = market.getFaction();
 			String marketFactionId = marketFaction.getId();
+
+			if ("nex_derelict".equals(marketFactionId)) {
+				if (type == EventType.RAID || type == EventType.BLOCKADE || type == EventType.SAT_BOMB) continue;
+			}
 			
 			float weight = 1;
 			
@@ -751,8 +757,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 				float ratio = invPoints/baseline;
 				fpMult = ratio * BASE_INVASION_SIZE / defStr;
 			}
-
-			if (isRemnantRaid) fpMult = Global.getSettings().getFloat("nex_remnantRaidSizeMult");
 
 			if (fpMult < SAIConstants.MIN_FP_RATIO_THRESHOLD) {
 				continue;	// we're too weak to attack this target
@@ -888,6 +892,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		float maxMult = type == EventType.RESPAWN ? 100 : 1;
 		
 		float fp = getWantedFleetSize(faction, target, 0.1f, false, maxMult);
+		if (type == EventType.BLOCKADE && fp < MIN_BLOCKADE_SIZE) {
+			fp = MIN_BLOCKADE_SIZE;
+		}
 		float organizeTime = getOrganizeTime(fp);
 		fp *= InvasionFleetManager.getInvasionSizeMult(factionId);
 		fp *= sizeMult;
@@ -895,8 +902,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			fp *= RAID_SIZE_MULT;
 		else if (type == EventType.RESPAWN)
 			fp *= RESPAWN_SIZE_MULT;
-		else if (type == EventType.BLOCKADE)
+		else if (type == EventType.BLOCKADE) {
 			fp *= BLOCKADE_SIZE_MULT;
+			fp += BLOCKADE_FLAT_FP_BONUS;
+		}
 		
 		if (rp != null) {
 			String rpFactionId = rp.factionId != null ? rp.factionId : factionId;
@@ -1491,6 +1500,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		fp *= mult;
 		float organizeTime = getOrganizeTime(fp);
 		fp *= 1 + NexConfig.getFactionConfig(factionId).invasionFleetSizeMod;
+		fp *= Global.getSettings().getFloat("nex_remnantRaidSizeMult");
 		
 		log.info("Spawning Remnant-style raid fleet for " + faction.getDisplayName() 
 				+ " from base in " + base.getContainingLocation() + "; target " + targetMarket.getName());
