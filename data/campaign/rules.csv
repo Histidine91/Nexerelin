@@ -2135,17 +2135,17 @@ FireBest DialogOptionSelected","$HisOrHer eyes seem to light up. ""That is a lot
 ""Your fleet will also add a lot of punch. A little support in the right place can work wonders.""",,
 nex_gbTut_diamondConvo5Some,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5
 $player.marines <= 300
-$player.marines >= 100","$option = nex_gbTut_diamondConvo5Post
+$player.marines >= 210","$option = nex_gbTut_diamondConvo5Post
 FireBest DialogOptionSelected","""That'll have to do. Though it also depends a lot on the quality and equipment of the troops.
 
 ""Your fleet will also add a lot of punch. A little support in the right place can work wonders.""",,
 nex_gbTut_diamondConvo5Few,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5
-$player.marines < 100","$option = nex_gbTut_diamondConvo5Post
+$player.marines < 210","$option = nex_gbTut_diamondConvo5Post
 FireBest DialogOptionSelected","""That's... not a lot, captain. Couldn't you have brought a larger force?
 
 ""Well, nothing to it. We'll just have to rely on your fleet to make up the difference. Deliver support to the troops we have and we might turn things around.""",,
 nex_gbTut_diamondConvo5TooFew,DialogOptionSelected,"$option == nex_gbTut_diamondConvo5
-$player.marines < 25 score:3","AddCommodity marines 40
+$player.marines < 150 score:3","AddCommodity marines 40
 $option = nex_gbTut_diamondConvo5Post
 FireBest DialogOptionSelected","$personLastName lets out an exasperated sigh.
 
