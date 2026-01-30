@@ -3182,6 +3182,8 @@
 		"tooltip_fleetRequestCostPerFP":"Credit cost of requested fleets per fleet point (hidden value) of the generated fleet(s).",
 		"name_creditLossOnColonyLossMult":"Credit loss mult on market loss",
 		"tooltip_creditLossOnColonyLossMult":"Multiplier of the player's stored credits lost when a market is captured by another faction. The proportion of total credits lost is equal to the market size divided by the total size of all markets in the faction, multiplied by this number. It is doubled on Starfarer mode, and cannot exceed 75%%.",
+		"name_remnantRaidSizeMult":"Remnant raid size mult",
+		"tooltip_remnantRaidSizeMult":"",
 		
 		"name_groundBattleDamageMult":"Ground battle damage mult",
 		"tooltip_groundBattleDamageMult":"Modifies the damage units do to each other during ground battles.",
@@ -3261,6 +3263,8 @@
 		"tooltip_colonyExpeditionInterval":"Base interval at which colony expeditions are launched, modified by factors such as the number of existing colonies. Each participating faction has a chance to be selected in each expedition round.",
 		"name_colonyExpeditionsOnlyAfterPlayerColony":"Colony expeditions only after player colony",
 		"tooltip_colonyExpeditionsOnlyAfterPlayerColony":"Disables NPC colony expedition until after the player faction setup screen (faction name, flag, etc.) has been seen at least once.",
+		"name_colonizeOutsideCore":"NPC factions can colonize outside core systems",
+		"tooltip_colonizeOutsideCore":"",
 		"name_colonyExpeditionsOnlyAfterGalatia":"Colony expeditions only after Galatia",
 		"tooltip_colonyExpeditionsOnlyAfterGalatia":"Disables NPC colony expedition until after the player completes the quest \"At The Gates\".",
 		"name_specialForcesPointMult":"Special task group point mult",
