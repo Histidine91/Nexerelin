@@ -78,9 +78,8 @@ public class RemnantQuestSkipPlugin extends BaseQuestSkipPlugin {
             person = Global.getSector().getImportantPeople().getPerson(People.SIYAVONG);
             if (person != null) person.getMemoryWithoutUpdate().set("$metAlready", true);
 
-            boolean haveBoggled = Global.getSettings().getModManager().isModEnabled("Terraforming & Station Construction");
             CargoAPI player = Global.getSector().getPlayerFleet().getCargo();
-            player.addSpecial(new SpecialItemData(haveBoggled ? "boggled_planetkiller" : Items.PLANETKILLER, null), 1f);
+            player.addSpecial(new SpecialItemData(Items.PLANETKILLER, null), 1f);
 
             //addSilverlightOmegaWeapons();
             String variantId = "nex_silverlight_Hull";

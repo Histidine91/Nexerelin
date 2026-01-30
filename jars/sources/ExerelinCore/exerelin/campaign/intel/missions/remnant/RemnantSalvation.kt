@@ -773,9 +773,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         Misc.setSalvageSpecial(flagship2, data)
         if (!targetPKed) {
-            val haveBoggled = Global.getSettings().modManager.isModEnabled("Terraforming & Station Construction")
             val salvage = Global.getFactory().createCargo(true)
-            salvage.addSpecial(SpecialItemData(if (haveBoggled) "boggled_planetkiller" else Items.PLANETKILLER, null), 1f)
+            salvage.addSpecial(SpecialItemData(Items.PLANETKILLER, null), 1f)
             BaseSalvageSpecial.addExtraSalvage(flagship2, salvage)
         }
 
