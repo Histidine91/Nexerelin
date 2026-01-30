@@ -104,7 +104,7 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
         if (Misc.getNumIndustries(market) < Misc.getMaxIndustries(market)) return false;
 
         // can we get this via upgrade?
-        if (!NexMarketBuilder.canGetViaUpgrade(market, industryId) && !NexMarketBuilder.alreadyHaveCanUpgrade(market, industryId)) return false;
+        if (NexMarketBuilder.canGetViaUpgrade(market, industryId) || NexMarketBuilder.alreadyHaveCanUpgrade(market, industryId)) return false;
 
         return true;
     }
