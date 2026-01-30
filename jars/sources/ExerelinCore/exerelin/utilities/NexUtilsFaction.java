@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
@@ -271,11 +272,12 @@ public class NexUtilsFaction {
     public static void revokeCommission()
     {
         FactionCommissionIntel intel = Misc.getCommissionIntel();
-		if (intel == null) return;
-		BaseMissionIntel.MissionResult result = intel.createResignedCommissionResult(true, true, null);
-		intel.setMissionResult(result);
-		intel.setMissionState(BaseMissionIntel.MissionState.ABANDONED);
-		intel.endMission(null);
+        if (intel == null) return;
+        BaseMissionIntel.MissionResult result = intel.createResignedCommissionResult(true, true, null);
+        intel.setMissionResult(result);
+        intel.setMissionState(BaseMissionIntel.MissionState.ABANDONED);
+        intel.endMission(null);
+        ListenerUtil.reportCommissionEnded(intel);
     }
 	
 	public static void addFactionNamePara(TooltipMakerAPI info, float pad, Color color, FactionAPI faction) {
