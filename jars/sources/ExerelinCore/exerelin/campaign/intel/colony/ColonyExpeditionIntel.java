@@ -473,7 +473,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			}
 		}
 		else {
-			ColonyManager.buildIndustries(market);
+			ColonyManager.buildIndustries(market, true, true);
 			ColonyManager.getManager().processNPCConstruction(market);
 		}
 		

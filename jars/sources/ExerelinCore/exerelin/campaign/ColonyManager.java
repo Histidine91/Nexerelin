@@ -1774,22 +1774,17 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (!market.hasIndustry(Industries.SPACEPORT) && !market.hasIndustry(Industries.MEGAPORT))
 			NexMarketBuilder.addSpaceportOrMegaport(market, entity.type, instant, random);
 
-		if (!STRATEGIC_AI_BLOCKS_BUILD_MILITARY_ON_UPSIZE || StrategicAI.getAI(market.getFactionId()) == null) {
-			if (military)
-				NexMarketBuilder.addMilitaryStructures(entity, instant, random);
-		}
+		if (military)
+			NexMarketBuilder.addMilitaryStructures(entity, instant, random);
 
-		if (!STRATEGIC_AI_BLOCKS_BUILD_ECON_ON_UPSIZE || StrategicAI.getAI(market.getFactionId()) == null) {
-			if (productive)
-				NexMarketBuilder.addIndustriesToMarket(entity, instant, random);
-		}
+		if (productive)
+			NexMarketBuilder.addIndustriesToMarket(entity, instant, random);
 	}
 	
 	/**
 	 * Adds industries to a market. Used by NPC colonies, and semi-counters 
 	 * market stripping by the player.
-	 * <p>This overload build spaceports by default (if needed), and tries to automatically
-	 * figure out if it should also build military and productive structures.</p>
+	 * <p>This overload build spaceports tries to automatically figure out if it should also build military and productive structures.</p>
 	 * @param market
 	 */
 	public static void buildIndustries(MarketAPI market) {
@@ -1797,14 +1792,17 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			buildIndustries(market, true, true);
 			return;
 		}
-		
-		// if the spaceport is gone we can guess that player strip-mined the market
-		boolean productive = true;	//(!market.hasIndustry(Industries.SPACEPORT) && !market.hasIndustry(Industries.MEGAPORT));
+
+		boolean productive = !STRATEGIC_AI_BLOCKS_BUILD_ECON_ON_UPSIZE || StrategicAI.getAI(market.getFactionId()) == null;
 		boolean military = shouldBuildMilitary(market);
 		buildIndustries(market, military, productive);
 	}
 	
 	public static boolean shouldBuildMilitary(MarketAPI market) {
+		if (STRATEGIC_AI_BLOCKS_BUILD_MILITARY_ON_UPSIZE && StrategicAI.getAI(market.getFactionId()) != null) {
+			return false;
+		}
+
 		if (!market.hasIndustry(Industries.PATROLHQ) 
 				&& !market.hasIndustry(Industries.MILITARYBASE) 
 				&& !market.hasIndustry(Industries.HIGHCOMMAND)
