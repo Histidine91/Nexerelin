@@ -233,8 +233,7 @@ public class VanillaSystemsGenerator {
 		//fikenhild.addIndustry(Industries.MILITARYBASE);
 
 		MarketAPI hesperus = getMarket("hesperus");
-		hesperus.getIndustry(Industries.ORBITALSTATION).startUpgrading();
-		hesperus.getIndustry(Industries.ORBITALSTATION).finishBuildingOrUpgrading();
+		NexUtilsMarket.upgradeIndustryToTarget(hesperus.getIndustry(Industries.ORBITALSTATION), null, false, true);
 
 		MarketAPI madeira = getMarket("madeira");
 		cethlenn.addCondition(Conditions.COLD);

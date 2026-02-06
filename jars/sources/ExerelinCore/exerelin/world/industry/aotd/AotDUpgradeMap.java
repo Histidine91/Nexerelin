@@ -22,7 +22,7 @@ public class AotDUpgradeMap {
 
         addUpgrade(AotDIndustries.LIGHT_PRODUCTION, Industries.LIGHTINDUSTRY);
         addUpgrade(AotDIndustries.SMELTING, Industries.REFINING);
-        addUpgrade(Industries.FUELPROD, AotDIndustries.FUEL_REFINERY);
+        //addUpgrade(Industries.FUELPROD, AotDIndustries.FUEL_REFINERY);
 
         addUpgrade(AotDIndustries.TRADE_POST, Industries.COMMERCE);
         addUpgrade(Industries.GROUNDDEFENSES, Industries.HEAVYBATTERIES);
