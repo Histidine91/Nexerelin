@@ -168,7 +168,7 @@ public class NexUtils
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 
 		MarketAPI closestMarket = null;
-		float closestDist = 999999f;
+		float closestDist = 99999999999f;
 		Vector2f playerLoc = playerFleet.getLocationInHyperspace();
 		for (MarketAPI market : markets)
 		{
