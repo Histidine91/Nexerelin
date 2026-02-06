@@ -75,11 +75,6 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 			opts.addSelector(getString("maxMarketsTitle"), "marketMaxSelector", Color.orange, BAR_WIDTH, 48, 1, 8, ValueDisplayMode.VALUE, null);
 			opts.setSelectorValue("marketMaxSelector", data.maxMarketsPerSystem);
 
-			opts.addSelector(getString("populatedSystemsTitle"), "systemCountSelector",
-					Color.YELLOW, BAR_WIDTH, 48, 4, maxSystems, ValueDisplayMode.VALUE,
-					getString("populatedSystemsTooltip"));
-			opts.setSelectorValue("systemCountSelector", data.numSystems);
-
 			opts.addSelector(getString("sizeOffsetTitle"), "sizeOffsetSelector",
 					Color.PINK, BAR_WIDTH, 48, 0, 3, ValueDisplayMode.VALUE,
 					getString("sizeOffsetTooltip"));
