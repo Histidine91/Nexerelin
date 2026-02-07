@@ -278,7 +278,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		addCostHelpPara(dialog.getTextPanel());
 		OptionPanelAPI opts = dialog.getOptionPanel();
 		opts.clearOptions();
-		float max = Math.min(maxFP, 1500);
+		float max = Math.min(maxFP, Global.getSettings().getFloat("nex_fleetRequestMaxFP"));
 		if (max < MIN_FP) max = MIN_FP;
 		
 		opts.addSelector(getString("fleetPoints", true), "fpSelector", Color.cyan, 

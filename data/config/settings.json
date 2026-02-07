@@ -76,6 +76,7 @@
 	"nex_xpPerProfitMargin":4000,	# passive XP income from profitable colonies administered by player
 	
 	"nex_fleetRequestOrganizeTimeMult":0.75,	# default 0.75
+	"nex_fleetRequestMaxFP":2000,
 	
 	"nex_vultureSpawnRateMult":1,	# setting it to zero should prevent vultures from spawning, but I have not personally confirmed this
 	
