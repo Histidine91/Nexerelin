@@ -1,3 +1,11 @@
+Version 0.12.1d
+
+* Fix AotD-related crashes in sector generation
+    * As a side effect, NPC factions will not build the advanced fuel industry
+* Fix duplicated system count slider in random sector
+* Fleet request maximum size specified in settings.json (default 2000, was 1500)
+
+
 Version 0.12.1c
 
 ### Gameplay ###
@@ -24,7 +32,7 @@ Version 0.12.1c
 ### Fixes ###
 * Strategic AI fixes
 	* Greatly reduce memory usage for saving
-	* Commisioning faction won't cede player-governed colonies to third parties
+	* Commissioning faction won't cede player-governed colonies to third parties
 	* Fix errors in computing/predicting output of industries
 	* Fix AI using covert actions when prohibited by the faction config
 	* Build industry action auto-fails if not started in 120 days
