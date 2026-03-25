@@ -301,18 +301,21 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 	{
 		if (!battle.isPlayerInvolved()) return;
 		
-		awardMilestone("firstBattle");
-		
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();		
 		boolean won = battle.getSideFor(primaryWinner).contains(player);
+
 		for (CampaignFleetAPI otherFleet : battle.getNonPlayerSideSnapshot()) {
 			boolean remnant = otherFleet.getFaction().getId().equals(Factions.REMNANTS);
 			boolean omega = otherFleet.getFaction().getId().equals(Factions.OMEGA);
+			List<FleetMemberAPI> otherLosses = Misc.getSnapshotMembersLost(otherFleet);
+
+			if (!otherLosses.isEmpty())	awardMilestone("firstBattle");
+
 			if (remnant) {
 				awardMilestone("encounterRemnants");
 			}
 			if (won && (remnant || omega)) {
-				for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(otherFleet)) {
+				for (FleetMemberAPI loss : otherLosses) {
 					if (loss.getHullSpec().hasTag(Tags.OMEGA) && loss.getHullSpec().getHullSize().compareTo(HullSize.CRUISER) >= 0) 
 					{
 						awardMilestone("defeatOmega");
@@ -321,7 +324,7 @@ public class MilestoneTracker extends BaseIntelPlugin implements ColonyInteracti
 					}
 				}
 			}
-			for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(otherFleet)) {
+			for (FleetMemberAPI loss : otherLosses) {
 				if (loss.isStation()) {
 					awardMilestone("firstStation");
 					if (remnant) {
