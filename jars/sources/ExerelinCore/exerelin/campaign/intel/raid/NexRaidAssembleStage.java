@@ -1,10 +1,10 @@
 package exerelin.campaign.intel.raid;
 
-import exerelin.campaign.intel.satbomb.SatBombIntel;
-import exerelin.campaign.intel.fleets.NexAssembleStage;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.fleets.NexAssembleStage;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
+import exerelin.campaign.intel.satbomb.SatBombIntel;
 import org.lazywizard.lazylib.MathUtils;
 
 public class NexRaidAssembleStage extends NexAssembleStage {
@@ -21,16 +21,13 @@ public class NexRaidAssembleStage extends NexAssembleStage {
 	
 	@Override
 	protected float getFP(String type) {
-		float base = 120f;
-		if (intel instanceof SatBombIntel) {
-			base = 180f;
-		}
+		float base = getBaseSize();
 		
 		if (Math.random() < 0.33f)
 			base *= 1.5f;
 		
 		base *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
-		base *= InvasionFleetManager.getInvasionSizeMult(intel.getFaction().getId());
+		base *= Math.sqrt(InvasionFleetManager.getInvasionSizeMult(intel.getFaction().getId()));
 			
 		if (spawnFP < base * 1.5f) {
 			base = spawnFP;

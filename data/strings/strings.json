@@ -3177,7 +3177,7 @@
 		"name_invasionPointEconomyMult":"Invasion point economy mult",
 		"tooltip_invasionPointEconomyMult":"Multiplier to each faction's commodity availability contribution to invasion points.",
 		"name_invasionFleetSizeMult":"Invasion size mult",
-		"tooltip_invasionFleetSizeMult":"Modifies the size of the space forces during invasion events. Changing this value may significantly alter the likelihood of an invasion succeeding.",
+		"tooltip_invasionFleetSizeMult":"Modifies the size of the space forces during invasion events. Changing this value may significantly alter the likelihood of an invasion succeeding.\n\nThe multiplier is applied to the size of the total invasion force, and to a lesser extent the size of individual fleets.",
 		"name_fleetRequestCostPerFP":"Fleet request cost per FP",
 		"tooltip_fleetRequestCostPerFP":"Credit cost of requested fleets per fleet point (hidden value) of the generated fleet(s).",
 		"name_creditLossOnColonyLossMult":"Credit loss mult on market loss",

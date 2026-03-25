@@ -7,8 +7,6 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage;
-import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.PREP_STAGE;
-import static com.fs.starfarer.api.impl.campaign.intel.raid.AssembleStage.WAIT_STAGE;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -17,6 +15,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel.OffensiveOutcome;
 import exerelin.campaign.intel.invasion.InvasionIntel;
+import exerelin.campaign.intel.satbomb.SatBombIntel;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -158,14 +157,16 @@ public abstract class NexAssembleStage extends AssembleStage {
 	
 	protected float getBaseSize() {
 		float base = 120f;
-		if (offFltIntel instanceof InvasionIntel || offFltIntel instanceof ColonyExpeditionIntel) 
+		if (offFltIntel instanceof InvasionIntel || offFltIntel instanceof ColonyExpeditionIntel || offFltIntel instanceof SatBombIntel)
 		{
 			base = 180;
 		}
 		if (offFltIntel.isBrawlMode())
 			base *= 1.25f;
 		
-		base *= (3.5f/3);	// account for 33% chance of 50% larger fleet
+		//base *= (3.5f/3);	// account for 33% chance of 50% larger fleet
+
+		base *= Math.sqrt(InvasionFleetManager.getInvasionSizeMult(intel.getFaction().getId()));
 				
 		return base;
 	}

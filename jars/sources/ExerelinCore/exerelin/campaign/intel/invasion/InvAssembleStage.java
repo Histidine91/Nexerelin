@@ -3,8 +3,8 @@ package exerelin.campaign.intel.invasion;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.fleets.NexAssembleStage;
+import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import org.lazywizard.lazylib.MathUtils;
 
 public class InvAssembleStage extends NexAssembleStage {
@@ -27,9 +27,9 @@ public class InvAssembleStage extends NexAssembleStage {
 	
 	@Override
 	protected float getFP(String type) {
-		float base = 150f;
-		if (type.equals("exerelinInvasionFleet"))
-			base = 180f;
+		float base = getBaseSize();	// 180f
+		if (!type.equals("exerelinInvasionFleet"))
+			base = 150f;
 		
 		if (Math.random() < 0.33f)
 			base *= 1.5f;
@@ -37,7 +37,7 @@ public class InvAssembleStage extends NexAssembleStage {
 			base *= 1.25f;
 		
 		base *= MathUtils.getRandomNumberInRange(0.85f, 1.15f);
-		base *= InvasionFleetManager.getInvasionSizeMult(intel.getFaction().getId());
+		base *= Math.sqrt(InvasionFleetManager.getInvasionSizeMult(intel.getFaction().getId()));
 			
 		if (spawnFP < base * 1.5f) {
 			base = spawnFP;
