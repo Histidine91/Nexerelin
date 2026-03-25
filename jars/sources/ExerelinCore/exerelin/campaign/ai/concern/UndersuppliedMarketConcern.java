@@ -54,11 +54,13 @@ public class UndersuppliedMarketConcern extends BaseStrategicConcern implements 
             if (size <= 0) continue;
             List<EconomyInfoHelper.ProducerEntry> producers = EconomyInfoHelper.getInstance().getProducersByCommodity(commodityId);
             int numProducers = producers.size();
+            if (numProducers <= 0) numProducers = 1;
             // output units
             int totalOutput = 0;
             for (EconomyInfoHelper.ProducerEntry producer : producers) {
                 totalOutput += producer.output;
             }
+            if (totalOutput <= 0) totalOutput = 1;
 
             // market per producer
             float marketPerProducer = size/numProducers;
