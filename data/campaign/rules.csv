@@ -4,7 +4,9 @@ id,trigger,conditions,script,text,options,notes
 # NGC options,,,,,,
 ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,FireBest ExerelinNGCIntroPicker,,,override SS+ NGC
 ,,,,,,
-ExerelinNGCSkipIntro,ExerelinNGCIntroPicker,,FireAll ExerelinNGCStep1,,,
+ExerelinNGCSkipIntro,ExerelinNGCIntroPicker,,"$isInIntro = false 0
+FireAll ExerelinNGCIntroPage
+FireAll ExerelinNGCStep1",,,
 ExerelinNGCDoIntro,ExerelinNGCIntroPicker,Nex_NGCIntroPicker false,"$isInIntro = true 0
 $introPage = 1.0 0
 FireAll ExerelinNGCIntroPage",,,
