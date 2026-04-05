@@ -239,17 +239,41 @@ public class AgentOrdersDialog implements InteractionDialogPlugin
 
 	protected void populateSPOptions() {
 		options.addOption(getString("dialogSPOptionSuccessText"), Menu.CONFIRM_SP_SUCCESS);
-		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_SUCCESS, "agentOrderSuccess", "ui_char_spent_story_point_combat", null);
+		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_SUCCESS, "agentOrderSuccess", "ui_char_spent_story_point_combat", getSPLogText(Menu.CONFIRM_SP_SUCCESS));
 
 		options.addOption(getString("dialogSPOptionDetectionText"), Menu.CONFIRM_SP_DETECTION);
-		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_DETECTION, "agentOrderDetection", "ui_char_spent_story_point_combat", null);
+		SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_DETECTION, "agentOrderDetection", "ui_char_spent_story_point_combat", getSPLogText(Menu.CONFIRM_SP_DETECTION));
 
 		if (action.getDef().detectionChance > 0) {
 			options.addOption(getString("dialogSPOptionsText"), Menu.CONFIRM_SP_BOTH);
-			SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_BOTH, "agentOrderBoth", "ui_char_spent_story_point_combat", null);
+			SetStoryOption.set(dialog, 1, Menu.CONFIRM_SP_BOTH, "agentOrderBoth", "ui_char_spent_story_point_combat", getSPLogText(Menu.CONFIRM_SP_BOTH));
 		}
 
 		addBackOption();
+	}
+
+	protected String getSPLogText(Menu opt) {
+		if (action == null) return null;
+		String unk = "<" + getString("unknown") + ">";
+		String id = null;
+		switch (opt) {
+			case CONFIRM_SP_SUCCESS:
+				id = "spLogSuccess";
+				break;
+			case CONFIRM_SP_DETECTION:
+				id = "spLogDetection";
+				break;
+			case CONFIRM_SP_BOTH:
+				id = "spLogPerfection";
+				break;
+		}
+		if (id == null) return null;
+		String str = getString(id);
+		str = StringHelper.substituteToken(str, "$name", agent != null ? agent.getAgent().getNameString() : unk);
+		str = StringHelper.substituteToken(str, "$action", action.getName());
+		str = StringHelper.substituteToken(str, "$market", action.market != null ? action.market.getName() : unk);
+
+		return str;
 	}
 
 	protected void populateActionOptions() {

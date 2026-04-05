@@ -566,6 +566,10 @@
 		"dialogConfirmText":"Initiate mission?",
 		"dialogFinalText":"Mission orders transmitted.",
 		
+		"spLogSuccess":"Operative $name ensured success of $action on $market",
+		"spLogDetection":"Operative $name ensured undetection of $action on $market",
+		"spLogPerfection":"Operative $name ensured perfection of $action on $market",
+		
 		"travelTimeStatBase":"Base $departureOrArrival time",
 		"travelTimeStatDeciv":"Acquiring transport (decivilized)",
 		"travelTimeStatRepLevel":"Bypassing security ($repLevel)",
