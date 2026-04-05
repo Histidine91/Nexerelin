@@ -5,6 +5,8 @@
 	"freeStart":true,
     "corvusCompatible":true,
     #"enabledByDefault":true,	# defaults to startingFaction
+	"ngcTooltip":"Enter the Sector as a freelancer, but with an independent contact to start you off.",
+	
     "showIntelEvenIfDead":true,
     "noHomeworld":true,
     
