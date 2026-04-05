@@ -63,6 +63,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public static final float OFFICER_SALARY_MULT = 1f;
 	public static final float FUEL_COST_MULT = 1f;
 	public static final float REVIVE_COST_MULT = 1f;	// giving a discount here will let players give ships to the fleet to repair
+	public static final float MAX_COST_FRACTION_FOR_AUTO_REBUILD = 0.2f;	// don't spend more than 20% of our credit balance on auto-rebuild
 	
 	public static final Object DESTROYED_UPDATE = new Object();
 	public static final Object REBUILT_UPDATE = new Object();
@@ -300,6 +301,16 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 
 	@Override
 	protected boolean checkRebuild(float damage) {
+		if (!independentMode) return false;
+
+		if (damage > DAMAGE_TO_REBUILD || flagship == null) {
+			int cost = getReviveCost(deadMembers);
+			if (cost > Global.getSector().getPlayerFleet().getCargo().getCredits().get() * MAX_COST_FRACTION_FOR_AUTO_REBUILD)
+				return false;
+
+			orderFleetRebuild(false);
+			return true;
+		}
 		return false;
 	}
 	
