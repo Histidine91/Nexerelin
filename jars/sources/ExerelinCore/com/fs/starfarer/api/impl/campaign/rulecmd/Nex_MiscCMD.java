@@ -2,16 +2,19 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.RuleBasedDialog;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel.AntiInspectionOrders;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.utilities.NexUtilsReputation;
 import org.lazywizard.lazylib.MathUtils;
@@ -41,6 +44,12 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 			case "saveFactionColor":
 				saveFactionColor(params.get(1).getString(memoryMap), memoryMap.get(MemKeys.LOCAL));
 				return true;
+			case "enableRemnantRaids":
+				toggleRemnantRaids(dialog, true);
+				return true;
+			case "disableRemnantRaids":
+				toggleRemnantRaids(dialog, false);
+				return true;
 			default:
 				return false;
 		}
@@ -56,6 +65,14 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 			}
 		}
 		return false;
+	}
+
+	public static void toggleRemnantRaids(InteractionDialogAPI dialog, boolean enable) {
+		MemoryAPI mem = Global.getSector().getFaction(Factions.REMNANTS).getMemoryWithoutUpdate();
+		boolean result = Misc.setFlagWithReason(mem,
+				InvasionFleetManager.MEMORY_KEY_DISABLE_RAID_FROM_BASES, "remnantContact", !enable, -1f);
+		Global.getLogger(Nex_MiscCMD.class).info(result);
+		((RuleBasedDialog)dialog.getPlugin()).updateMemory();
 	}
 	
 	public static boolean isRemote(SectorEntityToken target) {

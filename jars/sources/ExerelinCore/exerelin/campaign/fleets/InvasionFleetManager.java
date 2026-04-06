@@ -68,6 +68,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final String MEMORY_KEY_BASE_POINTS_LAST_TICK = "$nex_invasionPointsLastTickBase";
 	public static final String MEMORY_KEY_REVANCHE = "$nex_invasionPointsDecayingRevancheBonus";
 	public static final String MEMORY_KEY_PREVIOUS_OWNER_FOR_INVASION_RESTRICTION = "$nex_previousOwnerForInvasionRestriction";
+	public static final String MEMORY_KEY_DISABLE_RAID_FROM_BASES = "$nex_disableRaidFromBases";
 	
 	public static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
 	public static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
@@ -1471,8 +1472,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker<>();
 			for (FactionAPI candidate : Global.getSector().getAllFactions()) 
 			{
-				if (NexConfig.getFactionConfig(candidate.getId()).raidsFromBases)
-					factionPicker.add(candidate);
+				if (!NexConfig.getFactionConfig(candidate.getId()).raidsFromBases) continue;
+				if (candidate.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_DISABLE_RAID_FROM_BASES)) continue;
+				factionPicker.add(candidate);
 			}
 			faction = factionPicker.pick();
 		}

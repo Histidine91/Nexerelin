@@ -4506,6 +4506,19 @@ nex_dissonantConvo2End,DialogOptionSelected,$option == nex_dissonantConvo2End,Fi
 ,,,,,,
 nex_dissonantConvoEnd,DialogOptionSelected,$option == nex_dissonantConvoEnd,FireAll PopulateOptions,,,
 ,,,,,,
+nex_rem_enableRaidsOpt,PopulateOptions,"$id == nex_dissonant score:10
+$global.nex_remSalvation_missionCompleted
+$personFaction.nex_disableRaidFromBases_remnantContact",,,10:nex_rem_enableRaids:Propose resuming Remnant raids,
+nex_rem_disableRaidsOpt,PopulateOptions,"$id == nex_dissonant score:10
+$global.nex_remSalvation_missionCompleted
+!$personFaction.nex_disableRaidFromBases_remnantContact",,,10:nex_rem_disableRaids:Propose ending Remnant raids,
+nex_rem_enableRaids,DialogOptionSelected,$option == nex_rem_enableRaids,"Nex_MiscCMD enableRemnantRaids
+AddTextSmall ""Remnants will resume periodic raids"" h
+FireAll PopulateOptions","""If friend $playerFirstName thinks it wise, raids of human territories resume.""",,
+nex_rem_disableRaids,DialogOptionSelected,$option == nex_rem_disableRaids,"Nex_MiscCMD disableRemnantRaids
+AddTextSmall ""Remnants will cease periodic raids"" h
+FireAll PopulateOptions","""Then it will be as friend $playerFirstName proposes. Cease raiding of human polities shall.""",,
+,,,,,,
 nex_dissonantAndSierraConvoOpt,PopulateOptions,"$id == nex_dissonant
 !$nex_sierraConvoSeen
 $rel > 0.25

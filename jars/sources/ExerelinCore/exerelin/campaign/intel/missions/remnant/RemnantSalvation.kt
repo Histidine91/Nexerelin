@@ -50,6 +50,7 @@ import exerelin.campaign.DiplomacyManager
 import exerelin.campaign.PlayerFactionStore
 import exerelin.campaign.SectorManager
 import exerelin.campaign.battle.NexAutoresolveListener
+import exerelin.campaign.fleets.InvasionFleetManager
 import exerelin.campaign.graphics.BombardmentAnimationV2
 import exerelin.campaign.intel.merc.MercContractIntel
 import exerelin.campaign.intel.missions.BuildStation.SystemUninhabitedReq
@@ -948,6 +949,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         setCurrentStage(Stage.COMPLETED, dialog, memoryMap)
         Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_missionDone"] = true
         Global.getSector().memoryWithoutUpdate["\$nex_remSalvation_missionCompleted"] = true
+        Misc.setFlagWithReason(Global.getSector().getFaction(Factions.REMNANTS).memoryWithoutUpdate, InvasionFleetManager.MEMORY_KEY_DISABLE_RAID_FROM_BASES, "remnantContact", true, -1f)
 
         var logString = RemnantQuestUtils.getString("salvation_playthroughLog_line")
         logString = StringHelper.substituteToken(logString, "\$target", target!!.name)
