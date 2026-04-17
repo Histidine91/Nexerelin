@@ -513,8 +513,7 @@ public class ExerelinProcGen {
 		if (planet != null)
 			data.planetType = planet.getTypeId();
 		data.primary = token.getOrbitFocus();
-		if (token.getStarSystem() != null)
-			data.starSystem = (StarSystemAPI)token.getStarSystem();
+		data.starSystem = token.getStarSystem();
 		
 		return data;
 	}

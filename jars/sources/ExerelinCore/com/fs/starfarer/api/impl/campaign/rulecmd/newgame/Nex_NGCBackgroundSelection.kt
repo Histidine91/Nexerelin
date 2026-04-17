@@ -64,7 +64,6 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
             mem.set("\$nex_seenBackgroundIntro", true);
         }
 
-        Misc.ucFirst(StringHelper.getString("done"))
         optionPanel.addOption(Misc.ucFirst(StringHelper.getString("done")), "nex_NGCDoneWithBackground")
         optionPanel.addOption(Misc.ucFirst(StringHelper.getString("goBack")), "nex_NGCBackgroundGoBack")
         optionPanel.setShortcut("nex_NGCDoneWithBackground", Keyboard.KEY_RETURN, false, false, false, false)

@@ -55,7 +55,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	public static final String UPDATE_NEW_CONCERNS = "new_concerns";
 	public static final float MARGIN = 40;
 	public static final Object BUTTON_MEETING = new Object();
-	//public static final Long lastReportTimestamp;
+	public static final int BASE_INTERVAL = 30;
 
 	@Getter	protected final FactionAPI faction;
 	//protected transient TooltipMakerAPI savedReport;
@@ -69,7 +69,7 @@ public class StrategicAI extends BaseIntelPlugin {
 	protected transient List<StrategicConcern> lastAddedConcerns = new ArrayList<>();
 	protected transient List<StrategicConcern> lastRemovedConcerns = new ArrayList<>();
 	protected transient List<StrategicAction> lastAddedActions = new ArrayList<>();
-	protected IntervalUtil interval = new IntervalUtil(29, 31);
+	protected IntervalUtil interval = new IntervalUtil(BASE_INTERVAL - 1, BASE_INTERVAL + 1);
 	protected IntervalUtil intervalShort = new IntervalUtil(0.48f, 0.52f);
 	@Getter protected float daysSinceLastUpdate;
 
@@ -110,8 +110,6 @@ public class StrategicAI extends BaseIntelPlugin {
 		lastAddedConcerns = new ArrayList<>();
 		lastRemovedConcerns = new ArrayList<>();
 		lastAddedActions = new ArrayList<>();
-		if (execModule == null) execModule = new ExecutiveAIModule(this);
-		if (intervalShort == null) intervalShort = new IntervalUtil(0.48f, 0.52f);
 		return this;
 	}
 
