@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.impl.campaign.econ.impl.ConstructionQueue;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
@@ -357,6 +358,10 @@ public class NexMarketBuilder
 			NexUtilsMarket.upgradeIndustryToTarget(ind, null, false, instant);
 			return;
 		}
+		else if (upgradeeIsInConstructionQueue(market, id)) {
+			String downgrade = Global.getSettings().getIndustrySpec(id).getDowngrade();
+			ColonyManager.getManager().queueIndustry(market, downgrade, id);
+		}
 
 		if (instant) {
 			market.addIndustry(id);
@@ -374,13 +379,26 @@ public class NexMarketBuilder
 		String downgrade = Global.getSettings().getIndustrySpec(industryId).getDowngrade();
 		if (downgrade == null) return false;
 
-		if (!market.getIndustries().contains(downgrade)) return false;
+		if (!market.hasIndustry(downgrade)) return false;
 		return (NexUtilsMarket.getIndustryUpgradeTarget(downgrade) != null) && (market.getIndustry(downgrade).canUpgrade());
 	}
 
 	public static boolean alreadyHaveCanUpgrade(MarketAPI market, String industryId) {
 		if (!market.hasIndustry(industryId)) return false;
 		return (NexUtilsMarket.getIndustryUpgradeTarget(industryId) != null) && (market.getIndustry(industryId).canUpgrade());
+	}
+
+	public static boolean upgradeeIsInConstructionQueue(MarketAPI market, String upgradeTo) {
+		String downgrade = Global.getSettings().getIndustrySpec(upgradeTo).getDowngrade();
+		if (downgrade == null) return false;
+
+		List<ConstructionQueue.ConstructionQueueItem> queue = market.getConstructionQueue().getItems();
+		for (ConstructionQueue.ConstructionQueueItem item : queue) {
+			if (downgrade.equals(item.id)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static void addIndustry(MarketAPI market, String id, boolean instant) {

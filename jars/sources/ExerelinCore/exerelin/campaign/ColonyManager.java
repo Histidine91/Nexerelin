@@ -669,6 +669,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		}
 		
 		LinkedList<QueuedIndustry> queueCopy = new LinkedList<>(queue);
+		INDUSTRYQUEUE:
 		for (QueuedIndustry item : queueCopy) {
 			//log.info("\tChecking industry queue: " + item.industry + ", " + item.type.toString());
 			
@@ -696,22 +697,38 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 						removeItemFromQueue(item, queue);
 						continue;
 					}
-					if (NexUtilsMarket.upgradeIndustryIfCan(ind, false)) {
-						removeItemFromQueue(item, queue);
+					if (NexUtilsMarket.canUpgradeIndustry(ind)) {
+						boolean success = NexUtilsMarket.upgradeIndustryToTarget(ind, item.upgradeTarget, false, false);
+						if (success) removeItemFromQueue(item, queue);
 					}
 					else continue;
 				}
 			}
 			else {
-				// new build
+				// doesn't exist yet, new build
 				if (item.type == QueueType.NEW) {
-					// check industry limit; if we're over it, remove from queue
+
+					// industry type doesn't actually exist?
 					Industry temp = market.instantiateIndustry(item.industry);
-					if (temp == null) 
+					if (temp == null)
 					{
 						removeItemFromQueue(item, queue);
 						continue;
 					}
+
+					// check if we can get this by upgrading an existing industry
+					for (Industry ind : market.getIndustries()) {
+						String upgTarget = NexUtilsMarket.getIndustryUpgradeTarget(ind.getId());
+						if (item.industry.equals(upgTarget)) {
+							boolean success = NexUtilsMarket.upgradeIndustryToTarget(ind, item.upgradeTarget, false, false);
+							if (success) {
+								removeItemFromQueue(item, queue);
+								continue INDUSTRYQUEUE;
+							}
+						}
+					}
+
+					// check industry limit; if we're over it, cancel construction
 					if (temp.isIndustry() && Misc.getNumIndustries(market) >= Misc.getMaxIndustries(market)) 
 					{
 						removeItemFromQueue(item, queue);
@@ -756,6 +773,15 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		LinkedList<QueuedIndustry> queue = npcConstructionQueues.get(market);
 		queue.add(new QueuedIndustry(industry, type));
 		log.info(String.format("Queued industry %s (type %s) on %s", industry, type.toString(), market.getName()));
+	}
+
+	public void queueIndustry(MarketAPI market, String industry, String upgradeTarget) {
+		if (!npcConstructionQueues.containsKey(market))
+			npcConstructionQueues.put(market, new LinkedList<QueuedIndustry>());
+
+		LinkedList<QueuedIndustry> queue = npcConstructionQueues.get(market);
+		queue.add(new QueuedIndustry(industry, upgradeTarget));
+		log.info(String.format("Queued industry %s with specific upgrade target %s on %s", industry, upgradeTarget, market.getName()));
 	}
 	
 	public LinkedList<QueuedIndustry> getConstructionQueue(MarketAPI market) {
@@ -2007,11 +2033,18 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	public static class QueuedIndustry {
 		
 		public String industry;
+		public String upgradeTarget;
 		public QueueType type;
 		
 		public QueuedIndustry(String industry, QueueType type) {
 			this.industry = industry;
 			this.type = type;
+		}
+
+		public QueuedIndustry(String industry, String upgradeTarget) {
+			this.industry = industry;
+			this.upgradeTarget = upgradeTarget;
+			this.type = QueueType.UPGRADE;
 		}
 		
 		public static enum QueueType { NEW, UPGRADE }

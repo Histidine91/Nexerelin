@@ -20,6 +20,7 @@ import com.fs.starfarer.api.ui.MarkerData;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.ColonyManager;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -491,6 +492,10 @@ public class NexUtilsMarket {
 		return true;
 	}
 
+	/**
+	 * @param industryId The industry being upgraded *from*
+	 * @return The industry being upgraded *to*, if any.
+	 */
 	public static String getIndustryUpgradeTarget(String industryId) {
 		IndustrySpecAPI spec = Global.getSettings().getIndustrySpec(industryId);
 		if (spec == null) return null;
@@ -516,6 +521,16 @@ public class NexUtilsMarket {
 		}
 		if (!ind.canUpgrade() && !force) return false;
 
+		if (ind.isBuilding()) {
+			if (ind.isUpgrading()) {
+				// already in upgrade
+				return false;
+			}
+			ColonyManager.getManager().queueIndustry(ind.getMarket(), ind.getId(), upgradeId);
+			return true;
+		}
+
+		//log.info(String.format("Attempting industry upgrade from %s to %s", ind.getId(), upgradeId));
 		String prevUpgradeId = ind.getSpec().getUpgrade();
 		if (upgradeId.equals(prevUpgradeId)) {	// am I too fussy?
 			ind.startUpgrading();
