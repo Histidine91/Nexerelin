@@ -993,7 +993,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	public int getMaxOfficers(CampaignFleetAPI fleet) {
 		PersonAPI commander = fleet.getCommander();
 		if (commander == null) return 0;
-		return commander.getStats().getOfficerNumber().getModifiedInt();
+		return commander.getStats().getOfficerNumber().getModifiedInt() + 1;
 	}
 	
 	protected CampaignFleetAPI getFleet(InteractionDialogAPI dialog) {
