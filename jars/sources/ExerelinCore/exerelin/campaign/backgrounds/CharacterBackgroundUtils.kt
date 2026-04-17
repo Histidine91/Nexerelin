@@ -26,7 +26,7 @@ object CharacterBackgroundUtils {
 
     @JvmStatic
     fun getBackgroundPluginByID(id: String) : BaseCharacterBackground? {
-        var spec = getCurrentBackgroundSpec() ?: return null
+        var spec = getBackgroundSpecByID(id) ?: return null
         try {
             var plugin = Global.getSettings().scriptClassLoader.loadClass(spec.pluginPath).newInstance() as BaseCharacterBackground
             plugin.spec = spec
