@@ -3572,7 +3572,7 @@ $HeOrShe chugs the wine. ""But I suppose we won't be so fortunate, will we? You 
 Abruptly $heOrShe cuts off, placing two fingers to $hisOrHer temple, eye flickering at an image visible only on $hisOrHer retina.","nex_remSalvation_arroyo11Bad:What—
 nex_remSalvation_arroyo11Good:Danger!",
 nex_remSalvation_arroyoSkillCheck,Nex_RemSalvation_ArroyoSkillCheck,$nex_remSalvation_combatSkillLevel < 5.0,"SetEnabled nex_remSalvation_arroyo11Good false
-SetTooltip nex_remSalvation_arroyo11Good ""Not enough combat skill level.""",,,
+SetTooltip nex_remSalvation_arroyo11Good ""Not enough combat proficiency.""",,,
 nex_remSalvation_arroyo11Bad,DialogOptionSelected,$option == nex_remSalvation_arroyo11Bad,"Call $global.nex_remSalvation_ref explosionSound
 HideVisual","You're just starting to stand up when a door on the wall opposite you explodes, flying off its hinges to slam into the far wall. The noise is stunning, deafening. Briefly staggered, you reach for your sidearm.
 

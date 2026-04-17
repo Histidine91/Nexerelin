@@ -924,10 +924,14 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         var level = 0f
         for (skill : SkillLevelAPI in Global.getSector().playerStats.skillsCopy) {
             // count tactical drills too
-            if (skill.skill.governingAptitudeId != Skills.APT_COMBAT && skill.skill.id != Skills.TACTICAL_DRILLS) continue;
+            if (skill.skill.governingAptitudeId != Skills.APT_COMBAT && skill.skill.id != Skills.TACTICAL_DRILLS) continue
             if (skill.level >= 2) level += 2
             else if (skill.level >= 1) level++
         }
+        if (Global.getSector().memoryWithoutUpdate.getBoolean("\$sdtu_missionCompleted")) level += 3
+        if (Global.getSector().characterData.memoryWithoutUpdate.getBoolean("\$bladeSkill")) level += 2
+        if (Global.getSector().characterData.memoryWithoutUpdate.getBoolean("\$killedSedge")) level += 2
+
         return level;
     }
 
