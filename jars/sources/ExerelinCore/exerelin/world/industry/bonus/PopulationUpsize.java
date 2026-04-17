@@ -18,7 +18,12 @@ public class PopulationUpsize extends BonusGen {
 		
 		return priority;
 	}
-	
+
+	@Override
+	public boolean canApply(Industry ind, ExerelinProcGen.ProcGenEntity entity) {
+		return entity.market.getSize() < 10;
+	}
+
 	@Override
 	public void apply(Industry ind, ExerelinProcGen.ProcGenEntity entity) {
 		MarketAPI market = entity.market;
