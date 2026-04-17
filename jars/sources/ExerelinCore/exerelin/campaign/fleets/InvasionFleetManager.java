@@ -1319,6 +1319,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			if (market.hasCondition(Conditions.PIRATE_ACTIVITY) && market.getFaction().isHostileTo(Factions.PIRATES)) {
 				MarketConditionAPI cond = market.getCondition(Conditions.PIRATE_ACTIVITY);
 				PirateActivity plugin = (PirateActivity)cond.getPlugin();
+				if (NexUtils.isImportant(plugin.getIntel().getEntity())) continue;
 
 				float rage = plugin.getIntel().getStabilityPenalty();
 				if (rage > 0) {
@@ -1341,6 +1342,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 				if (sleeper) continue;
 				base = LuddicPathCellsIntel.getClosestBase(market);
 				if (base == null) continue;
+				if (NexUtils.isImportant(base.getEntity())) continue;
 				
 				float rage = 1 * rageIncrement;
 				float newVal = NexUtils.modifyMapEntry(pirateRage, factionId, rage);

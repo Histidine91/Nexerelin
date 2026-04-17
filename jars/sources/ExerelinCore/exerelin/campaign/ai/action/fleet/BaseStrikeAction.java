@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivity;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 
 public class BaseStrikeAction extends OffensiveFleetAction {
@@ -27,6 +28,7 @@ public class BaseStrikeAction extends OffensiveFleetAction {
             if (market.hasCondition(Conditions.PIRATE_ACTIVITY) && market.getFaction().isHostileTo(Factions.PIRATES)) {
                 MarketConditionAPI cond = market.getCondition(Conditions.PIRATE_ACTIVITY);
                 PirateActivity plugin = (PirateActivity)cond.getPlugin();
+                if (NexUtils.isImportant(plugin.getIntel().getEntity())) continue;
                 targetPicker.add(plugin.getIntel().getMarket());
             }
             if (market.hasCondition(Conditions.PATHER_CELLS) && market.getFaction().isHostileTo(Factions.LUDDIC_PATH)) {
@@ -39,6 +41,7 @@ public class BaseStrikeAction extends OffensiveFleetAction {
                 if (sleeper) continue;
                 base = LuddicPathCellsIntel.getClosestBase(market);
                 if (base == null) continue;
+                if (NexUtils.isImportant(base.getEntity())) continue;
 
                 targetPicker.add(base.getMarket());
             }
