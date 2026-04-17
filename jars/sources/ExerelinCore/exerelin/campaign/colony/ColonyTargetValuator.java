@@ -164,6 +164,8 @@ public class ColonyTargetValuator {
 		
 		if (system.hasTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER))
 			return false;
+		if (system.hasTag(Tags.SYSTEM_ABYSSAL))
+			return false;
 		
 		if (system.hasPulsar()) return false;
 		//if (system.isNebula()) return false;

@@ -563,6 +563,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				markets = new ArrayList<>();
 				for (StarSystemAPI system : Global.getSector().getStarSystems()) {
 					if (system.hasTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER)) continue;
+					if (system.hasTag(Tags.SYSTEM_ABYSSAL)) continue;
 					for (PlanetAPI planet : system.getPlanets()) {
 						MarketAPI market = planet.getMarket();
 						if (market == null || !market.isPlanetConditionMarketOnly()) continue;
