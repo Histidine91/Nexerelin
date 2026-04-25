@@ -90,7 +90,12 @@ public class InstigateRebellion extends CovertActionIntel {
 		adjustRepIfDetected(RepLevel.HOSTILE, null);
 		reportEvent();
 	}
-	
+
+	@Override
+	public boolean allowOwnMarket() {
+		return false;
+	}
+
 	@Override
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
 		String action = getString("intelStatus_instigateRebellion");
