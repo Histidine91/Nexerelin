@@ -225,14 +225,34 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
         }
 
         if (market != null && industryUnderConstruction == null) {
-            // check if there's a correct industry under construction, if so use that
-            industryUnderConstruction = market.getIndustry(industryId);
-            status = ActionStatus.IN_PROGRESS;
+            industryUnderConstruction = checkForIndustryUnderConstruction();
+            if (industryUnderConstruction != null) {
+                industryId = industryUnderConstruction.getId();
+                status = ActionStatus.IN_PROGRESS;
+            }
         }
 
         if (industryUnderConstruction != null && !industryUnderConstruction.isBuilding() && !industryUnderConstruction.isUpgrading()) {
             this.end(ActionStatus.SUCCESS);
         }
+    }
+
+    protected Industry checkForIndustryUnderConstruction() {
+        IndustryClassGen gen = NexMarketBuilder.getIndustryClassesByIndustryId().get(industryId);
+        if (gen != null) {
+            for (String possibleIndId : gen.getIndustryIds()) {
+                Industry toCheck = market.getIndustry(possibleIndId);
+                if (toCheck != null && toCheck.isBuilding()) {
+                    return toCheck;
+                }
+            }
+        } else {
+            Industry toCheck = market.getIndustry(industryId);
+            if (toCheck != null && toCheck.isBuilding()) {
+                return toCheck;
+            }
+        }
+        return null;
     }
 
     @Override
