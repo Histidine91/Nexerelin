@@ -511,7 +511,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = new HashSet<>();
 		tags.add(StringHelper.getString("colonies", true));
-		if (getTarget().getFaction().isPlayerFaction())
+		if (getTarget().getFaction().isPlayerFaction() && !getFaction().isPlayerFaction())
 			tags.add(Tags.INTEL_COLONIES);
 		tags.add(getFaction().getId());
 		if (!getTarget().getFaction().isNeutralFaction())
