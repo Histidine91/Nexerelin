@@ -99,7 +99,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final float RAID_SIZE_MULT = 0.85f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
 	public static final float BLOCKADE_SIZE_MULT = 1.2f;
-	public static final float MIN_BLOCKADE_SIZE = 240 / BLOCKADE_SIZE_MULT;
+	public static final float MIN_BLOCKADE_SIZE = 120 / BLOCKADE_SIZE_MULT;
 	public static final float BLOCKADE_FLAT_FP_BONUS = 120;
 	public static final float PIRATE_RAGE_THRESHOLD = 125;
 	public static final int ATTACK_PLAYER_COOLDOWN = 60;

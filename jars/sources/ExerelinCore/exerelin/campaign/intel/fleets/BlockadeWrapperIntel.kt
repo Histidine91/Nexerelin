@@ -25,7 +25,7 @@ import kotlin.math.roundToInt
 
 /**
  * Wrapper for a base game {@code BlockadeFGI}, for places where an {@code OffensiveFleetIntel} is expected.
- * Should not be itself added to intel manager or the sector.
+ * Should not be itself added to intel manager or the sector, only the FGI gets added.
  */
 class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: MarketAPI?, fp: Float, orgDur: Float) :
     OffensiveFleetIntel(attacker, from, target, fp, orgDur), FleetGroupIntel.FGIEventListener {
@@ -84,21 +84,21 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
     fun addFleetsToParams(params: GenericRaidParams) {
         val maxFPPerFleet = faction.getApproximateMaxFPPerFleet(FactionAPI.ShipPickMode.PRIORITY_THEN_ALL) * 0.9f
 
-        var totalDifficulty: Int = (this.fp / maxFPPerFleet * 10 * BLOCKADE_FP_BONUS_MULT).roundToInt().coerceAtLeast(1)
+        var totalDifficulty: Int = (this.fp / maxFPPerFleet * 10).roundToInt().coerceAtLeast(1)
 
         log.info(String.format("  Blockade initial FP: %s, max FP per fleet %s, total int points: %s", this.fp, maxFPPerFleet, totalDifficulty))
 
         while (totalDifficulty > 0) {
             var thisDiff = 5
-            // every sixth fleet can be maximum size
-            if (params.fleetSizes.size % 6 == 0) thisDiff = totalDifficulty
+            // every sixth fleet can be maximum size, or if we're almost run out anyway
+            if (params.fleetSizes.size % 6 == 0 || totalDifficulty < 8) thisDiff = totalDifficulty
 
             thisDiff = thisDiff.coerceAtMost(9)
-            log.info(String.format("  Number of fleets previously %s, size int for this one %s",  params.fleetSizes.size, thisDiff))
+            //log.info(String.format("  Number of fleets previously %s, size int for this one %s",  params.fleetSizes.size, thisDiff))
             totalDifficulty -= thisDiff
-            log.info("  Size points remaining: " + totalDifficulty)
+            //log.info("  Size points remaining: " + totalDifficulty)
 
-            params.fleetSizes.add(totalDifficulty)
+            params.fleetSizes.add(thisDiff)
         }
     }
 
@@ -180,6 +180,6 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
     }
 
     companion object {
-        @JvmField val BLOCKADE_FP_BONUS_MULT = 1.5f
+        //const val BLOCKADE_FP_BONUS_MULT = 1.5f
     }
 }
