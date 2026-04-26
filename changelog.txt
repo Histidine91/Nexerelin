@@ -3,6 +3,9 @@ Version 0.12.1e
 * Remnant raids will stop after completing Remnant quest chain (can ask contact to turn them back on/off)
 * Player special task groups can have one more officer (to account for commander)
 * Player special task group on independent mode will automatically revive lost ships when there are enough of them
+* Instigate rebellion actions stop if market is of own faction
+* NPC base strikes won't target bases marked as important
+* Nex fleet actions appear in Colony threats intel filter if targeting a player-governed colony
 * Fix crash if Princess of Persea quest skip is enabled in random sector
 * Fix VIC Stolas start not being available if intro is skipped
 * Fix some NPC industry upgrade behavior
@@ -12,10 +15,7 @@ Version 0.12.1e
     * This fixes unexpected behavior with very small/large multipliers
 * Derelict Empire V2 colonies are moved back to main econ group if they decivilize (previously this only happened on capture)
 * Fix potential div0 in undersupplied market concern
-* Strategic AI: fix detection of whether industries under construction fulfil the build industry action
-* Instigate rebellion actions stop if market is of own faction
-* NPC base strikes won't target bases marked as important
-* Nex fleet actions appear in Colony threats intel if targeting a player-governed colony
+* Strategic AI: fix detection of whether industries under construction fulfil the build industry action, remove a case where it might delete existing industries
 * Operative SP uses are recorded in player history intel
 * Tweak logic for a certain scene in Salvation
 * Add a tooltip to independent faction start
