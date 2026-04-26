@@ -160,9 +160,6 @@ public class EconomyInfoHelper implements EconomyTickListener {
 
 				// get local supply
 				int supply = producer.getCommodityData(commodityId).getMaxSupply();
-				if (producer.isPlayerOwned() && commodityId.equals(Commodities.FOOD)) {
-					log.info(String.format("%s produces %s food", producer.getName(), supply));
-				}
 				if (supply <= 0) continue;
 				
 				String factionId = producer.getFactionId();

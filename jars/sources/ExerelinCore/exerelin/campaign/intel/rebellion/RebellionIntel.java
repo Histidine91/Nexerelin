@@ -1837,6 +1837,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	
 	protected void debugMessage(String message)
 	{
+		if (!DEBUG_MODE) return;
 		log.info(message);
 		//Global.getSector().getCampaignUI().addMessage(message);
 	}
