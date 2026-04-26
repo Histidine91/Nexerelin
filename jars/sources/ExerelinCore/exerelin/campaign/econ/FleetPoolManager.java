@@ -9,6 +9,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.fleets.NexRouteManager;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
@@ -25,6 +26,9 @@ import java.util.Map;
 public class FleetPoolManager extends ResourcePoolManager {
 
 	public static final boolean USE_POOL = false;
+	public static final String ROUTE_DATA_HAS_RETURNED_KEY = "nex_fleetPoolHasReturned";
+	public static final String ROUTE_DATA_RETURN_EFFICIENCY_KEY = "nex_fleetPoolReturnEfficiency";
+	public static final String ROUTE_DATA_FACTION_KEY = "nex_fleetPoolFactionId";
 
 	public static FleetPoolManager getManager() {
 		return (FleetPoolManager) Global.getSector().getPersistentData().get("nex_fleetPoolManager");
@@ -32,6 +36,36 @@ public class FleetPoolManager extends ResourcePoolManager {
 
 	public static float getMarketCommodityValueStatic(MarketAPI market) {
 		return ResourcePoolManager.getMarketCommodityValueStatic(market, ResourcePoolManager.COMMODITIES_SPACE);
+	}
+
+	public static void setRouteReturnEfficiency(NexRouteManager.NexRouteData routeData, float mult) {
+		routeData.getDataStore().put(ROUTE_DATA_RETURN_EFFICIENCY_KEY, mult);
+	}
+
+	public static float getRouteReturnEfficiency(NexRouteManager.NexRouteData routeData) {
+		if (!routeData.getDataStore().containsKey(ROUTE_DATA_RETURN_EFFICIENCY_KEY)) {
+			return 0;
+		}
+		return (Float)routeData.getDataStore().get(ROUTE_DATA_RETURN_EFFICIENCY_KEY);
+	}
+
+	public static void setRouteReturnedToPool(NexRouteManager.NexRouteData routeData, boolean returned) {
+		routeData.getDataStore().put(ROUTE_DATA_HAS_RETURNED_KEY, returned);
+	}
+
+	public static boolean hasRouteReturnedToPool(NexRouteManager.NexRouteData routeData) {
+		if (!routeData.getDataStore().containsKey(ROUTE_DATA_HAS_RETURNED_KEY)) {
+			return false;
+		}
+		return (Boolean)routeData.getDataStore().get(ROUTE_DATA_HAS_RETURNED_KEY);
+	}
+
+	public static void setRouteFactionId(NexRouteManager.NexRouteData routeData, String factionId) {
+		routeData.getDataStore().put(ROUTE_DATA_FACTION_KEY, factionId);
+	}
+
+	public static String getRouteFactionId(NexRouteManager.NexRouteData routeData) {
+		return (String)routeData.getDataStore().get(ROUTE_DATA_FACTION_KEY);
 	}
 
 	@Override

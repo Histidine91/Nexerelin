@@ -215,6 +215,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 
 			marinesTotal *= NexConfig.groundBattleInvasionTroopSizeMult;
 		}
+
 		if (marinesTotal < 100) marinesTotal = 100;
 		else if (marinesTotal > MAX_MARINES_TOTAL) {
 			log.info("Capping total marines at " + MAX_MARINES_TOTAL + " (was " + marinesTotal + ")");
@@ -226,9 +227,10 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		}
 
 		// draw from ground pool
-		ResourcePoolManager.RequisitionParams rp = new ResourcePoolManager.RequisitionParams(marinesTotal * GroundPoolManager.POOL_PER_MARINE);
-		rp.abortIfNotAtLeast = 0;	// always have the marines we need
-		GroundPoolManager.getManager().drawFromPool(faction.getId(), rp);
+		ResourcePoolManager.RequisitionParams grp = new ResourcePoolManager.RequisitionParams(marinesTotal * GroundPoolManager.POOL_PER_MARINE);
+		grp.abortIfNotAtLeast = 0;	// always have the marines we need
+		GroundPoolManager.getManager().drawFromPool(faction.getId(), grp);
+		this.groundPoolRequest = grp;
 	}
 
 	/*
@@ -844,7 +846,11 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 	public void reportBattleAfterTurn(GroundBattleIntel battle, int turn) {}
 
 	@Override
-	public void reportBattleEnded(GroundBattleIntel battle) {}
+	public void reportBattleEnded(GroundBattleIntel battle) {
+		if (battle.getOutcome() == BattleOutcome.DEFENDER_VICTORY) {
+			setGroundActionDefeated(true);
+		}
+	}
 
 	@Override
 	public void reportPlayerJoinedBattle(GroundBattleIntel battle) {}

@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
@@ -15,17 +16,23 @@ import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.DModManager;
+import com.fs.starfarer.api.impl.campaign.econ.impl.MilitaryBase;
 import com.fs.starfarer.api.impl.campaign.fleets.DefaultFleetInflaterParams;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.intel.group.FleetGroupIntel;
 import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.fleets.NexRouteManager;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
+import exerelin.campaign.fleets.utils.FleetPoolHelperListener;
 import exerelin.campaign.intel.merc.MercFleetGenPlugin;
 import exerelin.plugins.ExerelinModPlugin;
 import org.apache.log4j.Logger;
@@ -243,7 +250,7 @@ public class NexUtilsFleet
 			str += Misc.getMemberStrength(member, withHull, withQuality, withCaptain);
 		}
 		return str;
-	};
+	}
     
     public static float getPlayerLevelFPBonus()
     {
@@ -346,6 +353,88 @@ public class NexUtilsFleet
 				return (RouteFleetAssignmentAI)script;
 		}
 		return null;
+	}
+
+	public static float getRouteFPWithDamage(RouteManager.RouteData route) {
+		float fp = getRouteFP(route);
+		if (route.getExtra().damage != null) {
+			fp *= (1 - route.getExtra().damage);
+		}
+
+		// if we can't get the FP any other way, get the fleet as it exists instead of trying to multiply starting FP by damage
+		CampaignFleetAPI fleet = route.getActiveFleet();
+		if (fp <= 0 && fleet != null) {
+			return fleet.getFleetData().getFleetPointsUsed()/InvasionFleetManager.getFactionDoctrineFleetSizeMult(fleet.getFaction());
+		}
+
+		return fp;
+	}
+
+	public static float getRouteFP(RouteManager.RouteData route) {
+		if (route instanceof NexRouteManager.NexRouteData nrd && nrd.getDataStore().containsKey(FleetPoolHelperListener.DATA_KEY_ESTIMATED_FP)) {
+			return (float)nrd.getDataStore().get(FleetPoolHelperListener.DATA_KEY_ESTIMATED_FP);
+		}
+		else if (route.getExtra().fp != null) {
+			return route.getExtra().fp;
+		}
+		else if (route.getCustom() instanceof MilitaryBase.PatrolFleetData pfd && pfd.spawnFP > 0) {
+			return pfd.spawnFP;
+		}
+		else if (route.getExtra().strength != null) {
+			float mult = Misc.getAdjustedStrength(100, route.getMarket())/100;
+			return route.getExtra().strength/mult;
+		}
+		else {
+			// use fleet last instead of first to avoid skewing results from fleet size mult
+			CampaignFleetAPI fleet = route.getActiveFleet();
+			if (fleet != null) {
+				MemoryAPI mem = fleet.getMemoryWithoutUpdate();
+				float divisor = InvasionFleetManager.getFactionDoctrineFleetSizeMult(fleet.getFaction());
+				if (mem.contains("$startingFP")) return mem.getFloat("$startingFP") / divisor;
+				if (mem.contains(FleetGroupIntel.KEY_SPAWN_FP)) return mem.getFloat(FleetGroupIntel.KEY_SPAWN_FP)/ divisor;
+			}
+		}
+
+		return 0;
+	}
+
+	public static float getStartingFP(CampaignFleetAPI fleet) {
+		MemoryAPI mem = fleet.getMemoryWithoutUpdate();
+		if (mem.contains("$startingFP")) return mem.getFloat("$startingFP");
+		if (mem.contains(FleetGroupIntel.KEY_SPAWN_FP)) return mem.getFloat(FleetGroupIntel.KEY_SPAWN_FP);
+		if (mem.contains(FleetPoolHelperListener.MEM_KEY_STARTING_FP)) return mem.getFloat(FleetPoolHelperListener.MEM_KEY_STARTING_FP);
+		// guess based on snapshot, will give inaccurate results for fleets that have already taken losses
+		float fp = 0;
+		for (FleetMemberAPI member : fleet.getFleetData().getSnapshot()) {
+			fp += member.getFleetPointCost();
+		}
+		return fp;
+	}
+
+	/**
+	 * Forces the fleet to generate. Used for e.g. bounties.
+	 */
+	public static boolean forceRouteSpawn(RouteManager.RouteData route, boolean preventAutoDespawn) {
+		if (route instanceof NexRouteManager.NexRouteData nrd) {
+			nrd.setForceSpawn(true);
+			if (RouteManager.getInstance() instanceof NexRouteManager nrm) {
+				nrm.spawnRoute(nrd);
+			}
+			if (nrd.getActiveFleet() != null && preventAutoDespawn) {
+				nrd.getActiveFleet().setNoAutoDespawn(true);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public static void unforceRouteSpawn(RouteManager.RouteData route, boolean enableAutoDespawn) {
+		if (route instanceof NexRouteManager.NexRouteData nrd) {
+			nrd.setForceSpawn(false);
+		}
+		if (route.getActiveFleet() != null && enableAutoDespawn) {
+			route.getActiveFleet().setNoAutoDespawn(false);
+		}
 	}
 
 	/**

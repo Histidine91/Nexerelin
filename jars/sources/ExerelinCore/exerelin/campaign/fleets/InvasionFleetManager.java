@@ -524,8 +524,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	 */
 	public void modifySpawnCounter(String factionId, float amount) {
 		NexUtils.modifyMapEntry(spawnCounter, factionId, amount);
-		FleetPoolManager.getManager().modifyPool(factionId, amount * ResourcePoolManager.FLEET_POOL_MULT);
-		GroundPoolManager.getManager().modifyPool(factionId, amount * ResourcePoolManager.FLEET_POOL_MULT);
+		FleetPoolManager.getManager().modifyPool(factionId, amount * ResourcePoolManager.INVASION_POINT_CONVERSION_MULT);
+		GroundPoolManager.getManager().modifyPool(factionId, amount * ResourcePoolManager.INVASION_POINT_CONVERSION_MULT);
 	}
 	
 	/**
@@ -911,10 +911,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		if (rp != null) {
 			String rpFactionId = rp.factionId != null ? rp.factionId : factionId;
 			rp.amount = fp;
+			rp.abortIfNotAtLeast = 10;
 			fp = FleetPoolManager.getManager().drawFromPool(rpFactionId, rp);
-			if (fp < 10) {
-				// put the points back in the pool and terminate
-				FleetPoolManager.getManager().modifyPool(rpFactionId, fp);
+			// not enough points, bail
+			if (fp < 0 && !FleetPoolManager.USE_POOL) {
 				return null;
 			}
 		}
@@ -966,7 +966,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		}
 		if (intel != null) {
 			intel.init();
-			if (rp != null) intel.setFleetPoolPointsSpent((int)rp.amountDrawn);
+			if (rp != null) intel.setFleetPoolRequest(rp);
 			if (type != EventType.BASE_STRIKE) activeIntel.add(intel);
 			return intel;
 		}

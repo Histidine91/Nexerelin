@@ -13,7 +13,8 @@ import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
 
 public class SatBombActionStage extends InvActionStage {
 	
@@ -58,6 +59,12 @@ public class SatBombActionStage extends InvActionStage {
 	@Override
 	protected void checkIfInvasionFailed() {
 		// do nothing
+	}
+
+	@Override
+	public void notifyStarted() {
+		super.notifyStarted();
+		offFltIntel.setForceSpawnInSystem(true, untilAutoresolve);
 	}
 	
 	@Override

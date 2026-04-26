@@ -28,6 +28,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.fleets.NexRouteManager;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.SpecialForcesTask;
 import exerelin.campaign.intel.specialforces.SpecialForcesRouteAI.TaskType;
 import exerelin.campaign.intel.specialforces.namer.SpecialForcesNamer;
@@ -122,6 +123,9 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		extra.fleetType = FLEET_TYPE;
 		extra.strength = getAdjustedStrength(startingFP, origin);
 		route = RouteManager.getInstance().addRoute(SOURCE_ID, origin, spawnSeed, extra, this);
+		if (route instanceof NexRouteManager.NexRouteData nrd) {
+			nrd.getDataStore().put(NexRouteManager.DATA_KEY_NO_PROCESS_DAMAGE, true);
+		}
 		if (isPlayer) {
 			routeAI = new PlayerSpecialForcesRouteAI((PlayerSpecialForcesIntel)this);
 		} else {
@@ -915,19 +919,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public void reportAboutToBeDespawnedByRouteManager(RouteData route) {
 		
 	}
-	
-	/**
-	 * Forces the fleet to generate. Used for e.g. bounties. Doesn't actually assign the active fleet, don't use.
-	 * @param preventAutoDespawn Sets {@code setNoAutoDespawn(true)} on the resulting fleet.
-	 */
-	@Deprecated
-	public void forceSpawn(boolean preventAutoDespawn) {
-		if (route.getActiveFleet() == null)
-			route.getSpawner().spawnFleet(route);
-		if (preventAutoDespawn && route.getActiveFleet() != null) 
-			route.getActiveFleet().setNoAutoDespawn(true);
-	}
-	
+
 	/**
 	 * Use to revert the effects of {@code forceSpawn(true)}.
 	 */
@@ -939,7 +931,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 	public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, BattleAPI battle)
 	{
 		/*
-			NOTE: this causes calculation errors if a fleet is damage, despawned, then respawned
+			NOTE: this causes calculation errors if a fleet is damaged, despawned, then respawned
 			e.g. if it loses half its FP, despawns, then respawns, trueStartingFP will now be half its original value
 			If half this reduced fleet is then lost, damage is only 0.5 even though the fleet is now 1/4 its original size
 			But I don't know how to fix this

@@ -39,8 +39,8 @@ import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.*;
 import exerelin.campaign.ExerelinSetupData.HomeworldPickMode;
-import exerelin.campaign.ai.SAIKantasProtectionListener;
 import exerelin.campaign.ai.MilitaryInfoHelper;
+import exerelin.campaign.ai.SAIKantasProtectionListener;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.backgrounds.BaseCharacterBackground;
 import exerelin.campaign.backgrounds.CharacterBackgroundIntel;
@@ -49,10 +49,17 @@ import exerelin.campaign.backgrounds.CharacterBackgroundUtils;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.battle.NexAutoresolveListener;
 import exerelin.campaign.colony.ColonyTargetValuator;
-import exerelin.campaign.econ.*;
+import exerelin.campaign.econ.EconomyInfoHelper;
+import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.econ.GroundPoolManager;
+import exerelin.campaign.econ.Nex_BoostIndustryInstallableItemEffect;
 import exerelin.campaign.fleets.*;
+import exerelin.campaign.fleets.utils.FleetPoolHelperListener;
 import exerelin.campaign.graphics.MiningCooldownDrawerV2;
-import exerelin.campaign.intel.*;
+import exerelin.campaign.intel.FactionBountyManager;
+import exerelin.campaign.intel.MilestoneTracker;
+import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
+import exerelin.campaign.intel.PersonalConfigIntel;
 import exerelin.campaign.intel.agents.AgentBarEventCreator;
 import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
 import exerelin.campaign.intel.bases.Nex_PirateBaseManager;
@@ -60,7 +67,6 @@ import exerelin.campaign.intel.hostileactivity.NexHostileActivityManager;
 import exerelin.campaign.intel.merc.MercSectorManager;
 import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.missions.Nex_CBHegInspector;
-import exerelin.campaign.intel.missions.remnant.RemnantLostScientist;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
@@ -152,7 +158,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
         
-        // replace or remove relevant intel items
+        // replace or remove relevant intel items and other scripts
+        NexRouteManager.replaceExistingRouteManager();
         for (IntelInfoPlugin iip : Global.getSector().getIntelManager().getIntel(FactionHostilityIntel.class)) {
             FactionHostilityIntel host = (FactionHostilityIntel)iip;
             host.endHostilties();
@@ -235,26 +242,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        ScriptReplacer.replaceScript(Global.getSector(), HostileActivityManager.class, new NexHostileActivityManager());
-
-        SectorManager.getManager().reverseCompatibility();
-        
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-            if (!market.hasCondition(FactionConditionPlugin.CONDITION_ID)) {
-                market.addCondition(FactionConditionPlugin.CONDITION_ID);
-            }
-        }
-
-        if (MiningCooldownDrawer.getEntity() != null)
-            MiningCooldownDrawer.remove();
-
-        if (!Global.getSector().getListenerManager().hasListener(DiplomacyManager.getManager())) {
-            Global.getSector().getListenerManager().addListener(DiplomacyManager.getManager());
-        }
-
-        if (InsuranceIntelV2.getInstance() != null) InsuranceIntelV2.getInstance().reverseCompatibility();
-
-        RemnantLostScientist.reverseCompatibilityStatic();
+        NexRouteManager.replaceExistingRouteManager();
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();
@@ -273,6 +261,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorAPI sector = Global.getSector();
         new FleetPoolManager().init();
         new GroundPoolManager().init();
+        NexRouteManager.getInstance();
         sector.addScript(SectorManager.create());
         sector.addScript(DiplomacyManager.create());
         sector.addScript(InvasionFleetManager.create());
@@ -303,11 +292,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     // Stuff here should be moved to new game once it is expected that no existing saves lack them
     protected void addScriptsAndEventsIfNeeded() {
-        if (GroundPoolManager.getManager() == null) {
-            GroundPoolManager man = new GroundPoolManager();
-            man.init();
-            man.initPointsFromIFM();
-        }
+
     }
 
 
@@ -475,6 +460,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (NexConfig.enableStrategicAI && NexConfig.getFactionConfig(Factions.PIRATES).useStrategicAI) {
             sector.getListenerManager().addListener(new SAIKantasProtectionListener(), true);
         }
+
+        FleetPoolHelperListener.create(sector);
     }
     
     @Override

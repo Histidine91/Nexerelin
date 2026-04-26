@@ -20,7 +20,9 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.econ.GroundPoolManager;
 import exerelin.campaign.econ.RaidCondition;
+import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
@@ -78,6 +80,12 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		addStage(action);
 		
 		addStage(new NexReturnStage(this));
+
+		float marines = this.fp * 2;	// crude estimate
+		ResourcePoolManager.RequisitionParams grp = new ResourcePoolManager.RequisitionParams(marines * GroundPoolManager.POOL_PER_MARINE);
+		grp.abortIfNotAtLeast = 0;	// always have the marines we need
+		GroundPoolManager.getManager().drawFromPool(faction.getId(), grp);
+		this.groundPoolRequest = grp;
 
 		int nexIntelQueued = NexConfig.nexIntelQueued;
 		switch (nexIntelQueued) {

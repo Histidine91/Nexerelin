@@ -303,6 +303,9 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 				status = RaidStageStatus.SUCCESS;
 				//offFltIntel.endAfterDelay();	// can't end now, it breaks the subsequent wait stage
 			}
+			else {
+				offFltIntel.setGroundActionDefeated(true);
+			}
 		} else {
 			// create ground battle if doesn't exist
 			// add troops to it
@@ -321,6 +324,8 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			// ...no we can't, the other routes still need to make their attempt
 			if (fleet != null) inv.deployToGroundBattle(fleet);
 			else inv.deployToGroundBattle(currRouteForAutoresolve);
+
+			inv.forceSpawnFleets();
 		}
 		
 		// when FAILURE, gets sent by RaidIntel
@@ -482,7 +487,13 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		return market == target;
 	}
-	
+
+	@Override
+	public void notifyStarted() {
+		super.notifyStarted();
+		offFltIntel.setForceSpawnInSystem(true, untilAutoresolve);
+	}
+
 	@Override
 	public String getRaidPrepText(CampaignFleetAPI fleet, SectorEntityToken from) {
 		return StringHelper.getFleetAssignmentString("orbiting", from.getName());

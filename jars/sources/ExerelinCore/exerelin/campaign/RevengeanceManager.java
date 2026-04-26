@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.ResourcePoolManager.RequisitionParams;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
@@ -384,7 +385,7 @@ public class RevengeanceManager extends BaseCampaignEventListener implements Col
 		}
 		
 		RequisitionParams params = new RequisitionParams();
-		params.thresholdBeforeAbort = -NexConfig.pointsRequiredForInvasionFleet;
+		params.thresholdBeforeAbort = -NexConfig.pointsRequiredForInvasionFleet * FleetPoolManager.INVASION_POINT_CONVERSION_MULT;
 		params.amountMult = 0.75f;
 		
 		OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(

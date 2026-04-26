@@ -32,7 +32,9 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.battle.NexWarSimScript;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.GroundPoolManager;
+import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.fleets.NexRouteManager;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
@@ -60,6 +62,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public static final float FP_MULT = 0.7f;
 	public static final float ROUTE_STRENGTH_MULT = 1/FP_MULT;
 	public static final List<String> NO_ALLY_SHARE_FACTIONS = new ArrayList<>(Arrays.asList("tahlan_legioinfernalis"));
+	public static final boolean ROUTE_MANAGER_HANDLE_POOL_REFUNDS = true;
 	
 	public static Logger log = Global.getLogger(OffensiveFleetIntel.class);
 	
@@ -74,8 +77,8 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	@Getter protected boolean playerSpawned;	// was this fleet spawned by player fleet request?
 	@Getter @Setter protected int playerFee;
 	@Getter @Setter protected int invPointsSpent;
-	@Getter @Setter protected int fleetPoolPointsSpent;
-	@Getter @Setter protected int groundPoolPointsSpent;
+	@Getter @Setter protected ResourcePoolManager.RequisitionParams fleetPoolRequest;
+	@Getter @Setter protected ResourcePoolManager.RequisitionParams groundPoolRequest;
 	@Getter protected float fp;
 	@Getter protected float baseFP;
 	protected float orgDur;
@@ -89,6 +92,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected boolean brawlMode;
 	protected float brawlMult = -1;
 	protected boolean reportedRaid = false;
+	@Getter @Setter protected boolean groundActionDefeated = false;
 
 	@Getter protected DefenseFleetIntel requestedDefenseFleet;	// quick-request defense fleet to counter this fleet
 		
@@ -319,6 +323,18 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected void notifyEnding() {
 		refundInvasionAndFleetPoints();
 		refundPlayerFeeIfNeeded();
+		setForceSpawnInSystem(false, -1);
+	}
+
+	public void forceSpawnFleets() {
+		for (RouteData route : this.getRoutes()) {
+			if (route instanceof NexRouteManager.NexRouteData nrd) nrd.setForceSpawn(true);
+		}
+	}
+
+	public void setForceSpawnInSystem(boolean force, float duration) {
+		if (NexRouteManager.USE_FORCE_SPAWN)
+			Misc.setFlagWithReason(target.getContainingLocation().getMemoryWithoutUpdate(), NexRouteManager.MEM_KEY_LOCATION_FORCE_SPAWN, "nex_offensive_action_" + this.hashCode(), force, duration);
 	}
 
 	@Override
@@ -570,23 +586,67 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		return tags;
 	}
 
+	protected float getFleetPointRefundMult() {
+		float refundMult = 0;
+		if (currentStage <= 1) refundMult = 1;	// organize and assemble
+		else if (currentStage == 2) refundMult = 0.75f;	// travel
+		else if (currentStage == 3) refundMult = 0.6f;	// action
+		else refundMult = 0.4f;	// anything later (invasion wait stage, return stage)
+
+		return refundMult;
+	}
+
 	protected void refundInvasionAndFleetPoints() {
 		// 0 = organize; 1 = assemble; 2 = travel, 3 = action
 		if (outcome != null && !outcome.isCancelled()) return;
 
-		float refundMult = 0;
-		if (currentStage <= 1) refundMult = 1;
-		else if (currentStage == 2) refundMult = 0.75f;
-		else if (currentStage == 3) refundMult = 0.5f;
+		float refundMult = getFleetPointRefundMult();
+
+		if (refundMult == 0) return;
+
+		float groundRefundMult = groundActionDefeated ? refundMult : 1 + (refundMult - 1)/2;	// ground has only half the losses of space, if it doesn't lose
+
+		float fleetPoolPointsSpent = 0;
+		if (fleetPoolRequest != null) fleetPoolPointsSpent = fleetPoolRequest.amountDrawn;
+		float groundPoolPointsSpent = 0;
+		if (groundPoolRequest != null) groundPoolPointsSpent = groundPoolRequest.amountDrawn;
+
+		boolean refundViaListener = letRouteManagerHandlePoolRefunds();
+		List<RouteData> routes = getRoutes();
 
 		try {
 			String fid = proxyForFaction != null ? proxyForFaction.getId() : faction.getId();
 			InvasionFleetManager.getManager().modifySpawnCounterV2(fid, invPointsSpent * refundMult);
-			FleetPoolManager.getManager().modifyPool(fid, fleetPoolPointsSpent * refundMult);
-			GroundPoolManager.getManager().modifyPool(fid, groundPoolPointsSpent * refundMult);
+			float refund = 0;
+			if (!routes.isEmpty()) {
+				float fp = 0;
+				for (RouteData route : routes) {
+					if (route instanceof NexRouteManager.NexRouteData nr) {
+						if (refundViaListener) {
+							FleetPoolManager.setRouteReturnEfficiency(nr, refundMult);
+							FleetPoolManager.setRouteFactionId(nr, fid);
+						}
+						else {
+							fp += route.getExtra().fp * (1 - route.getExtra().damage);
+						}
+					}
+				}
+				refund = fp * refundMult;
+			} else {
+				refund = fleetPoolPointsSpent * refundMult;
+			}
+
+			FleetPoolManager.getManager().modifyPool(fid, refund);
+			if (NexRouteManager.DEBUG_MODE)
+				Global.getLogger(this.getClass()).info(String.format("OffensiveFleetIntel %s returning %.1f of %.1f points to fleet pool", this.getName(), refund, fleetPoolPointsSpent));
+			GroundPoolManager.getManager().modifyPool(fid, groundPoolPointsSpent * groundRefundMult);
 		} catch (NullPointerException npe) {
 			// do nothing
 		}
+	}
+
+	public boolean letRouteManagerHandlePoolRefunds() {
+		return ROUTE_MANAGER_HANDLE_POOL_REFUNDS;
 	}
 
 	protected float getCreditRefundMult() {

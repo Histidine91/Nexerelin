@@ -1,6 +1,7 @@
 package exerelin.campaign.intel.fleets
 
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FactionAPI
 import com.fs.starfarer.api.campaign.SectorEntityToken
 import com.fs.starfarer.api.campaign.econ.MarketAPI
@@ -17,6 +18,9 @@ import com.fs.starfarer.api.util.Misc
 import exerelin.campaign.PlayerFactionStore
 import exerelin.campaign.ai.action.StrategicAction
 import exerelin.campaign.ai.action.StrategicActionDelegate.ActionStatus
+import exerelin.campaign.econ.FleetPoolManager
+import exerelin.campaign.fleets.InvasionFleetManager
+import exerelin.campaign.fleets.NexRouteManager
 import exerelin.utilities.NexConfig
 import lombok.Getter
 import lombok.Setter
@@ -119,8 +123,34 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
         intelQueuedOrAdded = true
     }
 
-    override fun reportFGIAborted(intel: FleetGroupIntel?) {
+    override fun refundInvasionAndFleetPoints() {
+        var fp = 0f
+        for (fleet : CampaignFleetAPI in fgi.fleets) {
+            fp += fleet.fleetData.fleetPointsUsed / InvasionFleetManager.getFactionDoctrineFleetSizeMult(fleet.faction)
+        }
+        if (fgi.fleets.isEmpty() && fleetPoolRequest != null) {
+            fp = fleetPoolRequest.amountDrawn
+        }
 
+        val refundMult = this.fleetPointRefundMult;
+
+        try {
+            val fid = if (proxyForFaction != null) proxyForFaction.id else faction.id
+            InvasionFleetManager.getManager().modifySpawnCounterV2(fid, invPointsSpent * refundMult)
+            FleetPoolManager.getManager().modifyPool(fid, fp * refundMult)
+            if (NexRouteManager.DEBUG_MODE) Global.getLogger(this.javaClass).info(
+                String.format(
+                    "Blockade wrapper %s returning %.1f of %.1f points to fleet pool",
+                    this.name, fp * refundMult, fleetPoolRequest?.amountDrawn ?: 0
+                )
+            )
+        } catch (npe: NullPointerException) {
+            // do nothing
+        }
+    }
+
+    override fun reportFGIAborted(intel: FleetGroupIntel) {
+        refundInvasionAndFleetPoints()
     }
 
     override fun getType(): String {
@@ -133,6 +163,11 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
 
     override fun getIcon(): String? {
         return fgi?.icon ?: null
+    }
+
+    // probably doesn't actually get called
+    override fun letRouteManagerHandlePoolRefunds(): Boolean {
+        return false    // route manager approach is broadly incompatible with how FleetGroupIntel works
     }
 
     // because Kotlin cannot into Lombok

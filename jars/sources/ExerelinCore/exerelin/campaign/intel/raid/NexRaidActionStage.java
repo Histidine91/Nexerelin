@@ -223,7 +223,7 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 	@Override
 	public void notifyStarted() {
 		super.notifyStarted();
-		
+		getNexRaidIntel().setForceSpawnInSystem(true, 30);
 		RaidCondition.addOrUpdateConditionsForMarkets(system, intel);
 	}
 	

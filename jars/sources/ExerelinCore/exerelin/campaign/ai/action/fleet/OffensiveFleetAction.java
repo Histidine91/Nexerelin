@@ -46,7 +46,7 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
 
 
         OffensiveFleetIntel intel = InvasionFleetManager.getManager().generateInvasionOrRaidFleet(origin, target,
-                type, getSizeMult(), getFleetPoolRequisitionParams());
+                type, getSizeMult(), generateFleetPoolRequisitionParams());
         if (intel != null)
         {
             float cost = InvasionFleetManager.getInvasionPointCost(intel);
@@ -60,7 +60,7 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
         return false;
     }
 
-    public FleetPoolManager.RequisitionParams getFleetPoolRequisitionParams() {
+    public FleetPoolManager.RequisitionParams generateFleetPoolRequisitionParams() {
         return new FleetPoolManager.RequisitionParams();
     }
 

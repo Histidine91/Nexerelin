@@ -30,6 +30,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.fleets.NexRouteManager;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 import lombok.Getter;
@@ -509,6 +510,9 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 		extra.fleetType = FLEET_TYPE;
 		extra.strength = getAdjustedStrength(startingFP, origin);
 		route = RouteManager.getInstance().addRoute(SOURCE_ID, origin, spawnSeed, extra, this);
+		if (route instanceof NexRouteManager.NexRouteData nrd) {
+			nrd.getDataStore().put(NexRouteManager.DATA_KEY_NO_PROCESS_DAMAGE, true);
+		}
 		routeAI.addInitialTask();
 		waitingForSpawn = true;
 

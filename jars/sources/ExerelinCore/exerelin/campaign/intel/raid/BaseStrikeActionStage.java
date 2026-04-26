@@ -12,7 +12,8 @@ import exerelin.campaign.battle.NexWarSimScript;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+
+import java.awt.*;
 
 public class BaseStrikeActionStage extends InvActionStage {
 	
@@ -41,6 +42,12 @@ public class BaseStrikeActionStage extends InvActionStage {
 		}
 		
 		super.updateRoutes();
+	}
+
+	@Override
+	public void notifyStarted() {
+		super.notifyStarted();
+		offFltIntel.setForceSpawnInSystem(true, untilAutoresolve);
 	}
 	
 	@Override

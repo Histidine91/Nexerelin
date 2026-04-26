@@ -31,7 +31,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 	public static final Set<String> EXCEPTION_LIST = new HashSet<>();
 	// approximate conversion ratio of invasion points to fleet points, plus a bit of margin since this is used for more than invasions
 	// or maybe it could be a bit lower, since it never seems to actually get exhausted
-	public static final float FLEET_POOL_MULT = 0.012f;
+	public static final float INVASION_POINT_CONVERSION_MULT = 0.012f;
 	public static final float PLAYER_AUTONOMOUS_POINT_MULT = 0.25f;
 	@Deprecated public static final float POOL_MAX = 50000;	// 50k
 	public static final float POOL_MAX_MULT = 365;	// 1 year of storage
@@ -100,7 +100,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 	/**
 	 * Request points from the pool, following the specified parameters on overdraft and such.
 	 * @param factionId
-	 * @param params
+	 * @param params Parameters of the request, will be written to by this method.
 	 * @return The points granted for use from the pool (may be zero).
 	 */
 	public float drawFromPool(String factionId, RequisitionParams params) {
@@ -149,7 +149,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 	public void initPointsFromIFM() {
 		HashMap<String, Float> invPoints = InvasionFleetManager.getManager().getSpawnCounter();
 		for (String factionId : invPoints.keySet()) {
-			float poolPoints = invPoints.get(factionId) * FLEET_POOL_MULT;
+			float poolPoints = invPoints.get(factionId) * INVASION_POINT_CONVERSION_MULT;
 			log.info(String.format("Initializing faction %s fleet pool with %.0f points", factionId, poolPoints));
 			factionPools.put(factionId, poolPoints);
 		}
@@ -236,8 +236,8 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 			float pool = getCurrentPoolInternal(factionId);
 			float increment = pointsPerFaction.get(factionId);
 			if (!faction.isPlayerFaction() || NexConfig.followersInvasions) {
-				increment += NexConfig.baseInvasionPointsPerFaction * FLEET_POOL_MULT;
-				increment += NexConfig.invasionPointsPerPlayerLevel * playerLevel * FLEET_POOL_MULT;
+				increment += NexConfig.baseInvasionPointsPerFaction * INVASION_POINT_CONVERSION_MULT;
+				increment += NexConfig.invasionPointsPerPlayerLevel * playerLevel * INVASION_POINT_CONVERSION_MULT;
 			}
 			
 			increment *= config.invasionPointMult;
@@ -271,7 +271,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 		float stabilityMult = 0.25f + (0.75f * market.getStabilityValue()/10);
 
 		val *= stabilityMult;
-		val *= FLEET_POOL_MULT;
+		val *= INVASION_POINT_CONVERSION_MULT;
 
 		return val;
 	}
