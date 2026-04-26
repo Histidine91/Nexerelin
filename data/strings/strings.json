@@ -1218,7 +1218,7 @@
 		"infoTargetStrength":"Estimated strength: $space",
 		"infoTargetStrengthGround":"Estimated strength: $space space, $ground ground",
 		"aotdQol_colonyCount":"Colony quota for your commission: %s/%s",
-		"atodQol_colonyWarning":"Excess colonies will go straignt to your commissioning faction and you will not have authority over them!",
+		"atodQol_colonyWarning":"Excess colonies will go straight to your commissioning faction and you will not have authority over them!",
 		
 		"targetEntryTooltip":"Space defences: $space",
 		"targetEntryGroundTooltip":"Space defences: $space | Ground defences: $ground",
