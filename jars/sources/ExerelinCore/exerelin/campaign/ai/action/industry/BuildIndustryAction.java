@@ -64,7 +64,13 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
 
         delegate = this;
         status = ActionStatus.STARTING;
-        return buildOrUpgrade();
+        boolean result = buildOrUpgrade();
+
+        if (result) {
+            checkIfIndustryUnderConstruction();
+        }
+
+        return result;
     }
 
     /**
@@ -225,15 +231,19 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
         }
 
         if (market != null && industryUnderConstruction == null) {
-            industryUnderConstruction = checkForIndustryUnderConstruction();
-            if (industryUnderConstruction != null) {
-                industryId = industryUnderConstruction.getId();
-                status = ActionStatus.IN_PROGRESS;
-            }
+            checkIfIndustryUnderConstruction();
         }
 
         if (industryUnderConstruction != null && !industryUnderConstruction.isBuilding() && !industryUnderConstruction.isUpgrading()) {
             this.end(ActionStatus.SUCCESS);
+        }
+    }
+
+    protected void checkIfIndustryUnderConstruction() {
+        industryUnderConstruction = checkForIndustryUnderConstruction();
+        if (industryUnderConstruction != null) {
+            industryId = industryUnderConstruction.getId();
+            status = ActionStatus.IN_PROGRESS;
         }
     }
 
@@ -301,8 +311,14 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
 
     @Override
     public void abortStrategicAction() {
+        if (market.getFaction() != ai.getFaction()) return;
         if (industryUnderConstruction != null) {
-            industryUnderConstruction.getMarket().removeIndustry(industryUnderConstruction.getId(), null, false);
+            if (industryUnderConstruction.isBuilding() && !industryUnderConstruction.isUpgrading()) {
+                industryUnderConstruction.getMarket().removeIndustry(industryUnderConstruction.getId(), null, false);
+            }
+            else if (industryUnderConstruction.isUpgrading()) {
+                industryUnderConstruction.cancelUpgrade();
+            }
         } else {
             ColonyManager.getManager().removeQueuedIndustry(industryId, market);
         }
