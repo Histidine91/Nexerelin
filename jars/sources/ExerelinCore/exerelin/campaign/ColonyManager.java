@@ -176,30 +176,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			// handle market growth
 			if (!market.isPlayerOwned())
 			{
-				float growthRate = market.getIncoming().getWeightValue();
-				boolean allowThisGrowth = allowGrowth && (NexConfig.allowNPCColonyGrowth || market.getFaction().isPlayerFaction());
-				if (allowThisGrowth && !market.isHidden() && growthRate > 0 && Misc.getMarketSizeProgress(market) >= 1)
-				{
-					// workaround for colony near-instant growth in later cycles
-					// if we're still in the grace period, we know it shouldn't have grown, so reset it
-					if (market.getMemoryWithoutUpdate().getBoolean("$nex_delay_growth")) {
-						ImmigrationPlugin plugin = getImmigrationPlugin(market);
-						market.getPopulation().setWeight(plugin.getWeightForMarketSize(market.getSize()));
-						market.getPopulation().normalize();
-					}
-					else {
-						int maxSize = Global.getSettings().getInt("maxColonySize");
-						if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
-							maxSize = (int)market.getMemoryWithoutUpdate().getLong(MEMORY_KEY_GROWTH_LIMIT);
-						else if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
-							maxSize = NexConfig.maxNPCNewColonySize;
-						else if (market.getPlanetEntity() == null)
-							maxSize = Global.getSettings().getInt("nex_stationMaxSize");
-						
-						if (market.getSize() < maxSize) {
-							upsizeMarket(market);
-						}
-					}
+				if (allowGrowth) {
+					processColonyGrowth(market, numTicksPerMonth);
 				}
 				
 				if (market.getFaction().isPlayerFaction() && !market.isHidden()) 
@@ -217,27 +195,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				checkVICEVC(market);
 			}
 			
-			{
-				// garrison damage recovery
-				float garDamage = GBUtils.getGarrisonDamageMemory(market);
-				if (garDamage > 0) {
-					float recoveryFactor = 1/(numTicksPerMonth*GBConstants.INVASION_HEALTH_MONTHS_TO_RECOVER);
-
-					// check ground pool and deduct recovery expenses
-					float recoverMarineCount = recoveryFactor * GBUtils.getTroopCountForMarketSize(market) * 0.25f;
-					float wantedPts = recoverMarineCount * GroundPoolManager.POOL_PER_MARINE;
-					ResourcePoolManager.RequisitionParams rp = new ResourcePoolManager.RequisitionParams(wantedPts);
-					float available = GroundPoolManager.getManager().drawFromPool(market.getFactionId(), rp);
-					if (available <= 0) continue;
-
-					float mult = Math.max(available/wantedPts, 1);
-					recoveryFactor *= mult;
-					garDamage -= recoveryFactor;
-					GBUtils.setGarrisonDamageMemory(market, garDamage);
-					log.info(String.format("%s (size %s) expending %.1f ground pool points to recover garrison health by %.3f",
-							market.getName(), market.getSize(), wantedPts, recoveryFactor));
-				}
-			}
+			recoverGarrisonDamage(market, numTicksPerMonth);
 			
 			if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
 				numColonies += 1;
@@ -254,24 +212,41 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			}
 
 			if (market.getAdmin() != null && market.getAdmin().isPlayer()) {
-				float profit = market.getNetIncome();
-				float cost = market.getIndustryUpkeep();
-				if (profit <= 0 || cost <= 0) continue;
-				float margin = profit/cost;
-				if (margin <= 0) continue;
-				if (margin > 2) margin = 2;
-				log.info(String.format("Market %s adding %.2f profit margin (%.0f profit, %.0f cost)", market.getName(), margin, profit, cost));
-				float size = market.getSize() - 2;
-				if (size < 0.5f) size = 0.5f;
-				float marginForXP = margin * size / numTicksPerMonth;
-				float xpEquivalent = marginForXP * Global.getSettings().getFloat("nex_xpPerProfitMargin");
-				log.info(String.format("This will be worth %.0f XP at month end (about %.0f/month)", xpEquivalent, xpEquivalent * numTicksPerMonth));
+				float marginForXP = computeXPFromPlayerProfits(market, numTicksPerMonth);
 				profitMarginForXP += marginForXP;
 			}
 		}
 		updatePlayerBonusAdmins(playerFactionSize);
 		if (!needRelief.isEmpty()) {
 			processReliefFleetEvent(needRelief);
+		}
+	}
+
+	protected void processColonyGrowth(MarketAPI market, float numTicksPerMonth) {
+		float growthRate = market.getIncoming().getWeightValue();
+		boolean allowThisGrowth = NexConfig.allowNPCColonyGrowth || market.getFaction().isPlayerFaction();
+		if (allowThisGrowth && !market.isHidden() && growthRate > 0 && Misc.getMarketSizeProgress(market) >= 1)
+		{
+			// workaround for colony near-instant growth in later cycles
+			// if we're still in the grace period, we know it shouldn't have grown, so reset it
+			if (market.getMemoryWithoutUpdate().getBoolean("$nex_delay_growth")) {
+				ImmigrationPlugin plugin = getImmigrationPlugin(market);
+				market.getPopulation().setWeight(plugin.getWeightForMarketSize(market.getSize()));
+				market.getPopulation().normalize();
+			}
+			else {
+				int maxSize = Global.getSettings().getInt("maxColonySize");
+				if (market.getMemoryWithoutUpdate().contains(MEMORY_KEY_GROWTH_LIMIT))
+					maxSize = (int)market.getMemoryWithoutUpdate().getLong(MEMORY_KEY_GROWTH_LIMIT);
+				else if (market.getMemoryWithoutUpdate().contains(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
+					maxSize = NexConfig.maxNPCNewColonySize;
+				else if (market.getPlanetEntity() == null)
+					maxSize = Global.getSettings().getInt("nex_stationMaxSize");
+
+				if (market.getSize() < maxSize) {
+					upsizeMarket(market);
+				}
+			}
 		}
 	}
 	
@@ -357,6 +332,45 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 			market.removeImmigrationModifier(this);
 		}
 	}
+
+	protected float computeXPFromPlayerProfits(MarketAPI market, float numTicksPerMonth) {
+		float profit = market.getNetIncome();
+		float cost = market.getIndustryUpkeep();
+		if (profit <= 0 || cost <= 0) return 0;
+		float margin = profit/cost;
+		if (margin <= 0) return 0;
+		if (margin > 2) margin = 2;
+		log.info(String.format("Market %s adding %.2f profit margin (%.0f profit, %.0f cost)", market.getName(), margin, profit, cost));
+		float size = market.getSize() - 2;
+		if (size < 0.5f) size = 0.5f;
+		float marginForXP = margin * size / numTicksPerMonth;
+		float xpEquivalent = marginForXP * Global.getSettings().getFloat("nex_xpPerProfitMargin");
+		log.info(String.format("This will be worth %.0f XP at month end (about %.0f/month)", xpEquivalent, xpEquivalent * numTicksPerMonth));
+
+		return marginForXP;
+	}
+
+	protected void recoverGarrisonDamage(MarketAPI market, float numTicksPerMonth) {
+		float garDamage = GBUtils.getGarrisonDamageMemory(market);
+		if (garDamage <= 0) return;
+
+		float recoveryFactor = 1/(numTicksPerMonth*GBConstants.INVASION_HEALTH_MONTHS_TO_RECOVER);
+
+		// check ground pool and deduct recovery expenses
+		float recoverMarineCount = recoveryFactor * GBUtils.getTroopCountForMarketSize(market) * 0.25f;
+		float wantedPts = recoverMarineCount * GroundPoolManager.POOL_PER_MARINE;
+		ResourcePoolManager.RequisitionParams rp = new ResourcePoolManager.RequisitionParams(wantedPts);
+		float available = GroundPoolManager.getManager().drawFromPool(market.getFactionId(), rp);
+		if (available <= 0) return;
+
+		float mult = Math.max(available/wantedPts, 1);
+		recoveryFactor *= mult;
+		garDamage -= recoveryFactor;
+		GBUtils.setGarrisonDamageMemory(market, garDamage);
+		log.info(String.format("%s (size %s) expending %.1f ground pool points to recover garrison health by %.3f",
+				market.getName(), market.getSize(), wantedPts, recoveryFactor));
+	}
+
 	
 	@Override
 	public void modifyIncoming(MarketAPI market, PopulationComposition incoming) {
