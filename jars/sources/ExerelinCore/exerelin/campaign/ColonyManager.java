@@ -39,10 +39,7 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.colony.ColonyTargetValuator;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
-import exerelin.campaign.econ.EconomyInfoHelper;
-import exerelin.campaign.econ.FactionConditionPlugin;
-import exerelin.campaign.econ.GroundPoolManager;
-import exerelin.campaign.econ.ResourcePoolManager;
+import exerelin.campaign.econ.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.colony.ColonyExpeditionIntel;
 import exerelin.campaign.intel.fleets.ReliefFleetIntelAlt;
@@ -194,7 +191,8 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				
 				checkVICEVC(market);
 			}
-			
+
+			applyFleetPoolModifiers(market);
 			recoverGarrisonDamage(market, numTicksPerMonth);
 			
 			if (market.getMemoryWithoutUpdate().getBoolean(ColonyExpeditionIntel.MEMORY_KEY_COLONY))
@@ -371,6 +369,24 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 				market.getName(), market.getSize(), wantedPts, recoveryFactor));
 	}
 
+	public void applyFleetPoolModifiers(MarketAPI market) {
+		if (FleetPoolManager.USE_POOL) {
+			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).unmodify(FleetPoolManager.MARKET_STAT_FLEET_POOL);
+			return;
+		}
+
+		float pool = FleetPoolManager.getManager().getCurrentPool(market.getFactionId());
+		float max = FleetPoolManager.getManager().getMaxPool(market.getFactionId());
+
+		if (pool > max/2) {
+			float bonusLevel = NexUtilsMath.lerp(1, FleetPoolManager.MARKET_FLEET_SIZE_MAX_BONUS, pool*2/max-1);
+			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).modifyMult(FleetPoolManager.MARKET_STAT_FLEET_POOL, bonusLevel, "[temp] Fleet pool full");
+		}
+		else if (pool < 0) {
+			float penaltyLevel = NexUtilsMath.lerp(1, FleetPoolManager.MARKET_FLEET_SIZE_MAX_PENALTY, pool/-max);
+			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).modifyMult(FleetPoolManager.MARKET_STAT_FLEET_POOL, penaltyLevel, "[temp] Fleet pool depleted");
+		}
+	}
 	
 	@Override
 	public void modifyIncoming(MarketAPI market, PopulationComposition incoming) {

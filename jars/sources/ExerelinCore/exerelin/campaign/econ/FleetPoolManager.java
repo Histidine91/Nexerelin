@@ -25,10 +25,13 @@ import java.util.Map;
 @Log4j
 public class FleetPoolManager extends ResourcePoolManager {
 
-	public static final boolean USE_POOL = false;
+	public static final boolean USE_POOL = true;
 	public static final String ROUTE_DATA_HAS_RETURNED_KEY = "nex_fleetPoolHasReturned";
 	public static final String ROUTE_DATA_RETURN_EFFICIENCY_KEY = "nex_fleetPoolReturnEfficiency";
 	public static final String ROUTE_DATA_FACTION_KEY = "nex_fleetPoolFactionId";
+	public static final String MARKET_STAT_FLEET_POOL = "nex_fleetPool";
+	public static final float MARKET_FLEET_SIZE_MAX_BONUS = 1.15f;	// multiplier
+	public static final float MARKET_FLEET_SIZE_MAX_PENALTY = 0.5f;	// multiplier
 
 	public static FleetPoolManager getManager() {
 		return (FleetPoolManager) Global.getSector().getPersistentData().get("nex_fleetPoolManager");
