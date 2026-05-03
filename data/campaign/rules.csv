@@ -1698,7 +1698,13 @@ aiCores_turnInOptionSelected,DialogOptionSelected,$option == aiCores_selectCores
 salRuins_alreadyExplored,PopulateOptions,"$market.hasRuins
 $market.ruinsExplored
 $market.isPlanetConditionMarketOnly
+!$tag:gas_giant
 !$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $marketName have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
+salRuinsGG_alreadyExplored,PopulateOptions,"$market.hasRuins
+$market.ruinsExplored
+$market.isPlanetConditionMarketOnly
+$tag:gas_giant
+!$market.mentionedRuins",$market.mentionedRuins = true 0,The ruins in low orbit of $marketName have been stripped of anything easily accessible. Further exploitation of abandoned buoyant structures requires a permanent presence.,,
 ,,,,,,
 bqfsASkedForSuppliesDeclineColony,DialogOptionSelected,"$option == bqfs_askForSupplies2
 Nex_MiscCMD hasAnyColoniesForQuartermasterSupplies score:100","AdjustRepActivePerson -1
