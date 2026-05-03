@@ -135,6 +135,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             
             eventDef.minRepChange = (float)eventDefJson.getDouble("minRepChange");
             eventDef.maxRepChange = (float)eventDefJson.getDouble("maxRepChange");
+            eventDef.postEnsureDelta = (float)eventDefJson.optDouble("postEnsureDelta", 0);
             eventDef.allowPiratesToPirates = eventDefJson.optBoolean("allowPiratesToPirates", false);
             eventDef.allowPiratesToNonPirates = eventDefJson.optBoolean("allowPiratesToNonPirates", false);
             eventDef.allowNonPiratesToPirates = eventDefJson.optBoolean("allowNonPiratesToPirates", false);
@@ -461,10 +462,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         if (!isAllianceAction && delta < 0)
             AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
-        
+
+        boolean isPlayerCommissionedToAParty = faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId);
         if (faction1Id.equals(Factions.PLAYER) || faction2Id.equals(Factions.PLAYER))
             NexUtilsReputation.syncFactionRelationshipsToPlayer();
-        else if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
+        else if (isPlayerCommissionedToAParty)
             NexUtilsReputation.syncPlayerRelationshipsToFaction();
         
         boolean playerIsHostile1 = faction1.isHostileTo(Factions.PLAYER);
@@ -477,7 +479,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         
         // TODO: display specific reputation change in message field if it affects player?
-        if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
+        if (isPlayerCommissionedToAParty)
         {
             
         }
@@ -493,7 +495,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     public static ExerelinReputationAdjustmentResult adjustRelations(DiplomacyEventDef event, FactionAPI faction1, FactionAPI faction2, float delta)
     {
-        return adjustRelations(faction1, faction2, delta, event.repEnsureAtBest, event.repEnsureAtWorst, event.repLimit);
+        return adjustRelations(faction1, faction2, delta, event.repEnsureAtBest, event.repEnsureAtWorst, event.postEnsureDelta, event.repLimit, false);
     }
     
     public DiplomacyIntel doDiplomacyEvent(DiplomacyEventDef event, MarketAPI market, FactionAPI faction1, FactionAPI faction2)
@@ -1606,6 +1608,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         public RepLevel repEnsureAtWorst;
         public RepLevel repEnsureAtBest;
         public RepLevel repLimit;
+        public float postEnsureDelta;
         public float minRepChange;
         public float maxRepChange;
         public List<String> allowedFactions1;
