@@ -17,6 +17,7 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.alliances.AllianceVoter.VoteResult;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
 import exerelin.campaign.intel.diplomacy.AllianceOfferIntel;
@@ -28,10 +29,10 @@ import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
-public class AllianceManager  extends BaseCampaignEventListener implements EveryFrameScript {
+public class AllianceManager extends BaseCampaignEventListener implements EveryFrameScript {
     public static Logger log = Global.getLogger(AllianceManager.class);
     
     protected static final String MANAGER_MAP_KEY = "exerelin_allianceManager";
@@ -433,6 +434,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (factionId2.equals(factionId1)) return false;
         if (INVALID_FACTIONS.contains(factionId2)) return false;
         if (Global.getSector().getFaction(factionId1).isAtBest(factionId2, RepLevel.WELCOMING)) return false;
+        VassalManager vm = VassalManager.getInstance();
+        if (vm.isVassal(factionId1) || vm.isVassal(factionId2)) return false;
 
         Alignment bestAlignment = getBestAlignment(factionId1, factionId2);
         return bestAlignment != null;
@@ -451,6 +454,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         SectorAPI sector = Global.getSector();
         List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
         Collections.shuffle(liveFactionIds);
+        VassalManager vm = VassalManager.getInstance();
         
         // first let's look at forming a new alliance
         // note: similar to but not the same as canAlly()
@@ -461,6 +465,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             if (INVALID_FACTIONS.contains(factionId)) continue;
 			if (Nex_IsFactionRuler.isRuler(factionId)) continue;
 			if (StrategicAI.getAI(factionId) != null) continue;
+            if (vm.isVassal(factionId)) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             for (String otherFactionId : liveFactionIds)
@@ -472,6 +477,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 //if (Nex_IsFactionRuler.isRuler(otherFactionId)) continue;
                 if (Factions.PLAYER.equals(otherFactionId) && Misc.getCommissionFaction() != null) continue;
                 if (faction.isAtBest(otherFactionId, RepLevel.WELCOMING)) continue;
+                if (vm.isVassal(otherFactionId)) continue;
                 
                 // better relationships are more likely to form alliances
                 float rel = faction.getRelationship(otherFactionId);
@@ -705,6 +711,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     public static void remainInAllianceCheck(String factionId, String otherFactionId)
     {
         AllianceManager manager = getManager();
+        VassalManager vm = VassalManager.getInstance();
+        if (vm.isVassal(factionId)) return;
+        if (vm.isVassal(otherFactionId)) return;
+
         Alliance alliance1 = manager.alliancesByFactionId.get(factionId);
         Alliance alliance2 = manager.alliancesByFactionId.get(otherFactionId);
         if (alliance1 == null || alliance2 == null || alliance1 != alliance2) return;

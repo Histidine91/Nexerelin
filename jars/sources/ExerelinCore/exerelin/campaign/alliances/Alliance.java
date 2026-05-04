@@ -10,13 +10,14 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
 import exerelin.utilities.*;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 public class Alliance 
 {
@@ -264,15 +265,22 @@ public class Alliance
 		}
 		return true;
 	}
-	
+
+	/**
+	 * Gets the mean relationship of the alliance's members to the specified faction. Vassals are not counted.
+	 * @param factionId
+	 * @return
+	 */
 	public float getAverageRelationshipWithFaction(String factionId)
 	{
 		float sumRelationships = 0;
 		int numFactions = 0;
 		FactionAPI faction = Global.getSector().getFaction(factionId);
+		VassalManager vm = VassalManager.getInstance();
 		for (String memberId : members)
 		{
 			if (memberId.equals(factionId)) continue;
+			if (vm.isVassal(memberId)) continue;
 			sumRelationships += faction.getRelationship(memberId);
 			numFactions++;
 		}
