@@ -918,6 +918,7 @@ nex_blueprintSwapMenu,Nex_BlueprintSwapMenu,,"AddTextSmall ""You have $nex_BPSwa
 SetTextHighlights $nex_BPSwap_pointsStr
 SetShortcut nex_blueprintSwapExit ""ESCAPE""",,"nex_blueprintSwapBuy:Purchase blueprints
 nex_blueprintSwapSell:Trade in blueprints
+#nex_blueprintSwapCustom:Place a custom order
 nex_blueprintSwapExit:Go back",
 nex_blueprintSwapSellOption,DialogOptionSelected,$option == nex_blueprintSwapSell,Nex_BlueprintSwap sell,,,
 nex_blueprintSwap_SellResponse,Nex_BlueprintsSold,,FireAll Nex_BlueprintSwapMenu,"""Thank you for your business.""",,
@@ -932,6 +933,23 @@ AddTextSmall ""You have $nex_BPSwap_pointsStr points.""
 SetTextHighlights $nex_BPSwap_pointsStr
 ShowPersonVisual","""Thank you for your business.""",,
 nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,FireAll PopulateOptions,,,
+nex_blueprintSwapCustom,DialogOptionSelected,$option == nex_blueprintSwapCustom,"AddTextSmall ""This lets you pick a specific blueprint. Each item costs 1/2/3/4 SP depending on hull size and five times the usual blueprint point cost.""
+SetTextHighlightColors story story story story h
+SetTextHighlights 1 2 3 4 ""five times""
+SetShortcut nex_blueprintSwapMenuReturn ""ESCAPE""","""Ah, the VIP service? Sure, let me send you our selection.""","nex_blueprintSwapCustomList:Make a custom order
+nex_blueprintSwapMenuReturn:Go back",
+nex_blueprintSwapCustomPrompt,DialogOptionSelected,$option == nex_blueprintSwapCustomList,Nex_BlueprintSwap showCustomMenu,,,
+nex_blueprintSwapCustomPreConfirm,Nex_BlueprintSwapCustomPicked,,"Nex_BlueprintSwap showCustomConfirmation
+SetShortcut nex_blueprintSwapMenuReturn ""ESCAPE""",,"nex_blueprintSwapCustomConfirm:Confirm purchase
+nex_blueprintSwapCustomList:Repick items
+nex_blueprintSwapMenuReturn:Cancel",
+nex_blueprintSwapCustomConfirm,DialogOptionSelected,$option == nex_blueprintSwapCustomConfirm,"Nex_BlueprintSwap confirmCustom
+FireAll Nex_BlueprintSwapMenu","""Thank you for your business.""",,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
 #END Blueprint swap options,,,,,,
 ,,,,,,
 # Stabilization package,,,,,,
