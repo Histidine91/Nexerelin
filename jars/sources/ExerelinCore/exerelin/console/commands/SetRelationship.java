@@ -5,7 +5,7 @@ import exerelin.utilities.NexUtilsReputation;
 import org.lazywizard.console.commands.SetRelation;
 
 public class SetRelationship extends SetRelation {
-
+	// using this instead of a console listener because it saves us a bit of trouble deciding which way to sync
 	@Override
 	public CommandResult runCommand(String args, CommandContext context) {
 		CommandResult result = super.runCommand(args, context);

@@ -1,13 +1,14 @@
 package exerelin.console.commands;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import exerelin.campaign.DiplomacyManager;
-import org.lazywizard.console.BaseCommand;
-import org.lazywizard.console.CommandUtils;
-import org.lazywizard.console.CommonStrings;
-import org.lazywizard.console.Console;
+import org.lazywizard.console.*;
 
-public class CreateDiplomacyEvent implements BaseCommand {
+import java.util.ArrayList;
+import java.util.List;
+
+public class CreateDiplomacyEvent implements BaseCommandWithSuggestion {
 
     @Override
     public CommandResult runCommand(String args, CommandContext context) {
@@ -52,5 +53,13 @@ public class CreateDiplomacyEvent implements BaseCommand {
                 + CommandUtils.getFactionName(fac1) + " and "
                 + CommandUtils.getFactionName(fac2));
         return CommandResult.SUCCESS;
+    }
+
+    @Override
+    public List<String> getSuggestions(int parameter, List<String> previous, BaseCommand.CommandContext context) {
+        List<String> suggestions = new ArrayList<>();
+        if (parameter == 0 || parameter == 1) suggestions.addAll(Global.getSettings().getAllFactionSpecs().stream().map(it -> it.getId()).toList());
+        else if (parameter == 2) suggestions.addAll(DiplomacyManager.getEventDefs().stream().map(it -> it.id).toList());
+        return suggestions;
     }
 }

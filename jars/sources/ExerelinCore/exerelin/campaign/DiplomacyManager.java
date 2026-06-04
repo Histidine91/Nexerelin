@@ -57,8 +57,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     public static final List<String> disallowedFactions;
         
-    protected static List<DiplomacyEventDef> eventDefs;
-    protected static Map<String, DiplomacyEventDef> eventDefsById;
+    @Getter protected static List<DiplomacyEventDef> eventDefs;
+    @Getter protected static Map<String, DiplomacyEventDef> eventDefsById;
     
     public static final float STARTING_RELATIONSHIP_HOSTILE = -0.6f;
     public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.4f;

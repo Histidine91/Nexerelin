@@ -2,21 +2,22 @@ package exerelin.console.commands;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.lazywizard.console.BaseCommand;
+import org.lazywizard.console.BaseCommandWithSuggestion;
 import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
 
-public class SetMarketOwner implements BaseCommand {
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class SetMarketOwner implements BaseCommandWithSuggestion {
 
     @Override
     public CommandResult runCommand(String args, CommandContext context) {
@@ -94,5 +95,18 @@ public class SetMarketOwner implements BaseCommand {
         Console.showMessage("Transferred market " + market.getName() + " from " + defenderFaction.getDisplayName() + " to " + attackerFaction.getDisplayName());
         
         return CommandResult.SUCCESS;
+    }
+
+    @Override
+    public List<String> getSuggestions(int parameter, List<String> previous, CommandContext context) {
+        List<String> suggestions = new ArrayList<>();
+
+        if (parameter == 0) {
+            suggestions.addAll(Global.getSector().getEconomy().getMarketsCopy().stream().map(it -> it.getId()).toList());
+        } else if (parameter == 1) {
+            suggestions.addAll(Global.getSettings().getAllFactionSpecs().stream().map(it -> it.getId()).toList());
+        }
+
+        return suggestions;
     }
 }
