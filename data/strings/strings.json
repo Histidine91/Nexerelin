@@ -925,6 +925,8 @@
 		
 		"intelInterveneTitle":"Intervention Warning",
 		"intelInterveneDesc":"$TheFaction is issuing us a warning regarding our ongoing war against their ally, $theFriend. They will join the conflict against us if we do not make peace.",
+		
+		"statDescMaxRelations_base":"Base maximum between factions"
 	},
 	"nex_diplomacyProfile":{
 		"title":"Diplomacy Profile",
@@ -941,6 +943,8 @@
 		"dispositionNeutral":"$TheFaction $isOrAre uncertain where they stand with regard to us, and may take positive or negative actions.",
 		"dispositionBad":"$TheFaction $isOrAre unfriendly towards us and will look to pick a fight.",
 		"dispositionWarRisk":"At current relations and disposition, $theFaction may declare war on us if the opportunity arises.",
+		
+		"maxRelationship":"Max relations with $faction: %s, current: %s",
 		
 		"morality":"morality",
 		"morality_good":"good",

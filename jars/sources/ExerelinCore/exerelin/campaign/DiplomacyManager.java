@@ -31,6 +31,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import org.apache.log4j.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,8 +40,8 @@ import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * Creates diplomacy events at regular intervals; handles war weariness
@@ -880,28 +882,32 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 	}
 	
 	/**
-	 * Gets the modifier stat to maximum relationship with the other faction (may be null).
+	 * Gets the saved modifier stat to maximum relationship with the other faction, if any.
+     * Largely an internal method, other code should call {@code getMaxRelationshipStat} instead.
 	 * @param factionId
 	 * @param otherFactionId
 	 * @return
 	 */
+    @Nullable
 	public MutableStat getMaxRelationshipMod(String factionId, String otherFactionId) {
-		return getMaxRelationshipMod(Global.getSector().getFaction(factionId), otherFactionId);
+        Map<String, MutableStat> maxTable = this.getMaxRelationshipModMap(factionId);
+        return maxTable.get(otherFactionId);
 	}
-	
-	/**
-	 * Gets the modifier value to maximum relationship with the other faction, if any.
+
+    /**
+     * Gets the saved modifier stat to maximum relationship with the other faction, if any.
+     * Largely an internal method, other code should call {@code getMaxRelationshipStat} instead.
 	 * @param faction
-	 * @param otherFactionId
+	 * @param otherFaction
 	 * @return
 	 */
-	public MutableStat getMaxRelationshipMod(FactionAPI faction, String otherFactionId) {
-		Map<String, MutableStat> maxTable = this.getMaxRelationshipModMap(faction);		
-		return maxTable.get(otherFactionId);
+    @Nullable
+	public MutableStat getMaxRelationshipMod(FactionAPI faction, FactionAPI otherFaction) {
+        return getMaxRelationshipMod(faction.getId(), otherFaction.getId());
 	}
 	
 	/**
-	 * Gets the modifier to maximum relationship with the other faction .
+	 * Gets the modifier value to maximum relationship with the other faction. Will return 1 if no modifier was saved.
 	 * @param factionId
 	 * @param otherFactionId
 	 * @return
@@ -915,20 +921,34 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 	public float getMaxRelationship(String factionId, String otherFactionId) {
 		if (factionId.equals(otherFactionId)) return 1;
 
-		// check max relationship modifiers
-		float mod1 = getMaxRelationshipModValue(factionId, otherFactionId);
-		float mod2 = getMaxRelationshipModValue(otherFactionId, factionId);
-		float mod = Math.min(mod1, mod2);
-		float baseMax = 1;
-
-		if (!haveRandomRelationships(factionId, otherFactionId))
-			baseMax = NexFactionConfig.getMaxRelationship(factionId, otherFactionId);
-
-		float result = mod + baseMax;
+        float result = getMaxRelationshipStat(factionId, otherFactionId).getModifiedValue();
 		if (result < -1) result = -1;
 		
 		return result;
 	}
+
+    @NotNull
+    public MutableStat getMaxRelationshipStat(String factionId, String otherFactionId) {
+        MutableStat stat = getMaxRelationshipMod(factionId, otherFactionId);
+
+        // check max relationship modifiers
+        MutableStat mod1 = getMaxRelationshipMod(factionId, otherFactionId);
+        MutableStat mod2 = getMaxRelationshipMod(otherFactionId, factionId);
+        if (mod1 == null) mod1 = new MutableStat(0);
+        if (mod2 == null) mod2 = new MutableStat(0);
+
+        MutableStat lowest = mod1;
+        if (mod1.getModifiedValue() > mod2.getModifiedValue()) lowest = mod2;
+        float baseMax = 1;
+
+        if (!haveRandomRelationships(factionId, otherFactionId))
+            baseMax = NexFactionConfig.getMaxRelationship(factionId, otherFactionId);
+
+        MutableStat result = lowest.createCopy();
+        result.modifyFlat("base", baseMax, StringHelper.getString("exerelin_diplomacy", "statDescMaxRelations_base"));
+
+        return result;
+    }
 	
 	public void modifyMaxRelationshipMod(String modifierId, float mod, String factionId, String otherFactionId, String desc) 
 	{

@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CargoPickerListener;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
@@ -20,6 +21,8 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
+
+import java.awt.*;
 
 public class Nex_AICores extends AICores {
 	
@@ -92,7 +95,9 @@ public class Nex_AICores extends AICores {
 			public void cancelledCargoSelection() {
 			}
 			public void recreateTextPanel(TooltipMakerAPI panel, CargoAPI cargo, CargoStackAPI pickedUp, boolean pickedUpFromSource, CargoAPI combined) {
-			
+
+				//Global.getLogger(this.getClass()).info("panel recreated");
+
 				float bounty = computeCoreCreditValue(combined);
 				float repChange = computeCoreReputationValue(combined);
 				
@@ -132,16 +137,22 @@ public class Nex_AICores extends AICores {
 				//if (!DiplomacyManager.haveRandomRelationships(faction.getId(), myFaction.getId()))
 				{
 					String shortName = NexUtilsFaction.getFactionShortName(faction);
-					float maxRep = DiplomacyManager.getManager().getMaxRelationship(faction.getId(), myFaction.getId());
-					if (maxRep < 1)
+					MutableStat maxRep = DiplomacyManager.getManager().getMaxRelationshipStat(faction.getId(), myFaction.getId());
+					if (maxRep.getModifiedValue() < 1)
 					{
-						int maxRepInt = (int)(maxRep * 100f);
+						Color col = NexUtilsReputation.getRelColor(maxRep.getModifiedValue());
+						int maxRepInt = (int)(maxRep.getModifiedValue() * 100f);
 						str = StringHelper.getStringAndSubstituteToken("exerelin_factions", 
 								"repLimit", "$faction", shortName);
 						panel.setParaFontColor(Misc.getGrayColor());
-						LabelAPI label = panel.addPara(str, opad * 1f, NexUtilsReputation.getRelColor(maxRep), 
+						LabelAPI label = panel.addPara(str, opad * 1f, col,
 								maxRepInt + "/100", NexUtilsReputation.getRelationStr(myFaction, faction));
-						label.setHighlightColors(NexUtilsReputation.getRelColor(maxRep), faction.getRelColor(myFaction.getId()));
+						label.setHighlightColors(col, faction.getRelColor(myFaction.getId()));
+						label.setHighlightOnMouseover(true);
+
+						// Tooltip doesn't work, perhaps because this text panel is being recreated every frame
+						//panel.addTooltipToPrevious(new NexUtilsGUI.MaxRepTooltipCreator(maxRep), TooltipMakerAPI.TooltipLocation.BELOW);
+						//panel.setForceProcessInput(true);
 						
 						panel.setParaFontColor(Misc.getTextColor());
 					}

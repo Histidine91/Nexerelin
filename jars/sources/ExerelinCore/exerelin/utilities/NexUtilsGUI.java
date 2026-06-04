@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
@@ -214,6 +215,30 @@ public class NexUtilsGUI {
 		@Override
 		public void coreUIDismissed() {
 
+		}
+	}
+
+	public static class MaxRepTooltipCreator implements TooltipMakerAPI.TooltipCreator {
+
+		public MutableStat maxRep;
+
+		public MaxRepTooltipCreator(MutableStat maxRep) {
+			this.maxRep = maxRep;
+		}
+
+		@Override
+		public boolean isTooltipExpandable(Object tooltipParam) {
+			return false;
+		}
+
+		@Override
+		public float getTooltipWidth(Object tooltipParam) {
+			return 360;
+		}
+
+		@Override
+		public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+			tooltip.addStatModGrid(350, 60, 10, 3, maxRep, true, NexUtils.getStatModValueGetter(true, 2));
 		}
 	}
 
