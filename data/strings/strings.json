@@ -3288,6 +3288,8 @@
 		"tooltip_showStrategicAI":"If false, AI for other factions will not be shown in intel screen.",
 		"name_enableVictory":"Enable victory",
 		"tooltip_enableVictory":"If off, prevents the victory event from occurring even if conditions are met (except for story-based or other scripted victories).",
+		"name_keepSModsForRecoveredShips":"Keep S-mods on recovered enemy ships",
+		"tooltip_keepSModsForRecoveredShips":"Note that some enemy ships (notably in SWP's IBB bounties) will lose their S-mods regardless.",
 		"name_hardModeColonyGrowthMult":"Starfarer mode colony growth mult",
 		"tooltip_hardModeColonyGrowthMult":"",
 		"name_hardModeColonyIncomeMult":"Starfarer mode colony income mult",
