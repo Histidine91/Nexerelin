@@ -1578,6 +1578,10 @@ nex_getConstructionQueueOpt,PopulateOptions,"$global.isDevMode
 Nex_IsBaseOfficial admin",,,21:nex_getConstructionQueue:>> (dev) Get construction queue,
 nex_getConstructionQueue,DialogOptionSelected,$option == nex_getConstructionQueue,Nex_DisplayConstructionQueue,,,
 ,,,,,,
+marketPostOpenPlayerRuled,MarketPostOpen,"$hasMarket
+Nex_IsFactionRuler $faction.id score:999","$tradeMode = OPEN 0
+FireBest MarketPostDock",Your $shipOrFleet goes into orbit around $marketName.,,
+,,,,,,
 nex_marketPostOpenDerelicts,MarketPostOpen,"$hasMarket
 $faction.id == nex_derelict score:1000","$tradeMode = NONE 0
 FireBest MarketPostDock","$TheFactionLong $factionIsOrAre in control of this location. They do not interact with humans, except through gunfire.",,
