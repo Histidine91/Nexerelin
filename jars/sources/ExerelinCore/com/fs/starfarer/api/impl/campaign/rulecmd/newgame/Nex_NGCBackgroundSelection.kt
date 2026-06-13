@@ -45,6 +45,7 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
             var factionID  = mem!!.getString("\$nex_selected_faction_for_background")
             ExerelinSetupData.getInstance().backgroundId = backgroundID
             ExerelinSetupData.getInstance().selectedFactionForBackground = factionID
+            ExerelinSetupData.getInstance().backgroundIdForSelectorMemory = backgroundID
         }
 
         val data = mem!!.get("\$characterData") as CharacterCreationData
@@ -112,7 +113,7 @@ class Nex_NGCBackgroundSelection : BaseCommandPlugin() {
 
             var checkbox = NexLunaCheckbox(first, subelement.innerElement, 20f, 20f)
             // checkbox enabled if this was the last selected background
-            checkbox.value = canBeSelected && background.spec.id.equals(ExerelinSetupData.getInstance().backgroundId)
+            checkbox.value = canBeSelected && background.spec.id.equals(ExerelinSetupData.getInstance().backgroundIdForSelectorMemory)
             if (checkbox.value) {
                 memoryMap.get(MemKeys.LOCAL)!!.set("\$nex_selected_background", background.spec.id)
             }
