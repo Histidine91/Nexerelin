@@ -14,6 +14,7 @@ import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
+import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.campaign.intel.AllianceVoteIntel;
 import exerelin.utilities.*;
 import org.apache.log4j.Logger;
@@ -252,6 +253,9 @@ public class AllianceVoter {
 		
 		for (String allianceMember : alliance.members)
 		{
+			if (VassalManager.getInstance().isVassal(allianceMember))
+				continue;
+
 			Vote vote = factionVote(isWar, alliance, allianceMember, factionId, otherFactionId, 
 					factionsToConsider, strengthRatio);
 			if (vote == Vote.YES) {
@@ -273,6 +277,12 @@ public class AllianceVoter {
 				if (decideToDefyVote(isWar, alliance, voter, factionId, otherFactionId))
 				{
 					defied.add(voter);
+				}
+			}
+			for (String maybeVassal : alliance.members) {
+				String overlordId = VassalManager.getInstance().getOverlord(maybeVassal);
+				if (overlordId != null && defied.contains(overlordId)) {
+					defied.add(maybeVassal);
 				}
 			}
 		}

@@ -6,6 +6,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
@@ -132,8 +133,9 @@ public class DiplomacyAction extends BaseStrategicAction {
         if (concern.getDef().hasTag("diplomacy_negative") && !this.getDef().hasTag("unfriendly"))
             return false;
 
-        // don't pick fights while war weariness high
-        if (this.getDef().hasTag("canDeclareWar")) {
+        // don't pick fights while war weariness high, or if we're a vassal
+        if (this.getDef().hasTag("unfriendly")) {
+            if (VassalManager.getInstance().isVassal(ai.getFactionId())) return false;
             float ourWeariness = DiplomacyManager.getWarWeariness(ai.getFactionId(), true);
             if (ourWeariness > DiplomacyBrain.MAX_WEARINESS_FOR_WAR)
                 return false;

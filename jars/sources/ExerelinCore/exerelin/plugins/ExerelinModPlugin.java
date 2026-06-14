@@ -49,6 +49,7 @@ import exerelin.campaign.backgrounds.CharacterBackgroundUtils;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.battle.NexAutoresolveListener;
 import exerelin.campaign.colony.ColonyTargetValuator;
+import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.campaign.econ.*;
 import exerelin.campaign.fleets.*;
 import exerelin.campaign.graphics.MiningCooldownDrawerV2;
@@ -255,6 +256,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (InsuranceIntelV2.getInstance() != null) InsuranceIntelV2.getInstance().reverseCompatibility();
 
         RemnantLostScientist.reverseCompatibilityStatic();
+
+         if (VassalManager.getInstance() == null) VassalManager.create();
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();
@@ -285,6 +288,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         new RevengeanceManager().init();
         new SpecialForcesManager().init();
         RebellionCreator.generate();
+        VassalManager.create();
         
         sector.addScript(new ConquestMissionManager());
         //sector.addScript(new DisruptMissionManager());

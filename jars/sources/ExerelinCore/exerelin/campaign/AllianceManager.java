@@ -320,6 +320,11 @@ public class AllianceManager extends BaseCampaignEventListener implements EveryF
 
     public void joinAlliance(String factionId, Alliance alliance)
     {
+        joinAlliance(factionId, alliance, false);
+    }
+
+    public void joinAlliance(String factionId, Alliance alliance, boolean silent)
+    {
         log.info(String.format("Faction %s joining alliance %s", factionId, alliance.getName()));
 
         // sync faction relationships
@@ -346,7 +351,7 @@ public class AllianceManager extends BaseCampaignEventListener implements EveryF
         //if (playerIsHostile != playerWasHostile)
         //    DiplomacyManager.printPlayerHostileStateMessage(faction, playerIsHostile, false);
         
-        alliance.updateIntel(factionId, null, UpdateType.JOINED);
+        if (!silent) alliance.updateIntel(factionId, null, UpdateType.JOINED);
         reportFactionJoinedAlliance(alliance, faction);
         SectorManager.checkForVictory();
     }
