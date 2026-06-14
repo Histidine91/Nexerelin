@@ -177,10 +177,19 @@
 	},
 
 	"exerelin_abilities":{
+		"statusOn":"on",
+		"statusOff":"off",
+		
 		"followMeTitle":"Follow Me!",
 		"followMeFloatText":"Follow me!",
 		"followMeTooltip1":"Nearby non-busy fleets belonging to your faction or an alliance member will follow you around for $numDays days.",
-		"followMeTooltip2":"Only works on patrol, strike and defense fleets, and the fleet must have seen you with your transponder on."
+		"followMeTooltip2":"Only works on patrol, strike and defense fleets, and the fleet must have seen you with your transponder on.",
+		
+		"siegeBombardmentFloatText":"Siege mode active",
+		"siegeBombardmentTooltip1":"While enabled, the nearest ground battle the player is an attacker in will not end even if no attacker ground forces remain. Executes ==Fire Support== ability on a semi-random valid target every time it comes off cooldown.",
+		"siegeBombardmentTooltip2":"Automatically disabled if no valid ground battles are in range, or the fleet does not have enough fuel remaining.",
+		"siegeBombardmentTooltipNoBattle":"No battle found",
+		"siegeBombardmentTooltipNoFuel":"Not enough fuel to support battle on %s",
 	},
 
 	"exerelin_alliances":{

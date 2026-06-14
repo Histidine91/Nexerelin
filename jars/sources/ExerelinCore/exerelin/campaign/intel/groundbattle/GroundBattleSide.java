@@ -134,6 +134,10 @@ public class GroundBattleSide {
 	public List<AbilityPlugin> getAbilities() {
 		return abilities;
 	}
+
+	public AbilityPlugin getAbilityById(String id) {
+		return abilities.stream().filter(it -> it.getDef().id.equals(id)).findFirst().get();
+	}
 	
 	public int getGlobalAbilityCooldown() {
 		String key = "abilityCooldown";
