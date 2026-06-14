@@ -2747,6 +2747,7 @@
 		"descNoAction":"no action",
 		
 		"actionName_build":"build %s",
+		"actionName_transferFleetPoints":"Transfer %s %s points to %s",
 		
 		"actionStatus":"Status: %s",
 		"actionStatus_starting":"starting",
