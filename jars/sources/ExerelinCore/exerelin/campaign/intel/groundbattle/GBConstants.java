@@ -13,6 +13,7 @@ public class GBConstants {
 	public static final String MEMKEY_GARRISON_DAMAGE = "$nex_garrisonDamage";
 	public static final String MEMKEY_AWAIT_DECISION = "$nex_gbAwaitDecision";
 	public static final String MEMKEY_INVASION_FAIL_STREAK = "$nex_invasionFailStreak";
+	public static final String MEMKEY_BLOCK_ATTACKER_DEFEAT = "$nex_gbNoAttackerDefeat";
 	public static final String STAT_MARKET_MORALE_DAMAGE = "nex_moraleDamageTaken";
 	public static final String ACTION_MOVE = "move";
 	public static final String ACTION_WITHDRAW = "withdraw";

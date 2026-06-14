@@ -11,13 +11,9 @@ Intellij and Eclipse forks are currently the most popular Java IDE out there.
 The following contains instructions on how to set this project up on Intellij. (Eclipse should be similar but you will need to figure out where those dialogs and settings are on your own.)
 
 First of all, Nexerelin also requires several other external libs for compiling. The whole list can be found at the [end of this document](#required-libraries). Download and unzip them somewhere on your computer, you can download them to the starsector mod folder but you don't have to load them in the launcher.
-This is just so the jar files contained in those mods can be loaded by nexerelin java classes.
+This is just so the jar files contained in those mods can be loaded by Nexerelin java classes.
 
-You will also need to use jdk1.7 to compile the jar; starsector is currently using jdk1.7.0.79 but anything newer than that would work as well. i.e. 1.7.0.80 and not java 8, 9, etc.
-Depending on your IDE, you may not actually need to download or install JDK 1.7 except for profiling purposes. Simply use a newer JDK and set your project in your IDE to use Java 7.
-If you need JDK 7: Since it's past end of life, Oracle requires users to create an account before dling it.
-There is a link to the bugmenot website in this Reddit post if you are too lazy to create a new Oracle account:
-[https://www.reddit.com/r/java/comments/6ag6qk/oracle_not_allowing_jdk_downloads_without_an/](https://www.reddit.com/r/java/comments/6ag6qk/oracle_not_allowing_jdk_downloads_without_an/)
+You will also need to use jdk17 or newer to compile the jar, available [here](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html).
 
 Download Intellij community edition (which is free unless you somehow want to spend money on the pro edition), just google search it.
 All the folder paths mentioned below should be full folder path.
@@ -36,8 +32,8 @@ Project Settings:
 - Basically in that folder structure navigate to Nexerlin > jars > sources > ExerelinCore ; right click on that folder > Mark Directory As > Sources Root (it should be colored blue now)
 - All the java files that needed to be compiled are underneath that folder.
 - Then select File > Project Structure dialog. Now we need to set up jdk.
-- Click on the New... button, select JDK and navigate to your jdk installation folder. This should say 1.7 for jdk 1.7 after you select it.
-- Change project language level to be 7 for java 1.7. (Basically this allows the IDE to complain if you are using other jdk version features that are not compatible with the current language)
+- Click on the New... button, select JDK and navigate to your jdk installation folder.
+- Change project language level to be 17 for java 17. (If you're on a newer JDK, this gives an IDE warning if you are using other jdk version features that are not compatible with the current language)
 - Compiler output folder should go to Starsector\mods\Nexerelin\jars\build (this folder should be under .gitignore so the build is not checked into source control)
 
 - Go to the either Global Libraries or Libraries on the dialog (Global lib is shared between all of your intellij proj, lib is only for your current project)

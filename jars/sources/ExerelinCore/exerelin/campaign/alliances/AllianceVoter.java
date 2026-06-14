@@ -158,6 +158,7 @@ public class AllianceVoter {
 					ally2 != null ? ally2.uuId: faction2Id, 
 					ally2 != null, isWar);
 			NexUtils.addExpiringIntel(intel);
+			AllianceManager.reportAllianceVote(ally1, intel);
 		}
 		if (ally2 != null)
 		{
@@ -165,6 +166,7 @@ public class AllianceVoter {
 					ally1 != null ? ally1.uuId: faction1Id, 
 					ally1 != null, isWar);
 			NexUtils.addExpiringIntel(intel);
+			AllianceManager.reportAllianceVote(ally2, intel);
 		}
 		
 		// alliance hates on defiers

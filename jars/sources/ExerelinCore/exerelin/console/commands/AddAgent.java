@@ -5,13 +5,17 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import exerelin.campaign.intel.agents.AgentIntel;
-import java.util.Locale;
-import org.lazywizard.console.BaseCommand;
+import org.lazywizard.console.BaseCommandWithSuggestion;
 import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
 
-public class AddAgent implements BaseCommand {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
+public class AddAgent implements BaseCommandWithSuggestion {
 
     @Override
     public CommandResult runCommand(String args, CommandContext context) {
@@ -59,4 +63,17 @@ public class AddAgent implements BaseCommand {
         
         return CommandResult.SUCCESS;
     }
+
+	@Override
+	public List<String> getSuggestions(int parameter, List<String> previous, CommandContext context) {
+		List<String> suggestions = new ArrayList<>();
+
+		if (parameter == 0) {
+			suggestions.addAll(Global.getSector().getEconomy().getMarketsCopy().stream().map(it -> it.getId()).toList());
+		} else if (parameter == 2) {
+			suggestions.addAll(Arrays.stream(AgentIntel.Specialization.values()).map(it -> it.getName()).toList());
+		}
+
+		return suggestions;
+	}
 }

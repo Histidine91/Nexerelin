@@ -177,10 +177,19 @@
 	},
 
 	"exerelin_abilities":{
+		"statusOn":"on",
+		"statusOff":"off",
+		
 		"followMeTitle":"Follow Me!",
 		"followMeFloatText":"Follow me!",
 		"followMeTooltip1":"Nearby non-busy fleets belonging to your faction or an alliance member will follow you around for $numDays days.",
-		"followMeTooltip2":"Only works on patrol, strike and defense fleets, and the fleet must have seen you with your transponder on."
+		"followMeTooltip2":"Only works on patrol, strike and defense fleets, and the fleet must have seen you with your transponder on.",
+		
+		"siegeBombardmentFloatText":"Siege mode active",
+		"siegeBombardmentTooltip1":"While enabled, the nearest ground battle the player is an attacker in will not end even if no attacker ground forces remain. Executes ==Fire Support== ability on a semi-random valid target every time it comes off cooldown.",
+		"siegeBombardmentTooltip2":"Automatically disabled if no valid ground battles are in range, or the fleet does not have enough fuel remaining.",
+		"siegeBombardmentTooltipNoBattle":"No battle found",
+		"siegeBombardmentTooltipNoFuel":"Not enough fuel to support battle on %s",
 	},
 
 	"exerelin_alliances":{
@@ -925,6 +934,8 @@
 		
 		"intelInterveneTitle":"Intervention Warning",
 		"intelInterveneDesc":"$TheFaction is issuing us a warning regarding our ongoing war against their ally, $theFriend. They will join the conflict against us if we do not make peace.",
+		
+		"statDescMaxRelations_base":"Base maximum between factions"
 	},
 	"nex_diplomacyProfile":{
 		"title":"Diplomacy Profile",
@@ -941,6 +952,8 @@
 		"dispositionNeutral":"$TheFaction $isOrAre uncertain where they stand with regard to us, and may take positive or negative actions.",
 		"dispositionBad":"$TheFaction $isOrAre unfriendly towards us and will look to pick a fight.",
 		"dispositionWarRisk":"At current relations and disposition, $theFaction may declare war on us if the opportunity arises.",
+		
+		"maxRelationship":"Max relations with $faction: %s, current: %s",
 		
 		"morality":"morality",
 		"morality_good":"good",
@@ -2743,6 +2756,7 @@
 		"descNoAction":"no action",
 		
 		"actionName_build":"build %s",
+		"actionName_transferFleetPoints":"Transfer %s %s points to %s",
 		
 		"actionStatus":"Status: %s",
 		"actionStatus_starting":"starting",
@@ -3284,6 +3298,8 @@
 		"tooltip_showStrategicAI":"If false, AI for other factions will not be shown in intel screen.",
 		"name_enableVictory":"Enable victory",
 		"tooltip_enableVictory":"If off, prevents the victory event from occurring even if conditions are met (except for story-based or other scripted victories).",
+		"name_keepSModsForRecoveredShips":"Keep S-mods on recovered enemy ships",
+		"tooltip_keepSModsForRecoveredShips":"Note that some enemy ships (notably in SWP's IBB bounties) will lose their S-mods regardless.",
 		"name_hardModeColonyGrowthMult":"Starfarer mode colony growth mult",
 		"tooltip_hardModeColonyGrowthMult":"",
 		"name_hardModeColonyIncomeMult":"Starfarer mode colony income mult",

@@ -175,7 +175,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 		float initPad = 0;
 
 		if (!Global.CODEX_TOOLTIP_MODE) {
-			LabelAPI title = tooltip.addTitle(StringHelper.getString(STRING_CATEGORY, "followMeTitle"));
+			LabelAPI title = tooltip.addTitle(spec.getName());
 			initPad = pad;
 		}
 //		title.highlightLast(status);

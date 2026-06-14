@@ -214,6 +214,32 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			unindent(tooltip);
 		}
 	}
+
+	protected void addMaxRelationship(TooltipMakerAPI tooltip, float pad) {
+		if (this.faction.isPlayerFaction()) return;
+
+		FactionAPI myFaction = PlayerFactionStore.getPlayerFaction();
+		if (faction == myFaction) myFaction = Global.getSector().getPlayerFaction();
+
+		String shortName = NexUtilsFaction.getFactionShortName(myFaction);
+		MutableStat maxRep = DiplomacyManager.getManager().getMaxRelationshipStat(faction.getId(), myFaction.getId());
+		if (maxRep.getModifiedValue() < 1)
+		{
+			Color col = NexUtilsReputation.getRelColor(maxRep.getModifiedValue());
+			int maxRepInt = (int)(maxRep.getModifiedValue() * 100f);
+			String str = StringHelper.getStringAndSubstituteToken("nex_diplomacyProfile",
+					"maxRelationship", "$faction", shortName);
+			str = str + " [?]";
+			LabelAPI label = tooltip.addPara(str, pad * 1f, col,
+					maxRepInt + "/100", NexUtilsReputation.getRelationStr(myFaction, faction));
+			label.setHighlightColors(col, faction.getRelColor(myFaction.getId()));
+			label.setHighlightOnMouseover(true);
+
+			tooltip.addTooltipToPrevious(new NexUtilsGUI.MaxRepTooltipCreator(maxRep), TooltipMakerAPI.TooltipLocation.BELOW);
+			//panel.setForceProcessInput(true);
+		}
+
+	}
 	
 	protected void addWarWearinessAndBadboy(TooltipMakerAPI tooltip, float pad) {
 		float weariness = DiplomacyManager.getWarWeariness(faction.getId(), true);
@@ -550,6 +576,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		
 		// important notes for player
 		addDispositionInfo(outer, opad);
+		addMaxRelationship(outer, opad);
 		addFleetPoolAndInvasionPoints(outer, opad);
 		addWarWearinessAndBadboy(outer, opad);
 		

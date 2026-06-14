@@ -66,6 +66,8 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		SectorEntityToken token = dialog.getInteractionTarget();
 		CampaignFleetAPI fleet = token instanceof CampaignFleetAPI ? (CampaignFleetAPI)token : null;
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+
+		SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
 		
 		String arg = params.get(0).getString(memoryMap);
 		switch (arg) {
@@ -132,11 +134,13 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				applySkillChanges(dialog, memoryMap.get(MemKeys.LOCAL));
 				return true;
 			case "hasCommanderAndFlagship":
-				SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
 				//dialog.getTextPanel().addPara("Flagship is " + sf.getFlagship());
 				return sf.getCommander() != null && sf.getFlagship() != null;
 			case "swapCargo":
 				transferCargo(player, fleet, dialog, memoryMap);
+				return true;
+			case "swapFleets":
+				swapFleets(dialog, sf, fleet);
 				return true;
 			case "done":
 				done(dialog, memoryMap);
@@ -456,7 +460,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 				new FleetMemberPickerListener() {
 					public void pickedFleetMembers(List<FleetMemberAPI> members) {
 						if (members != null) {
-							transferShips(members, from, to);
+							transferShips(members, from, to, false);
 							if (to == player) PlayerSpecialForcesIntel.stripOfficersIfExcess(dialog, members, false);
 						}
 						dialog.getVisualPanel().showFleetInfo(null, player, null, other);
@@ -553,7 +557,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	 * @param from
 	 * @param to
 	 */
-	protected void transferShips(List<FleetMemberAPI> members, CampaignFleetAPI from, CampaignFleetAPI to) 
+	protected void transferShips(List<FleetMemberAPI> members, CampaignFleetAPI from, CampaignFleetAPI to, boolean noPickCommander)
 	{		
 		for (FleetMemberAPI member : members) {
 			PersonAPI cap = member.getCaptain();
@@ -569,12 +573,12 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 			to.getFleetData().addFleetMember(member);
 		}
 		if (from.isPlayerFleet()) {
-			autopickCommanderIfNeeded(to);
+			if (!noPickCommander) autopickCommanderIfNeeded(to);
 			to.getFleetData().sort();
 			((PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(to)).notifyShipsAdded(members);
 		}			
 		else {
-			autopickCommanderIfNeeded(from);
+			if (!noPickCommander) autopickCommanderIfNeeded(from);
 			((PlayerSpecialForcesIntel)SpecialForcesIntel.getIntelFromMemory(from)).notifyShipsRemoved(members);
 		}
 			
@@ -652,7 +656,29 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 	{
 		
 	}
-	
+
+	protected void swapFleets(InteractionDialogAPI dialog, SpecialForcesIntel intel, CampaignFleetAPI other) {
+		// once the fleets are swapped, the formerly-player-fleet needs a new commander from among the formerly-player-officers
+		// will the autopick do the job?
+
+		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		FleetMemberAPI otherFlag = other.getFlagship();
+		List<FleetMemberAPI> playerCurr = playerFleet.getFleetData().getMembersListCopy();
+		List<FleetMemberAPI> otherCurr = other.getFleetData().getMembersListCopy();
+
+		transferShips(otherCurr, other, playerFleet, true);
+		transferShips(playerCurr, playerFleet, other, true);
+		autopickCommanderIfNeeded(other);
+		//setFlagship(other, intel, otherFlag);
+		//setCommander(other, intel, otherFlag.getCaptain());
+
+		// refresh the fleets shown in dialog
+		other.getBattle().uncombine();
+		other.getBattle().genCombined();
+		other.getBattle().takeSnapshots();
+		new ShowDefaultVisual().execute(null, dialog, null, null);
+	}
+
 	/**
 	 * Switch the player fleet to the special task group, to refit its ships and assign its officers.
 	 * @param dialog

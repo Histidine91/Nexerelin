@@ -1,15 +1,16 @@
 package exerelin.console.commands;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.intel.fleets.VengeanceFleetIntel;
-import org.lazywizard.console.BaseCommand;
-import org.lazywizard.console.CommandUtils;
-import org.lazywizard.console.CommonStrings;
-import org.lazywizard.console.Console;
+import org.lazywizard.console.*;
 
-public class VengeanceEvent implements BaseCommand {
+import java.util.ArrayList;
+import java.util.List;
+
+public class VengeanceEvent implements BaseCommandWithSuggestion {
 
 	@Override
 	public CommandResult runCommand(String args, CommandContext context) {
@@ -53,5 +54,16 @@ public class VengeanceEvent implements BaseCommand {
 		vengeance.startEvent();
 		Console.showMessage("Spawning vengeance fleet level " + level + " for faction " + faction.getDisplayName() + " from " + market.getName());	
 		return CommandResult.SUCCESS;
+	}
+
+	@Override
+	public List<String> getSuggestions(int parameter, List<String> previous, CommandContext context) {
+		List<String> suggestions = new ArrayList<>();
+
+		if (parameter == 0) {
+			suggestions.addAll(Global.getSettings().getAllFactionSpecs().stream().map(it -> it.getId()).toList());
+		}
+
+		return suggestions;
 	}
 }

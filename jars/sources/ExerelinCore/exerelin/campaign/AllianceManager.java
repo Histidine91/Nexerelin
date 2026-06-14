@@ -15,11 +15,13 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.alliances.AllianceEventListener;
 import exerelin.campaign.alliances.AllianceVoter.VoteResult;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
+import exerelin.campaign.intel.AllianceVoteIntel;
 import exerelin.campaign.intel.diplomacy.AllianceOfferIntel;
 import exerelin.utilities.*;
 import org.apache.log4j.Logger;
@@ -345,6 +347,7 @@ public class AllianceManager extends BaseCampaignEventListener implements EveryF
         //    DiplomacyManager.printPlayerHostileStateMessage(faction, playerIsHostile, false);
         
         alliance.updateIntel(factionId, null, UpdateType.JOINED);
+        reportFactionJoinedAlliance(alliance, faction);
         SectorManager.checkForVictory();
     }
     
@@ -371,6 +374,8 @@ public class AllianceManager extends BaseCampaignEventListener implements EveryF
         infoParam.put("other", other);
         
         into.getIntel().sendUpdateIfPlayerHasIntel(infoParam, false);
+
+        reportAlliancesMerged(into, other);
     }
     
     public void leaveAlliance(String factionId, Alliance alliance, boolean noEvent, boolean force)
@@ -387,6 +392,7 @@ public class AllianceManager extends BaseCampaignEventListener implements EveryF
         alliancesByFactionId.remove(factionId);
         
         if (!noEvent) alliance.updateIntel(factionId, null, UpdateType.LEFT);
+        reportFactionLeftAlliance(alliance, Global.getSector().getFaction(factionId));
         SectorManager.checkForVictory();
     }
     
@@ -412,6 +418,7 @@ public class AllianceManager extends BaseCampaignEventListener implements EveryF
         for (String member : alliance.getMembersCopy())
         {
             alliancesByFactionId.remove(member);
+            reportFactionLeftAlliance(alliance, Global.getSector().getFaction(member));
 			memberPicker.add(member);
         }
         alliancesByName.remove(alliance.getName());
@@ -425,6 +432,8 @@ public class AllianceManager extends BaseCampaignEventListener implements EveryF
         
 		Global.getSector().addScript(intel);	// so its advance() method can run and the intel can expire
 		intel.endAfterDelay();
+
+        reportAllianceDissolved(alliance);
 		
         SectorManager.checkForVictory();
     }
@@ -1101,6 +1110,42 @@ public class AllianceManager extends BaseCampaignEventListener implements EveryF
         manager = new AllianceManager();
         data.put(MANAGER_MAP_KEY, manager);
         return manager;
+    }
+
+    public static void reportAllianceFormed(Alliance alliance, FactionAPI faction1, FactionAPI faction2) {
+        for (AllianceEventListener x : Global.getSector().getListenerManager().getListeners(AllianceEventListener.class)) {
+            x.reportAllianceFormed(alliance, faction1, faction2);
+        }
+    }
+
+    public static void reportFactionJoinedAlliance(Alliance alliance, FactionAPI faction) {
+        for (AllianceEventListener x : Global.getSector().getListenerManager().getListeners(AllianceEventListener.class)) {
+            x.reportFactionJoinedAlliance(alliance, faction);
+        }
+    }
+
+    public static void reportFactionLeftAlliance(Alliance alliance, FactionAPI faction) {
+        for (AllianceEventListener x : Global.getSector().getListenerManager().getListeners(AllianceEventListener.class)) {
+            x.reportFactionLeftAlliance(alliance, faction);
+        }
+    }
+
+    public static void reportAlliancesMerged(Alliance into, Alliance other) {
+        for (AllianceEventListener x : Global.getSector().getListenerManager().getListeners(AllianceEventListener.class)) {
+            x.reportAlliancesMerged(into, other);
+        }
+    }
+
+    public static void reportAllianceDissolved(Alliance alliance) {
+        for (AllianceEventListener x : Global.getSector().getListenerManager().getListeners(AllianceEventListener.class)) {
+            x.reportAllianceDissolved(alliance);
+        }
+    }
+
+    public static void reportAllianceVote(Alliance alliance, AllianceVoteIntel vote) {
+        for (AllianceEventListener x : Global.getSector().getListenerManager().getListeners(AllianceEventListener.class)) {
+            x.reportAllianceVote(alliance, vote);
+        }
     }
         
     public static class AllianceComparator implements Comparator<Alliance>

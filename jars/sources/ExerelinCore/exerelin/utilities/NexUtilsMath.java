@@ -28,14 +28,8 @@ public class NexUtilsMath {
 		}
 	}
 	
-	public static float round(float num)
-	{
-		return (float)round((double)num);
-	}
-	
-	public static double round(double num)
-	{
-		return Math.floor(num + 0.5f);
+	public static float mround(float num, float multiple) {
+		return Math.round(num/multiple) * multiple;
 	}
 	
 	/**

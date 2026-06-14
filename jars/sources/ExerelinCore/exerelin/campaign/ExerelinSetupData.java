@@ -27,7 +27,7 @@ public class ExerelinSetupData
 
 	public static final Set<String> NO_SAVE_FIELDS = new HashSet<>(Arrays.asList(
 		"NO_SAVE_FIELDS", "NUM_DMOD_LEVELS", "MEM_KEY_START_FLEET_TYPE", "SAVE_FILE_PATH", "log", "instance", "freeStart", "randomStartRelationships", "randomStartRelationshipsPirate",
-			"randomStartShips", "skipStory", "startFleetType"
+			"randomStartShips", "skipStory", "startFleetType", "backgroundId", "selectedFactionForBackground"
 	));
 
 	// Sector Generation Defaults
@@ -57,7 +57,7 @@ public class ExerelinSetupData
 	public boolean hardMode = false;
 	public boolean prismMarketPresent = true;
 	public boolean randomAntiochEnabled = true;
-	public boolean freeStart = false;
+	transient public boolean freeStart = false;
 	public boolean spacerObligation = false;
 	public boolean useFactionWeights = true;
 	public boolean randomFactionWeights = false;
@@ -67,8 +67,9 @@ public class ExerelinSetupData
 	@Deprecated public boolean randomStartShips = false;
 	public int dModLevel = 0;
 	public boolean enableStipend = true;
-	public String backgroundId = null;
-	public String selectedFactionForBackground = null;
+	transient public String backgroundId = null;
+	transient public String selectedFactionForBackground = null;
+	public String backgroundIdForSelectorMemory = null;
 	public int enableCarePackage = 2;
 
 	/**
@@ -79,7 +80,7 @@ public class ExerelinSetupData
 	/**
 	 * Can be null with special starts.
 	 */
-	public StartFleetType startFleetType = null;
+	transient public StartFleetType startFleetType = null;
 	
 	public String startScenario = null;
 

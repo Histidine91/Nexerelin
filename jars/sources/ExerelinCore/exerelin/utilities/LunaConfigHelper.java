@@ -122,6 +122,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("enableStrategicAI", "boolean", NexConfig.enableStrategicAI);
         addSetting("showStrategicAI", "boolean", NexConfig.showStrategicAI);
         addSetting("enableVictory", "boolean", NexConfig.enableVictory);
+        addSetting("keepSModsForRecoveredShips", "boolean", Global.getSettings().getBoolean("nex_keepSModsForRecoveredShips"));
         addSetting("baseTariffMult", "float", NexConfig.baseTariffMult, 0f, 3.4f);
         addSetting("freeMarketTariffMult", "float", NexConfig.freeMarketTariffMult, 0f, 2f);
         addSetting("buyShipBasePriceMult", "float", NexConfig.buyShipBasePriceMult, 0.5f, 5f);
@@ -245,6 +246,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.enableStrategicAI = (boolean)loadSetting("enableStrategicAI", "boolean");
         NexConfig.showStrategicAI = (boolean)loadSetting("showStrategicAI", "boolean");
         NexConfig.enableVictory = (boolean)loadSetting("enableVictory", "boolean");
+        Global.getSettings().setBoolean("nex_keepSModsForRecoveredShips", (boolean)loadSetting("keepSModsForRecoveredShips", "boolean"));
         NexConfig.baseTariffMult = (float)loadSetting("baseTariffMult", "float");
         NexConfig.freeMarketTariffMult = (float)loadSetting("freeMarketTariffMult", "float");
         NexConfig.buyShipBasePriceMult = (float)loadSetting("buyShipBasePriceMult", "float");
