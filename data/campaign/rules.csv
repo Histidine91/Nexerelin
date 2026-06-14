@@ -5042,6 +5042,7 @@ Nex_SpecialForcesConfig beginCreate",Creating special task group...,,
 nex_configSF_main,DialogOptionSelected,$option == nex_configSF_start,"$nex_sf_menuType = ""config"" 0
 Nex_SpecialForcesConfig mainMenu",Reconfiguring special task group...,,
 nex_configSF_mainOpts,Nex_ConfigSFOptions,!$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_disband ""Disband the task group? Its assets will be merged into your fleet."" ""Yes"" ""No""
+SetTooltip nex_configSF_swapFleets Replaces all their ships with yours and vice versa. Option provided for convenience/fun, not really supported.
 SetShortcut nex_configSF_close ESCAPE",,"nex_configSF_giveShips:Give ships
 nex_configSF_takeShips:Take ships
 nex_sf_reviveShipStart:Revive lost ships
@@ -5049,6 +5050,7 @@ nex_configSF_showOfficers:Transfer officers
 nex_configSF_assignOfficers:Assign officers
 nex_configSF_commanderSkills:Train commander
 nex_configSF_disband:Absorb and disband task group
+nex_configSF_swapFleets:Swap fleets
 nex_configSF_close:Done",
 nex_configSF_mainOptsCreate,Nex_ConfigSFOptions,$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_createFinish ""Confirm task force creation?"" ""Yes"" ""No""
 Nex_AddOptionConfirmation nex_configSF_abortCreate ""Cancel task force creation?"" ""Yes"" ""No""",,"nex_configSF_giveShips:Give ships
@@ -5105,6 +5107,7 @@ nex_configSF_commanderSkillsCancel:Go back",
 nex_configSF_commanderSkillsConfirm,DialogOptionSelected,$option == nex_configSF_commanderSkillsConfirm,"Nex_SpecialForcesConfig commanderSkillsConfirm
 Nex_SpecialForcesConfig mainMenu",,,
 nex_configSF_commanderSkillsCancel,DialogOptionSelected,$option == nex_configSF_commanderSkillsCancel,Nex_SpecialForcesConfig mainMenu,,,
+nex_configSF_swapFleets,DialogOptionSelected,$option == nex_configSF_swapFleets,Nex_SpecialForcesConfig swapFleets,,,
 nex_configSF_disband,DialogOptionSelected,$option == nex_configSF_disband,"Nex_SpecialForcesConfig disband
 DismissDialog",,,
 nex_configSF_close,DialogOptionSelected,$option == nex_configSF_close,FireBest OpenCommLink,,,
@@ -5133,6 +5136,7 @@ nex_commandSF_joinRaid,DialogOptionSelected,$option == nex_commandSF_joinRaid,Ne
 nex_commandSF_wait,DialogOptionSelected,$option == nex_commandSF_wait,Nex_SpecialForcesCommands wait_player,,,
 nex_commandSF_goAndDespawn,DialogOptionSelected,$option == nex_commandSF_goAndDespawn,Nex_SpecialForcesCommands disbandAtLocation,,,
 nex_commandSF_goAndRevive,DialogOptionSelected,$option == nex_commandSF_goAndRevive,Nex_SpecialForcesCommands rebuildAtLocation,,,
+,,,,,,
 nex_commandSF_autoAssign,DialogOptionSelected,$option == nex_commandSF_autoAssign,"Nex_SpecialForcesCommands autoAssign
 #Nex_SpecialForcesCommands main",,,
 nex_commandSF_leave,DialogOptionSelected,$option == nex_commandSF_leave,"unset $nex_psf_task
