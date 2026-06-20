@@ -291,7 +291,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		if (outcome != null) return;
 		
 		// source captured before launch
-		if (getCurrentStage() <= 0 && from.getFaction() != faction) {
+		if (getCurrentStage() <= 0 && isOwnerNoLongerValid()) {
 			terminateEvent(OffensiveOutcome.FAIL);
 		}
 		else if (!doesSystemHaveHostileMarkets()) {

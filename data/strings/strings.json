@@ -1207,8 +1207,8 @@
 		
 		"optionFleetType":"Mission",
 		"optionStrength":"Task force strength",
+		"optionFaction":"Faction",
 		"optionSource":"Origin market",
-		"optionFaction":"Target faction",
 		"optionTarget":"Target market",
 		
 		"fleetType_invasion":"invasion",

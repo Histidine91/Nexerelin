@@ -506,6 +506,10 @@ nex_fleetRequest_setStrengthMenu,DialogOptionSelected,$option == nex_fleetReques
 nex_fleetRequest_setStrength,DialogOptionSelected,$option == nex_fleetRequest_setStrength,"Nex_FleetRequest setStrength
 FireAll Nex_FleetRequest",,,
 ,,,,,,
+nex_fleetRequest_selectFactionMenu,DialogOptionSelected,$option == nex_fleetRequest_selectFaction,Nex_FleetRequest factionMenu,,,
+nex_fleetRequest_selectFaction,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setFaction_""","Nex_FleetRequest setFaction
+FireAll Nex_FleetRequest",,,
+,,,,,,
 nex_fleetRequest_selectSourceMenu,DialogOptionSelected,$option == nex_fleetRequest_selectSource,Nex_FleetRequest sourceMenu,,,
 nex_fleetRequest_selectSource,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setSource_""","Nex_FleetRequest setSource
 FireAll Nex_FleetRequest",,,

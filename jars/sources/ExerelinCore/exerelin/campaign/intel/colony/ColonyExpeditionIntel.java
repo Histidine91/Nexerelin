@@ -573,7 +573,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		
 		// source captured before launch, new owner is inhospitable to sender
 		// replaces basic faction equals check because that breaks for player sending colony expedition from commissioner's markets
-		if (getCurrentStage() <= 0 && from.getFaction().isAtBest(faction, RepLevel.INHOSPITABLE)) 
+		if (getCurrentStage() <= 0 && isOwnerNoLongerValid())
 		{
 			terminateEvent(OffensiveOutcome.FAIL);
 			return;
@@ -581,7 +581,12 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		
 		checkCrewCapacity();
 	}
-	
+
+	@Override
+	protected boolean isOwnerNoLongerValid() {
+		return from.getFaction().isAtBest(faction, RepLevel.INHOSPITABLE);
+	}
+
 	@Override
 	public String getSortString() {
 		return StringHelper.getString("nex_colonyFleet", "colonyFleets", true);

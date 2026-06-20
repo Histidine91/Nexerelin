@@ -7,6 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
@@ -630,7 +631,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		if (outcome != null) return;
 		
 		// source captured before launch
-		if (getCurrentStage() <= 0 && from.getFaction() != faction) {
+		if (getCurrentStage() <= 0 && isOwnerNoLongerValid()) {
 			terminateEvent(OffensiveOutcome.FAIL);
 		}
 		else if (!target.isInEconomy()) {
@@ -639,6 +640,23 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		else if (abortIfNonHostile && !faction.isHostileTo(target.getFaction())) {
 			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
 		}
+	}
+
+	/**
+	 * Check if the source market's faction is no longer one that will allow this fleet event to proceed (typically allies are fine).
+	 * @return
+	 */
+	protected boolean isOwnerNoLongerValid() {
+		FactionAPI align = PlayerFactionStore.getPlayerFaction();
+		if (faction.isPlayerFaction()) {
+			if (AllianceManager.areFactionsAllied(Factions.PLAYER, from.getFactionId())) return false;
+			if (AllianceManager.areFactionsAllied(align.getId(), from.getFactionId())) return false;
+		}
+		if (from.getFaction().isPlayerFaction()) {
+			if (AllianceManager.areFactionsAllied(Factions.PLAYER, faction.getId())) return false;
+			if (AllianceManager.areFactionsAllied(align.getId(), faction.getId())) return false;
+		}
+		return !AllianceManager.areFactionsAllied(faction.getId(), from.getFactionId());
 	}
 
 	protected void applyRelationshipEffect() {
