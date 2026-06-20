@@ -36,7 +36,6 @@ public class DeclareWarAction extends DiplomacyAction {
             } else {
                 priority.modifyFlat("targetWarDecisionRating", decisionRating, StrategicAI.getString("statWarDecisionRating", true));
             }
-
         }
     }
 
@@ -60,8 +59,8 @@ public class DeclareWarAction extends DiplomacyAction {
             if (Misc.getCommissionFaction() != null) return false;
         }
 
-        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy
-                && !DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PACIFIST)
-                && DiplomacyManager.getWarWeariness(ai.getFactionId(), true) <= DiplomacyBrain.MAX_WEARINESS_FOR_WAR;
+        if (DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PACIFIST)) return false;
+
+        return super.canUse(concern);
     }
 }
