@@ -42,6 +42,7 @@
 		"planet":"planet",
 		"production":"production",
 		"priority":"priority",
+		"relationship":"relationship",
 		"relay":"relay",
 		"rename":"rename",
 		"salvage":"salvage",
