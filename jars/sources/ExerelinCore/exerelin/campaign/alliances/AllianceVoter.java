@@ -209,7 +209,9 @@ public class AllianceVoter {
 				AllianceManager.remainInAllianceCheck(defier, member);
 			}
 		}
-		NexUtilsReputation.syncFactionRelationshipsToPlayer();
+		if (NexConfig.syncPlayerRelationsWithCommisioner) {
+			NexUtilsReputation.syncFactionRelationshipsToPlayer();
+		}
 	}
 	
 	/**

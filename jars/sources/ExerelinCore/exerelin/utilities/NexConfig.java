@@ -83,6 +83,7 @@ public class NexConfig
     // Diplomacy
     public static boolean enableDiplomacy = true;
     public static boolean allowRandomDiplomacyTraits = true;
+    public static boolean syncPlayerRelationsWithCommisioner = true;    // recommend not making it false, I expect it'd really be a headache to deal with
     
     // Alliances
     public static boolean enableAlliances = true;

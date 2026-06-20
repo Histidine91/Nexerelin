@@ -75,6 +75,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float DOMINANCE_MIN = 0.25f;
     public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.67f;
     public static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 3f;
+
+    public static final float RELATIONSHIP_COMMISSIONER_DELTA_MULT = 0.5f;  // factor for propagating relationship changes (with a third party) between player and commissioner
     
     public static final List<String> DO_NOT_RANDOMIZE = Arrays.asList(new String[]{
         "sector", "domain", "everything"
@@ -372,16 +374,26 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         return false;
     }
+
+    public static ExerelinReputationAdjustmentResult adjustRelations(DiplomacyEventDef event, FactionAPI faction1, FactionAPI faction2, float delta)
+    {
+        return adjustRelations(faction1, faction2, delta, event.repEnsureAtBest, event.repEnsureAtWorst, event.postEnsureDelta, event.repLimit, false, false);
+    }
     
     public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
             RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit)
     {
-        return adjustRelations(faction1, faction2, delta, ensureAtBest, ensureAtWorst, limit, false);
+        return adjustRelations(faction1, faction2, delta, ensureAtBest, ensureAtWorst, 0, limit, false, false);
     }
 
     public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
                                                                      RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit, boolean isAllianceAction) {
-        return adjustRelations(faction1, faction2, delta, ensureAtBest, ensureAtWorst, 0, limit, isAllianceAction);
+        return adjustRelations(faction1, faction2, delta, ensureAtBest, ensureAtWorst, 0, limit, isAllianceAction, false);
+    }
+
+    public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
+                                                                     RepLevel ensureAtBest, RepLevel ensureAtWorst, float postEnsureDelta, RepLevel limit, boolean isAllianceAction) {
+        return adjustRelations(faction1, faction2, delta, ensureAtBest, ensureAtWorst, postEnsureDelta, limit, isAllianceAction, false);
     }
     
     /**
@@ -393,11 +405,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      * @param ensureAtBest
      * @param ensureAtWorst
      * @param limit
-     * @param isAllianceAction Is this change resulting from an alliance action (a war vote etc.)? Don't do looping calls to AllianceManager
+     * @param isAllianceAction Is this change resulting from an alliance action (a war vote etc.)? Don't do looping calls to AllianceManager.
+     * @param isCommissionerRelationshipUpdate If true, don't re-sync relations
      * @return
      */
     public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
-            RepLevel ensureAtBest, RepLevel ensureAtWorst, float postEnsureDelta, RepLevel limit, boolean isAllianceAction)
+            RepLevel ensureAtBest, RepLevel ensureAtWorst, float postEnsureDelta, RepLevel limit, boolean isAllianceAction, boolean isCommissionerRelationshipUpdate)
     {
         float before = faction1.getRelationship(faction2.getId());
         boolean wasHostile = faction1.isHostileTo(faction2);
@@ -439,9 +452,29 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         //log.info("Relationship delta: " + delta);
         boolean isHostile = faction1.isHostileTo(faction2);
         
-        // if now at peace/war, do alliance vote
+
         ExerelinReputationAdjustmentResult repResult = new ExerelinReputationAdjustmentResult(delta, wasHostile, isHostile);
-        
+
+        // relationship propagation to/from commissioner
+        // if syncing is disabled, do it now so commissioner will know whether to disavow us
+        // if enabled, do it after all the alliance vote stuff is handled
+        boolean isPlayerCommissionedToAParty = faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId);
+        boolean playerIsPrimaryParticipant = faction1Id.equals(Factions.PLAYER) || faction2Id.equals(Factions.PLAYER);
+
+
+        if (!isCommissionerRelationshipUpdate && !NexConfig.syncPlayerRelationsWithCommisioner) {
+            float propagatedDelta = delta * RELATIONSHIP_COMMISSIONER_DELTA_MULT;
+            if (playerIsPrimaryParticipant) {
+                faction1.adjustRelationship(faction2Id, propagatedDelta, limit);
+            }
+            else if (faction1Id.equals(playerAlignedFactionId)) {
+                faction2.adjustRelationship(Factions.PLAYER, propagatedDelta, limit);
+            } else if (faction2Id.equals(playerAlignedFactionId)) {
+                faction1.adjustRelationship(Factions.PLAYER, propagatedDelta, limit);
+            }
+        }
+
+        // if now at peace/war, do alliance vote
         if (repResult.wasHostile && !repResult.isHostile)
         {
             DiplomacyManager manager = getManager();
@@ -465,11 +498,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (!isAllianceAction && delta < 0)
             AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
 
-        boolean isPlayerCommissionedToAParty = faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId);
-        if (faction1Id.equals(Factions.PLAYER) || faction2Id.equals(Factions.PLAYER))
-            NexUtilsReputation.syncFactionRelationshipsToPlayer();
-        else if (isPlayerCommissionedToAParty)
-            NexUtilsReputation.syncPlayerRelationshipsToFaction();
+        if (!isCommissionerRelationshipUpdate && NexConfig.syncPlayerRelationsWithCommisioner) {
+            if (playerIsPrimaryParticipant)
+                NexUtilsReputation.syncFactionRelationshipsToPlayer();
+            else if (isPlayerCommissionedToAParty)
+                NexUtilsReputation.syncPlayerRelationshipsToFaction();
+        }
+
         
         boolean playerIsHostile1 = faction1.isHostileTo(Factions.PLAYER);
         boolean playerIsHostile2 = faction2.isHostileTo(Factions.PLAYER);
@@ -493,11 +528,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         
         return repResult;
-    }
-    
-    public static ExerelinReputationAdjustmentResult adjustRelations(DiplomacyEventDef event, FactionAPI faction1, FactionAPI faction2, float delta)
-    {
-        return adjustRelations(faction1, faction2, delta, event.repEnsureAtBest, event.repEnsureAtWorst, event.postEnsureDelta, event.repLimit, false);
     }
     
     public DiplomacyIntel doDiplomacyEvent(DiplomacyEventDef event, MarketAPI market, FactionAPI faction1, FactionAPI faction2)
@@ -1095,26 +1125,43 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     @Override
     public void reportPlayerReputationChange(String factionId, float delta) {
         FactionAPI player = Global.getSector().getPlayerFaction();
-        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-        
-        // clamp
-        NexUtilsReputation.syncFactionRelationshipToPlayer(playerAlignedFactionId, factionId);
-        NexUtilsReputation.syncPlayerRelationshipToFaction(playerAlignedFactionId, factionId);
-        //if (!playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
-        //    NexUtilsReputation.syncFactionRelationshipToPlayer(ExerelinConstants.PLAYER_NPC_ID, factionId);
-        
         float currentRel = player.getRelationship(factionId);
         boolean isHostile = player.isHostileTo(factionId);
+        boolean wasHostile = RepLevel.getLevelFor(player.getRelationship(factionId) - delta).isAtBest(RepLevel.HOSTILE);
+
+        // commissioner disavowing us would go here if we could implement it
+        // ...bruh we don't even get a reputation envelope?
+        if (isHostile && !wasHostile) {
+
+        }
+
+        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+        String commissionerId = Misc.getCommissionFactionId();
         
-        // if we changed peace/war state, decide if alliances should get involved
-        // but only if our relationship should be synced
-        if (!NexConfig.getFactionConfig(factionId).noSyncRelations) {
-            if (isHostile && currentRel - delta > AllianceManager.HOSTILE_THRESHOLD 
-                || !isHostile && currentRel - delta < AllianceManager.HOSTILE_THRESHOLD) {
-                log.info("Initiating alliance vote due to player relationship with " + factionId + " crossing threshold");
-                AllianceVoter.allianceVote(playerAlignedFactionId, factionId, isHostile);
+        // clamp
+        if (NexConfig.syncPlayerRelationsWithCommisioner) {
+            NexUtilsReputation.syncFactionRelationshipToPlayer(playerAlignedFactionId, factionId);
+            NexUtilsReputation.syncPlayerRelationshipToFaction(playerAlignedFactionId, factionId);  // is there a reason we do it twice?
+
+            // if we changed peace/war state, decide if alliances should get involved
+            // but only if our relationship should be synced with that particular faction
+            if (!NexConfig.getFactionConfig(factionId).noSyncRelations) {
+                if (isHostile && currentRel - delta > AllianceManager.HOSTILE_THRESHOLD
+                        || !isHostile && currentRel - delta < AllianceManager.HOSTILE_THRESHOLD) {
+                    log.info("Initiating alliance vote due to player relationship with " + factionId + " crossing threshold");
+                    AllianceVoter.allianceVote(playerAlignedFactionId, factionId, isHostile);
+                }
             }
         }
+        // if not syncing relations, shift commissioner's relation with the other faction by adjusted delta
+        else if (commissionerId != null && !NexConfig.getFactionConfig(factionId).noSyncRelations && !NexConfig.getFactionConfig(commissionerId).noSyncRelations)
+        {
+            adjustRelations(Global.getSector().getFaction(Misc.getCommissionFactionId()), Global.getSector().getFaction(factionId),
+                    delta * RELATIONSHIP_COMMISSIONER_DELTA_MULT, null, null, 0,
+                    null, false, true);
+        }
+        //if (!playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        //    NexUtilsReputation.syncFactionRelationshipToPlayer(ExerelinConstants.PLAYER_NPC_ID, factionId);
         
         // handled by commission intel
         /*
@@ -1604,6 +1651,46 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         float newAmount = getBadboy(faction) + amount;
         setBadboy(faction, newAmount);
         return newAmount;
+    }
+
+    protected void checkDisavow(String otherFactionId, float delta) {
+        String commissionerId = Misc.getCommissionFactionId();
+        if (commissionerId == null) return;
+        if (otherFactionId.equals(commissionerId)) return;
+        if (Nex_IsFactionRuler.isRuler(commissionerId)) return;
+        if (NexConfig.getFactionConfig(commissionerId).noSyncRelations) return;
+        if (NexConfig.getFactionConfig(otherFactionId).noSyncRelations) return;
+
+
+
+    }
+
+    /**
+     * Decide whether our commissioning faction should bless, own or disavow our action that resulted in hostility against a faction. Note: Make sure to call this <i>before</i> syncing relations with commissioning faction.
+     * @param commissionerId
+     * @param otherFactionId
+     * @param delta
+     * @return
+     */
+    protected String pickDisavowResponse(String commissionerId, String otherFactionId, float delta) {
+        FactionAPI commissioner = Global.getSector().getFaction(commissionerId);
+        float score = delta * 100;  // more hostile action = more likely to disavow
+        score += commissioner.getRelationship(Factions.PLAYER); // like us more = less likely to disavow
+        score -= commissioner.getRelationship(otherFactionId);  // like the other faction more = more likely to disavow
+        if (AllianceManager.areFactionsAllied(commissionerId, otherFactionId)) {
+            score -= 40;    // attacking allies is particularly heinous
+        }
+
+        // modifier for how big player is?
+        int ourSize = NexUtilsFaction.getPlayerMarkets(true, false, true).stream().flatMapToInt(it -> it.getSize()).sum();
+        int commissionerSize = NexUtilsFaction.getFactionMarketSizeSum(commissionerId, false);
+        score += ourSize/(float)commissionerSize * 20;
+
+
+
+        // if AotD QoL, add modifier from ranking
+
+        return null;
     }
 
     @Override

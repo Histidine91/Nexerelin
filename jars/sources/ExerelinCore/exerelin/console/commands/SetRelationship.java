@@ -1,6 +1,7 @@
 package exerelin.console.commands;
 
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsReputation;
 import org.lazywizard.console.commands.SetRelation;
 
@@ -19,10 +20,12 @@ public class SetRelationship extends SetRelation {
 			{
 				factionId2 = Factions.PLAYER;
 			}
-			if (factionId1.equals(Factions.PLAYER) || factionId2.equals(Factions.PLAYER))
-				NexUtilsReputation.syncFactionRelationshipsToPlayer();
-			else// if (factionId1.equals(alignedFactionId) || factionId2.equals(Factions.PLAYER))
-				NexUtilsReputation.syncPlayerRelationshipsToFaction();
+			if (NexConfig.syncPlayerRelationsWithCommisioner) {
+				if (factionId1.equals(Factions.PLAYER) || factionId2.equals(Factions.PLAYER))
+					NexUtilsReputation.syncFactionRelationshipsToPlayer();
+				else// if (factionId1.equals(alignedFactionId) || factionId2.equals(Factions.PLAYER))
+					NexUtilsReputation.syncPlayerRelationshipsToFaction();
+			}
 		}
 		return result;
 	}

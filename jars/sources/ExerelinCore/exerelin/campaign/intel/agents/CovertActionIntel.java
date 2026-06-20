@@ -31,8 +31,8 @@ import org.jetbrains.annotations.Nullable;
 import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 
@@ -992,12 +992,13 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	}
 
 	protected void initBasicValuesFromDialog(AgentOrdersDialog dialog) {
-		// agent faction should not be commissioning faction if target is also commissioning faction
-		FactionAPI agentFaction = PlayerFactionStore.getPlayerFaction();
+		// let's keep it simple: agent faction is always player faction
+		//FactionAPI agentFaction = Nex_IsFactionRuler.isRuler(PlayerFactionStore.getPlayerFaction()) ? PlayerFactionStore.getPlayerFaction() : Global.getSector().getPlayerFaction();
+		FactionAPI agentFaction = Global.getSector().getPlayerFaction();
 		MarketAPI market = dialog.getAgentMarket();
 		FactionAPI mktFaction = market != null ? market.getFaction() : null;
-		if (agentFaction == mktFaction || mktFaction == Global.getSector().getPlayerFaction())
-			agentFaction = Global.getSector().getPlayerFaction();
+		//if (agentFaction == mktFaction || mktFaction == Global.getSector().getPlayerFaction())
+		//	agentFaction = Global.getSector().getPlayerFaction();
 
 		this.agent = dialog.getAgent();
 		this.market = dialog.getAgentMarket();
