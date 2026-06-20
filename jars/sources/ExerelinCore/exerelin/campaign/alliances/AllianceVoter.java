@@ -77,7 +77,7 @@ public class AllianceVoter {
 		String playerFacId = PlayerFactionStore.getPlayerFactionId();
 		
 		// prompt player for vote if we're allied with one of the factions, while not being one of the factions
-		if (Nex_IsFactionRuler.isRuler(playerFacId))
+		if (Nex_IsFactionRuler.isRuler(playerFacId) && !VassalManager.getInstance().isVassal(playerFacId))
 		{
 			if (!playerFacId.equals(faction1Id) && !playerFacId.equals(faction2Id))
 			{
