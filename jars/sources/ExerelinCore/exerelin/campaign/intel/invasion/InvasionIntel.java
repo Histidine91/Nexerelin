@@ -470,11 +470,16 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		
 		// write our own status message for certain cancellation cases
 		boolean endDesc = addCustomOutcomeDesc(info, sub);
+
 		if (endDesc) return;
 		
 		for (RaidStage stage : stages) {
 			stage.showStageInfo(info);
 			if (getStageIndex(stage) == failStage) break;
+		}
+
+		if (repEffect != null) {
+			DiplomacyIntel.addRelationshipChangePara(info, faction.getId(), targetFaction.getId(), storedRelation, repEffect, opad);
 		}
 		
 		if (ExerelinModPlugin.isNexDev && (isEnding() || isEnded())) {
@@ -662,7 +667,24 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 				outcome == null ? (InvActionStage)action : waitStage);
 		return raidAI;
 	}
-	
+
+	@Override
+	protected void applyRelationshipEffect() {
+		float delta;
+		RepLevel limit = RepLevel.HOSTILE;
+		if (outcome == OffensiveOutcome.SUCCESS) {
+			delta = -CoreReputationPlugin.RepRewards.HIGH;
+			limit = RepLevel.VENGEFUL;
+		}
+		else if (outcome == OffensiveOutcome.FAIL || outcome == OffensiveOutcome.TASK_FORCE_DEFEATED) {
+			delta = -CoreReputationPlugin.RepRewards.MEDIUM;
+		}
+		else return;
+
+		repEffect = DiplomacyManager.adjustRelations(faction, targetFaction, delta, null, null, 0, limit, false);
+		storedRelation = faction.getRelationship(targetFaction.getId());
+	}
+
 	@Override
 	public String getSortString() {
 		return StringHelper.getString("exerelin_invasion", "invasion", true);

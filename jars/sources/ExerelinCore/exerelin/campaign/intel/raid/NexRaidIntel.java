@@ -4,8 +4,10 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -20,6 +22,7 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
@@ -319,6 +322,19 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 			return false;
 		
 		return true;
+	}
+
+	@Override
+	protected void applyRelationshipEffect() {
+		float delta;
+		RepLevel limit = RepLevel.HOSTILE;
+		if (outcome == OffensiveOutcome.SUCCESS) {
+			delta = -CoreReputationPlugin.RepRewards.MEDIUM;
+		}
+		else return;
+
+		repEffect = DiplomacyManager.adjustRelations(faction, targetFaction, delta, null, null, 0, limit, false);
+		storedRelation = faction.getRelationship(targetFaction.getId());
 	}
 
 	@Override

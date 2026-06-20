@@ -200,6 +200,11 @@ public class RemnantRaidIntel extends NexRaidIntel {
 			terminateEvent(OffensiveOutcome.FAIL);
 	}
 
+	@Override
+	protected void applyRelationshipEffect() {
+		// Remnants lol, do nothing
+	}
+
 	public boolean hasMarket() {
 		return false;
 	}

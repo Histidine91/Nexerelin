@@ -3,8 +3,10 @@ package exerelin.campaign.intel.satbomb;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -18,8 +20,10 @@ import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.fleets.*;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
@@ -232,6 +236,24 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		RaidAssignmentAINoWander raidAI = new RaidAssignmentAINoWander(this, fleet, route, (InvActionStage)action);
 		return raidAI;
 	}
+
+	@Override
+	protected void applyRelationshipEffect() {
+		float delta;
+		RepLevel limit = RepLevel.VENGEFUL;
+		RepLevel atBest = RepLevel.HOSTILE;
+		if (outcome == OffensiveOutcome.SUCCESS) {
+			delta = -CoreReputationPlugin.RepRewards.EXTREME;
+			atBest = RepLevel.VENGEFUL;
+		}
+		else if (outcome == OffensiveOutcome.FAIL || outcome == OffensiveOutcome.TASK_FORCE_DEFEATED) {
+			delta = -CoreReputationPlugin.RepRewards.HIGH;
+		}
+		else return;
+
+		repEffect = DiplomacyManager.adjustRelations(faction, targetFaction, delta, atBest, null, 0, limit, false);
+		storedRelation = faction.getRelationship(targetFaction.getId());
+	}
 	
 	// intel long description in intel screen
 	@Override
@@ -315,6 +337,10 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		for (RaidStage stage : stages) {
 			stage.showStageInfo(info);
 			if (getStageIndex(stage) == failStage) break;
+		}
+
+		if (repEffect != null) {
+			DiplomacyIntel.addRelationshipChangePara(info, faction.getId(), targetFaction.getId(), storedRelation, repEffect, opad);
 		}
 
 		if (target.getFaction().isPlayerFaction() || target.getFaction() == Misc.getCommissionFaction()) {

@@ -21,10 +21,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.AllianceManager;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.SectorManager;
+import exerelin.campaign.*;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
@@ -34,6 +31,7 @@ import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.GroundPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -89,6 +87,9 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected boolean brawlMode;
 	protected float brawlMult = -1;
 	protected boolean reportedRaid = false;
+
+	@Getter protected ExerelinReputationAdjustmentResult repEffect;
+	protected float storedRelation;
 
 	@Getter protected DefenseFleetIntel requestedDefenseFleet;	// quick-request defense fleet to counter this fleet
 		
@@ -312,6 +313,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			DiplomacyManager.getManager().modifyWarWeariness(faction.getId(), impact);
 		}
 
+		applyRelationshipEffect();
 		reportRaidIfNeeded();
 	}
 
@@ -638,6 +640,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
 		}
 	}
+
+	protected void applyRelationshipEffect() {
+
+	}
 	
 	// check if market should still be attacked
 	@Override
@@ -785,6 +791,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		super.createSmallDescription(info, width, height);
 		addStrategicActionInfo(info, width);
+
+		if (repEffect != null) {
+			DiplomacyIntel.addRelationshipChangePara(info, faction.getId(), targetFaction.getId(), storedRelation, repEffect, 10);
+		}
 	}
 
 	@Override
