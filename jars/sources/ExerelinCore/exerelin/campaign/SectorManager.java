@@ -180,10 +180,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     }
 	
 	public void reverseCompatibility() {
-		if (scoreboard == null) {
-			scoreboard = new VictoryScoreboardIntel();
-			Global.getSector().getIntelManager().addIntel(scoreboard);
-		}
+
 	}
    
     @Override

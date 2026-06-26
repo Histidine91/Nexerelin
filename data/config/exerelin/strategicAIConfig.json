@@ -306,7 +306,7 @@
 		
 		"transferFleetPoints":{
 			"name":"Transfer Fleet Points",
-			"classPath":"exerelin.campaign.ai.action.transferFleetPointsAction",
+			"classPath":"exerelin.campaign.ai.action.TransferFleetPointsAction",
 			"cooldown":60,
 			"tags":["military"],
 		},
