@@ -59,6 +59,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	public static final String MEM_KEY_TYPE = "$nex_fleetRequest_type";
 	public static final String MEM_KEY_FP = "$nex_fleetRequest_fp";
 	public static final String MEM_KEY_MARINES = "$nex_fleetRequest_marines";
+	public static final String MEM_KEY_FACTION = "$nex_fleetRequest_faction";
 	public static final String MEM_KEY_SOURCES = "$nex_fleetRequest_sources";
 	public static final String MEM_KEY_SOURCE = "$nex_fleetRequest_source";
 	public static final String MEM_KEY_TARGET = "$nex_fleetRequest_target";
@@ -79,6 +80,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 	protected String option;
 	protected MarketAPI source;
 	protected MarketAPI target;
+	protected FactionAPI faction;
 	protected int fp;
 	protected int maxFP;
 	protected int marines;
@@ -114,7 +116,13 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 				if (type2 == FleetType.COLONY && Global.getSettings().getModManager().isModEnabled("aotd_qol")) {
 					printQolColonyCountCheck(text);
 				}
-
+				break;
+			case "factionMenu":
+				showFactionMenu();
+				break;
+			case "setFaction":
+				String factionId = option.substring(FACTION_OPTION_PREFIX.length());
+				setFaction(factionId);
 				break;
 			case "strengthMenu":
 				showFleetStrengthMenu();
@@ -155,6 +163,7 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		memory = memoryMap.get(MemKeys.LOCAL);
 		option = memoryMap.get(MemKeys.LOCAL).getString("$option");
 		fleetType = getFleetType();
+		faction = getFaction();
 		source = getSource();
 		target = getTarget();
 		fp = getFP();
@@ -306,7 +315,47 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		if (fleetType == FleetType.INVASION)
 			setMarines(Math.round(opts.getSelectorValue("marineSelector")));
 	}
-	
+
+	protected void showFactionMenu() {
+		OptionPanelAPI opts = dialog.getOptionPanel();
+		opts.clearOptions();
+
+		List<FactionAPI> factions = new LinkedList<>();
+		factions.add(Global.getSector().getPlayerFaction());
+		String comId = Misc.getCommissionFactionId();
+		if (comId != null)
+			factions.add(Misc.getCommissionFaction());
+		if (AllianceManager.getPlayerAlliance(true) != null) {
+			for (String factionId : AllianceManager.getPlayerAlliance(true).getMembersCopy()) {
+				if (factionId.equals(Factions.PLAYER) || factionId.equals(comId)) continue;
+				factions.add(Global.getSector().getFaction(factionId));
+			}
+		}
+		Collections.sort(factions, Nex_FactionDirectoryHelper.NAME_COMPARATOR_PLAYER_FIRST);
+
+		for (FactionAPI faction : factions) {
+			addFactionOption(faction);
+		}
+
+		opts.addOption(StringHelper.getString("back", true), "nex_fleetRequest_main");
+	}
+
+	protected void addFactionOption(FactionAPI faction) {
+		OptionPanelAPI opts = dialog.getOptionPanel();
+		opts.addOption(faction.getDisplayName(), FACTION_OPTION_PREFIX + faction.getId(), faction.getBaseUIColor(), null);
+	}
+
+	protected FactionAPI getFaction() {
+		if (!memory.contains(MEM_KEY_FACTION))
+			memory.set(MEM_KEY_FACTION, Factions.PLAYER, 0);
+
+		return Global.getSector().getFaction(memory.getString(MEM_KEY_FACTION));
+	}
+
+	protected void setFaction(String factionId) {
+		memory.set(MEM_KEY_FACTION, factionId, 0);
+		faction = Global.getSector().getFaction(factionId);
+	}
 	
 	protected float getTimeToLaunch() {
 		return getTimeToLaunch(fp, fleetType);
@@ -637,10 +686,6 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		AddRemoveCommodity.addCreditsLossText((int)cost, dialog.getTextPanel());
 		credits.subtract(cost);
 		
-		FactionAPI attacker = source.getFaction();
-		if (fleetType == FleetType.COLONY)
-			attacker = Global.getSector().getPlayerFaction();
-		
 		float timeToLaunch = getTimeToLaunch();
 		
 		if (fleetType == FleetType.RELIEF) {
@@ -654,23 +699,23 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 			OffensiveFleetIntel intel;
 			switch (fleetType) {
 				case INVASION:
-					intel = new InvasionIntel(attacker, source, target, fp, timeToLaunch);
+					intel = new InvasionIntel(faction, source, target, fp, timeToLaunch);
 					//((InvasionIntel)intel).setMarinesTotal((int)(marines));	/ overriden by init
 					break;
 				case RAID:
-					intel = new NexRaidIntel(attacker, source, target, fp, timeToLaunch);
+					intel = new NexRaidIntel(faction, source, target, fp, timeToLaunch);
 					break;
 				case BASESTRIKE:
-					intel = new BaseStrikeIntel(attacker, source, target, fp, timeToLaunch);
+					intel = new BaseStrikeIntel(faction, source, target, fp, timeToLaunch);
 					break;
 				case DEFENSE:
-					intel = new DefenseFleetIntel(attacker, source, target, fp, timeToLaunch);
+					intel = new DefenseFleetIntel(faction, source, target, fp, timeToLaunch);
 					break;
 				case BLOCKADE:
-					intel = new BlockadeWrapperIntel(attacker, source, target, fp, timeToLaunch);
+					intel = new BlockadeWrapperIntel(faction, source, target, fp, timeToLaunch);
 					break;
 				case COLONY:
-					intel = new ColonyExpeditionIntel(attacker, source, target, fp, timeToLaunch);
+					intel = new ColonyExpeditionIntel(faction, source, target, fp, timeToLaunch);
 					break;
 				default:
 					return false;
@@ -717,6 +762,8 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 		String fpStr = fp + "";
 		opts.addOption(getString("optionStrength") + ": " + fpStr, "nex_fleetRequest_strengthMenu");
 		//opts.setEnabled("nex_fleetRequest_strengthMenu", fleetType != FleetType.RELIEF && fleetType != FleetType.COLONY);
+
+		opts.addOption(getString("optionFaction") + ": " + faction.getDisplayName(), "nex_fleetRequest_selectFaction", faction.getBaseUIColor(), null);
 		
 		String sourceName = source == null ? StringHelper.getString("none") : source.getName();
 		opts.addOption(getString("optionSource") + ": " + sourceName, "nex_fleetRequest_selectSource");

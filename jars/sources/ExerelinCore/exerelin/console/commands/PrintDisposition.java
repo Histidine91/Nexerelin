@@ -6,17 +6,15 @@ import com.fs.starfarer.api.combat.MutableStat.StatMod;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyBrain.DispositionEntry;
+import org.lazywizard.console.*;
+import org.lazywizard.lazylib.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.lazywizard.console.BaseCommand;
-import org.lazywizard.console.CommandUtils;
-import org.lazywizard.console.CommonStrings;
-import org.lazywizard.console.Console;
-import org.lazywizard.lazylib.CollectionUtils;
 
-public class PrintDisposition implements BaseCommand {
+public class PrintDisposition implements BaseCommandWithSuggestion {
 
 	@Override
 	public CommandResult runCommand(String args, CommandContext context) {
@@ -91,5 +89,12 @@ public class PrintDisposition implements BaseCommand {
 			
 			Console.showMessage(output);
 		}
+	}
+
+	@Override
+	public List<String> getSuggestions(int parameter, List<String> previous, BaseCommand.CommandContext context) {
+		List<String> suggestions = new ArrayList<>();
+		if (parameter == 0 || parameter == 1) suggestions.addAll(Global.getSettings().getAllFactionSpecs().stream().map(it -> it.getId()).toList());
+		return suggestions;
 	}
 }

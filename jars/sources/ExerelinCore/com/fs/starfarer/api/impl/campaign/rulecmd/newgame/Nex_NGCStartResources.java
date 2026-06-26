@@ -147,6 +147,7 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 
 		charData.getPerson().getStats().setXP(0);
 		charData.getPerson().getStats().setLevel(1);
+		charData.getPerson().getStats().setPoints(1);
 		charData.getPerson().getStats().setStoryPoints(0);
 
 		charData.getStartingCargo().getCredits().set(0);

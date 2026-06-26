@@ -619,8 +619,10 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			fleet.addAssignment(FleetAssignment.INTERCEPT, station, 20);
 		}
 
-		straggler.getMemoryWithoutUpdate().unset(MemFlags.FLEET_IGNORES_OTHER_FLEETS);
-		straggler.getMemoryWithoutUpdate().unset(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS);
+		if (straggler != null) {	// might be null if player skipped spawning the straggler and went straight to dest
+			straggler.getMemoryWithoutUpdate().unset(MemFlags.FLEET_IGNORES_OTHER_FLEETS);
+			straggler.getMemoryWithoutUpdate().unset(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS);
+		}
 		
 		//unsetFleetSus();
 		setFleetSusExpire();
@@ -650,6 +652,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 	 */
 	public void checkStagingAreaFound() {
 		if (knowStagingArea) return;
+		//if (currentStage == Stage.GO_TO_ORIGIN_SYSTEM) return;	// we'll let the fleets spawn even in a sequence break
 		
 		boolean found = false;
 		if (!stagingPoint.isDiscoverable()) {
@@ -671,7 +674,7 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			spawnAttackFleets();
 			knowStagingArea = true;
 			stagingPoint.setDiscoverable(false);
-			if (currentStage == Stage.FOLLOW_STRAGGLER) {
+			if (currentStage == Stage.GO_TO_ORIGIN_SYSTEM || currentStage == Stage.FOLLOW_STRAGGLER) {
 				setCurrentStage(Stage.GO_TO_TARGET_SYSTEM, null, null);
 			}
 			Global.getSector().addScript(new DelayedActionScript(STAGING_AREA_FOUND_ATTACK_DELAY) {

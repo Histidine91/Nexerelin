@@ -98,7 +98,7 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
 
         String aifid = ai.getFactionId();
 
-        // TODO: modify priority based on fleet pool/invasion points available
+        // modify priority based on fleet pool/invasion points available
         float fpRequiredForTarget = 0;
         if (concern.getMarket() != null) {
             fpRequiredForTarget = InvasionFleetManager.getWantedFleetSize(ai.getFaction(), concern.getMarket(), 0, true);

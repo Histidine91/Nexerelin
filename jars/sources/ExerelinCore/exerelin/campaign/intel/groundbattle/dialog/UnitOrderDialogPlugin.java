@@ -266,7 +266,9 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			if (unit.getUnitDef().equipment != null) {
 				max = Math.min(max, curr + (int)CrewReplacerUtils.getAvailableCommodity(fleet, def.equipment.commodityId, def.equipment.crewReplacerJobId));
 			}
-			max = Math.min(max, curr + (int)CrewReplacerUtils.getAvailableCommodity(fleet, def.personnel.commodityId, def.personnel.crewReplacerJobId));
+			if (unit.getUnitDef().personnel != null) {
+				max = Math.min(max, curr + (int)CrewReplacerUtils.getAvailableCommodity(fleet, def.personnel.commodityId, def.personnel.crewReplacerJobId));
+			}
 		}
 		
 		return max;

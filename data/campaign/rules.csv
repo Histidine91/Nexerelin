@@ -506,6 +506,10 @@ nex_fleetRequest_setStrengthMenu,DialogOptionSelected,$option == nex_fleetReques
 nex_fleetRequest_setStrength,DialogOptionSelected,$option == nex_fleetRequest_setStrength,"Nex_FleetRequest setStrength
 FireAll Nex_FleetRequest",,,
 ,,,,,,
+nex_fleetRequest_selectFactionMenu,DialogOptionSelected,$option == nex_fleetRequest_selectFaction,Nex_FleetRequest factionMenu,,,
+nex_fleetRequest_selectFaction,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setFaction_""","Nex_FleetRequest setFaction
+FireAll Nex_FleetRequest",,,
+,,,,,,
 nex_fleetRequest_selectSourceMenu,DialogOptionSelected,$option == nex_fleetRequest_selectSource,Nex_FleetRequest sourceMenu,,,
 nex_fleetRequest_selectSource,DialogOptionSelected,"Nex_OptionStartsWith ""nex_fleetRequest_setSource_""","Nex_FleetRequest setSource
 FireAll Nex_FleetRequest",,,
@@ -918,6 +922,7 @@ nex_blueprintSwapMenu,Nex_BlueprintSwapMenu,,"AddTextSmall ""You have $nex_BPSwa
 SetTextHighlights $nex_BPSwap_pointsStr
 SetShortcut nex_blueprintSwapExit ""ESCAPE""",,"nex_blueprintSwapBuy:Purchase blueprints
 nex_blueprintSwapSell:Trade in blueprints
+#nex_blueprintSwapCustom:Place a custom order
 nex_blueprintSwapExit:Go back",
 nex_blueprintSwapSellOption,DialogOptionSelected,$option == nex_blueprintSwapSell,Nex_BlueprintSwap sell,,,
 nex_blueprintSwap_SellResponse,Nex_BlueprintsSold,,FireAll Nex_BlueprintSwapMenu,"""Thank you for your business.""",,
@@ -932,6 +937,23 @@ AddTextSmall ""You have $nex_BPSwap_pointsStr points.""
 SetTextHighlights $nex_BPSwap_pointsStr
 ShowPersonVisual","""Thank you for your business.""",,
 nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,FireAll PopulateOptions,,,
+nex_blueprintSwapCustom,DialogOptionSelected,$option == nex_blueprintSwapCustom,"AddTextSmall ""This lets you pick a specific blueprint. Each item costs 1/2/3/4 SP depending on hull size and five times the usual blueprint point cost.""
+SetTextHighlightColors story story story story h
+SetTextHighlights 1 2 3 4 ""five times""
+SetShortcut nex_blueprintSwapMenuReturn ""ESCAPE""","""Ah, the VIP service? Sure, let me send you our selection.""","nex_blueprintSwapCustomList:Make a custom order
+nex_blueprintSwapMenuReturn:Go back",
+nex_blueprintSwapCustomPrompt,DialogOptionSelected,$option == nex_blueprintSwapCustomList,Nex_BlueprintSwap showCustomMenu,,,
+nex_blueprintSwapCustomPreConfirm,Nex_BlueprintSwapCustomPicked,,"Nex_BlueprintSwap showCustomConfirmation
+SetShortcut nex_blueprintSwapMenuReturn ""ESCAPE""",,"nex_blueprintSwapCustomConfirm:Confirm purchase
+nex_blueprintSwapCustomList:Repick items
+nex_blueprintSwapMenuReturn:Cancel",
+nex_blueprintSwapCustomConfirm,DialogOptionSelected,$option == nex_blueprintSwapCustomConfirm,"Nex_BlueprintSwap confirmCustom
+FireAll Nex_BlueprintSwapMenu","""Thank you for your business.""",,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
 #END Blueprint swap options,,,,,,
 ,,,,,,
 # Stabilization package,,,,,,
@@ -1560,6 +1582,10 @@ nex_getConstructionQueueOpt,PopulateOptions,"$global.isDevMode
 Nex_IsBaseOfficial admin",,,21:nex_getConstructionQueue:>> (dev) Get construction queue,
 nex_getConstructionQueue,DialogOptionSelected,$option == nex_getConstructionQueue,Nex_DisplayConstructionQueue,,,
 ,,,,,,
+marketPostOpenPlayerRuled,MarketPostOpen,"$hasMarket
+Nex_IsFactionRuler $faction.id score:999","$tradeMode = OPEN 0
+FireBest MarketPostDock",Your $shipOrFleet goes into orbit around $marketName.,,
+,,,,,,
 nex_marketPostOpenDerelicts,MarketPostOpen,"$hasMarket
 $faction.id == nex_derelict score:1000","$tradeMode = NONE 0
 FireBest MarketPostDock","$TheFactionLong $factionIsOrAre in control of this location. They do not interact with humans, except through gunfire.",,
@@ -1698,7 +1724,13 @@ aiCores_turnInOptionSelected,DialogOptionSelected,$option == aiCores_selectCores
 salRuins_alreadyExplored,PopulateOptions,"$market.hasRuins
 $market.ruinsExplored
 $market.isPlanetConditionMarketOnly
+!$tag:gas_giant
 !$market.mentionedRuins",$market.mentionedRuins = true 0,"The ruins on the surface of $marketName have been stripped of anything easily accessible, and further exploitation requires a permanent presence.",,
+salRuinsGG_alreadyExplored,PopulateOptions,"$market.hasRuins
+$market.ruinsExplored
+$market.isPlanetConditionMarketOnly
+$tag:gas_giant
+!$market.mentionedRuins",$market.mentionedRuins = true 0,The ruins in low orbit of $marketName have been stripped of anything easily accessible. Further exploitation of abandoned buoyant structures requires a permanent presence.,,
 ,,,,,,
 bqfsASkedForSuppliesDeclineColony,DialogOptionSelected,"$option == bqfs_askForSupplies2
 Nex_MiscCMD hasAnyColoniesForQuartermasterSupplies score:100","AdjustRepActivePerson -1
@@ -5014,6 +5046,7 @@ Nex_SpecialForcesConfig beginCreate",Creating special task group...,,
 nex_configSF_main,DialogOptionSelected,$option == nex_configSF_start,"$nex_sf_menuType = ""config"" 0
 Nex_SpecialForcesConfig mainMenu",Reconfiguring special task group...,,
 nex_configSF_mainOpts,Nex_ConfigSFOptions,!$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_disband ""Disband the task group? Its assets will be merged into your fleet."" ""Yes"" ""No""
+SetTooltip nex_configSF_swapFleets Replaces all their ships with yours and vice versa. Option provided for convenience/fun, not really supported.
 SetShortcut nex_configSF_close ESCAPE",,"nex_configSF_giveShips:Give ships
 nex_configSF_takeShips:Take ships
 nex_sf_reviveShipStart:Revive lost ships
@@ -5021,6 +5054,7 @@ nex_configSF_showOfficers:Transfer officers
 nex_configSF_assignOfficers:Assign officers
 nex_configSF_commanderSkills:Train commander
 nex_configSF_disband:Absorb and disband task group
+nex_configSF_swapFleets:Swap fleets
 nex_configSF_close:Done",
 nex_configSF_mainOptsCreate,Nex_ConfigSFOptions,$nex_psf_create,"Nex_AddOptionConfirmation nex_configSF_createFinish ""Confirm task force creation?"" ""Yes"" ""No""
 Nex_AddOptionConfirmation nex_configSF_abortCreate ""Cancel task force creation?"" ""Yes"" ""No""",,"nex_configSF_giveShips:Give ships
@@ -5077,6 +5111,7 @@ nex_configSF_commanderSkillsCancel:Go back",
 nex_configSF_commanderSkillsConfirm,DialogOptionSelected,$option == nex_configSF_commanderSkillsConfirm,"Nex_SpecialForcesConfig commanderSkillsConfirm
 Nex_SpecialForcesConfig mainMenu",,,
 nex_configSF_commanderSkillsCancel,DialogOptionSelected,$option == nex_configSF_commanderSkillsCancel,Nex_SpecialForcesConfig mainMenu,,,
+nex_configSF_swapFleets,DialogOptionSelected,$option == nex_configSF_swapFleets,Nex_SpecialForcesConfig swapFleets,,,
 nex_configSF_disband,DialogOptionSelected,$option == nex_configSF_disband,"Nex_SpecialForcesConfig disband
 DismissDialog",,,
 nex_configSF_close,DialogOptionSelected,$option == nex_configSF_close,FireBest OpenCommLink,,,
@@ -5105,6 +5140,7 @@ nex_commandSF_joinRaid,DialogOptionSelected,$option == nex_commandSF_joinRaid,Ne
 nex_commandSF_wait,DialogOptionSelected,$option == nex_commandSF_wait,Nex_SpecialForcesCommands wait_player,,,
 nex_commandSF_goAndDespawn,DialogOptionSelected,$option == nex_commandSF_goAndDespawn,Nex_SpecialForcesCommands disbandAtLocation,,,
 nex_commandSF_goAndRevive,DialogOptionSelected,$option == nex_commandSF_goAndRevive,Nex_SpecialForcesCommands rebuildAtLocation,,,
+,,,,,,
 nex_commandSF_autoAssign,DialogOptionSelected,$option == nex_commandSF_autoAssign,"Nex_SpecialForcesCommands autoAssign
 #Nex_SpecialForcesCommands main",,,
 nex_commandSF_leave,DialogOptionSelected,$option == nex_commandSF_leave,"unset $nex_psf_task

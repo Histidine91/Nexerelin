@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -292,7 +293,8 @@ public class RaiseRelations extends CovertActionIntel {
 			other = PlayerFactionStore.getPlayerFactionId();
 		if (!DiplomacyManager.haveRandomRelationships(targetFaction.getId(), other))
 		{
-			float max = DiplomacyManager.getManager().getMaxRelationship(targetFaction.getId(),	other);
+			MutableStat maxRep = DiplomacyManager.getManager().getMaxRelationshipStat(targetFaction.getId(), other);
+			float max = maxRep.getModifiedValue();
 			if (max < 1) {
 				String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
 				str = StringHelper.substituteToken(str, "$faction1",
@@ -301,7 +303,11 @@ public class RaiseRelations extends CovertActionIntel {
 						NexUtilsFaction.getFactionShortName(thirdFaction));
 				String maxStr = NexUtilsReputation.getRelationStr(max);
 				str = StringHelper.substituteToken(str, "$relationship", maxStr);
-				text.addPara(str, NexUtilsReputation.getRelColor(max), maxStr);
+
+				TooltipMakerAPI section = text.beginTooltip();
+				section.addPara(str, 3, NexUtilsReputation.getRelColor(max), maxStr);
+				section.addTooltipToPrevious(new NexUtilsGUI.MaxRepTooltipCreator(maxRep), TooltipMakerAPI.TooltipLocation.BELOW);
+				text.addTooltip();
 			}
 		}
 		// print current relationship

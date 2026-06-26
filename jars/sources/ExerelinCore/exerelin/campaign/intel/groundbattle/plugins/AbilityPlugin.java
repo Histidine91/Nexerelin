@@ -316,7 +316,7 @@ public abstract class AbilityPlugin {
 	 * @return True if the ability was successfully used, false otherwise.
 	 */
 	public boolean aiExecute(GroundBattleAI ai, PersonAPI user) {
-		if (user.isPlayer()) return false;
+		//if (user.isPlayer()) return false;	// shouldn't need it here since GroundBattleAI.checkAbilityUse() should only be called for non-player AIs
 		activate(null, user);
 		if (side.getIntel().shouldNotify())
 			playUISound();

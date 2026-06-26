@@ -49,6 +49,7 @@ import exerelin.campaign.backgrounds.CharacterBackgroundUtils;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.battle.NexAutoresolveListener;
 import exerelin.campaign.colony.ColonyTargetValuator;
+import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.campaign.econ.EconomyInfoHelper;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.GroundPoolManager;
@@ -243,6 +244,8 @@ public class ExerelinModPlugin extends BaseModPlugin
     protected void reverseCompatibility()
     {
         NexRouteManager.replaceExistingRouteManager();
+
+         if (VassalManager.getInstance() == null) VassalManager.create();
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();
@@ -274,6 +277,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         new RevengeanceManager().init();
         new SpecialForcesManager().init();
         RebellionCreator.generate();
+        VassalManager.create();
         
         sector.addScript(new ConquestMissionManager());
         //sector.addScript(new DisruptMissionManager());
@@ -625,8 +629,8 @@ public class ExerelinModPlugin extends BaseModPlugin
             BaseCharacterBackground background = CharacterBackgroundUtils.getBackgroundPluginByID(backgroundID);
             background.onNewGame(Global.getSettings().getFactionSpec(factionID), NexConfig.getFactionConfig(factionID));
 
-            //data.backgroundId = null;
-            //data.selectedFactionForBackground = null;
+            data.backgroundId = null;
+            data.selectedFactionForBackground = null;
         }
 
         for (QuestChainSkipEntry chain : QuestChainSkipEntry.getEntries()) {

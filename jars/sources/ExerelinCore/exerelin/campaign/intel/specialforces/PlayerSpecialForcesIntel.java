@@ -930,7 +930,12 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 	public static float getTrueRepairTime(FleetMemberAPI member) {
 		float repairTime = member.getRepairTracker().getRemainingRepairTime();
 		float crToRecover = member.getRepairTracker().getMaxCR() - member.getRepairTracker().getCR();
-		float crRecoverTime = crToRecover/member.getRepairTracker().getRecoveryRate();
+		float recRate = member.getRepairTracker().getRecoveryRate();
+		if (recRate <= 0.01) {
+			log.warn(String.format("Ship %s has <1 percent recovery rate, applying safety", member.getShipName()));
+			recRate = 0.01f;
+		}
+		float crRecoverTime = crToRecover/recRate;
 
 		return Math.max(repairTime, crRecoverTime);
 	}

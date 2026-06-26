@@ -282,7 +282,7 @@ public class BuyShip extends HubMissionWithBarEvent {
 
 		// not trying to pick rules? Just run the ships through all the rules and see who's left
 		if (!rulePickerMode) {
-			for (BuyShipRule currRule : new ArrayList<>(rules)) {
+			for (BuyShipRule currRule : rules) {
 				List<FleetMemberAPI> fromThisRule = currRule.getShipsMeetingRule(player);
 				bestList.retainAll(fromThisRule);
 			}

@@ -104,8 +104,8 @@ public class DiplomacyBrain {
 	public static final float DISLIKE_THRESHOLD = -20;
 	public static final float EVENT_SKIP_CHANCE = 0.5f;
 	public static final float EVENT_CHANCE_EXPONENT_BASE = 0.8f;
-	public static final float CEASEFIRE_LENGTH = 150f;
-	public static final float RECENT_WAR_LENGTH = 120f;
+	public static final float CEASEFIRE_LENGTH = 240f;
+	public static final float RECENT_WAR_LENGTH = 150f;
 	
 	// used to be in DiplomacyTraits but that made compiling annoying
 	public static final float FREE_PORT_PENALTY_MULT = 0.4f;

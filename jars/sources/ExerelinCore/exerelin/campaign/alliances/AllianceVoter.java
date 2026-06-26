@@ -14,6 +14,7 @@ import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitIds;
+import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.campaign.intel.AllianceVoteIntel;
 import exerelin.utilities.*;
 import org.apache.log4j.Logger;
@@ -76,7 +77,7 @@ public class AllianceVoter {
 		String playerFacId = PlayerFactionStore.getPlayerFactionId();
 		
 		// prompt player for vote if we're allied with one of the factions, while not being one of the factions
-		if (Nex_IsFactionRuler.isRuler(playerFacId))
+		if (Nex_IsFactionRuler.isRuler(playerFacId) && !VassalManager.getInstance().isVassal(playerFacId))
 		{
 			if (!playerFacId.equals(faction1Id) && !playerFacId.equals(faction2Id))
 			{
@@ -158,6 +159,7 @@ public class AllianceVoter {
 					ally2 != null ? ally2.uuId: faction2Id, 
 					ally2 != null, isWar);
 			NexUtils.addExpiringIntel(intel);
+			AllianceManager.reportAllianceVote(ally1, intel);
 		}
 		if (ally2 != null)
 		{
@@ -165,6 +167,7 @@ public class AllianceVoter {
 					ally1 != null ? ally1.uuId: faction1Id, 
 					ally1 != null, isWar);
 			NexUtils.addExpiringIntel(intel);
+			AllianceManager.reportAllianceVote(ally2, intel);
 		}
 		
 		// alliance hates on defiers
@@ -206,7 +209,9 @@ public class AllianceVoter {
 				AllianceManager.remainInAllianceCheck(defier, member);
 			}
 		}
-		NexUtilsReputation.syncFactionRelationshipsToPlayer();
+		if (NexConfig.syncPlayerRelationsWithCommisioner) {
+			NexUtilsReputation.syncFactionRelationshipsToPlayer();
+		}
 	}
 	
 	/**
@@ -250,6 +255,9 @@ public class AllianceVoter {
 		
 		for (String allianceMember : alliance.members)
 		{
+			if (VassalManager.getInstance().isVassal(allianceMember))
+				continue;
+
 			Vote vote = factionVote(isWar, alliance, allianceMember, factionId, otherFactionId, 
 					factionsToConsider, strengthRatio);
 			if (vote == Vote.YES) {
@@ -271,6 +279,12 @@ public class AllianceVoter {
 				if (decideToDefyVote(isWar, alliance, voter, factionId, otherFactionId))
 				{
 					defied.add(voter);
+				}
+			}
+			for (String maybeVassal : alliance.members) {
+				String overlordId = VassalManager.getInstance().getOverlord(maybeVassal);
+				if (overlordId != null && defied.contains(overlordId)) {
+					defied.add(maybeVassal);
 				}
 			}
 		}

@@ -335,7 +335,13 @@ public class GroundBattleRoundResolve {
 		GroundUnitDef def = unit.getUnitDef();
 
 		boolean hasEquip = unit.unitDef.equipment != null;
-		int personnelKills = hasEquip ? Math.round(kills * (float)def.personnel.mult/def.equipment.mult) : kills;
+		int personnelKills = 0;
+		if (hasEquip) {
+			if (def.personnel != null) personnelKills = Math.round(kills * (float)def.personnel.mult/def.equipment.mult);
+		}
+		else {
+			personnelKills = kills;
+		}
 		int equipmentKills = hasEquip ? kills : 0;
 		int equipmentKillsTrue = inflictUnitCommodityLosses(unit, equipmentKills, true);
 		int personnelKillsTrue = inflictUnitCommodityLosses(unit, personnelKills, false);

@@ -16,11 +16,11 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
+import com.fs.starfarer.api.impl.campaign.rulecmd.FireBest;
 import com.fs.starfarer.api.impl.campaign.rulecmd.NGCAddStandardStartingScript;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.StringHelper;
-import org.lwjgl.input.Keyboard;
 
 import java.util.Map;
 
@@ -94,10 +94,8 @@ public class SpacerStart extends CustomStart {
 		
 		dialog.getVisualPanel().showFleetInfo(StringHelper.getString("exerelin_ngc", "playerFleet", true), 
 				tempFleet, null, null);
-		
-		
-		dialog.getOptionPanel().addOption(StringHelper.getString("done", true), "nex_NGCDone");
-		dialog.getOptionPanel().addOption(StringHelper.getString("back", true), "nex_NGCStartBack");
-		dialog.getOptionPanel().setShortcut("nex_NGCStartBack", Keyboard.KEY_ESCAPE, false, false, false, false);
+
+
+		FireBest.fire(null, dialog, memoryMap, "NewGameBackgroundSelection");
 	}
 }

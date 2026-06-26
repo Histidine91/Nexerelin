@@ -313,12 +313,21 @@ public abstract class BuildIndustryAction extends BaseStrategicAction implements
     public void abortStrategicAction() {
         if (market.getFaction() != ai.getFaction()) return;
         if (industryUnderConstruction != null) {
+            // sunk cost, just finish it
+            /*
             if (industryUnderConstruction.isBuilding() && !industryUnderConstruction.isUpgrading()) {
                 industryUnderConstruction.getMarket().removeIndustry(industryUnderConstruction.getId(), null, false);
+                String message = "Industry construction cancelled, writing trace to log";
+                Global.getSector().getCampaignUI().addMessage(message, Misc.getHighlightColor());
+                log.info(message, new Throwable());
             }
             else if (industryUnderConstruction.isUpgrading()) {
                 industryUnderConstruction.cancelUpgrade();
+                String message = "Industry upgrade cancelled, writing trace to log";
+                Global.getSector().getCampaignUI().addMessage(message, Misc.getHighlightColor());
+                log.info(message, new Throwable());
             }
+             */
         } else {
             ColonyManager.getManager().removeQueuedIndustry(industryId, market);
         }

@@ -1019,7 +1019,10 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 		@Override
 		public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) 
 		{
-			log.info("Despawning fleet " + fleet.getName());
+			if (sf instanceof PlayerSpecialForcesIntel) {
+				log.info("Despawning fleet " + fleet.getName() + "; dumping trace", new Throwable());
+			}
+			else log.info("Despawning fleet " + fleet.getName());
 			sf.reportFleetDespawned(reason, param);
 			Global.getSector().addScript(new RemoveListenerScript(fleet, this));
 		}

@@ -1,5 +1,6 @@
 package exerelin.console.commands;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -7,12 +8,14 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.invasion.RespawnInvasionIntel;
 import exerelin.utilities.NexConfig;
-import java.util.List;
-import org.lazywizard.console.BaseCommand;
+import org.lazywizard.console.BaseCommandWithSuggestion;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
 
-public class SpawnRespawnFleet implements BaseCommand {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SpawnRespawnFleet implements BaseCommandWithSuggestion {
 
 	@Override
 	public CommandResult runCommand(String args, CommandContext context) {
@@ -62,5 +65,16 @@ public class SpawnRespawnFleet implements BaseCommand {
 		Console.showMessage("Oscar Mike to " + target.getName() + " (" + target.getFaction().getDisplayName()
 				+ ") in " + target.getContainingLocation().getName());
 		return CommandResult.SUCCESS;
+	}
+
+	@Override
+	public List<String> getSuggestions(int parameter, List<String> previous, CommandContext context) {
+		List<String> suggestions = new ArrayList<>();
+
+		if (parameter == 0) {
+			suggestions.addAll(Global.getSettings().getAllFactionSpecs().stream().map(it -> it.getId()).toList());
+		}
+
+		return suggestions;
 	}
 }

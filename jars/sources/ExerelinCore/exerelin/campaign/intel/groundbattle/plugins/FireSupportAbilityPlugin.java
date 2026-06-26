@@ -249,7 +249,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 		CampaignFleetAPI fleet = null;
 		
 		for (CampaignFleetAPI candidate : fleets) {
-			if (candidate.isPlayerFleet()) continue;
+			if (candidate.isPlayerFleet() && !user.isPlayer()) continue;
 			if (candidate.getAI() != null) {
 				if (candidate.getAI().isFleeing() || candidate.getAI().isMaintainingContact())
 					continue;

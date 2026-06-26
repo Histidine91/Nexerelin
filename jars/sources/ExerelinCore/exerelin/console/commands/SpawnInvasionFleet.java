@@ -5,15 +5,13 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.invasion.InvasionIntel;
-import java.util.ArrayList;
-import java.util.List;
-import org.lazywizard.console.BaseCommand;
-import org.lazywizard.console.CommandUtils;
-import org.lazywizard.console.CommonStrings;
-import org.lazywizard.console.Console;
+import org.lazywizard.console.*;
 import org.lazywizard.lazylib.CollectionUtils;
 
-public class SpawnInvasionFleet implements BaseCommand {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SpawnInvasionFleet implements BaseCommandWithSuggestion {
 
 	@Override
 	public CommandResult runCommand(String args, CommandContext context) {
@@ -85,5 +83,16 @@ public class SpawnInvasionFleet implements BaseCommand {
 	
 	public static MarketAPI getMarket(String marketId) {
 		return CommandUtils.findBestMarketMatch(marketId);
+	}
+
+	@Override
+	public List<String> getSuggestions(int parameter, List<String> previous, CommandContext context) {
+		List<String> suggestions = new ArrayList<>();
+
+		if (parameter == 0 || parameter == 1) {
+			suggestions.addAll(Global.getSector().getEconomy().getMarketsCopy().stream().map(it -> it.getId()).toList());
+		}
+
+		return suggestions;
 	}
 }

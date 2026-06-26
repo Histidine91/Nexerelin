@@ -76,14 +76,14 @@
 			"name":"Powerful Unfriendly",
 			"desc":"$TheFaction $factionIsOrAre strong, and our relations with them are not always friendly. We should either appease them or take other precautions.",
 			"classPath":"exerelin.campaign.ai.concern.PowerfulUnfriendlyConcern",
-			"tags":["diplomacy", "canDiplomacy", "canCoalition", "trait_paranoid", "trait_submissive", "coalition_enemy"],
+			"tags":["diplomacy", "canDiplomacy", "canCoalition", "trait_paranoid", "trait_submissive", "coalition_enemy", "canTransferFleetPoints"],
 			"module":DIPLOMATIC
 		},
 		"closeAdversaries":{
 			"name":"Close Adversaries",
 			"desc":"Two factions unfriendly to us, $theFaction and $theOtherFaction, are getting closer than we would like.",
 			"classPath":"exerelin.campaign.ai.concern.CloseAdversariesConcern",
-			"tags":["diplomacy", "canLowerRelations", "diplomacy_negative", "canDeclareWar", "canMakePeace", "canCoalition", "trait_paranoid", "coalition_enemy"],
+			"tags":["diplomacy", "canLowerRelations", "diplomacy_negative", "canDeclareWar", "canMakePeace", "canCoalition", "trait_paranoid", "coalition_enemy", "canTransferFleetPoints"],
 			"module":DIPLOMATIC
 		},
 		"warWeariness":{
@@ -105,7 +105,7 @@
 			"name":"Intervene in Conflict",
 			"desc":"Our ally $theOtherFaction is at war with $theFaction. We should intercede on their behalf.",
 			"classPath":"exerelin.campaign.ai.concern.InterventionConcern",
-			"tags":["diplomacy", "military", "trait_helps_allies"],
+			"tags":["diplomacy", "military", "trait_helps_allies", "canTransferFleetPoints"],
 			"module":DIPLOMATIC
 		},
 		"commodityCompetition":{
@@ -134,6 +134,13 @@
 			"desc":"Our lack of heavy industry is resulting in heavily defective ships. This is a dangerous and unacceptable state of affairs we should remedy promptly.",
 			"classPath":"exerelin.campaign.ai.concern.LowShipQualityConcern",
 			"tags":["economy", "military", "canBuildHeavyIndustry", "canInvade", "trait_paranoid", "trait_predatory", "!trait_pacifist"],
+			"module":ECONOMIC
+		},
+		"lowAccessibility":{
+			"name":"Low Accessibility",
+			"desc":"$market has low accessibility, restricting its ability to trade.",
+			"classPath":"exerelin.campaign.ai.concern.LowAccessibilityConcern",
+			"tags":["economy", "canBuildSpaceport"],
 			"module":ECONOMIC
 		},
 		
@@ -280,12 +287,28 @@
 			"idForAntiRepetition":"buildEcon",
 			"tags":["economy", "canBuildHeavyIndustry"],
 		},
+		# special handling for the low accessibility concern
+		"buildForAccessibility":{
+			"name":"Build (Spaceport/Waystation)",
+			"classPath":"exerelin.campaign.ai.action.industry.BuildForAccessibilityAction",
+			"cooldown":90,
+			"antiRepetition":50,
+			"idForAntiRepetition":"buildEcon",
+			"tags":["economy", "canBuildSpaceport"],
+		},
 		"buildDefense":{
 			"name":"Build (Defense)",
 			"classPath":"exerelin.campaign.ai.action.industry.BuildDefenseAction",
 			"cooldown":60,
 			"antiRepetition":50,
 			"tags":["economy", "military", "canBuildDefense"],
+		},
+		
+		"transferFleetPoints":{
+			"name":"Transfer Fleet Points",
+			"classPath":"exerelin.campaign.ai.action.TransferFleetPointsAction",
+			"cooldown":60,
+			"tags":["military"],
 		},
 		
 		"coalition":{

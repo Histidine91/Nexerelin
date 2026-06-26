@@ -10,6 +10,7 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
+import com.fs.starfarer.api.impl.campaign.ids.Sounds;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.loading.Description;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
@@ -17,16 +18,18 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 
 public class Nex_BlueprintSwap extends PaginatedOptionsPlus {
@@ -34,10 +37,12 @@ public class Nex_BlueprintSwap extends PaginatedOptionsPlus {
 	public static final String POINTS_KEY = "nex_BPSwapPoints";
 	public static final String STOCK_ARRAY_KEY = "$nex_BPSwapStock";
 	public static final String ALREADY_SOLD_KEY = "$nex_BPSwapAlreadySold";
+	public static final String CUSTOM_PRODUCTION_KEY = "$nex_BPSwapCustomProduction";
 	public static final float STOCK_KEEP_DAYS = 30;
 	//public static final int STOCK_COUNT_MIN = 7;
 	//public static final int STOCK_COUNT_MAX = 10;
 	public static final float PRICE_POINT_MULT = 0.01f;
+	public static final float CUSTOM_ORDER_PRICE_MULT = 5;
 	//public static final float ALREADY_SOLD_MULT = 0.25f;
 	public static final String PERSISTENT_RANDOM_KEY = "nex_blueprintSwapRandom";
 	
@@ -91,6 +96,16 @@ public class Nex_BlueprintSwap extends PaginatedOptionsPlus {
 				break;
 			case "confirmPurchase":
 				purchase();
+				break;
+			case "showCustomMenu":
+				showCustomMenu(dialog, memoryMap);
+				break;
+			case "showCustomConfirmation":
+				FactionProductionAPI prod = (FactionProductionAPI)memoryMap.get(MemKeys.LOCAL).get(CUSTOM_PRODUCTION_KEY);
+				customProductionBeforeConfirm(prod, dialog, memoryMap);
+				break;
+			case "customConfirm":
+				customProductionConfirm();
 				break;
 		}
 		
@@ -370,6 +385,24 @@ public class Nex_BlueprintSwap extends PaginatedOptionsPlus {
 		stock.remove(toPurchase);
 		setBlueprintStock(mem, stock, false);
 	}
+
+	protected void showCustomMenu(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		List<String> empty = new ArrayList<>();
+		Set<String> ships = new HashSet<>();
+		Set<String> banned = PrismMarket.getRestrictedBlueprints();
+
+		for (ShipHullSpecAPI hull : Global.getSettings().getAllShipHullSpecs()) {
+			if (!hull.hasTag("rare_bp") || hull.hasTag(Tags.NO_DROP) || hull.hasTag(Tags.NO_BP_DROP))
+				continue;
+
+			String hullId = hull.getHullId();
+			if (playerFaction.knowsShip(hullId) || banned.contains(hullId)) continue;
+
+			ships.add(hullId);
+		}
+
+		dialog.showCustomProductionPicker(new BlueprintPickerDelegate(ships, empty, empty, getPoints(), dialog, memoryMap));
+	}
 	
 	
 	public static List<PurchaseInfo> getBlueprintStock(MemoryAPI mem)
@@ -498,28 +531,34 @@ public class Nex_BlueprintSwap extends PaginatedOptionsPlus {
 	{
 		SpecialItemSpecAPI spec = stack.getSpecialItemSpecIfSpecial();
 		SpecialItemData data = stack.getSpecialDataIfSpecial();
-		float points = 0, base = 0;
-		
-		switch (spec.getId())
-		{
-			case Items.SHIP_BP:
-			case "tiandong_retrofit_bp":
-			case "roider_retrofit_bp":
-				base = Global.getSettings().getHullSpec(data.getData()).getBaseValue();
-				break;
-			case Items.FIGHTER_BP:
-			case "tiandong_retrofit_fighter_bp":
-				base = Global.getSettings().getFighterWingSpec(data.getData()).getBaseValue();
-				break;
-			case Items.WEAPON_BP:
-				base = Global.getSettings().getWeaponSpec(data.getData()).getBaseValue();
-				break;
-		}
-		points = getBlueprintPointValue(spec.getId(), data.getData(), base, false);
+		float base = getBaseValue(spec.getId(), data.getData());
+		float points = getBlueprintPointValue(spec.getId(), data.getData(), base, false);
 		
 		points *= stack.getSize();
 		
 		return points;
+	}
+
+	public static int getBaseValue(String type, String id) {
+		switch (type)
+		{
+			case Items.SHIP_BP:
+			case "tiandong_retrofit_bp":
+			case "roider_retrofit_bp":
+				// if you use fractional base values, get bent :)
+				return (int)Global.getSettings().getHullSpec(id).getBaseValue();
+			case Items.FIGHTER_BP:
+			case "tiandong_retrofit_fighter_bp":
+				return (int)Global.getSettings().getFighterWingSpec(id).getBaseValue();
+			case Items.WEAPON_BP:
+				return (int)Global.getSettings().getWeaponSpec(id).getBaseValue();
+		}
+		return 0;
+	}
+
+	public static float getBlueprintPointValue(String itemId, String dataId, boolean isBuy)
+	{
+		return getBlueprintPointValue(itemId, dataId, getBaseValue(itemId, dataId), isBuy);
 	}
 	
 	/**
@@ -549,11 +588,59 @@ public class Nex_BlueprintSwap extends PaginatedOptionsPlus {
 		
 		if (spec.hasTag("package_bp"))
 			cost *= 5;
-		
-		// rounding
-		cost = 5 * Math.round(cost/5f);
+
+		cost = NexUtilsMath.mround(cost, 5);
 		
 		return cost;
+	}
+
+	public static void customProductionBeforeConfirm(FactionProductionAPI production, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+		// how it'll look: list of items, total cost, current points available; SP option priced accordingly
+		List<Pair<String, String>> items = new ArrayList<>();
+		int cost = 0;
+		int sp = 0;
+		float bonusXP = 0;
+		String availPoints = String.format("%.0f", getPoints());
+
+		TextPanelAPI text = dialog.getTextPanel();
+		text.setFontSmallInsignia();
+		text.addPara("[temp] Purchased items");
+
+		for (FactionProductionAPI.ItemInProductionAPI item : production.getCurrent()) {
+			switch (item.getType()) {
+				case WEAPON:
+					cost += getBlueprintPointValue(Items.WEAPON_BP, item.getSpecId(), true);
+					sp++;
+					bonusXP += 50;
+					items.add(new Pair<>(Items.WEAPON_BP, item.getSpecId()));
+					text.addPara("  - " + item.getWeaponSpec().getWeaponName());
+					break;
+				case FIGHTER:
+					cost += getBlueprintPointValue(Items.FIGHTER_BP, item.getSpecId(), true);
+					sp++;
+					bonusXP += 50;
+					items.add(new Pair<>(Items.FIGHTER_BP, item.getSpecId()));
+					text.addPara("  - " + item.getWingSpec().getWingName());
+					break;
+				case SHIP:
+					cost += getBlueprintPointValue(Items.SHIP_BP, item.getSpecId(), true);
+					sp += item.getShipSpec().getHullSize().ordinal() - 1;
+					items.add(new Pair<>(Items.SHIP_BP, item.getSpecId()));
+					text.addPara("  - " + item.getShipSpec().getNameWithDesignationWithDashClass());
+					break;
+			}
+		}
+
+		text.addPara(String.format("[temp] Cost: %s (%s available)", cost, availPoints));
+		text.highlightInLastPara(Misc.getHighlightColor(), cost + "", availPoints);
+
+		text.setFontInsignia();
+
+		SetStoryOption.set(dialog, sp, "nex_blueprintSwapCustomConfirm", "none", Sounds.STORY_POINT_SPEND, "[temp] Obtained blueprint(s) through a special swap service");
+	}
+
+	public static void customProductionConfirm() {
+		// TODO: add BPs to inventory, including conversion to Tiandong/Roider retrofit templates
 	}
 	
 	public static float addPoints(float points)
@@ -598,6 +685,103 @@ public class Nex_BlueprintSwap extends PaginatedOptionsPlus {
 			
 		
 		return (Random)data.get(PERSISTENT_RANDOM_KEY);
+	}
+
+	public static class BlueprintPickerDelegate extends BaseCustomProductionPickerDelegateImpl {
+
+		public Set<String> ships;
+		public Set<String> weapons;
+		public Set<String> fighters;
+		public float pointsAvailable;
+		protected InteractionDialogAPI dialog;
+		protected Map<String, MemoryAPI> memoryMap;
+
+		public BlueprintPickerDelegate(Collection<String> ships, Collection<String> weapons, Collection<String> fighters, float pointsAvailable, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
+			this.ships = new HashSet<>(ships);
+			this.weapons = new HashSet<>(weapons);
+			this.fighters = new HashSet<>(fighters);
+			this.pointsAvailable = pointsAvailable;
+			this.dialog = dialog;
+			this.memoryMap = memoryMap;
+		}
+
+		@Override
+		public Set<String> getAvailableFighters() {
+			return fighters;
+		}
+		@Override
+		public Set<String> getAvailableShipHulls() {
+			return ships;
+		}
+		@Override
+		public Set<String> getAvailableWeapons() {
+			return weapons;
+		}
+		@Override
+		public float getCostMult() {
+			return 1f;
+		}
+		@Override
+		public float getMaximumValue() {
+			return pointsAvailable;
+		}
+
+		@Override
+		public String getMaximumOrderValueLabelOverride() {
+			return "[temp] Blueprint points available";
+		}
+
+		@Override
+		public String getCurrentOrderValueLabelOverride() {
+			return "[temp] Blueprint points required";
+		}
+		@Override
+		public String getItemGoesOverMaxValueStringOverride() {
+			return "[temp] Not enough blueprint points";
+		}
+		@Override
+		public String getCustomOrderLabelOverride() {
+			return "[temp] Blueprint request";
+		}
+		@Override
+		public String getNoProductionOrdersLabelOverride() {
+			return "[temp] No blueprints";
+		}
+		@Override
+		public boolean withQuantityLimits() {
+			return false;
+		}
+		@Override
+		public boolean isUseCreditSign() {
+			return false;
+		}
+
+		@Override
+		public int getCostOverride(Object item) {
+			float value = 0;
+
+			if (item instanceof ShipHullSpecAPI ship) {
+				value = getBlueprintPointValue(Items.SHIP_BP, ship.getHullId(), true);
+			}
+			if (item instanceof FighterWingSpecAPI fighter) {
+				value = getBlueprintPointValue(Items.FIGHTER_BP, fighter.getId(), true);
+			}
+			if (item instanceof WeaponSpecAPI weapon) {
+				value = getBlueprintPointValue(Items.WEAPON_BP, weapon.getWeaponId(), true);
+			}
+
+			return (int)(value * CUSTOM_ORDER_PRICE_MULT);
+		}
+
+		@Override
+		public void notifyProductionSelected(FactionProductionAPI production) {
+
+			MemoryAPI local = memoryMap.get(MemKeys.LOCAL);
+			local.set(CUSTOM_PRODUCTION_KEY, production, 0);
+			// just write the production to memory here and compute separately
+
+			FireBest.fire(null, dialog, memoryMap, "Nex_BlueprintSwapCustomPicked");
+		}
 	}
 	
 	public static class PurchaseInfo implements Comparable<PurchaseInfo>

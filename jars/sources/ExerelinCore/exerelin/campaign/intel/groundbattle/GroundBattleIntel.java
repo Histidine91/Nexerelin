@@ -1227,25 +1227,37 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		return false;
 	}
 	
-	public boolean checkAnyAttackers(boolean checkUndeployed) {
+	public boolean checkForAttackerDefeat(boolean checkUndeployed) {
+		if (outcome != null) return false;
+
 		// any units on ground?
 		if (checkUndeployed) {
-			if (!attacker.getUnits().isEmpty()) return true;
+			if (!attacker.getUnits().isEmpty()) return false;
 		}
 		else {
-			if (hasAnyDeployedUnits(true)) return true;
+			if (hasAnyDeployedUnits(true)) return false;
 		}
-		// guess not, end the battle
+
+		if (market.getMemoryWithoutUpdate().getBoolean(GBConstants.MEMKEY_BLOCK_ATTACKER_DEFEAT)) return false;
+
 		boolean shouldCancel = turnNum <= 1 && attacker.getLossesV2().isEmpty();
 		endBattle(shouldCancel ? BattleOutcome.CANCELLED : BattleOutcome.DEFENDER_VICTORY);
-		return false;
+		return true;
 	}
 	
-	public void checkForVictory() {
-		if (outcome != null) return;
+	public boolean checkForDefenderDefeat() {
+		if (outcome != null) return false;
 		if (!hasAnyDeployedUnits(false)) {
 			endBattle(BattleOutcome.ATTACKER_VICTORY);
+			return true;
 		}
+		return false;
+	}
+
+	@Deprecated
+	public void checkForVictory() {
+		checkForAttackerDefeat(false);
+		checkForDefenderDefeat();
 	}
 	
 	public void advanceTurn(boolean force) {
@@ -1257,9 +1269,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		reapply();
 		runAI();
-		boolean anyAttackers = checkAnyAttackers(false);
-		if (!anyAttackers) {
-			
+		boolean attackersDefeated = checkForAttackerDefeat(false);
+		if (attackersDefeated) {
 			resolving = false;
 			return;
 		}
@@ -1273,9 +1284,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		{
 			x.reportBattleAfterTurn(this, turnNum);
 		}
-		
-		anyAttackers = checkAnyAttackers(true);
-		checkForVictory();
+
+		attackersDefeated = checkForAttackerDefeat(true);
+		checkForDefenderDefeat();
 		playerData.updateXPTrackerNum();
 		
 		if (outcome != null) {

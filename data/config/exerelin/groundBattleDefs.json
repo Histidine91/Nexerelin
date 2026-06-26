@@ -250,6 +250,10 @@
 			"dropCostMult":7.5,			# base drop/move cost is proportional to unit size, measured by number of equipment items if present or number of personnel items otherwise
 			"offensiveStrMult":1.25,	# on industries not held by the unit's side
 			"crampedStrMult":0.75,		# on things like station-only markets and water-surface planets
+			
+			# note: the heavy unit specifically must have a personnel type, because it's checked by certain things with hardcoded unit type ID
+			# other ground units could omit it if desired (probably, not exhaustively tested)
+			
 			"equipment":{
 				"commodityId":"hand_weapons",
 				"crewReplacerJobId":"nex_groundBattle_heavyarms",

@@ -7,6 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
@@ -21,10 +22,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.AllianceManager;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.SectorManager;
+import exerelin.campaign.*;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
@@ -36,6 +34,7 @@ import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.NexRouteManager;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -93,6 +92,9 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	protected float brawlMult = -1;
 	protected boolean reportedRaid = false;
 	@Getter @Setter protected boolean groundActionDefeated = false;
+
+	@Getter protected ExerelinReputationAdjustmentResult repEffect;
+	protected float storedRelation;
 
 	@Getter protected DefenseFleetIntel requestedDefenseFleet;	// quick-request defense fleet to counter this fleet
 		
@@ -316,6 +318,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			DiplomacyManager.getManager().modifyWarWeariness(faction.getId(), impact);
 		}
 
+		applyRelationshipEffect();
 		reportRaidIfNeeded();
 	}
 
@@ -688,7 +691,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		if (outcome != null) return;
 		
 		// source captured before launch
-		if (getCurrentStage() <= 0 && from.getFaction() != faction) {
+		if (getCurrentStage() <= 0 && isOwnerNoLongerValid()) {
 			terminateEvent(OffensiveOutcome.FAIL);
 		}
 		else if (!target.isInEconomy()) {
@@ -697,6 +700,27 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		else if (abortIfNonHostile && !faction.isHostileTo(target.getFaction())) {
 			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
 		}
+	}
+
+	/**
+	 * Check if the source market's faction is no longer one that will allow this fleet event to proceed (typically allies are fine).
+	 * @return
+	 */
+	protected boolean isOwnerNoLongerValid() {
+		FactionAPI align = PlayerFactionStore.getPlayerFaction();
+		if (faction.isPlayerFaction()) {
+			if (AllianceManager.areFactionsAllied(Factions.PLAYER, from.getFactionId())) return false;
+			if (AllianceManager.areFactionsAllied(align.getId(), from.getFactionId())) return false;
+		}
+		if (from.getFaction().isPlayerFaction()) {
+			if (AllianceManager.areFactionsAllied(Factions.PLAYER, faction.getId())) return false;
+			if (AllianceManager.areFactionsAllied(align.getId(), faction.getId())) return false;
+		}
+		return !AllianceManager.areFactionsAllied(faction.getId(), from.getFactionId());
+	}
+
+	protected void applyRelationshipEffect() {
+
 	}
 	
 	// check if market should still be attacked
@@ -845,6 +869,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		super.createSmallDescription(info, width, height);
 		addStrategicActionInfo(info, width);
+
+		if (repEffect != null) {
+			DiplomacyIntel.addRelationshipChangePara(info, faction.getId(), targetFaction.getId(), storedRelation, repEffect, 10);
+		}
 	}
 
 	@Override
