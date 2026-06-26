@@ -160,7 +160,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
         
         // replace or remove relevant intel items and other scripts
-        NexRouteManager.replaceExistingRouteManager();
+        //NexRouteManager.replaceExistingRouteManager();    // automatically takes over due to xstream alias
         for (IntelInfoPlugin iip : Global.getSector().getIntelManager().getIntel(FactionHostilityIntel.class)) {
             FactionHostilityIntel host = (FactionHostilityIntel)iip;
             host.endHostilties();
@@ -243,9 +243,9 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        NexRouteManager.replaceExistingRouteManager();
+        //NexRouteManager.replaceExistingRouteManager();  // automatically takes over due to xstream alias
 
-         if (VassalManager.getInstance() == null) VassalManager.create();
+        if (VassalManager.getInstance() == null) VassalManager.create();
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();

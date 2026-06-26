@@ -121,6 +121,7 @@ open class NexRouteManager : RouteManager() {
         for (route in routes) {
             addToMap(route)
         }
+        if (fleetToRoute == null) fleetToRoute = HashMap()
         return this
     }
 

@@ -9,6 +9,8 @@ import exerelin.campaign.ai.action.DiplomacyAction;
 import exerelin.campaign.ai.action.fleet.BaseStrikeAction;
 import exerelin.campaign.ai.action.fleet.InvasionAction;
 import exerelin.campaign.ai.action.fleet.RaidAction;
+import exerelin.campaign.ai.action.industry.BuildDefenseAction;
+import exerelin.campaign.ai.action.industry.BuildEconAction;
 import exerelin.campaign.ai.concern.*;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter;
@@ -23,6 +25,7 @@ import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.campaign.fleets.MiningFleetAI;
 import exerelin.campaign.fleets.MiningFleetManagerV2;
 import exerelin.campaign.fleets.MiningFleetManagerV2.MiningFleetData;
+import exerelin.campaign.fleets.NexRouteManager;
 import exerelin.campaign.fleets.VultureFleetAI;
 import exerelin.campaign.fleets.VultureFleetManager.VultureFleetData;
 import exerelin.campaign.intel.*;
@@ -190,6 +193,8 @@ public class XStreamConfig {
 		x.alias("NexStratAI_InvAction", InvasionAction.class);
 		x.alias("NexStratAI_RaidAction", RaidAction.class);
 		x.alias("NexStratAI_BaseStrikeAction", BaseStrikeAction.class);
+		x.alias("NexStratAI_BldEconAction", BuildEconAction.class);
+		x.alias("NexStratAI_BldDefAction", BuildDefenseAction.class);
 		
 		// misc
 		x.alias("NexRepAdjustmentResult", ExerelinReputationAdjustmentResult.class);
@@ -205,6 +210,9 @@ public class XStreamConfig {
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);
+
+		// vanilla overrides
+		x.alias("RouteManager", NexRouteManager.class);
 		
 		configureXStreamAttributes(x);
 	}
@@ -281,5 +289,8 @@ public class XStreamConfig {
 		// FleetPoolRecord
 		x.aliasAttribute(DebugIntel.FleetPoolRecord.class, "timestamp", "ts");
 		x.aliasAttribute(DebugIntel.FleetPoolRecord.class, "days", "d");
+
+		// NexRouteManager
+		x.aliasAttribute(NexRouteManager.class, "routes", "r");
 	}
 }
