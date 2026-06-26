@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -14,6 +13,7 @@ import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.utilities.StringHelper;
 
 import java.awt.*;
+import java.util.Random;
 
 public class BaseStrikeActionStage extends InvActionStage {
 	
@@ -68,14 +68,10 @@ public class BaseStrikeActionStage extends InvActionStage {
 	@Override
 	protected void autoresolve() {
 		Global.getLogger(this.getClass()).info("Autoresolving base strike action");
-		float str = NexWarSimScript.getFactionAndAlliedStrength(intel.getFaction(), getTarget().getFaction(), getTarget().getStarSystem());
-		float enemyStr = NexWarSimScript.getFactionAndAlliedStrength(getTarget().getFaction(), intel.getFaction(), getTarget().getStarSystem());
-		
-		float defensiveStr = enemyStr + WarSimScript.getStationStrength(target.getFaction(), 
-							 target.getStarSystem(), target.getPrimaryEntity());
 		BaseStrikeIntel intel = ((BaseStrikeIntel)this.intel);
-		
-		if (defensiveStr >= str) {
+
+		boolean result = NexWarSimScript.createAndExecute(getTarget().getStarSystem(), intel.getFaction(), getTarget().getFaction(), getTarget(), new Random());
+		if (!result) {
 			status = RaidIntel.RaidStageStatus.FAILURE;
 			removeMilScripts();
 			giveReturnOrdersToStragglers(getRoutes());

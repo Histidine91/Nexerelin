@@ -8,7 +8,6 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript.MilitaryResponseParams;
-import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.econ.impl.OrbitalStation;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
@@ -35,6 +34,7 @@ import org.apache.log4j.Logger;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class InvActionStage extends ActionStage implements FleetActionDelegate {
 	
@@ -345,14 +345,12 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		log.info("Autoresolving invasion action vs. " + target.getId());
 		float str = NexWarSimScript.getFactionAndAlliedStrength(intel.getFaction(), getTarget().getFaction(), getTarget().getStarSystem());
 		float enemyStr = NexWarSimScript.getFactionAndAlliedStrength(getTarget().getFaction(), intel.getFaction(), getTarget().getStarSystem());
-		
-		float defensiveStr = enemyStr + WarSimScript.getStationStrength(target.getFaction(), 
-							 target.getStarSystem(), target.getPrimaryEntity());
 
 		log.info(String.format("Our strength (%s): %.2f, their strength (%s) %.2f",
 				intel.getFaction().getDisplayName(), str, getTarget().getFaction().getDisplayName(), enemyStr));
-		
-		if (defensiveStr >= str) {
+
+		boolean result = NexWarSimScript.createAndExecute(getTarget().getStarSystem(), intel.getFaction(), getTarget().getFaction(), getTarget(), new Random());
+		if (!result) {
 			status = RaidStageStatus.FAILURE;
 			removeMilScripts();
 			giveReturnOrdersToStragglers(getRoutes());

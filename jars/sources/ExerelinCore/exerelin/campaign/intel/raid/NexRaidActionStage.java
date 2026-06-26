@@ -25,10 +25,7 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NexRaidActionStage extends PirateRaidActionStage {
 	
@@ -62,15 +59,15 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 	@Override
 	protected void autoresolve() {
 		// MODIFIED
-		float str = NexWarSimScript.getFactionAndAlliedStrength(intel.getFaction(), null, system);
-		float enemyStr = WarSimScript.getEnemyStrength(intel.getFaction(), system);
+		//float str = NexWarSimScript.getFactionAndAlliedStrength(intel.getFaction(), null, system);
+		//float enemyStr = WarSimScript.getEnemyStrength(intel.getFaction(), system);
 
 		status = RaidIntel.RaidStageStatus.FAILURE;
 		for (MarketAPI target : targets) {
 			if (!target.getFaction().isHostileTo(intel.getFaction())) continue;
 
-			float defensiveStr = enemyStr + WarSimScript.getStationStrength(target.getFaction(), system, target.getPrimaryEntity());
-			if (defensiveStr >= str) {
+			boolean result = NexWarSimScript.createAndExecute(target.getStarSystem(), intel.getFaction(), target.getFaction(), target, new Random());
+			if (!result) {
 				continue;
 			}
 
@@ -83,7 +80,9 @@ public class NexRaidActionStage extends PirateRaidActionStage {
 //			new MarketCMD(target.getPrimaryEntity()).doGenericRaid(intel.getFaction(), raidStr);
 			performRaid(null, target);
 
-			str -= defensiveStr * 0.5f;
+			// each defense weakens the raiders against the next raid
+			// now that we're making the autoresolve less abstract, our war sim script should handle this
+			//str -= defensiveStr * 0.5f;
 			status = RaidIntel.RaidStageStatus.SUCCESS;
 		}
 		removeMilScripts();

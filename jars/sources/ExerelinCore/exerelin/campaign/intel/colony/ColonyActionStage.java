@@ -11,7 +11,6 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.DebugFlags;
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript;
 import com.fs.starfarer.api.impl.campaign.MilitaryResponseScript.MilitaryResponseParams;
-import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.econ.impl.OrbitalStation;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
@@ -36,6 +35,7 @@ import org.lazywizard.lazylib.MathUtils;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ColonyActionStage extends ActionStage implements FleetActionDelegate {
 	
@@ -296,13 +296,9 @@ public class ColonyActionStage extends ActionStage implements FleetActionDelegat
 		
 		//if (anyHostile()) {
 		if (colonyFleetIntel.hostileMode) {
-			float str = NexWarSimScript.getFactionAndAlliedStrength(intel.getFaction(), getTarget().getFaction(), getTarget().getStarSystem());
-			float enemyStr = NexWarSimScript.getFactionAndAlliedStrength(getTarget().getFaction(), intel.getFaction(), getTarget().getStarSystem());
+			boolean result = NexWarSimScript.createAndExecute(getTarget().getStarSystem(), intel.getFaction(), getTarget().getFaction(), getTarget(), new Random());
 
-			float defensiveStr = enemyStr + WarSimScript.getStationStrength(getTarget().getFaction(), 
-								 getTarget().getStarSystem(), getTarget().getPrimaryEntity());
-
-			if (defensiveStr >= str) {
+			if (!result) {
 				status = RaidStageStatus.FAILURE;
 				removeMilScripts();
 				giveReturnOrdersToStragglers(getRoutes());
