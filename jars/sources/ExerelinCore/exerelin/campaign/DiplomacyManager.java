@@ -65,12 +65,16 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float STARTING_RELATIONSHIP_WELCOMING = 0.4f;
     public static final float STARTING_RELATIONSHIP_FRIENDLY = 0.6f;
     public static final float RELATIONSHIP_HOSTILE_WITH_MARGIN = -0.6f;
+
     public static final float WAR_WEARINESS_INTERVAL = 3f;
     public static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
     public static final float WAR_WEARINESS_ENEMY_COUNT_MULT = 0.25f;
     public static final float PEACE_TREATY_CHANCE = 0.3f;
     public static final float MIN_INTERVAL_BETWEEN_WARS = 30f;
     public static final float BADBOY_DECAY_PER_MONTH = 3f;
+
+    public static final float DISAVOW_THRESHOLD_BLESS = 25;
+    public static final float DISAVOW_THRESHOLD_OWN = -20;
     
     public static final float DOMINANCE_MIN = 0.25f;
     public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.67f;
@@ -412,6 +416,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
             RepLevel ensureAtBest, RepLevel ensureAtWorst, float postEnsureDelta, RepLevel limit, boolean isAllianceAction, boolean isCommissionerRelationshipUpdate)
     {
+        DiplomacyManager manager = getManager();
         float before = faction1.getRelationship(faction2.getId());
         boolean wasHostile = faction1.isHostileTo(faction2);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -477,7 +482,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         // if now at peace/war, do alliance vote
         if (repResult.wasHostile && !repResult.isHostile)
         {
-            DiplomacyManager manager = getManager();
             if (!isAllianceAction) {
                 log.info(String.format("Initiating alliance vote due to diplomacy event between %s, %s", faction1Id, faction2Id));
                 AllianceVoter.allianceVote(faction1Id, faction2Id, false);
@@ -487,6 +491,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         else if (!repResult.wasHostile && repResult.isHostile)
         {
+            if (faction1Id.equals(Factions.PLAYER)) {
+                manager.checkDisavow(faction2Id, delta);
+            }
+            else if (faction2Id.equals(Factions.PLAYER)) {
+                manager.checkDisavow(faction1Id, delta);
+            }
+
             if (!isAllianceAction) {
                 log.info(String.format("Initiating alliance vote due to diplomacy event between %s, %s", faction1Id, faction2Id));
                 AllianceVoter.allianceVote(faction1Id, faction2Id, true);
@@ -1132,7 +1143,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         // commissioner disavowing us would go here if we could implement it
         // ...bruh we don't even get a reputation envelope?
         if (isHostile && !wasHostile) {
-
+            checkDisavow(factionId, delta);
         }
 
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -1661,8 +1672,27 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (NexConfig.getFactionConfig(commissionerId).noSyncRelations) return;
         if (NexConfig.getFactionConfig(otherFactionId).noSyncRelations) return;
 
+        FactionAPI cf = Global.getSector().getFaction(commissionerId);
+        FactionAPI of = Global.getSector().getFaction(otherFactionId);
 
+        DisavowResponse result = pickDisavowResponse(commissionerId, otherFactionId, delta);
+        String msg;
+        Color color;
 
+        // text-only response for now
+        if (result == DisavowResponse.BLESS) {
+            msg = "%s has blessed your hostile action against %s :)";
+            color = Misc.getPositiveHighlightColor();
+        } else if (result == DisavowResponse.OWN) {
+            msg = "%s has accepted responsibility for your hostile action against %s. That doesn't mean they're happy about it...";
+            color = Misc.getTextColor();
+        } else {
+            msg = "%s has disavowed your hostile action against %s and revoked your commission!";
+            color = Misc.getNegativeHighlightColor();
+        }
+
+        msg = "[test] " + msg;
+        Global.getSector().getCampaignUI().addMessage(msg, color, cf.getDisplayName(), of.getDisplayName(), cf.getBaseUIColor(), of.getBaseUIColor());
     }
 
     /**
@@ -1672,7 +1702,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
      * @param delta
      * @return
      */
-    protected String pickDisavowResponse(String commissionerId, String otherFactionId, float delta) {
+    protected DisavowResponse pickDisavowResponse(String commissionerId, String otherFactionId, float delta) {
         FactionAPI commissioner = Global.getSector().getFaction(commissionerId);
         float score = delta * 100;  // more hostile action = more likely to disavow
         score += commissioner.getRelationship(Factions.PLAYER); // like us more = less likely to disavow
@@ -1682,15 +1712,22 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
 
         // modifier for how big player is?
-        int ourSize = NexUtilsFaction.getPlayerMarkets(true, false, true).stream().flatMapToInt(it -> it.getSize()).sum();
+        int ourSize = 0;
+        for (MarketAPI market : NexUtilsFaction.getPlayerMarkets(true, false, true)) {
+            //if (!market.getFaction().isPlayerFaction()) ourSize += market.getSize()/2;
+            //else ourSize += market.getSize();
+
+            ourSize += market.getSize();
+        }
         int commissionerSize = NexUtilsFaction.getFactionMarketSizeSum(commissionerId, false);
         score += ourSize/(float)commissionerSize * 20;
 
-
-
         // if AotD QoL, add modifier from ranking
 
-        return null;
+        // get response based on score
+        if (score > DISAVOW_THRESHOLD_BLESS) return DisavowResponse.BLESS;
+        else if (score > DISAVOW_THRESHOLD_OWN) return DisavowResponse.OWN;
+        return DisavowResponse.DISAVOW;
     }
 
     @Override
@@ -1737,5 +1774,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         public boolean random = true;
         public float positiveChanceMult = 1;
         public float negativeChanceMult = 1;
+    }
+
+    public enum DisavowResponse {
+        BLESS, OWN, DISAVOW
     }
 }
