@@ -11,6 +11,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
@@ -327,7 +328,11 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 		String sizeSum = NexUtilsFaction.getFactionMarketSizeSum(factionId) + "";
 		Map<String, String> sub = new HashMap<>();
 		boolean permanent = getAlliance().isPermaMember(factionId);
-		sub.put("$faction", name + (permanent ? " " + getString("memberPermanentSuffix") : ""));
+		boolean vassal = VassalManager.getInstance().isVassal(factionId);
+		String suffix = "";
+		if (permanent) suffix = getString("memberPermanentSuffix");
+		else if (vassal) suffix = String.format(getString("memberVassalSuffix"), Global.getSector().getFaction(VassalManager.getInstance().getOverlord(factionId)).getDisplayName());
+		sub.put("$faction", name + " " + suffix);
 		sub.put("$num", num);
 		sub.put("$size", sizeSum);
 		
