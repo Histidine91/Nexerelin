@@ -3,6 +3,7 @@ package exerelin.campaign.intel.fleets
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CampaignFleetAPI
 import com.fs.starfarer.api.campaign.FactionAPI
+import com.fs.starfarer.api.campaign.RepLevel
 import com.fs.starfarer.api.campaign.SectorEntityToken
 import com.fs.starfarer.api.campaign.econ.MarketAPI
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator
@@ -38,12 +39,15 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
 
     override fun init() {
         log.info("Creating blockade intel")
+
         val raidJump: SectorEntityToken? =
             RouteLocationCalculator.findJumpPointToUse(factionForUIColors, target.primaryEntity)
         if (raidJump == null) {
             endImmediately()
             return
         }
+
+        addStage(NexOrganizeStage(this, from, 99999f))  // placeholder stage so we don't have zero stages
 
         val random = Random()
         val params = GenericRaidParams(Random(random.nextLong()), target.faction.isPlayerFaction)
@@ -60,7 +64,7 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
 
         params.style = FleetCreatorMission.FleetStyle.STANDARD
 
-        fgi = NexBlockadeFGI(params, bParams)
+        fgi = NexBlockadeFGI(params, bParams, this)
         fgi.listener = this
 
         when (NexConfig.nexIntelQueued) {
@@ -123,6 +127,15 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
         intelQueuedOrAdded = true
     }
 
+    override fun forceFail(withUpdate: Boolean) {
+        super.forceFail(withUpdate)
+        fgi?.abort()
+    }
+
+    override fun checkNonHostileAbort(): Boolean {
+        return abortIfNonHostile && faction.isAtWorst(target.faction, RepLevel.SUSPICIOUS)
+    }
+
     override fun refundInvasionAndFleetPoints() {
         var fp = 0f
         for (fleet : CampaignFleetAPI in fgi.fleets) {
@@ -151,6 +164,11 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
 
     override fun reportFGIAborted(intel: FleetGroupIntel) {
         refundInvasionAndFleetPoints()
+    }
+
+    override fun advanceImpl(amount: Float) {
+        checkForTermination()
+        //super.advanceImpl(amount) // we don't need RaidIntel's "abort if out of stages" check
     }
 
     override fun getType(): String {

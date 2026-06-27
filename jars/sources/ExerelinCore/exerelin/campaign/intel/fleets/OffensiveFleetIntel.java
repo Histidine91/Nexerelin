@@ -697,9 +697,13 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		else if (!target.isInEconomy()) {
 			terminateEvent(OffensiveOutcome.MARKET_NO_LONGER_EXISTS);
 		}
-		else if (abortIfNonHostile && !faction.isHostileTo(target.getFaction())) {
+		else if (checkNonHostileAbort()) {
 			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
 		}
+	}
+
+	public boolean checkNonHostileAbort() {
+		return abortIfNonHostile && !faction.isHostileTo(target.getFaction());
 	}
 
 	/**

@@ -98,9 +98,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final float GENERAL_SIZE_MULT = USE_MARKET_FLEET_SIZE_MULT ? 0.65f : 0.9f;
 	public static final float RAID_SIZE_MULT = 0.85f;
 	public static final float RESPAWN_SIZE_MULT = 1.2f;
-	public static final float BLOCKADE_SIZE_MULT = 1.2f;
+	public static final float BLOCKADE_SIZE_MULT = 1.25f;
 	public static final float MIN_BLOCKADE_SIZE = 120 / BLOCKADE_SIZE_MULT;
-	public static final float BLOCKADE_FLAT_FP_BONUS = 120;
+	public static final float BLOCKADE_FLAT_FP_BONUS = 150;
 	public static final float PIRATE_RAGE_THRESHOLD = 125;
 	public static final int ATTACK_PLAYER_COOLDOWN = 60;
 	public static final boolean PREFER_MILITARY_FOR_ORIGIN = false;
@@ -1017,7 +1017,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 		return nextIsRaid.get(factionId);
 	}
 
-	protected String getPointSourceDesc(String source) {
+	public static String getPointSourceDesc(String source) {
 		return StringHelper.getString("exerelin_invasion", "invPointStats_" + source);
 	}
 	

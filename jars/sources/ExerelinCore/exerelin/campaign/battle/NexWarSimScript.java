@@ -92,11 +92,11 @@ public class NexWarSimScript {
 
         boolean side1Retreat = false, side2Retreat = false;
         for (int round = 0; round < MAX_ROUNDS; round++) {
-            report(String.format("Engagement round %s", side1.getDisplayName(), fsr1.totalStrength, fsr2.totalStrength));
+            //report(String.format("Engagement round %s", round));
             executeAutoresolveRound(round);
 
-            side1Retreat = fsr1.startingStrength/fsr1.totalStrength < WITHDRAW_ON_DAMAGE_THRESHOLD;
-            side2Retreat = fsr2.startingStrength/fsr2.totalStrength < WITHDRAW_ON_DAMAGE_THRESHOLD;
+            side1Retreat = fsr1.totalStrength/fsr1.startingStrength < WITHDRAW_ON_DAMAGE_THRESHOLD;
+            side2Retreat = fsr2.totalStrength/fsr2.startingStrength < WITHDRAW_ON_DAMAGE_THRESHOLD;
             if (side1Retreat || side2Retreat) break;
         }
 
@@ -148,13 +148,15 @@ public class NexWarSimScript {
         List<FactionStrengthReportEntry> participants = new ArrayList<>(side.entries);
         Collections.shuffle(participants, random);
         for (FactionStrengthReportEntry entry : participants) {
-            report(String.format("  Remaining damage to side %s: %02.2f", side.factionId, damage));
-            applyDamageToParticipant(entry, damage, advantageInBattle);
+            if (damage > 0) {
+                report(String.format("  Remaining damage to side %s: %02.2f", side.factionId, damage));
+                applyDamageToParticipant(entry, damage, advantageInBattle);
 
-            damage -= entry.strength;
-            if (damage < 0) damage = 0;
+                damage -= entry.strength;
+                if (damage < 0) damage = 0;
 
-            entry.recomputeStrength();
+                entry.recomputeStrength();
+            }
 
             report(String.format("  Participant %s now at strength: %02.2f / %02.2f", entry.name, entry.strength, entry.startingStrength));
             if (entry.strength/ entry.startingStrength < WITHDRAW_ON_DAMAGE_THRESHOLD) {
@@ -171,7 +173,7 @@ public class NexWarSimScript {
             List<FleetMemberAPI> members = new ArrayList<>(entry.fleet.getFleetData().getMembersListCopy());
             Collections.shuffle(members, random);
             for (FleetMemberAPI member : members) {
-                report(String.format("Remaining damage to fleet %s: %02.2f", entry.fleet.getNameWithFaction(), maxDamage));
+                //report(String.format("    Remaining damage to fleet %s: %02.2f", entry.fleet.getNameWithFaction(), maxDamage));
                 float thisStrength = Misc.getMemberStrength(member);
                 applyDamageToFleetMember(member, thisStrength, maxDamage, advantageInBattle);
                 maxDamage -= thisStrength;
@@ -189,78 +191,9 @@ public class NexWarSimScript {
 
         float maxDamageRatio = maxDamage / entry.strength;
         if (maxDamageRatio > 1) maxDamageRatio = 1;
-        if (maxDamageRatio <= 0) maxDamageRatio = 0;
 
-        if (maxDamageRatio >= 0.8f) {
-            disabled = 20f;
-            heavyDamage = 10f;
-            mediumDamage = 10f;
-            lightDamage = 5f;
-        } else if (maxDamageRatio >= 0.6f) {
-            disabled = 5f;
-            heavyDamage = 20f;
-            mediumDamage = 10f;
-            lightDamage = 5f;
-        } else if (maxDamageRatio >= 0.4f) {
-            disabled = 0f;
-            heavyDamage = 10f;
-            mediumDamage = 20f;
-            lightDamage = 10f;
-        } else if (maxDamageRatio >= 0.2f) {
-            disabled = 0f;
-            heavyDamage = 0f;
-            mediumDamage = 10f;
-            lightDamage = 20f;
-        } else if (maxDamageRatio > 0) {
-            disabled = 0f;
-            heavyDamage = 0f;
-            mediumDamage = 5f;
-            lightDamage = 10f;
-        }
-
-        // advantageInBattle goes from 0.5 (bad) to 2 (good)
-        unscathed *= advantageInBattle;
-        lightDamage *= advantageInBattle;
-
-        WeightedRandomPicker<BattleAutoresolverPluginImpl.FleetMemberBattleOutcome> picker = new WeightedRandomPicker<BattleAutoresolverPluginImpl.FleetMemberBattleOutcome>();
-
-        picker.add(BattleAutoresolverPluginImpl.FleetMemberBattleOutcome.DISABLED, disabled);
-        picker.add(BattleAutoresolverPluginImpl.FleetMemberBattleOutcome.HEAVY_DAMAGE, heavyDamage);
-        picker.add(BattleAutoresolverPluginImpl.FleetMemberBattleOutcome.MEDIUM_DAMAGE, mediumDamage);
-        picker.add(BattleAutoresolverPluginImpl.FleetMemberBattleOutcome.LIGHT_DAMAGE, lightDamage);
-        picker.add(BattleAutoresolverPluginImpl.FleetMemberBattleOutcome.UNSCATHED, unscathed);
-
-
-        //report(String.format("Disabled: %d, Heavy: %d, Medium: %d, Light: %d, Unscathed: %d",
-        //        (int) disabled, (int) heavyDamage, (int) mediumDamage, (int) lightDamage, (int) unscathed));
-
-        BattleAutoresolverPluginImpl.FleetMemberBattleOutcome outcome = picker.pick();
-
-        float damage = 0f;
-
-
-        switch (outcome) {
-            case DISABLED:
-                report(String.format("%40s: disabled", entry.name));
-                damage = 1f;
-                break;
-            case HEAVY_DAMAGE:
-                report(String.format("%40s: heavy damage", entry.name));
-                damage = 0.7f + random.nextFloat() * 0.1f;
-                break;
-            case MEDIUM_DAMAGE:
-                report(String.format("%40s: medium damage", entry.name));
-                damage = 0.45f + random.nextFloat() * 0.1f;
-                break;
-            case LIGHT_DAMAGE:
-                report(String.format("%40s: light damage", entry.name));
-                damage = 0.2f + random.nextFloat() * 0.1f;
-                break;
-            case UNSCATHED:
-                report(String.format("%40s: unscathed", entry.name));
-                damage = 0f;
-                break;
-        }
+        float mitigation = (random.nextFloat() + random.nextFloat()) * 0.25f;
+        float damage = maxDamageRatio * (1 - mitigation);
 
         Float routeDam = entry.route.getExtra().damage;
         if (routeDam == null) routeDam = 0f;

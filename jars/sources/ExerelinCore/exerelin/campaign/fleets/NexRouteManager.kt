@@ -80,7 +80,7 @@ open class NexRouteManager : RouteManager() {
         var dataStore : Map<String, Object?> = HashMap()
         var forceSpawn = false
             set(force) {
-                this.forceSpawn = force
+                field = force
                 if (force && activeFleet != null) {
                     activeFleet.isNoAutoDespawn = true
                 }

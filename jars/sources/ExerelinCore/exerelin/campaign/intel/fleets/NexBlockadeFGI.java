@@ -16,9 +16,11 @@ import lombok.Setter;
 public class NexBlockadeFGI extends BlockadeFGI {
 
     @Getter @Setter protected StrategicAction strategicAction;
+    @Getter protected BlockadeWrapperIntel wrapper;
 
-    public NexBlockadeFGI(GenericRaidParams params, FGBlockadeAction.FGBlockadeParams blockadeParams) {
+    public NexBlockadeFGI(GenericRaidParams params, FGBlockadeAction.FGBlockadeParams blockadeParams, BlockadeWrapperIntel wrapper) {
         super(params, blockadeParams);
+        this.wrapper = wrapper;
     }
 
     @Override
@@ -48,5 +50,12 @@ public class NexBlockadeFGI extends BlockadeFGI {
             return;
         }
         super.buttonPressConfirmed(buttonId, ui);
+    }
+
+    @Override
+    public void finish(boolean isAbort) {
+        super.finish(isAbort);
+
+        if (wrapper != null) wrapper.refundInvasionAndFleetPoints();
     }
 }

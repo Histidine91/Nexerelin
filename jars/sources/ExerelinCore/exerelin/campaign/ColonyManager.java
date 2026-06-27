@@ -370,7 +370,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 
 	public void applyFleetPoolModifiers(MarketAPI market) {
-		if (FleetPoolManager.USE_POOL) {
+		if (!FleetPoolManager.USE_POOL) {
 			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).unmodify(FleetPoolManager.MARKET_STAT_FLEET_POOL);
 			return;
 		}
@@ -380,11 +380,13 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 
 		if (pool > max/2) {
 			float bonusLevel = NexUtilsMath.lerp(1, FleetPoolManager.MARKET_FLEET_SIZE_MAX_BONUS, pool*2/max-1);
-			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).modifyMult(FleetPoolManager.MARKET_STAT_FLEET_POOL, bonusLevel, "[temp] Fleet pool full");
+			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).modifyMult(FleetPoolManager.MARKET_STAT_FLEET_POOL, bonusLevel, StringHelper.getString("nex_fleetPool", "fleetSizeMultStat_high"));
 		}
 		else if (pool < 0) {
-			float penaltyLevel = NexUtilsMath.lerp(1, FleetPoolManager.MARKET_FLEET_SIZE_MAX_PENALTY, pool/-max);
-			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).modifyMult(FleetPoolManager.MARKET_STAT_FLEET_POOL, penaltyLevel, "[temp] Fleet pool depleted");
+			float alpha = pool/-max;
+			if (alpha > 1) alpha = 1;
+			float penaltyLevel = NexUtilsMath.lerp(1, FleetPoolManager.MARKET_FLEET_SIZE_MAX_PENALTY, alpha);
+			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).modifyMult(FleetPoolManager.MARKET_STAT_FLEET_POOL, penaltyLevel, StringHelper.getString("nex_fleetPool", "fleetSizeMultStat_low"));
 		}
 	}
 	

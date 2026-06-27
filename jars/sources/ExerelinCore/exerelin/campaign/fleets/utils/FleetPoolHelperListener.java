@@ -70,7 +70,7 @@ public class FleetPoolHelperListener extends BaseCampaignEventListener implement
             if (route.getActiveFleet() != null) name = route.getActiveFleet().getNameWithFaction();
             float origFP = NexUtilsFleet.getRouteFP(route);
             Float damage = route.getExtra().damage;
-            Global.getLogger(this.getClass()).info(String.format("Route/fleet %s returning %.1f of %.1f points to fleet pool, damage %.1f", name, refund, origFP, damage));
+            Global.getLogger(this.getClass()).info(String.format("Route/fleet %s returning %.1f of %.1f points to fleet pool, damage %.2f", name, refund, origFP, damage));
         }
     }
 
@@ -137,11 +137,11 @@ public class FleetPoolHelperListener extends BaseCampaignEventListener implement
                 // don't think these guys have usable FP
                 //addRoute(nrd, route.getFactionId(), ECONOMY_POOL_RETURN_EFFICIENCY);
             }
+            else if (route.getSpawner() instanceof PerseanLeagueBlockade) {
 
             // was gonna add pirate RaidIntels here but does anything even use that anymore?
             //else if (route.getSpawner() instanceof RaidIntel && (route.getSpawner() instanceof OffensiveFleetIntel))
 
-            else if (route.getSpawner() instanceof PerseanLeagueBlockade) {
 
             }
         }

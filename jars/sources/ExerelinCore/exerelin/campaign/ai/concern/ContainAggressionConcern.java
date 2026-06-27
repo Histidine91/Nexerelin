@@ -75,7 +75,7 @@ public class ContainAggressionConcern extends DiplomacyConcern {
 
     protected boolean shouldBeConcernedAbout(FactionAPI faction) {
         FactionAPI us = ai.getFaction();
-        if (faction.isHostileTo(us)) return false;  // already at war anyway
+        //if (faction.isHostileTo(us)) return false;  // already at war anyway, but since this concern is also used for invasion targeting, keep it on
 
         RepLevel disregardAtRep = RepLevel.NEUTRAL;
         if (DiplomacyTraits.hasTrait(us.getId(), DiplomacyTraits.TraitIds.PARANOID)) {
