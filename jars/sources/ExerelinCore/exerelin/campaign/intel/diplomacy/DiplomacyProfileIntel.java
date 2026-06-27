@@ -23,7 +23,10 @@ import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.diplomacy.DiplomacyTraits.TraitDef;
 import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.econ.GroundPoolManager;
+import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 import exerelin.utilities.NexFactionConfig.Morality;
 import lombok.extern.log4j.Log4j;
@@ -692,18 +695,19 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	public static void addInvasionPointStats(TooltipMakerAPI tt, FactionAPI faction) {
 		float pad = 3, opad = 10;
 		Color hl = Misc.getHighlightColor();
-		String factionId = faction.getId();
 
 		float nextPad = opad;
 		if (FleetPoolManager.USE_POOL) {
-			float pool = FleetPoolManager.getManager().getCurrentPool(factionId);
-			float poolMax = FleetPoolManager.getManager().getMaxPool(factionId);
-			float poolIncr = FleetPoolManager.getManager().getPointsLastTick(faction);
-			String poolIncrStr = String.format("%.1f", poolIncr);
-			tt.addPara(StrategicAI.getString("intelPara_fleetPool"), nextPad, hl, (int)pool + "", (int)poolMax + "", poolIncrStr);
+			addResourcePoolStats(tt, faction, FleetPoolManager.getManager(), "intelPara_fleetPool", nextPad);
 			nextPad = pad;
 		}
-		{
+
+		if (FleetPoolManager.USE_POOL || ExerelinModPlugin.isNexDev) {
+			addResourcePoolStats(tt, faction, GroundPoolManager.getManager(), "intelPara_groundPool", nextPad);
+			nextPad = pad;
+		}
+
+		if (!FleetPoolManager.USE_POOL || ExerelinModPlugin.isNexDev) {
 			float points = InvasionFleetManager.getManager().getSpawnCounter(faction.getId());
 			float pointsMax = InvasionFleetManager.getMaxInvasionPoints(faction);
 			float pointsIncr = InvasionFleetManager.getPointsLastTick(faction);
@@ -721,5 +725,25 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 				}
 			}, TooltipMakerAPI.TooltipLocation.BELOW);
 		}
+	}
+
+	public static void addResourcePoolStats(TooltipMakerAPI tt, FactionAPI faction, ResourcePoolManager manager, String stringKey, float pad) {
+		Color hl = Misc.getHighlightColor();
+		String factionId = faction.getId();
+
+		float pool = manager.getCurrentPool(factionId);
+		float poolMax = manager.getMaxPool(factionId);
+		float poolIncr = manager.getPointsLastTick(faction);
+		String poolIncrStr = String.format("%.1f", poolIncr);
+		tt.addPara(StrategicAI.getString(stringKey), pad, hl, (int)pool + "", (int)poolMax + "", poolIncrStr);
+
+		final MutableStat pointsStat = manager.getPointsLastTickStat(faction);
+		if (pointsStat == null) return;
+		tt.addTooltipToPrevious(new BaseTooltipCreator() {
+			@Override
+			public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+				tooltip.addStatModGrid(350, 50, 10, 0, pointsStat, false, NexUtils.getStatModValueGetter(true, 2));
+			}
+		}, TooltipMakerAPI.TooltipLocation.BELOW);
 	}
 }

@@ -42,7 +42,17 @@ public class GroundPoolManager extends ResourcePoolManager {
 	public String getPointsLastTickMemoryKey() {
 		return "$nex_groundPoolPointsLastTick";
 	}
-	
+
+	@Override
+	public String getPointsLastTickStatMemoryKey() {
+		return "$nex_groundPoolPointsLastTickStat";
+	}
+
+	@Override
+	public float getBaseGainMult() {
+		return 0.8f;
+	}
+
 	/*
 	============================================================================
 	// start of GUI stuff

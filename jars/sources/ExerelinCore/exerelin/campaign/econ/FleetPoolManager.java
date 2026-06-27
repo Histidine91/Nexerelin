@@ -8,7 +8,6 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.NexRouteManager;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
@@ -85,7 +84,12 @@ public class FleetPoolManager extends ResourcePoolManager {
 	public String getPointsLastTickMemoryKey() {
 		return "$nex_fleetPoolPointsLastTick";
 	}
-	
+
+	@Override
+	public String getPointsLastTickStatMemoryKey() {
+		return "$nex_fleetPoolPointsLastTickStat";
+	}
+
 	/*
 	============================================================================
 	// start of GUI stuff
@@ -129,7 +133,7 @@ public class FleetPoolManager extends ResourcePoolManager {
 			rowContents.add(faction.getBaseUIColor());
 			rowContents.add(Misc.ucFirst(faction.getDisplayName()));
 			
-			// current pool
+			// current fleet pool
 			float pool = getCurrentPoolInternal(factionId);
 			rowContents.add(Misc.getWithDGS(pool));
 			// last increment
@@ -137,11 +141,20 @@ public class FleetPoolManager extends ResourcePoolManager {
 			rowContents.add(String.format("%.1f", increment));
 			
 			// invasion points
+			/*
 			float invPoints = InvasionFleetManager.getManager().getSpawnCounter(factionId);
 			rowContents.add(Misc.getWithDGS(invPoints));
 			// last increment
 			float increment2 = InvasionFleetManager.getPointsLastTick(faction);
 			rowContents.add(Misc.getWithDGS(increment2));
+			 */
+
+			// ground pool
+			pool = GroundPoolManager.getManager().getCurrentPoolInternal(factionId);
+			rowContents.add(Misc.getWithDGS(pool));
+			// last increment
+			increment = GroundPoolManager.getManager().getPointsLastTick(faction);
+			rowContents.add(String.format("%.1f", increment));
 			
 			tooltip.addRow(rowContents.toArray());
 		}

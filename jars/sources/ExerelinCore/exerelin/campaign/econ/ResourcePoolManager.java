@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.CommoditySourceType;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -96,6 +97,14 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 		//log.info(String.format("Max pool for %s is %s times %s == %s", factionId, lastTick, FLEET_POOL_MAX_MULT, lastTick * FLEET_POOL_MAX_MULT));
 		return Math.max(100, lastTick * POOL_MAX_MULT);
 	}
+
+	/**
+	 * Applied to the daily increment.
+	 * @return
+	 */
+	public float getBaseGainMult() {
+		return 1;
+	}
 	
 	/**
 	 * Request points from the pool, following the specified parameters on overdraft and such.
@@ -157,6 +166,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 
 	public abstract String getDataKey();
 	public abstract String getPointsLastTickMemoryKey();
+	public abstract String getPointsLastTickStatMemoryKey();
 	public abstract Map<String, Float> getCommodityValues();
 	
 	/**
@@ -184,6 +194,10 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 	
 	public float getPointsLastTick(FactionAPI faction) {
 		return faction.getMemoryWithoutUpdate().getFloat(getPointsLastTickMemoryKey());
+	}
+
+	public MutableStat getPointsLastTickStat(FactionAPI faction) {
+		return (MutableStat)faction.getMemoryWithoutUpdate().get(getPointsLastTickStatMemoryKey());
 	}
 	
 	public void updatePoints() {
@@ -221,6 +235,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 		}
 		
 		int playerLevel = Global.getSector().getPlayerPerson().getStats().getLevel();
+		float baseMult = getBaseGainMult();
 		
 		// increment points for all live factions
 		List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
@@ -232,16 +247,20 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 			// safety (faction can be live without markets if its last market decivilizes)
 			if (!pointsPerFaction.containsKey(factionId))
 				pointsPerFaction.put(factionId, 0f);
-			
-			float pool = getCurrentPoolInternal(factionId);
-			float increment = pointsPerFaction.get(factionId);
+
+			MutableStat incrementStat = new MutableStat(0);
+			incrementStat.modifyFlat("markets", pointsPerFaction.get(factionId) * baseMult, InvasionFleetManager.getPointSourceDesc("markets"));
+
 			if (!faction.isPlayerFaction() || NexConfig.followersInvasions) {
-				increment += NexConfig.baseInvasionPointsPerFaction * INVASION_POINT_CONVERSION_MULT;
-				increment += NexConfig.invasionPointsPerPlayerLevel * playerLevel * INVASION_POINT_CONVERSION_MULT;
+				incrementStat.modifyFlat("base", NexConfig.baseInvasionPointsPerFaction * INVASION_POINT_CONVERSION_MULT  * baseMult, InvasionFleetManager.getPointSourceDesc("base"));
+				incrementStat.modifyFlat("playerLevel", NexConfig.invasionPointsPerPlayerLevel * playerLevel * INVASION_POINT_CONVERSION_MULT * baseMult, InvasionFleetManager.getPointSourceDesc("playerLevel"));
 			}
-			
-			increment *= config.invasionPointMult;
+
+			incrementStat.modifyMult("factionConfig", config.invasionPointMult, InvasionFleetManager.getPointSourceDesc("factionMult"));
+
+			float increment = incrementStat.getModifiedValue();
 			faction.getMemoryWithoutUpdate().set(getPointsLastTickMemoryKey(), increment, 3);
+			faction.getMemoryWithoutUpdate().set(getPointsLastTickStatMemoryKey(), incrementStat, 3);
 			
 			modifyPool(factionId, increment);
 		}
