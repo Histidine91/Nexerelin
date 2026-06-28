@@ -121,6 +121,7 @@ public class NexWarSimScript {
         }
 
         float winnerAdvantage = winner.totalStrength / loser.totalStrength;
+        winnerAdvantage = (winnerAdvantage - 1)/2 + 1;
 //		if (winnerAdvantage > 2f) winnerAdvantage = 2f;
 //		if (winnerAdvantage < 0.5f) winnerAdvantage = 0.5f;
         if (winnerAdvantage > 10f) winnerAdvantage = 10f;
