@@ -628,6 +628,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 	}
 	
 	protected void reportEvent() {
+		CovertOpsManager.reportAgentAction(this);
 		timestamp = Global.getSector().getClock().getTimestamp();
 		if (ExerelinModPlugin.isNexDev) {
 			//Global.getSector().getCampaignUI().addMessage("reportEvent() called in CovertActionIntel");
