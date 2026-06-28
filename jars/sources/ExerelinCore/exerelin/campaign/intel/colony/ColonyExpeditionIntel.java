@@ -31,6 +31,7 @@ import exerelin.campaign.MarketDescChanger;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.econ.FactionConditionPlugin;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.fleets.NexRouteManager;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
 import exerelin.utilities.*;
@@ -79,6 +80,11 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 	
 	public PlanetAPI getTargetPlanet() {
 		return planet;
+	}
+
+	public void setForceSpawnInSystem(boolean force, float duration) {
+		if (NexRouteManager.USE_FORCE_SPAWN)
+			Misc.setFlagWithReason(planet.getContainingLocation().getMemoryWithoutUpdate(), NexRouteManager.MEM_KEY_LOCATION_FORCE_SPAWN, "nex_offensive_action_" + this.hashCode(), force, duration);
 	}
 	
 	@Override
