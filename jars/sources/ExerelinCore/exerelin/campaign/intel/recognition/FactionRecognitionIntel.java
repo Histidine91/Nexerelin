@@ -29,10 +29,8 @@ import lombok.Setter;
 import org.magiclib.util.MagicTxt;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPlayerHostileActListener, EconomyTickListener,
         InvasionListener, AgentActionListener, ColonySizeChangeListener, PlayerColonizationListener {
@@ -61,6 +59,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
     //@Getter protected Set<Integer> sizesAttained = new HashSet<>();   // don't overcomplicate it, any upsize is good
 
     @Getter protected List<EventStageData> stages2 = new ArrayList<EventStageData>();
+    @Getter protected Set<String> completedCrises = new HashSet<>();
 
     // the same factors are used to track both of our progress bars
     // this boolean is used to signal to the factors if they should be dealing with the respect score instead of the recognition one
@@ -88,6 +87,11 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
     }
 
     public FactionRecognitionIntel() {
+    }
+
+    protected Object readResolve() {
+        if (completedCrises == null) completedCrises = new HashSet<>();
+        return this;
     }
 
     public void debug() {
@@ -258,6 +262,12 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
             addOneTimeFactorEffects(factor, dialog);
         }
         addingFactorDialog = null;
+    }
+
+    public void reportCrisisCompleted(CrisisChecker.CrisisCheckerEntry entry) {
+        CrisisCompletedFactor ccf = new CrisisCompletedFactor(entry);
+        addFactor(ccf);
+        completedCrises.add(entry.crisisId);
     }
 
     public static String getString(String id) {
@@ -455,10 +465,8 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
     @Override
 	public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
-
         // guess we'll have to replicate the entire super method aaaaaahhh
 
-        float opad = 10f;
         uiWidth = width;
         float ttWidth = getBarWidth() + 50;
 
@@ -468,10 +476,6 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         main.addTitle(getName(), Misc.getBasePlayerColor());
 
         addPanel(main, true);
-        float heightSoFar = main.getHeightSoFar();
-        float spacerPos = main.addSpacer(opad).getPosition().getY();
-
-        float secHeaderPos = main.addSectionHeading(getString("headerRespect"), Alignment.MID, opad).getPosition().getY();
         addPanel(main, false);
 
         panel.addUIElement(main).inTL(0, 0);
@@ -664,6 +668,8 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
     @Override
     public void reportEconomyTick(int iterIndex) {
+        if (!isActive()) return;
+
         super.reportEconomyTick(iterIndex);
 
         forRespectValues = true;
@@ -682,6 +688,8 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         setProgress2(progress2 + apply);
 
         forRespectValues = false;
+
+        CrisisChecker.checkCrises(this);
     }
 
     @Override
@@ -695,6 +703,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
     @Override
     public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
+        if (!active) return;
         FactionAPI faction = market.getFaction();
         if (actionData instanceof Nex_MarketCMD.NexTempData ntd) {
             faction = ntd.targetFaction;
@@ -705,6 +714,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
     @Override
     public void reportAgentAction(CovertActionIntel action) {
+        if (!active) return;
         if (!action.isPlayerInvolved() || !action.getResult().isSuccessful() || BaseRecognitionEventFactor.isOutlawFaction(action.getTargetFaction()))
             return;
 
@@ -730,6 +740,8 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         if (newOwner.isPlayerFaction())
             activate();
 
+        if (!active) return;
+
         String origOwner = NexUtilsMarket.getOriginalOwner(market);
 
         if (newOwner.isPlayerFaction() && isCapture) {
@@ -747,6 +759,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         if (!market.getFaction().isPlayerFaction()) return;
 
         activate();
+
         int size = market.getSize();
         if (size <= prevSize) return;
         ColonySizeAchievedFactor sizeFac = new ColonySizeAchievedFactor(market, size);
