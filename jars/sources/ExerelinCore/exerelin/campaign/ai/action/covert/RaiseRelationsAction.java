@@ -44,7 +44,7 @@ public class RaiseRelationsAction extends CovertAction {
         if (faction != null) {
             float curr = ai.getFaction().getRelationship(faction.getId());
             float max = DiplomacyManager.getManager().getMaxRelationship(ai.getFactionId(),	faction.getId());
-            if (curr >= max) return false;
+            if (curr >= max - 5) return false;
         }
 
         return super.canUse(concern);
