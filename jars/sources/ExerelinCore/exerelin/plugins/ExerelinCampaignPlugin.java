@@ -173,14 +173,16 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 	@Override
 	public PluginPick<ReputationActionResponsePlugin> pickReputationActionResponsePlugin(Object action, String factionId) {
 		if (action instanceof RepActions || action instanceof RepActionEnvelope) {
+			boolean isValidAction = NexReputationPlugin.COVERED_ACTIONS.contains(action);
+			isValidAction |= action instanceof RepActionEnvelope rae && NexReputationPlugin.COVERED_ACTIONS.contains(rae.action);
 
-			if (!NexReputationPlugin.COVERED_ACTIONS.contains(action))
+			if (!isValidAction)
 				return null;
 
-			return new PluginPick<ReputationActionResponsePlugin>(
-					new NexReputationPlugin(),
-					PickPriority.MOD_GENERAL
-			);
+			return new PluginPick<>(
+                    new NexReputationPlugin(),
+                    PickPriority.MOD_GENERAL
+            );
 		}
 		return null;
 	}
