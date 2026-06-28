@@ -70,6 +70,7 @@ import exerelin.campaign.intel.missions.ConquestMissionManager;
 import exerelin.campaign.intel.missions.Nex_CBHegInspector;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
 import exerelin.campaign.intel.rebellion.RebellionCreator;
+import exerelin.campaign.intel.recognition.FactionRecognitionIntel;
 import exerelin.campaign.intel.specialforces.SpecialForcesManager;
 import exerelin.campaign.questskip.QuestChainSkipEntry;
 import exerelin.campaign.submarkets.PrismMarket;
@@ -288,6 +289,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         new MercSectorManager().init();
         
         addBarEvents();
+
+        FactionRecognitionIntel.createIfNeeded();
 
         if (isNexDev) {
             //DebugIntel.createIntel();

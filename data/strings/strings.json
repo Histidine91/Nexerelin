@@ -10,6 +10,7 @@
 		"colony":"colony",
 		"colonies":"colonies",
 		"commodity":"commodity",
+		"completed":"completed",
 		"conquest":"conquest",
 		"configure":"configure",
 		"continue":"continue",
@@ -1027,6 +1028,54 @@
 	"nex_factionConditions":{
 		"condName_outlaw":"%s: Underground Connections",
 		"condDesc_outlaw":"$TheFaction $factionIsOrAre tied in strongly to the Sector's grey and underworld economy, mitigating attempts by larger powers to constrain trade and commerce. Accessibility increased by $accessibility%%.",
+	},
+	
+	"nex_factionRecognition":{
+		"intelTitle":"Earning Recognition",
+		
+		"headerRespect":"Respectability",
+		
+		"intro1":"Although you now possess your own colony, this does not get you treated as being on the level of the major interstellar polities in the Sector. To be ==recognized== as their equal will require some combination of impressive feats, undeniable prestige, and lobbying the established powers.",
+		"intro2":"Actions that can generate recognition may include ==economic advancement==, ==conquest==, ==official diplomacy==, and certain other ==more dangerous== acts.",
+		#"intro3":"Achieving recognition will have effects including:",
+		"intro3":"[This event is currently cosmetic. Thank you for testing!]",
+		"introRespect1":"Not all recognized polities are equally respected. Your conduct over this key period will determine how the interstellar community sees you.",
+		
+		"tooltipStageStart":"You are still treated as an unusually successful trader or freebooter rather than a head of state.",
+		"tooltipStageEnd":"You are a recognized state in the Sector, able to interact with the established powers on an equal basis.",
+		"tooltipStageRespectable":"You are an upstanding member of the interstellar community.",
+		"tooltipStageRogue":"The Sector has had enough Leonises, Kantas and Andradas already. They react to your rise as they would to the outbreak of an invasive plant.",
+		
+		"factorDesc_colonyIncome":"Colony income",
+		"factorDesc_colonySize":"Colony %s grew to size %s",
+		"factorDesc_commission":"%s commission",
+		"factorDesc_conquerMarket":"Conquered %s (size %s)",
+		"factorDesc_crisis":"Defeated %s crisis",
+		"factorDesc_embassies":"Embassies",
+		"factorDesc_freePorts":"Free ports",
+		"factorDesc_raiseRelations":"Operative raised relations",
+		"factorDesc_returnMarket":"Returned market %s (size %s)",
+		"factorDesc_satBomb":"Saturation bombardment of %s (size %s)",
+		
+		"factorTooltip_colonyIncome":"Profitable colonies make your faction a polity to be acknowledged. Every ==%s== credits of net income generates ==1== point.",
+		"factorTooltip_colonySize":"In these times of decay, growing a colony is a symbol of hope and recovery.",
+		"factorTooltip_commission":"Your association with the outlaw %s makes the expansion of your power a concerning issue.",
+		"factorTooltip_conquerMarket":"Seizing control of a disputed polity is an act that makes other factions take notice. Effect is based on the ==cube of market size==.",
+		"factorTooltip_conquerMarketAggressive":"Conquering the legitimate territory of an already-recognized polity markes you as an emerging warlord: feared, but not loved. Effect is based on the ==cube of market size==.",
+		"factorTooltip_crisis":"Thwarting the machinations of a major Sector power is always an impressive feat, though not always a respected one.",
+		"factorTooltip_embassies":"Hosting the embassies of the established powers opens doors to diplomatic recognition.",
+		"factorTooltip_freePorts":"Allowing your colonies to shelter criminals and undesirables does not endear you to the Sector community. Effect is based on ==market size== and production of ==drugs== and ==heavy arms==, if any.",
+		"factorTooltip_raiseRelations":"Your operative %s has carried out lobbying efforts on your behalf in a recognized polity.",
+		"factorTooltip_returnMarket":"Your return of territory to ==%s== is a virtuous act that speaks well of you. Effect is based on the ==cube of market size==.",
+		"factorTooltip_satBomb":"With a few exceptions, saturation bombardment is considered an act of mass terror by an enemy of all in the Sector. Effect is based on the ==cube of market size==.",
+		
+		"respect":"respect",
+		"recognition":"recognition",
+		
+		"tableHeader_factorsMonthly":"Monthly factors",
+		"tableHeader_factorsOneTime":"Recent one-time factors",
+		"tableHeader_factorsOneTimeRecent":"One-time factors",
+		"tableHeader_progress":"Progress",
 	},
 	
 	"nex_factionSetup":{

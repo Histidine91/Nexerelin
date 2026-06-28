@@ -292,6 +292,8 @@
 			"nex_milestone_gunbarrel":"graphics/exerelin/icons/intel/gunbarrel.png",
 			
 			"nex_spaceport":"graphics/icons/markets/spaceport.png",
+			
+			"nex_recognition_stage0":"graphics/icons/intel/player.png",
 		},
 		
 		"marketConditions":{
