@@ -11,11 +11,13 @@ import com.fs.starfarer.api.characters.SkillsChangeRemoveExcessOPEffect;
 import com.fs.starfarer.api.characters.SkillsChangeRemoveSmodsEffect;
 import com.fs.starfarer.api.characters.SkillsChangeRemoveVentsCapsEffect;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
-import com.fs.starfarer.api.impl.campaign.*;
+import com.fs.starfarer.api.impl.campaign.CoreLifecyclePluginImpl;
+import com.fs.starfarer.api.impl.campaign.HasslePlayerScript;
+import com.fs.starfarer.api.impl.campaign.HullModItemManager;
+import com.fs.starfarer.api.impl.campaign.SmugglingScanScript;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.econ.impl.Cryorevival;
 import com.fs.starfarer.api.impl.campaign.econ.impl.PopulationAndInfrastructure;
-import com.fs.starfarer.api.impl.campaign.econ.impl.ShipQuality;
 import com.fs.starfarer.api.impl.campaign.enc.EncounterManager;
 import com.fs.starfarer.api.impl.campaign.enc.StrandedGiveTJScript;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
@@ -42,6 +44,7 @@ import com.fs.starfarer.api.plugins.impl.CoreBuildObjectiveTypePicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.colony.NexAbandonMarketPlugin;
 import exerelin.campaign.colony.NexStabilizeMarketPlugin;
+import exerelin.campaign.econ.NexShipQuality;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
 import exerelin.campaign.intel.bases.Nex_PirateBaseManager;
@@ -51,11 +54,11 @@ import exerelin.campaign.intel.hostileactivity.NexHostileActivityManager;
 public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 	
 	// don't add hostility event manager
-	// add own versions of punitive expedition manager and Hegemony inspection manager
-	// also own versions of base managers and stabilize market plugin
+	// add own versions of punitive expedition manager, Hegemony inspection manager
+	// also own versions of base managers, stabilize market plugin and ship quality
 	@Override
 	protected void addScriptsIfNeeded() {
-		ShipQuality.getInstance();
+		NexShipQuality.getInstance();   // MODIFIED
 		//ConditionManager.getInstance();
 		
 		SectorAPI sector = Global.getSector();

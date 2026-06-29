@@ -15,6 +15,7 @@ import exerelin.campaign.ai.concern.*;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.econ.NexShipQuality;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.econ.ReinforcedDefenses;
 import exerelin.campaign.econ.TributeCondition;
@@ -213,6 +214,7 @@ public class XStreamConfig {
 
 		// vanilla overrides
 		x.alias("RouteManager", NexRouteManager.class);
+		x.alias("ShipQuality", NexShipQuality.class);
 		
 		configureXStreamAttributes(x);
 	}
