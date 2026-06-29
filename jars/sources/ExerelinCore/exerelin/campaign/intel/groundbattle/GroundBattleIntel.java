@@ -45,6 +45,8 @@ import exerelin.campaign.intel.groundbattle.dialog.UnitOrderDialogPlugin;
 import exerelin.campaign.intel.groundbattle.plugins.*;
 import exerelin.campaign.intel.invasion.InvasionIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
+import exerelin.campaign.intel.recognition.ConquerMarketFactor;
+import exerelin.campaign.intel.recognition.FactionRecognitionIntel;
 import exerelin.campaign.ui.ProgressBar;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
@@ -1359,6 +1361,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			ReputationAdjustmentResult result = NexUtilsReputation.applyRepFromAndradaOption(market);
 			playerData.andradaRepChange = result;
 			playerData.andradaRepAfter = Global.getSector().getPlayerFaction().getRelationship(PlayerFactionStore.getPlayerFactionId());
+			if (FactionRecognitionIntel.getInstance() != null) {
+				FactionRecognitionIntel.getInstance().addFactor(new ConquerMarketFactor(market, PlayerFactionStore.getPlayerFaction(), true));
+			}
 		}
 		
 		timerForDecision = null;

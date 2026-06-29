@@ -16,6 +16,7 @@ public class ReturnMarketFactor extends ConquerMarketFactor {
     public ReturnMarketFactor(MarketAPI market, FactionAPI prevOwner) {
         super(market, prevOwner, true);
         recipient = market.getFaction();
+        computeScore();
     }
 
     public void computeScore() {

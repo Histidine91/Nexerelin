@@ -8,7 +8,7 @@ import exerelin.utilities.NexUtilsGUI;
 
 public class FreePortFactor extends BasePerColonyRecognitionFactor {
 
-    public static final int RESPECT_MULT = 3;
+    public static final int RESPECT_MULT = -2;
 
     @Override
     int computeRespectPoints() {
@@ -38,5 +38,13 @@ public class FreePortFactor extends BasePerColonyRecognitionFactor {
     @Override
     public TooltipMakerAPI.TooltipCreator getMainRowTooltip(BaseEventIntel intel) {
         return NexUtilsGUI.createSimpleTextTooltip(FactionRecognitionIntel.getString("factorTooltip_freePorts"), TOOLTIP_WIDTH);
+    }
+
+    @Override
+    public boolean shouldShow(BaseEventIntel intel) {
+        if (intel instanceof FactionRecognitionIntel fri) {
+            return fri.forRespectValues;
+        }
+        return super.shouldShow(intel);
     }
 }

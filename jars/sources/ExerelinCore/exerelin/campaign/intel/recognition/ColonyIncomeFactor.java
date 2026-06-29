@@ -18,6 +18,7 @@ public class ColonyIncomeFactor extends BasePerColonyRecognitionFactor {
     @Override
     int computeRecognitionPoints() {
         float income = getMarketsContribution();
+        if (income < 0) income = 0;
         this.recogPoints = (int)(income/INCOME_PER_SCORE);
         return recogPoints;
     }
@@ -37,5 +38,13 @@ public class ColonyIncomeFactor extends BasePerColonyRecognitionFactor {
         String credits = Misc.getWithDGS(INCOME_PER_SCORE);
         String str = String.format(FactionRecognitionIntel.getString("factorTooltip_colonyIncome"), credits);
         return NexUtilsGUI.createSimpleTextTooltip(str, TOOLTIP_WIDTH);
+    }
+
+    @Override
+    public boolean shouldShow(BaseEventIntel intel) {
+        if (intel instanceof FactionRecognitionIntel fri) {
+            return !fri.forRespectValues;
+        }
+        return super.shouldShow(intel);
     }
 }

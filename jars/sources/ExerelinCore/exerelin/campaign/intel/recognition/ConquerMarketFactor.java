@@ -16,6 +16,10 @@ public class ConquerMarketFactor extends BaseRecognitionEventFactor {
     @Getter protected FactionAPI prevOwner;
     @Getter protected boolean conqueringFromOrigOwner;
 
+    public ConquerMarketFactor() {
+        setInfoMode(true);
+    }
+
     public ConquerMarketFactor(MarketAPI market, FactionAPI prevOwner, boolean conqueringFromOrigOwner) {
         this.market = market;
         this.prevOwner = prevOwner;
@@ -24,6 +28,7 @@ public class ConquerMarketFactor extends BaseRecognitionEventFactor {
     }
 
     public void computeScore() {
+        if (market == null) return;
         int size = market.getSize();
         recogPoints = (int)(RECOG_SCORE_MULT * size * size * size);
 
@@ -33,12 +38,14 @@ public class ConquerMarketFactor extends BaseRecognitionEventFactor {
 
     @Override
     public String getDesc(BaseEventIntel intel) {
+        if (market == null) return FactionRecognitionIntel.getString("factorDesc_conquerMarketInfo");
         return String.format(FactionRecognitionIntel.getString("factorDesc_conquerMarket"), market.getName(), market.getSize());
     }
 
     @Override
     public TooltipMakerAPI.TooltipCreator getMainRowTooltip(BaseEventIntel intel) {
-        String str = FactionRecognitionIntel.getString(conqueringFromOrigOwner ? "factorTooltip_conquerMarketAggressive" : "factorTooltip_conquerMarket");
+        boolean aggr = infoMode || conqueringFromOrigOwner;
+        String str = FactionRecognitionIntel.getString(aggr ? "factorTooltip_conquerMarketAggressive" : "factorTooltip_conquerMarket");
         return NexUtilsGUI.createSimpleTextTooltip(str, TOOLTIP_WIDTH);
     }
 

@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.recognition;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseOneTimeFactor;
@@ -18,12 +19,14 @@ public abstract class BaseRecognitionEventFactor extends BaseOneTimeFactor {
     // For monthly factors, these... serve as a cache that is updated with an undefined frequency and isn't read
     @Getter protected int recogPoints;
     @Getter protected int respectPoints;
+    @Getter protected boolean infoMode;
 
     public BaseRecognitionEventFactor() {
         super(0);
     }
 
     public int getProgress(BaseEventIntel intel) {
+        if (infoMode) return 0;
         if (intel instanceof FactionRecognitionIntel fri) {
             if (fri.forRespectValues) return Math.min(respectPoints, FactionRecognitionIntel.PROGRESS_MAX);
         }
@@ -37,8 +40,14 @@ public abstract class BaseRecognitionEventFactor extends BaseOneTimeFactor {
 
     @Override
     public boolean isExpired() {
-        if (!isOneTime()) return false;
+        if (!isOneTime() || infoMode) return false;
         return super.isExpired();
+    }
+
+    public void setInfoMode(boolean infoMode) {
+        this.infoMode = infoMode;
+        if (infoMode) timestamp = 0;
+        else timestamp = Global.getSector().getClock().getTimestamp();
     }
 
     public boolean ignoreSuspension() {
@@ -71,5 +80,11 @@ public abstract class BaseRecognitionEventFactor extends BaseOneTimeFactor {
     public static boolean isOutlawFaction(FactionAPI faction) {
         NexFactionConfig conf = NexConfig.getFactionConfig(faction.getId());
         return conf.pirateFaction || conf.hostileToAll > 0 || DiplomacyTraits.hasTrait(faction.getId(), DiplomacyTraits.TraitIds.MONSTROUS);
+    }
+
+    @Override
+    public boolean shouldShow(BaseEventIntel intel) {
+        if (infoMode) return !hasOtherFactorsOfClass(intel, this.getClass());
+        return super.shouldShow(intel);
     }
 }

@@ -95,7 +95,9 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
     }
 
     public void debug() {
-        setup();
+        ended = false;
+        ending = false;
+        setProgress(500);
     }
 
     protected void setup() {
@@ -116,6 +118,13 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         addFactor(emb);
         FreePortFactor fp = new FreePortFactor();
         addFactor(fp);
+
+        // these one-off factors will be displayed permanently as guides
+        RaiseRelationsFactor rr = new RaiseRelationsFactor(null);
+        rr.setInfoMode(true);
+        addFactor(rr);
+        ConquerMarketFactor conq = new ConquerMarketFactor();
+        addFactor(conq);
 
         addStage2(RespectStage.RESPECTABLE, PROGRESS_MAX, StageIconSize.MEDIUM);
         addStage2(RespectStage.RENEGADE, 0, StageIconSize.MEDIUM);
@@ -237,7 +246,13 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
     }
 
     protected void addOneTimeFactorEffects(EventFactor factor, InteractionDialogAPI dialog) {
-        if (factor.getProgress(this) != 0) {
+        boolean didAnything = false;
+        if (factor instanceof BaseRecognitionEventFactor bref) {
+            didAnything = bref.respectPoints != 0 || bref.recogPoints != 0;
+        }
+        didAnything |= factor.getProgress(this) != 0;
+
+        if (didAnything) {
             TextPanelAPI textPanel = dialog == null ? null : dialog.getTextPanel();
             sendUpdateIfPlayerHasIntel(factor, textPanel);
         }
@@ -554,7 +569,9 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         }
 
 		Object param = getListInfoParam();
-
+        if (param == Stage.END) {
+            info.addPara(StringHelper.getString("completed", true), initPad);
+        }
 	}
 
 	@Override
@@ -660,7 +677,10 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         return !active;
     }
 
-
+    @Override
+    protected float getBaseDaysAfterEnd() {
+        return 15;
+    }
 
     // =================================================================================================================
     // listeners
@@ -744,13 +764,14 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
         String origOwner = NexUtilsMarket.getOriginalOwner(market);
 
+        // note: Andrada option isn't marked as capture, so GroundBattleIntel has to add factor directly
         if (newOwner.isPlayerFaction() && isCapture) {
             ConquerMarketFactor conq = new ConquerMarketFactor(market, oldOwner, oldOwner.getId().equals(origOwner));
-            addFactor(conq);
+            addFactor(conq, Global.getSector().getCampaignUI().getCurrentInteractionDialog());
         }
         if (oldOwner.isPlayerFaction() && !isCapture && newOwner.getId().equals(origOwner)) {
             ReturnMarketFactor ret = new ReturnMarketFactor(market, oldOwner);
-            addFactor(ret);
+            addFactor(ret, Global.getSector().getCampaignUI().getCurrentInteractionDialog());
         }
     }
 
@@ -763,7 +784,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         int size = market.getSize();
         if (size <= prevSize) return;
         ColonySizeAchievedFactor sizeFac = new ColonySizeAchievedFactor(market, size);
-        addFactor(sizeFac);
+        addFactor(sizeFac, Global.getSector().getCampaignUI().getCurrentInteractionDialog());
     }
 
     @Override

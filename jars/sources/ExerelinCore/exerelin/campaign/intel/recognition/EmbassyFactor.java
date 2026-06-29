@@ -1,5 +1,6 @@
 package exerelin.campaign.intel.recognition;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
@@ -39,5 +40,10 @@ public class EmbassyFactor extends BasePerColonyRecognitionFactor {
     @Override
     public TooltipMakerAPI.TooltipCreator getMainRowTooltip(BaseEventIntel intel) {
         return NexUtilsGUI.createSimpleTextTooltip(FactionRecognitionIntel.getString("factorTooltip_embassies"), TOOLTIP_WIDTH);
+    }
+
+    @Override
+    public boolean shouldShow(BaseEventIntel intel) {
+        return super.shouldShow(intel) || Global.getSettings().getModManager().isModEnabled("IndEvo");
     }
 }
