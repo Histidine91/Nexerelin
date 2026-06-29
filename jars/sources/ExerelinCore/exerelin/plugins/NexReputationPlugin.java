@@ -17,12 +17,13 @@ import java.util.Set;
 
 public class NexReputationPlugin extends CoreReputationPlugin {
 
+    public static boolean preventFightingRepLossWhenHostile = false;    // save this for when we have the specific war state
+
     public static final Set<RepActions> COVERED_ACTIONS = new HashSet<>(Arrays.asList(
-            RepActions.TRANSPONDER_OFF, RepActions.COMBAT_NORMAL_TOFF, RepActions.COMBAT_NORMAL
+            RepActions.TRANSPONDER_OFF, RepActions.COMBAT_NORMAL_TOFF, RepActions.COMBAT_NORMAL, RepActions.CUSTOM
     ));
 
-    // only handles the specific case of negating rep loss if caught with transponder off by commissioning faction
-    // previously it could also change the rep limit to inhospitable instead of hostile if I wanted, but I ended up not doing this anyway
+    // handles a bunch of rep loss mitigations
     public ReputationAdjustmentResult handlePlayerReputationActionInner(Object actionObject,
                                                                         String factionId,
                                                                         PersonAPI person,
@@ -72,7 +73,14 @@ public class NexReputationPlugin extends CoreReputationPlugin {
                 break;
             case COMBAT_NORMAL:
             case COMBAT_NORMAL_TOFF:
-                if (PlayerFactionStore.getPlayerFaction().isHostileTo(factionId)) {
+                if (preventFightingRepLossWhenHostile && PlayerFactionStore.getPlayerFaction().isHostileTo(factionId)) {
+                    return new ReputationAdjustmentResult(0);
+                } else {
+                    limit = RepLevel.HOSTILE;
+                }
+                break;
+            case CUSTOM:
+                if ("uw_extort".equals(reason) && Global.getSector().getPlayerFaction().isHostileTo(factionId)) {
                     return new ReputationAdjustmentResult(0);
                 }
                 break;
