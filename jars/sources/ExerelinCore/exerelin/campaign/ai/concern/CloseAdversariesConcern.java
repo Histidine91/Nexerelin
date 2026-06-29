@@ -10,6 +10,7 @@ import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -45,6 +46,7 @@ public class CloseAdversariesConcern extends DiplomacyConcern {
             FactionAPI faction = Global.getSector().getFaction(factionId);
             float theirStrength = getFactionStrength(faction);
             if (theirStrength * 3 < ourStrength) continue;  // too weak to care
+            if (VassalManager.getInstance().isVassal(factionId)) continue;
 
             adversaries.add(new Pair<>(faction, theirStrength));
         }
