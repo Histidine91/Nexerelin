@@ -257,6 +257,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 			}
 
 			incrementStat.modifyMult("factionConfig", config.invasionPointMult, InvasionFleetManager.getPointSourceDesc("factionMult"));
+			incrementStat.modifyMult("globalConfig", InvasionFleetManager.BASE_INVASION_COST/NexConfig.pointsRequiredForInvasionFleet, InvasionFleetManager.getPointSourceDesc("globalMult"));
 
 			float increment = incrementStat.getModifiedValue();
 			faction.getMemoryWithoutUpdate().set(getPointsLastTickMemoryKey(), increment, 3);

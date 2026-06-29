@@ -89,6 +89,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	public static final float PATROL_ESTIMATION_MULT = 0.7f;
 	public static final float DEFENCE_ESTIMATION_MULT = 0.75f;
 	public static final float STATION_OFFICER_STRENGTH_MULT = 0.25f;
+
+	public static final float BASE_INVASION_COST = 30000f;
 	public static final float BASE_INVASION_SIZE = 500f;	// for reference, Jangala at start of game is around 500
 	public static final float MAX_INVASION_SIZE = 2000;
 	public static final float MAX_INVASION_SIZE_ECONOMY_MULT = 6f;

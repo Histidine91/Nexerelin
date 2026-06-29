@@ -3,6 +3,7 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,7 +66,7 @@ public class NexConfig
     public static float invasionFleetSizeMult = 1;
     public static float responseFleetSizeMult = 1;
     public static float invasionGracePeriod = 90;
-    public static float pointsRequiredForInvasionFleet = 27000f;
+    public static float pointsRequiredForInvasionFleet = InvasionFleetManager.BASE_INVASION_COST;
     public static float baseInvasionPointsPerFaction = 30f;
     public static float invasionPointsPerPlayerLevel = 1;
     public static float invasionPointEconomyMult = 0.5f;
