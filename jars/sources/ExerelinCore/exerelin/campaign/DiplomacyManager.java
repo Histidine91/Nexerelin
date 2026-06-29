@@ -1722,12 +1722,17 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         int commissionerSize = NexUtilsFaction.getFactionMarketSizeSum(commissionerId, false);
         score += ourSize/(float)commissionerSize * 20;
 
+        // modifier for how big enemy is
+        int enemySize = NexUtilsFaction.getFactionMarketSizeSum(otherFactionId);
+        score -= enemySize;
+        if (enemySize == 0) score += 25;    // small fry, fuck 'em!
+
         // if AotD QoL, add modifier from ranking
 
         // get response based on score
-        if (score > DISAVOW_THRESHOLD_BLESS) return DisavowResponse.BLESS;
-        else if (score > DISAVOW_THRESHOLD_OWN) return DisavowResponse.OWN;
-        return DisavowResponse.DISAVOW;
+        if (score < DISAVOW_THRESHOLD_OWN && enemySize > 0) return DisavowResponse.DISAVOW;
+        else if (score < DISAVOW_THRESHOLD_BLESS) return DisavowResponse.OWN;
+        return DisavowResponse.BLESS;
     }
 
     @Override

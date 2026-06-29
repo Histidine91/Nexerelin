@@ -180,7 +180,9 @@ public class StrategicAI extends BaseIntelPlugin {
 		}
 
 		if (!lastAddedConcerns.isEmpty() || !lastRemovedConcerns.isEmpty() || !lastAddedActions.isEmpty()) {
-			sendUpdateIfPlayerHasIntel(UPDATE_NEW_CONCERNS, true, false);
+			boolean forceSendConcerns = ExerelinModPlugin.isNexDev;
+
+			sendUpdateIfPlayerHasIntel(UPDATE_NEW_CONCERNS, !forceSendConcerns, false);
 			lastAddedConcerns.clear();
 			lastRemovedConcerns.clear();
 			lastAddedActions.clear();

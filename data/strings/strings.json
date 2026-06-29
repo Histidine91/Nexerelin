@@ -1849,6 +1849,7 @@
 		"police_eventBullet":"Imminent police crackdown",
 		"police_eventBulletHighlight":"police crackdown",
 		"police_eventAvertedBullet":"Police crackdown averted",
+		"police_eventTooltip":"Sectorpol expedition",
 		"police_eventDesc1":"You've received intel that an interstellar coalition is preparing to serve a search and arrest warrant on one of your colonies that has a Free Port, to remove \"criminal elements\" entrenched there.",
 		"police_eventDesc1Highlight":"search and arrest warrant, Free Port",
 		"police_eventDesc2":"Given the nature of hunter and hunted alike here, this event is likely to result in significant disruption of the colony's spaceport and other crime-related locations.",

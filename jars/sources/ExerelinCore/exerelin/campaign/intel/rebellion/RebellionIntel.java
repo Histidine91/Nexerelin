@@ -1242,6 +1242,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 	}
 
 	public void printTransactionPoints(float points, boolean rebels) {
+		if (points == 0) return;
 		InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
 		if (dialog != null) {
 			dialog.getTextPanel().setFontSmallInsignia();

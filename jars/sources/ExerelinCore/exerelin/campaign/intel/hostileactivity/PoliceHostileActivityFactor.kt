@@ -232,7 +232,7 @@ open class PoliceHostileActivityFactor(intel: HostileActivityEventIntel?) : Base
 
     override fun getStageTooltipImpl(intel: HostileActivityEventIntel?, stage: EventStageData): TooltipCreator? {
         return if (stage.id === HostileActivityEventIntel.Stage.HA_EVENT) {
-            getDefaultEventTooltip("[temp] Sectorpol expedition", intel, stage)
+            getDefaultEventTooltip(getString("eventTooltip"), intel, stage)
         } else null
     }
 

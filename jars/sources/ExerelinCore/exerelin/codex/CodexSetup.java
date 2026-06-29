@@ -22,6 +22,7 @@ public class CodexSetup {
         CodexEntryPlugin mechanicsCat = CodexDataV2.getEntry(CodexDataV2.CAT_GAME_MECHANICS);
         String marineEntryId = CodexDataV2.getCommodityEntryId(Commodities.MARINES);
         String haEntryId = CodexDataV2.getCommodityEntryId(Commodities.HAND_WEAPONS);
+        String siegeId = CodexDataV2.getAbilityEntryId("nex_siege_bombard");
 
         String id = CodexDataV2.getMechanicEntryId("nex_groundBattle");
         CodexEntryV2 groundBattle = new NexCodexEntry(id, getTitle("groundBattle_title"),
@@ -32,7 +33,7 @@ public class CodexSetup {
                 GroundBattleIntel.generateHelpDisplay(tt, panel, ttWidth);
             }
         };
-        addEntry(groundBattle, mechanicsCat, marineEntryId, haEntryId);
+        addEntry(groundBattle, mechanicsCat, marineEntryId, haEntryId, siegeId);
         groundBattle.getTags().add(getString("sortTag"));
 
         id = CodexDataV2.getMechanicEntryId("nex_insurance");
