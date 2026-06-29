@@ -23,6 +23,15 @@ public class NexBlockadeFGI extends BlockadeFGI {
         this.wrapper = wrapper;
     }
 
+    public void endWrapperBasedOnOwnOutcome() {
+        OffensiveFleetIntel.OffensiveOutcome outcome = OffensiveFleetIntel.OffensiveOutcome.OTHER;
+        if (this.isSucceeded()) outcome = OffensiveFleetIntel.OffensiveOutcome.SUCCESS;
+        else if (this.failedButNotDefeated) outcome = OffensiveFleetIntel.OffensiveOutcome.FAIL;
+        else if (this.isFailed()) outcome = OffensiveFleetIntel.OffensiveOutcome.TASK_FORCE_DEFEATED;
+        wrapper.reportOutcome(outcome);
+        wrapper.endAfterDelay();
+    }
+
     @Override
     protected void periodicUpdate() {
         if (Misc.getMarketsInLocation(getTargetSystem(), blockadeParams.targetFaction).isEmpty()) {
@@ -56,6 +65,9 @@ public class NexBlockadeFGI extends BlockadeFGI {
     public void finish(boolean isAbort) {
         super.finish(isAbort);
 
-        if (wrapper != null) wrapper.refundInvasionAndFleetPoints();
+        if (wrapper != null) {
+            wrapper.refundInvasionAndFleetPoints();
+            endWrapperBasedOnOwnOutcome();
+        }
     }
 }

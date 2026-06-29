@@ -34,7 +34,7 @@ public class NexWarSimScript {
     // and because of how damage recipients are selected, one or more fleets could eat most of that damage and just die
     // so this multiplier could stand to be lower than the one for fleet-level autoresolve
     public static final float AUTORESOLVE_DAMAGE_MULT = 0.1f;
-    public static final float WITHDRAW_ON_DAMAGE_THRESHOLD = 0.5f;
+    public static final float WITHDRAW_ON_DAMAGE_THRESHOLD = 0.4f;
     public static final int MAX_ROUNDS = 10;
 
     @Getter @Setter protected FactionAPI side1;
@@ -55,8 +55,8 @@ public class NexWarSimScript {
         this.loc = loc;
         this.side1 = side1;
         this.side2 = side2;
-        fsr1 = getFactionStrengthReport(side1, side2, loc);
-        fsr2 = getFactionStrengthReport(side2, side1, loc);
+        fsr1 = getFactionStrengthReport(side1, side2, loc, false);
+        fsr2 = getFactionStrengthReport(side2, side1, loc, false);
         this.target = target;
         this.random = random;
 
@@ -95,8 +95,8 @@ public class NexWarSimScript {
             //report(String.format("Engagement round %s", round));
             executeAutoresolveRound(round);
 
-            side1Retreat = fsr1.totalStrength/fsr1.startingStrength < WITHDRAW_ON_DAMAGE_THRESHOLD;
-            side2Retreat = fsr2.totalStrength/fsr2.startingStrength < WITHDRAW_ON_DAMAGE_THRESHOLD;
+            side1Retreat = fsr1.totalStrength <= 0 || fsr1.totalStrength/fsr1.startingStrength < WITHDRAW_ON_DAMAGE_THRESHOLD;
+            side2Retreat = fsr2.totalStrength <= 0 || fsr2.totalStrength/fsr2.startingStrength < WITHDRAW_ON_DAMAGE_THRESHOLD;
             if (side1Retreat || side2Retreat) break;
         }
 
@@ -333,6 +333,9 @@ public class NexWarSimScript {
         log.info(str);
     }
 
+    public static FactionStrengthReport getFactionStrengthReport(FactionAPI faction, FactionAPI enemy, LocationAPI loc) {
+        return getFactionStrengthReport(faction, enemy, loc, true);
+    }
 
     /**
      * Gets a list of all the military forces present in a system that will side with our faction against the enemy, and their total strength.
@@ -341,7 +344,7 @@ public class NexWarSimScript {
      * @param loc
      * @return
      */
-    public static FactionStrengthReport getFactionStrengthReport(FactionAPI faction, FactionAPI enemy, LocationAPI loc) {
+    public static FactionStrengthReport getFactionStrengthReport(FactionAPI faction, FactionAPI enemy, LocationAPI loc, boolean includeSFNotInLoc) {
         FactionStrengthReport report = new FactionStrengthReport(faction.getId());
 
         Set<CampaignFleetAPI> seenFleets = new HashSet<>();
@@ -352,9 +355,7 @@ public class NexWarSimScript {
             if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_TRADE_FLEET)) continue;
             report.addEntry(new FactionStrengthReportEntry(fleet));
             if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_SMUGGLER)) continue;
-
             if (fleet.isPlayerFleet()) continue;
-
 
             seenFleets.add(fleet);
         }
@@ -365,13 +366,16 @@ public class NexWarSimScript {
             OptionalFleetData data = route.getExtra();
             if (data == null) continue;
             if (route.getFactionId() == null) continue;
-            if (!faction.getId().equals(route.getFactionId())) continue;
+            FactionAPI routeFac = Global.getSector().getFaction(route.getFactionId());
+            if (!willFactionSideWithUs(routeFac, faction, enemy)) continue;
 
             if (data.strength != null) {
                 report.addEntry(new FactionStrengthReportEntry(route));
                 seenRoutes.add(route);
             }
         }
+
+        if (!includeSFNotInLoc) return report;
 
         for (IntelInfoPlugin iip : Global.getSector().getIntelManager().getIntel(SpecialForcesIntel.class)) {
             SpecialForcesIntel sf = (SpecialForcesIntel)iip;

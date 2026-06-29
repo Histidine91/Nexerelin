@@ -35,7 +35,7 @@ import kotlin.math.roundToInt
 class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: MarketAPI?, fp: Float, orgDur: Float) :
     OffensiveFleetIntel(attacker, from, target, fp, orgDur), FleetGroupIntel.FGIEventListener {
 
-    @Getter @Setter protected lateinit var fgi: BlockadeFGI
+    @Getter @Setter lateinit var fgi: BlockadeFGI
 
     override fun init() {
         log.info("Creating blockade intel")

@@ -241,15 +241,16 @@ open class NexRouteManager : RouteManager() {
     override fun reportBattleOccurred(fleet: CampaignFleetAPI?, primaryWinner: CampaignFleetAPI?, battle: BattleAPI?) {
         if (fleet == null) return
         var route = fleetToRoute[fleet] ?: return
+        var extra = route.extra ?: return
         if (route is NexRouteData && true.equals(route.dataStore.get(DATA_KEY_NO_PROCESS_DAMAGE))) return
 
         var baseFP = NexUtilsFleet.getStartingFP(fleet)
         if (baseFP <= 0) return
 
         var dam = Misc.getSnapshotFPLost(fleet)
-        if (route.extra.damage == null) route.extra.damage = 0f
-        route.extra.damage += dam/baseFP
-        route.extra.damage.coerceAtMost(1f)
+        if (extra.damage == null) route.extra.damage = 0f
+        extra.damage += dam/baseFP
+        extra.damage.coerceAtMost(1f)
         if (DEBUG_MODE) log.info(String.format("Fleet %s took damage %s vs. base fp %s (%s), now at %s damage",
             fleet.nameWithFaction, dam, baseFP, Math.round(100*dam/baseFP), String.format("%.1f", route.extra.damage * 100)))
     }
