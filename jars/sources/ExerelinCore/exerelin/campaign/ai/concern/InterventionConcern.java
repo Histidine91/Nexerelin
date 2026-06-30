@@ -57,11 +57,11 @@ public class InterventionConcern extends DiplomacyConcern {
         Alliance all = AllianceManager.getFactionAlliance(aiid);
         if (all != null) friendsToCheck.addAll(all.getMembersCopy());
 
-        // look at Cooperative allies too if Helps Allies
+        // look at Friendly factions too if Helps Allies
         if (DiplomacyTraits.hasTrait(aiid, DiplomacyTraits.TraitIds.HELPS_ALLIES)) {
             for (String factionId : SectorManager.getLiveFactionIdsCopy()) {
                 if (friendsToCheck.contains(factionId)) continue;
-                if (aif.getRelationshipLevel(factionId) == RepLevel.COOPERATIVE) {
+                if (aif.getRelationshipLevel(factionId).isAtWorst(RepLevel.FRIENDLY)) {
                     friendsToCheck.add(factionId);
                 }
             }

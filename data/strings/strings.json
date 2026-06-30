@@ -2790,6 +2790,7 @@
 		"statDispositionNegative":"low disposition",
 		"statDispositionPositive":"high disposition",
 		"statDomesticProduction":"in-faction production",
+		"statDominance":"Dominance",
 		"statExistingMarketShare":"existing market share",
 		"statFactionPower":"faction power",
 		"statFactionInfamy":"infamy",

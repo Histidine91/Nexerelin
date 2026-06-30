@@ -61,7 +61,7 @@
 			"classPath":"exerelin.campaign.ai.concern.ContainAggressionConcern",
 			"cooldownMult":0.5,
 			"antiRepetitionMult":0.5,
-			"tags":["military", "canInvade", "canSatBomb", "canDeclareWar"],
+			"tags":["military", "canInvade", "canSatBomb", "canDeclareWar", "canTransferFleetPoints"],
 			"module":MILITARY
 		},
 		

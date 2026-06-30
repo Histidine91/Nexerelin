@@ -20,6 +20,7 @@ public class ContainAggressionConcern extends DiplomacyConcern {
 
     public static final float MIN_INFAMY_TO_START = 100;
     public static final float MAX_INFAMY_TO_END = 75;
+    public static final float MIN_INFAMY_PRE_CHECK = 30;
 
     @Override
     public boolean generate() {
@@ -34,17 +35,23 @@ public class ContainAggressionConcern extends DiplomacyConcern {
 
             if (alreadyConcerned.contains(faction)) continue;
             float infamy = DiplomacyManager.getBadboy(faction);
-            if (infamy < MIN_INFAMY_TO_START) continue;
+            if (infamy < MIN_INFAMY_PRE_CHECK) continue;  // crude optimization
+            float dominance = 1 + DiplomacyManager.getDominanceFactor(factionId);
+            if (infamy * dominance < MIN_INFAMY_TO_START) continue;
 
-            float weight = infamy * 2;
+            float weight = infamy;
             weight *= getPriorityMult(us.getRelationshipLevel(faction));
 
             picker.add(faction, weight);
         }
         faction = picker.pick();
-        priority.modifyFlat("infamy", picker.getWeight(faction), StrategicAI.getString("statFactionInfamy", true));
+        if (faction == null) return false;
 
-        return faction != null;
+        priority.modifyFlat("infamy", DiplomacyManager.getBadboy(faction), StrategicAI.getString("statFactionInfamy", true));
+        priority.modifyMult("relationship", getPriorityMult(us.getRelationshipLevel(faction)), String.format(StrategicAI.getString("statFactionRelationship", true), faction.getDisplayName()));
+        priority.modifyMult("dominance", 1 + DiplomacyManager.getDominanceFactor(faction.getId()), StrategicAI.getString("statFactionDominance", true));
+
+        return true;
     }
 
     @Override
@@ -53,8 +60,9 @@ public class ContainAggressionConcern extends DiplomacyConcern {
             end();
             return;
         }
+        float dominance = 1 + DiplomacyManager.getDominanceFactor(faction.getId());
         float infamy = DiplomacyManager.getBadboy(faction);
-        if (infamy < MAX_INFAMY_TO_END) {
+        if (infamy * dominance < MAX_INFAMY_TO_END) {
             end();
             return;
         }
@@ -63,9 +71,9 @@ public class ContainAggressionConcern extends DiplomacyConcern {
             return;
         }
 
-        float weight = infamy * getPriorityMult(ai.getFaction().getRelationshipLevel(faction));
         priority.modifyFlat("infamy", infamy, StrategicAI.getString("statFactionInfamy", true));
-        priority.modifyFlat("power", weight, StrategicAI.getString("statFactionPower", true));
+        priority.modifyMult("relationship", getPriorityMult(ai.getFaction().getRelationshipLevel(faction)), String.format(StrategicAI.getString("statFactionRelationship", true), faction.getDisplayName()));
+        priority.modifyMult("dominance", dominance, StrategicAI.getString("statFactionDominance", true));
         super.update();
     }
 

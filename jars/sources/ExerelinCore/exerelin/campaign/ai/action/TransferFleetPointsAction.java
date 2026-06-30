@@ -6,6 +6,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.StrategicAI;
+import exerelin.campaign.ai.concern.InterventionConcern;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -135,8 +136,13 @@ public class TransferFleetPointsAction extends BaseStrategicAction implements St
     @Override
     public boolean canUse(StrategicConcern concern) {
         if (!concern.getDef().hasTag("canTransferFleetPoints")) return false;
+
         // only use this if we're not at war ourselves
-        return DiplomacyManager.getFactionsAtWarWithFaction(this.faction, false, false, true).isEmpty();
+        // may be too strict, seeing as we can outright join war even if already fighting elsewhere
+        // add a war weariness check?
+        boolean isAtWar = !DiplomacyManager.getFactionsAtWarWithFaction(this.faction, false, false, true).isEmpty();
+
+        return !isAtWar || (concern instanceof InterventionConcern);
     }
 
     @Override
