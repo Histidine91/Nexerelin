@@ -449,7 +449,8 @@ public class StrategicAI extends BaseIntelPlugin {
 		StrategicAI ai = getAI(factionId);
 		if (ai != null) {
 			ai.endImmediately();
-			Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().unset(MEMORY_KEY);
+			//Global.getSector().getFaction(factionId).getMemoryWithoutUpdate().unset(MEMORY_KEY);  // not needed anymore
+			getAIsMap().remove(factionId);
 			SAIUtils.reportAIRemoved(factionId, ai);
 		}
 	}
