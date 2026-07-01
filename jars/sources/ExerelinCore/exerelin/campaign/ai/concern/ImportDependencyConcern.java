@@ -177,7 +177,7 @@ public class ImportDependencyConcern extends BaseStrategicConcern implements Has
 
     @Override
     public String getName() {
-        return String.format("%s - %s", super.getName(), StringHelper.getCommodityName(commodityId));
+        return String.format("%s - %s", super.getName(), commodityId == null? "null" : StringHelper.getCommodityName(commodityId));
     }
 
     @Override

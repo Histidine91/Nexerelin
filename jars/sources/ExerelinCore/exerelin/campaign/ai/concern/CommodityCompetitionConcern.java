@@ -215,7 +215,7 @@ public class CommodityCompetitionConcern extends BaseStrategicConcern implements
 
     @Override
     public String getName() {
-        return String.format("%s - %s %s", super.getName(), faction.getDisplayName(), StringHelper.getCommodityName(commodityId));
+        return String.format("%s - %s %s", super.getName(), faction.getDisplayName(), commodityId == null? "null" : StringHelper.getCommodityName(commodityId));
     }
 
     @Override
