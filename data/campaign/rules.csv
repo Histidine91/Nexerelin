@@ -240,11 +240,13 @@ $nex_lastSelectedFleetType == CUSTOM",Nex_NGCCustomStartFleet,,,
 nex_NGCNormalStart,NewGameOptionSelected,$option == nex_NGCStartEnsign,"NGCAddCredits 20000
 NGCAddCharacterPoints 1
 NGCSetNumStartingOfficers 0
+NGCSetNumStartingOfficers 0 true
 FireBest NewGameBackgroundSelection",,,
 nex_NGCStartLieutenant,NewGameOptionSelected,$option == nex_NGCStartLieutenant,"NGCAddCredits 75000
 NGCAddCharacterPoints 1
 Nex_NGCAddLevel 3
 NGCSetNumStartingOfficers 1
+NGCSetNumStartingOfficers 0 true
 FireBest NewGameBackgroundSelection",,,
 nex_NGCStartCommander,NewGameOptionSelected,$option == nex_NGCStartCommander,"NGCAddCredits 250000
 NGCAddCharacterPoints 1
@@ -255,11 +257,13 @@ FireBest NewGameBackgroundSelection",,,
 nex_NGCStartAgent,NewGameOptionSelected,$option == nex_NGCStartAgent,"NGCAddCredits 20000
 NGCAddCharacterPoints 1
 NGCSetNumStartingOfficers 0
+NGCSetNumStartingOfficers 0 true
 FireBest NewGameBackgroundSelection",,,
 nex_NGCStartSpecialAgent,NewGameOptionSelected,$option == nex_NGCStartSpecialAgent,"NGCAddCredits 75000
 NGCAddCharacterPoints 1
 Nex_NGCAddLevel 3
 NGCSetNumStartingOfficers 0
+NGCSetNumStartingOfficers 0 true
 FireBest NewGameBackgroundSelection",,,
 nex_NGCStartCustomResources,NewGameOptionSelected,$option == nex_NGCCustomResourcesStart,"Nex_NGCStartResources save
 NGCAddCharacterPoints 1
@@ -3292,8 +3296,7 @@ FireBest DialogOptionSelected
 $player.ethosLiar++",,,
 ,,,,,,
 nex_remBrawl_scoutObjectInteraction,OpenInteractionDialog,"$nex_remBrawl_target score:1000 
-Call $nex_remBrawl_ref updateData
-","SetStoryOption nex_remBrawl_scoutSendTrue 0 nex_remBrawl_betray ui_char_spent_story_point ""Betrayed $personName""","You've located the station and are ready to transmit the data to your friends waiting to enter the system and slay the dragon. Your $shipOrFleet's sensors have been running continuously since you entered the system, tracking everything in sight. This may help them strike at the Remnants more effectively.
+Call $nex_remBrawl_ref updateData","SetStoryOption nex_remBrawl_scoutSendTrue 0 nex_remBrawl_betray ui_char_spent_story_point ""Betrayed $personName""","You've located the station and are ready to transmit the data to your friends waiting to enter the system and slay the dragon. Your $shipOrFleet's sensors have been running continuously since you entered the system, tracking everything in sight. This may help them strike at the Remnants more effectively.
 
 ...or you could tamper with the readings, and leave them no better off, or worse, than if you'd never sent them anything.
 
@@ -4060,11 +4063,9 @@ nex_remcb_showOptions:Ask about one of the other targets",
 ,,,,,,
 ,,,,,,
 nex_omegaWepBlurb,nex_omegaWep_blurb,$id == nex_dissonant score:10,,"""Blessings of omega. Available, quantity limited.""",,
-nex_omegaWepOfferOption,nex_omegaWep_option,,,,"nex_omegaWep_start:Inquire about the ""blessings of omega""
-",
+nex_omegaWepOfferOption,nex_omegaWep_option,,,,"nex_omegaWep_start:Inquire about the ""blessings of omega""",
 nex_omegaWepOfferOptionSNBlock,nex_omegaWep_option,Nex_MiscCMD isRemoteConnection,"SetEnabled nex_omegaWep_start false
-SetTooltip nex_omegaWep_start ""Cannot be done during a remote call for safety reasons.""",,"nex_omegaWep_start:Inquire about the ""blessings of omega""
-",
+SetTooltip nex_omegaWep_start ""Cannot be done during a remote call for safety reasons.""",,"nex_omegaWep_start:Inquire about the ""blessings of omega""",
 nex_omegaWepOfferText,DialogOptionSelected,"$id == nex_dissonant score:10
 $option == nex_omegaWep_start","$missionId = nex_omegaWep
 SetTextHighlights $nex_omegaWep_count","""Have $nex_omegaWep_count weapon(s), known to humans not. Now belong to $playerName, if credits have.""","nex_omegaWep_view:See what $personName and Omega have to offer
@@ -4171,8 +4172,7 @@ OR
 # build station mission,,,,,,
 nex_buildStationBlurb,nex_buildStation_blurb,,,"""We've got a major construction project out in the sticks that could use your assistance.""",,
 nex_buildStationBlurbRem,nex_buildStation_blurb,$id == nex_dissonant score:10,,"""Assistance desired, in resources procure for construction project.""",,
-nex_buildStationOfferOption,nex_buildStation_option,,,,"nex_buildStation_start:Ask about the construction project
-",
+nex_buildStationOfferOption,nex_buildStation_option,,,,nex_buildStation_start:Ask about the construction project,
 nex_buildStationOfferText,DialogOptionSelected,$option == nex_buildStation_start,"$missionId = nex_buildStation
 Highlight $nex_buildStation_system $nex_buildStation_dist $nex_buildStation_reward ""may not like""
 Call $nex_buildStation_ref showCostPanel
@@ -4492,8 +4492,7 @@ nex_PKHackStoryWhatDoGiveMidnight,DialogOptionSelected,$option == nex_pk_hackSto
    but if you were to choose this path
    you could just as easily leave it where it is now
 
-   (much amusement!)
-",pk_hackStoryGetData:Continue,
+   (much amusement!)",pk_hackStoryGetData:Continue,
 nex_pkCacheDefenderPreEmptAlly,TriggerAutomatedDefenses,"$core_pkCache score:100
 Nex_Alliance isPlayerAlliedWith hegemony
 !$pk_triedCommLink
@@ -4726,8 +4725,7 @@ ShowPersonVisual
 FireAll PopulateOptions",,,
 ,,,,,,
 nex_mercLeaving_initial,MarketPostDock,"$tradeMode != NONE
-Nex_MercHire checkLeave score:1000",,"As your $shipOrFleet docks at $entity.name, you receive a high-priority call from one of the mercenary officers in your employment.
-",nex_mercLeave_answer:Accept the comm request,
+Nex_MercHire checkLeave score:1000",,"As your $shipOrFleet docks at $entity.name, you receive a high-priority call from one of the mercenary officers in your employment.",nex_mercLeave_answer:Accept the comm request,
 nex_mercLeaving_openComm,DialogOptionSelected,$option == nex_mercLeave_answer,FireBest Nex_MercsLeavingGreeting,,,
 nex_mercLeaving_options,Nex_MercLeavingOptions,$nex_mercNetPaymentVal >= 0,"SetTextHighlightColors good bad good
 Highlight $nex_mercRetainerRefundStr $nex_mercValueDiffStr $nex_mercNetPaymentStr","The partial refund of your retainer fee is $nex_mercRetainerRefundStr. Under the terms of the contract, you are liable for a payment of $nex_mercValueDiffStr credits due to ship damage and/or losses. You will receive a net $nex_mercNetPaymentStr.","nex_mercLeaving_letGo:Wish them well in their future endeavors
