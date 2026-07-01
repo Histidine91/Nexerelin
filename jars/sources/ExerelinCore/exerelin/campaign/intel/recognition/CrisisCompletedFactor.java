@@ -20,11 +20,16 @@ public class CrisisCompletedFactor extends BaseRecognitionEventFactor {
 
 	@Override
 	public String getDesc(BaseEventIntel intel) {
-		return String.format(FactionRecognitionIntel.getString("factorTooltip_crisis"), Global.getSector().getFaction(factionId).getDisplayName());
+		return String.format(FactionRecognitionIntel.getString("factorDesc_crisis"), Global.getSector().getFaction(factionId).getDisplayName());
 	}
 
 	@Override
 	public TooltipMakerAPI.TooltipCreator getMainRowTooltip(BaseEventIntel intel) {
 		return NexUtilsGUI.createSimpleTextTooltip(FactionRecognitionIntel.getString("factorTooltip_crisis"), TOOLTIP_WIDTH);
+	}
+
+	@Override
+	public boolean isOneTime() {
+		return true;
 	}
 }

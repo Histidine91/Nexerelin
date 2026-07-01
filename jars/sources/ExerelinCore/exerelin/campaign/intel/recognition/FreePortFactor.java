@@ -8,7 +8,7 @@ import exerelin.utilities.NexUtilsGUI;
 
 public class FreePortFactor extends BasePerColonyRecognitionFactor {
 
-    public static final int RESPECT_MULT = -2;
+    public static final int RESPECT_MULT = -1;
 
     @Override
     int computeRespectPoints() {

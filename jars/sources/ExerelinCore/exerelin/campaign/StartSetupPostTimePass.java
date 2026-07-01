@@ -28,6 +28,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.customstart.Nex_SpacerObligation;
 import exerelin.campaign.intel.Nex_GalatianAcademyStipend;
 import exerelin.campaign.intel.agents.AgentIntel;
+import exerelin.campaign.intel.recognition.FactionRecognitionIntel;
 import exerelin.utilities.*;
 import exerelin.utilities.NexFactionConfig.StartFleetType;
 import exerelin.world.ExerelinCorvusLocations;
@@ -504,8 +505,13 @@ public class StartSetupPostTimePass {
 					if (plugin != null)
 						plugin.setPlayerPaidToUnlock(true);
 				}
-				if (homeMarket.isPlayerOwned())
+				if (homeMarket.isPlayerOwned()) {
 					homeMarket.setAdmin(Global.getSector().getPlayerPerson());
+					if (FactionRecognitionIntel.getInstance() != null) {
+						FactionRecognitionIntel.getInstance().reportColonySizeChanged(homeMarket, homeMarket.getSize() - 1);
+					}
+				}
+
 				generateContactAtStartingLocation(homeMarket);
 			}
 		}

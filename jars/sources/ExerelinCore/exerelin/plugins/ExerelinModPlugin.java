@@ -290,7 +290,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         addBarEvents();
 
-        FactionRecognitionIntel.createIfNeeded();
+        FactionRecognitionIntel.createIfNeeded(false);
 
         if (isNexDev) {
             //DebugIntel.createIntel();

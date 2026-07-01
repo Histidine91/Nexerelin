@@ -7,7 +7,7 @@ import com.fs.starfarer.api.util.Misc;
 
 public class CommissionFactor extends BaseRecognitionEventFactor {
 
-    public static final int OUTLAW_SCORE = -10;
+    public static final int OUTLAW_SCORE = -5;
 
     @Override
     public int getProgress(BaseEventIntel intel) {

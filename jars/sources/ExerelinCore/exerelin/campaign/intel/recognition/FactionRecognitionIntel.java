@@ -69,9 +69,16 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         return Global.getSector().getCharacterData().getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_RECOGNIZED);
     }
 
-    public static FactionRecognitionIntel createIfNeeded() {
-        if (getInstance() != null) return getInstance();
-        if (isRecognized()) return null;
+    public static FactionRecognitionIntel createIfNeeded(boolean force) {
+        FactionRecognitionIntel curr = getInstance();
+        if (!force) {
+            if (curr != null) return curr;
+            if (isRecognized()) return null;
+        } else {
+            if (curr != null) {
+                curr.endImmediately();
+            }
+        }
 
         FactionRecognitionIntel intel = new FactionRecognitionIntel();
         intel.setup();
@@ -79,6 +86,9 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         Global.getSector().getIntelManager().addIntel(intel, true);
         Global.getSector().addScript(intel);
         Global.getSector().getPersistentData().put(DATA_KEY, intel);
+        if (force) {
+            intel.activate();
+        }
         return intel;
     }
 
@@ -94,10 +104,12 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         return this;
     }
 
-    public void debug() {
+    public void debugRestart() {
         ended = false;
         ending = false;
+
         setProgress(500);
+        Global.getSector().getListenerManager().addListener(this);
     }
 
     protected void setup() {
@@ -121,7 +133,6 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
         // these one-off factors will be displayed permanently as guides
         RaiseRelationsFactor rr = new RaiseRelationsFactor(null);
-        rr.setInfoMode(true);
         addFactor(rr);
         ConquerMarketFactor conq = new ConquerMarketFactor();
         addFactor(conq);
@@ -264,9 +275,11 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
     @Override
     public void addFactor(EventFactor factor, InteractionDialogAPI dialog) {
-        if (!active) return;
-        if (suspended) {    // MODIFIED
-            if (factor.isOneTime() && factor instanceof BaseRecognitionEventFactor bref && !bref.ignoreSuspension()) {
+        if (factor.isOneTime()) {
+            if (!active && factor instanceof BaseRecognitionEventFactor bref && !bref.infoMode) {
+                return;
+            }
+            if (suspended && factor instanceof BaseRecognitionEventFactor bref && !bref.ignoreSuspension() && !bref.infoMode) {
                 return;
             }
         }
@@ -473,6 +486,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
     @Override
     protected void notifyEnding() {
         Global.getSector().getListenerManager().removeListener(this);
+        Global.getSector().getPersistentData().remove(DATA_KEY);
     }
 
     // =================================================================================================================
@@ -569,7 +583,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         }
 
 		Object param = getListInfoParam();
-        if (param == Stage.END) {
+        if (param instanceof EventStageData esd && esd.id == Stage.END) {
             info.addPara(StringHelper.getString("completed", true), initPad);
         }
 	}
@@ -663,7 +677,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 	@Override
 	protected String getName() {
 		String str = getString("intelTitle");
-        if (isEnding() || isEnded()) str += " — " + StringHelper.getString("completed");
+        if (isEnding() || isEnded()) str += " — " + StringHelper.getString("completed", true);
         return str;
 	}
 

@@ -16,7 +16,7 @@ public class CrisisChecker {
 	public static final int BASE_RECOGNITION = 400;
 
 	static {
-		addCrisisEntry(Factions.HEGEMONY, Factions.HEGEMONY, HegemonyHostileActivityFactor.DEFEATED_HEGEMONY, 1000, 0);
+		addCrisisEntry(Factions.HEGEMONY, Factions.HEGEMONY, "$discussedHegemonyDefeat", 1000, 0);
 		addCrisisEntry(Factions.LUDDIC_CHURCH, Factions.LUDDIC_CHURCH, LuddicChurchHostileActivityFactor.DEFEATED_LUDDIC_CHURCH_EXPEDITION, BASE_RECOGNITION, 0);
 		addCrisisEntry(Factions.LUDDIC_PATH, Factions.LUDDIC_CHURCH, LuddicPathHostileActivityFactor.DEFEATED_PATHER_EXPEDITION, BASE_RECOGNITION, 0);
 		addCrisisEntry(Factions.PIRATES, Factions.PIRATES, PirateHostileActivityFactor.DEFEATED_LARGE_PIRATE_RAID, BASE_RECOGNITION, 0);
