@@ -430,6 +430,7 @@ public class SpecialForcesIntel extends BaseIntelPlugin implements RouteFleetSpa
 				rebuildFleet();
 			}
 			SpecialForcesManager.getManager().incrementPoints(faction.getId(), -fp);
+			// maybe this should submit a proper requisition, but oh well
 			FleetPoolManager.getManager().modifyPool(faction.getId(), -fp);
 		}
 

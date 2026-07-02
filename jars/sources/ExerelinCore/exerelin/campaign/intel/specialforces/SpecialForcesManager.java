@@ -12,9 +12,8 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.econ.FleetPoolManager;
+import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexFactionConfig;
-import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsMarket;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -66,23 +65,6 @@ public class SpecialForcesManager implements EveryFrameScript {
 		this.activeIntel.removeAll(remove);
 	}
 	
-	// runcode Console.showMessage(exerelin.campaign.intel.specialforces.SpecialForcesManager.getManager().getFactionPoints().get("independent") + "");
-	// runcode Console.showMessage(exerelin.campaign.intel.specialforces.SpecialForcesManager.getPointsPerDay("independent") + "");
-	public static float getPointsPerDay(String factionId) {
-		List<MarketAPI> markets = NexUtilsFaction.getFactionMarkets(factionId);
-		float totalPoints = 0;
-		for (MarketAPI market : markets)
-		{
-			float points = FleetPoolManager.getMarketCommodityValueStatic(market);
-			points *= POINT_GENERATION_MULT;
-			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
-			points *= conf.specialForcesPointMult;
-			
-			totalPoints += points;
-		}
-		return totalPoints;
-	}
-	
 	/**
 	 * Increments SF points for each faction based on its markets, approximately once per ingame day.
 	 * @param days
@@ -92,23 +74,8 @@ public class SpecialForcesManager implements EveryFrameScript {
 		if (Global.getSector().isInNewGameAdvance()) return;
 		
 		Set<String> factions = SectorManager.getManager().getPresentFactionIdsCopy();
-		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
-		
-		for (MarketAPI market : markets)
-		{
-			String factionId = market.getFactionId();
-			if (!factions.contains(factionId)) continue;
-			
-			float points = FleetPoolManager.getMarketCommodityValueStatic(market);
-			points *= days * POINT_GENERATION_MULT * NexConfig.specialForcesPointMult;
-			NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
-			points *= conf.specialForcesPointMult;
-			
-			incrementPoints(factionId, points);
-		}
-		
-		// spawn fleets if needed
 		for (String factionId : factions) {
+			incrementPoints(factionId, FleetPoolManager.getManager().getPointsLastTick(Global.getSector().getFaction(factionId)));
 			float points = getPoints(factionId);
 			if (points >= POINTS_TO_SPAWN && countActiveFleetsForFaction(factionId) < getMaxFleets(factionId)) 
 			{
@@ -159,8 +126,8 @@ public class SpecialForcesManager implements EveryFrameScript {
 		float fp = POINTS_TO_SPAWN * MathUtils.getRandomNumberInRange(0.95f, 1.05f) * SIZE_MULT;
 		log.info("Generating special forces intel for faction " + factionId);
 		try {
-			SpecialForcesIntel intel = new SpecialForcesIntel(origin, faction, fp);
-			FleetPoolManager.getManager().modifyPool(factionId, -fp);
+			float draw = FleetPoolManager.getManager().drawFromPool(factionId, new ResourcePoolManager.RequisitionParams(fp));
+			SpecialForcesIntel intel = new SpecialForcesIntel(origin, faction, draw);
 			intel.init(null);
 			return intel;
 		} catch (Exception ex) {
