@@ -15,6 +15,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexUtilsMarket;
@@ -38,6 +39,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 	public static final float POOL_MAX_MULT = 365;	// 1 year of storage
 	public static final float COMMODITY_IMPORT_MULT = 0.75f;
 	public static final float COMMODITY_LOCAL_MULT = 8;
+	public static final float AOTD_TOT_DIVISOR = 7; // rough estimate of how much ToT inflates the reported economy (as of 2026-07-01 with version 1.0.10)
 
 	// map of commodity IDs to contribution strength
 	public static final Map<String, Float> COMMODITIES_SPACE = new LinkedHashMap<>();
@@ -204,6 +206,8 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 		HashMap<String, Float> pointsPerFaction = new HashMap<>();
 		SectorAPI sector = Global.getSector();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
+
+		float baseMult = getBaseGainMult();
 		
 		for (MarketAPI market : markets)
 		{
@@ -227,7 +231,8 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 				pointsPerFaction.put(factionId, 0f);
 			
 			float currPoints = pointsPerFaction.get(factionId);
-			float addedPoints = getPointsPerMarketPerTick(market) * mult;
+			float addedPoints = getPointsPerMarketPerTick(market) * mult * baseMult;
+			if (ExerelinModPlugin.HAVE_AOTD_TOT) addedPoints /= AOTD_TOT_DIVISOR;
 			market.getMemoryWithoutUpdate().set(getPointsLastTickMemoryKey(), addedPoints, 3);
 			
 			currPoints += addedPoints;
@@ -235,7 +240,6 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 		}
 		
 		int playerLevel = Global.getSector().getPlayerPerson().getStats().getLevel();
-		float baseMult = getBaseGainMult();
 		
 		// increment points for all live factions
 		List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
@@ -249,7 +253,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 				pointsPerFaction.put(factionId, 0f);
 
 			MutableStat incrementStat = new MutableStat(0);
-			incrementStat.modifyFlat("markets", pointsPerFaction.get(factionId) * baseMult, InvasionFleetManager.getPointSourceDesc("markets"));
+			incrementStat.modifyFlat("markets", pointsPerFaction.get(factionId), InvasionFleetManager.getPointSourceDesc("markets"));
 
 			if (!faction.isPlayerFaction() || NexConfig.followersInvasions) {
 				incrementStat.modifyFlat("base", NexConfig.baseInvasionPointsPerFaction * INVASION_POINT_CONVERSION_MULT  * baseMult, InvasionFleetManager.getPointSourceDesc("base"));
@@ -382,7 +386,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 		 */
 		public float amountMult = 1;
 		/**
-		 * If pool would drop below this amount, {@code overdraftMult} applies. Default 0.
+		 * If pool would drop below this amount, the remainder of the request is considered an overdraft and {@code overdraftMult} applies. Default 0.
 		 */
 		public float thresholdBeforeOverdraft;		
 		/**

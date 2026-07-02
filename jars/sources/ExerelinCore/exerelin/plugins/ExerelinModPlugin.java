@@ -113,6 +113,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     //public static final boolean HAVE_STELLAR_INDUSTRIALIST = Global.getSettings().getModManager().isModEnabled("stellar_industrialist");
     public static final boolean HAVE_VERSION_CHECKER = Global.getSettings().getModManager().isModEnabled("lw_version_checker");
     public static final boolean HAVE_VOK = Global.getSettings().getModManager().isModEnabled("aotd_vok");
+    public static final boolean HAVE_AOTD_TOT = Global.getSettings().getModManager().isModEnabled("aotd_theory_of_toolbox");
     public static final String MEM_KEY_VERSION = "$nex_lastSavedVersion";
 
     public static boolean isNexDev = false;

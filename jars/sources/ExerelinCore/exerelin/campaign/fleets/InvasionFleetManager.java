@@ -40,6 +40,7 @@ import exerelin.campaign.intel.raid.NexRaidIntel;
 import exerelin.campaign.intel.raid.RemnantRaidIntel;
 import exerelin.campaign.intel.rebellion.RebellionIntel;
 import exerelin.campaign.intel.satbomb.SatBombIntel;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 import exerelin.world.ExerelinNewGameSetup;
 import lombok.Getter;
@@ -1072,9 +1073,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			
 			if (!pointsPerFaction.containsKey(factionId))
 				pointsPerFaction.put(factionId, 0f);
-			
+
 			float currPoints = pointsPerFaction.get(factionId);
 			float addedPoints = getPointsPerMarketPerTick(market) * mult;
+			if (ExerelinModPlugin.HAVE_AOTD_TOT) addedPoints /= ResourcePoolManager.AOTD_TOT_DIVISOR;
 			
 			currPoints += addedPoints;
 			market.getMemoryWithoutUpdate().set(MEMORY_KEY_POINTS_LAST_TICK, addedPoints, 3);
