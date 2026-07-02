@@ -146,6 +146,11 @@ public class TransferFleetPointsAction extends BaseStrategicAction implements St
     }
 
     @Override
+    public String getName() {
+        return getStrategicActionName();
+    }
+
+    @Override
     public ActionStatus getStrategicActionStatus() {
         return ActionStatus.SUCCESS;
     }

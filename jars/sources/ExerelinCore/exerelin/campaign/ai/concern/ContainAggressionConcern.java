@@ -48,8 +48,8 @@ public class ContainAggressionConcern extends DiplomacyConcern {
         if (faction == null) return false;
 
         priority.modifyFlat("infamy", DiplomacyManager.getBadboy(faction), StrategicAI.getString("statFactionInfamy", true));
-        priority.modifyMult("relationship", getPriorityMult(us.getRelationshipLevel(faction)), String.format(StrategicAI.getString("statFactionRelationship", true), faction.getDisplayName()));
-        priority.modifyMult("dominance", 1 + DiplomacyManager.getDominanceFactor(faction.getId()), StrategicAI.getString("statFactionDominance", true));
+        priority.modifyMult("relationship", getPriorityMult(us.getRelationshipLevel(faction)), String.format(StrategicAI.getString("statRelationship", true), faction.getDisplayName()));
+        priority.modifyMult("dominance", 1 + DiplomacyManager.getDominanceFactor(faction.getId()), StrategicAI.getString("statDominance", true));
 
         return true;
     }
@@ -72,8 +72,8 @@ public class ContainAggressionConcern extends DiplomacyConcern {
         }
 
         priority.modifyFlat("infamy", infamy, StrategicAI.getString("statFactionInfamy", true));
-        priority.modifyMult("relationship", getPriorityMult(ai.getFaction().getRelationshipLevel(faction)), String.format(StrategicAI.getString("statFactionRelationship", true), faction.getDisplayName()));
-        priority.modifyMult("dominance", dominance, StrategicAI.getString("statFactionDominance", true));
+        priority.modifyMult("relationship", getPriorityMult(ai.getFaction().getRelationshipLevel(faction)), String.format(StrategicAI.getString("statRelationship", true), faction.getDisplayName()));
+        priority.modifyMult("dominance", dominance, StrategicAI.getString("statDominance", true));
         super.update();
     }
 
