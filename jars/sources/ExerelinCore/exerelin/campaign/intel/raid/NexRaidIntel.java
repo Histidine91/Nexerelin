@@ -16,14 +16,13 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-
-import exerelin.campaign.DiplomacyManager;import exerelin.campaign.econ.GroundPoolManager;
+import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.econ.GroundPoolManager;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -40,8 +39,8 @@ import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 public class NexRaidIntel extends OffensiveFleetIntel {
 	
@@ -120,13 +119,13 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
 		}
 	}
-	
+
 	@Override
-	public void notifyRaidEnded(RaidIntel raid, RaidStageStatus status) {
-		super.notifyRaidEnded(raid, status);
+	protected void notifyEnding() {
+		super.notifyEnding();
 		RaidCondition.removeRaidFromConditions(system, this);
 	}
-	
+
 	// don't display faction
 	@Override
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 

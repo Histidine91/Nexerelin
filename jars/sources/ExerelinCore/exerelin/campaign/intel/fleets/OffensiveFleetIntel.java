@@ -170,7 +170,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	}
 
 	/**
-	 * If true, call raid listeners' {@code reportRaidEnded} on outcome being set in {@code reportOutcome}. If not, wait for {@code notifyRaidEnded}.
+	 * If true, call raid listeners' {@code reportRaidEnded} on outcome being set in {@code reportOutcome}. If not, wait for {@code notifyEnding}.
 	 * @return
 	 */
 	public boolean shouldCallListenerOnOutcome() { return true; }
@@ -301,17 +301,16 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	
 	@Override
 	public void notifyRaidEnded(RaidIntel raid, RaidStageStatus status) {
-		if (ExerelinModPlugin.isNexDev) {
-			Global.getSector().getCampaignUI().addMessage("notifyRaidEnded() called for " + getName());
-		}
-		if (outcome == null) {
-			if (status == RaidStageStatus.SUCCESS)
-				outcome = OffensiveOutcome.SUCCESS;
-			else
-				outcome = OffensiveOutcome.FAIL;
-		}
-		
-		if (outcome.isFailed())
+	}
+
+	@Override
+	protected void notifyEnding() {
+		refundInvasionAndFleetPoints();
+		refundPlayerFeeIfNeeded();
+		setForceSpawnInSystem(false, -1);
+		super.notifyEnding();
+
+		if (outcome != null && outcome.isFailed())
 		{
 			float impact = fp/2;
 			if (this.getCurrentStage() >= 2) impact *= 2;
@@ -320,13 +319,6 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 		applyRelationshipEffect();
 		reportRaidIfNeeded();
-	}
-
-	@Override
-	protected void notifyEnding() {
-		refundInvasionAndFleetPoints();
-		refundPlayerFeeIfNeeded();
-		setForceSpawnInSystem(false, -1);
 	}
 
 	public void forceSpawnFleets() {
@@ -570,6 +562,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 	public void reportOutcome(OffensiveOutcome outcome) {
 		this.outcome = outcome;
+		applyRelationshipEffect();
 		if (this.shouldCallListenerOnOutcome()) {
 			reportRaidIfNeeded();
 		}

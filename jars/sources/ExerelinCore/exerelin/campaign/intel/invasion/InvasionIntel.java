@@ -672,6 +672,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 
 	@Override
 	protected void applyRelationshipEffect() {
+		if (repEffect != null) return;
 		float delta;
 		RepLevel limit = RepLevel.HOSTILE;
 		if (outcome == OffensiveOutcome.SUCCESS) {
