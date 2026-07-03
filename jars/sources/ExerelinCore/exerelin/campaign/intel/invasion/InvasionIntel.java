@@ -295,6 +295,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		}
 		
 		GroundBattleIntel newBattle = new GroundBattleIntel(target, this.faction, target.getFaction());
+		newBattle.setInvasionIntel(this);
 		newBattle.init();
 		newBattle.start();
 		groundBattle = newBattle;

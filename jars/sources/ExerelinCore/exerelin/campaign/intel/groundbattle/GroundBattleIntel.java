@@ -1050,6 +1050,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		
 		if (outcome == BattleOutcome.ATTACKER_VICTORY) {
 			FactionAPI newOwner = attacker.getFaction();
+			if (newOwner.isPlayerFaction()) {
+				FactionAPI cf = Misc.getCommissionFaction();
+				if (cf != null) newOwner = cf;
+			}
 			if (this.playerInitiated && wasPlayerMarket()) {
 				newOwner = Global.getSector().getPlayerFaction();
 			}
@@ -1353,7 +1357,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	 * transferring it to commissioning faction.
 	 */
 	public void handleAndradaOption() {
-		if (attacker.getFaction().isPlayerFaction()) return;
+		//if (attacker.getFaction().isPlayerFaction()) return;  // what was this for?
 		SectorManager.transferMarket(market, Global.getSector().getPlayerFaction(), 
 				market.getFaction(), true, false, new ArrayList<String>(), 0, true);
 		
@@ -2353,7 +2357,8 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			}
 		}
 		FactionAPI commission = Misc.getCommissionFaction();
-		if (playerInitiated && outcome == BattleOutcome.ATTACKER_VICTORY && commission != null) 
+		boolean startedByPlayer = playerInitiated || (invasionIntel != null && invasionIntel.isPlayerSpawned());
+		if (startedByPlayer && outcome == BattleOutcome.ATTACKER_VICTORY && commission != null)
 		{
 			// Andrada and governorship buttons here
 			if (playerData.andradaRepChange != null) {
