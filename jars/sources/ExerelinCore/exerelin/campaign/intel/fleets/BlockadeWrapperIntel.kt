@@ -30,7 +30,8 @@ import kotlin.math.roundToInt
 
 /**
  * Wrapper for a base game {@code BlockadeFGI}, for places where an {@code OffensiveFleetIntel} is expected.
- * Should not be itself added to intel manager or the sector, only the FGI gets added.
+ * Should not be itself added to intel manager, only the FGI gets added.
+ * (Still added as a sector every frame script to take care of things like relationship check)
  */
 class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: MarketAPI?, fp: Float, orgDur: Float) :
     OffensiveFleetIntel(attacker, from, target, fp, orgDur), FleetGroupIntel.FGIEventListener {

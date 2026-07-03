@@ -863,6 +863,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		
 		CampaignFleetAPI fleet = NexUtilsFleet.customCreateFleet(Global.getSector().getFaction(factionId), fleetParams);
 		if (fleet == null) {
+			// failed to spawn, refund pool
 			if (!data.indie) FleetPoolManager.getManager().modifyPool(factionId, fp);
 			return null;
 		}

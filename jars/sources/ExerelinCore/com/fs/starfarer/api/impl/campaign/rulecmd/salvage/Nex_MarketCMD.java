@@ -806,7 +806,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static GroundBattleIntel prepIntel(MarketAPI market) {
 		FactionAPI attacker = PlayerFactionStore.getPlayerFaction();
 		// set attacking faction to player faction if retaking own planet
-		// a bit undesirable since we lose the commissioning faction's ground battle modifiers
+		// a bit undesirable since we lose the commissioning faction's ground battle modifiers, do it at ground battle end instead
 		//if (NexUtilsMarket.wasOriginalOwner(market, Factions.PLAYER)) attacker = Global.getSector().getPlayerFaction();
 		GroundBattleIntel intel = new GroundBattleIntel(market, attacker, market.getFaction());
 		intel.setPlayerInitiated(true);

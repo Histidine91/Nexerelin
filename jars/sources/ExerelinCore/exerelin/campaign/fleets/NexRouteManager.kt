@@ -50,7 +50,7 @@ open class NexRouteManager : RouteManager() {
             }
         }
 
-        @JvmStatic fun replaceExistingRouteManager() {
+        @JvmStatic @Deprecated("No longer used, replacement of existing route manager is done via xalias") fun replaceExistingRouteManager() {
             val nexMan = NexRouteManager()
             val existing = getInstance()
             if (existing is NexRouteManager) return

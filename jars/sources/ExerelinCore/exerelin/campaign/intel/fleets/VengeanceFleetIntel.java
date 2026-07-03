@@ -741,6 +741,7 @@ public class VengeanceFleetIntel extends BaseIntelPlugin {
 		fleet = NexUtilsFleet.customCreateFleet(getFaction(), params);
 
 		if (fleet == null) {
+			// failed to spawn, refund pool
 			FleetPoolManager.getManager().modifyPool(factionId, availableFromPool);
 			return null;
 		}

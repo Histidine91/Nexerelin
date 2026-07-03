@@ -1,13 +1,12 @@
-TO DO FOR STARSECTOR 0.97
-
 Files to check on Starsector update, because they significantly modify vanilla code that could change under us.
 Partial list.
+    protip: keep a copy of the API for each version and diff it against the previous version?
 
 Most likely to have changed:
 - NexCoreLifecyclePlugin
 
 Others:
-- ExerelinNewGameSetup
+- ExerelinNewGameSetup (generateStarSystems in particular?)
     - VanillaSystemsGenerator
 - rules.csv "vanilla overrides"
 - NexFleetInteractionDialogPluginImpl
@@ -22,6 +21,11 @@ Others:
 - Submarket plugins
 - Colony manager: getFreePortGrowthBonus()
 - Objective entity plugins
+- NexRouteManager
+
+Which of these could be replaced by PatchLib?
+- Wait for @Redirect annotation
+- Submarket plugins?
 
 Honestly, do I care?
 - Everything that uses Industries.TAG_UNRAIDABLE
