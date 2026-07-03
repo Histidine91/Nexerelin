@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -336,7 +335,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		float delta;
 		RepLevel limit = RepLevel.HOSTILE;
 		if (outcome == OffensiveOutcome.SUCCESS) {
-			delta = -CoreReputationPlugin.RepRewards.MEDIUM;
+			delta = -target.getSize()/2;
 		}
 		else return;
 

@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteLocationCalculator;
@@ -241,13 +240,13 @@ public class SatBombIntel extends OffensiveFleetIntel {
 	protected void applyRelationshipEffect() {
 		float delta;
 		RepLevel limit = RepLevel.VENGEFUL;
-		RepLevel atBest = RepLevel.HOSTILE;
+		RepLevel atBest = RepLevel.HOSTILE; // I mean, they were already hostile for this to happen, still
 		if (outcome == OffensiveOutcome.SUCCESS) {
-			delta = -CoreReputationPlugin.RepRewards.EXTREME;
+			delta = -target.getSize()*2 - 10;
 			atBest = RepLevel.VENGEFUL;
 		}
 		else if (outcome == OffensiveOutcome.FAIL || outcome == OffensiveOutcome.TASK_FORCE_DEFEATED) {
-			delta = -CoreReputationPlugin.RepRewards.HIGH;
+			delta = -target.getSize() - 5;
 		}
 		else return;
 

@@ -676,11 +676,11 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		float delta;
 		RepLevel limit = RepLevel.HOSTILE;
 		if (outcome == OffensiveOutcome.SUCCESS) {
-			delta = -CoreReputationPlugin.RepRewards.HIGH;
+			delta = -target.getSize();
 			limit = RepLevel.VENGEFUL;
 		}
 		else if (outcome == OffensiveOutcome.FAIL || outcome == OffensiveOutcome.TASK_FORCE_DEFEATED) {
-			delta = -CoreReputationPlugin.RepRewards.MEDIUM;
+			delta = -target.getSize()/2;
 		}
 		else return;
 
