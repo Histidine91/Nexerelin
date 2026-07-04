@@ -22,9 +22,7 @@ import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 public class InterventionConcern extends DiplomacyConcern {
 
@@ -113,6 +111,11 @@ public class InterventionConcern extends DiplomacyConcern {
         }
 
         super.update();
+    }
+
+    @Override
+    public List<FactionAPI> getFactions() {
+        return new ArrayList<>(Arrays.asList(new FactionAPI[] {getFaction(), friendFaction}));
     }
 
     public LabelAPI createTooltipDesc(TooltipMakerAPI tooltip, CustomPanelAPI holder, float pad) {

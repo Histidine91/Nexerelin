@@ -73,6 +73,9 @@ public class TransferFleetPointsAction extends BaseStrategicAction implements St
     }
 
     protected FactionAPI pickRecipientFaction() {
+        if (concern instanceof InterventionConcern ic) {
+            return ic.getFriendFaction();
+        }
         if (factionFieldIsEnemy()) {
             List<FactionAPI> enemiesOfMyEnemy = NexUtilsFaction.factionIdsToFactions(DiplomacyManager.getFactionsAtWarWithFaction(this.faction, false, false, false));
             WeightedRandomPicker<FactionAPI> picker = new WeightedRandomPicker<>();
