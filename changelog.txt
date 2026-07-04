@@ -1,3 +1,65 @@
+Version 0.12.1x
+
+### Gameplay ###
+* Broadly replace invasion point system with a new 'fleet pool' (and 'ground pool') system
+    * Fleet pool is spent on largely the same things as before, a few more Nex things that create fleets, and vanilla patrols
+	* A high fleet pool will increase the fleet size multiplier of the faction's markets somewhat, negative values will greatly reduce it (down to 0.5 times)
+    * Fleet pool accumulation isn't penalized from being at peace or having multiple ongoing events in the sector
+    * Invasion settings in files or the mod settings menu should generally still work as expected
+	* Invasion grace period default 90 -> 180 to account for differences in when points start accumulating
+* Autoresolved combat for faraway invasions/raids will damage participants
+* Strategic AI enhancements
+    * Try to increase accessibility if needed for exports, and transfer fleet points to other factions if they're fighting people we don't like
+    * When cancelling a build action, don't abort any actually ongoing constructions
+	* 'Make peace' action increases in priority based on current war weariness
+* Add Siege Bombardment Mode fleet ability
+    * While active, the nearest ground battle where player is an attacker will not end even if no attacker ground units remain
+	* Uses Fire Support ability every time it comes off cooldown
+	* This is intended to automate the 'pre-bombardment' tactic for players who use it
+* Reduce swinginess of peace/war states
+    * Ceasefire time 150 -> 240
+    * Recent war (no ceasefire) time 120 -> 180
+    * Diplomacy events that lead to war try to push relations below the -50 threshold
+* Fleet requests can have the fleet faction set
+* Override vanilla's ship quality manager
+    * Now always uses highest quality available regardless of output
+* NPC offensive fleet actions can lower relations between the involved factions
+* Add a certain major event for colonies (currently cosmetic, will be used with future diplomacy features)
+
+### UI ###
+* Add parameter autocompletes for most console commands
+* Breakdown of modifiers to maximum faction relations can be seen in a few places
+* `keepSModsForRecoveredShips` setting now accessible in LunaLib ingame menu
+
+### Fixes ###
+* Fix some bugs when custom starts inappropriately remember last selected background
+* Various fixes to blockades, including a huge bug in size calculation
+* Fix strategic AI not being reset on faction elimination -> respawn
+* Fix skill points from starting level not being removed on returning to previous screen
+* Fix starting operative count not being properly reset on Ensign/Lieutenant starts
+* Fix war weariness not incrementing from failed invasions/raids/etc. as intended
+* Fix fleet requests being able to circumvent markets going to commissioner (now can/have to use Andrada option)
+* Showdown mission handles sequence break if player skips spawning the straggler
+* Ensure transponder is not required to dock at player-ruled markets, including outposts
+* Add further safety to player special task group recovery cost
+* Fix some vanilla dialog text for explored ruins on gas giants potentially not being used
+
+### Modding ###
+* Add a VassalManager class
+    * Vassals are forced to ally with their overlord 
+    * ...but aren't counted as alliance members for a few things (in particular voting rights and relationship checks for factions quitting alliances)
+    * ...and won't independently try to start wars
+    * Factions will not currently enter/leave vassal state unless scripted to
+* Fix covert actions not being reported to manager and listeners
+* Add an alliance event listener
+* Add a scroller to create ground unit buttons
+* Add some support for ground units having an equipment commodity but no personnel commodity
+
+### Misc ###
+* Remove some unwanted logging messages
+* Lower volume of several sounds
+
+
 Version 0.12.1e
 
 * Remnant raids will stop after completing Remnant quest chain (can ask contact to turn them back on/off)
