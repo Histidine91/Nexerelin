@@ -67,7 +67,7 @@ public class Nex_SpecialForcesConfig extends BaseCommandPlugin {
 		CampaignFleetAPI fleet = token instanceof CampaignFleetAPI ? (CampaignFleetAPI)token : null;
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 
-		SpecialForcesIntel sf = SpecialForcesIntel.getIntelFromMemory(fleet);
+		SpecialForcesIntel sf = fleet != null ? SpecialForcesIntel.getIntelFromMemory(fleet) : null;
 		
 		String arg = params.get(0).getString(memoryMap);
 		switch (arg) {
