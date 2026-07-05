@@ -130,6 +130,7 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
 
     override fun forceFail(withUpdate: Boolean) {
         super.forceFail(withUpdate)
+        fgi.isFailedButNotDefeated = true
         fgi?.abort()
     }
 
