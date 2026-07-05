@@ -2,6 +2,7 @@ package exerelin.campaign.submarkets;
 
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -37,6 +38,10 @@ public class Nex_StoragePlugin extends StoragePlugin {
 		if (isFree()) return false;
 		if (market.getFaction().isPlayerFaction()) return false;
 		if (action == action.PLAYER_BUY) return false;
+		if (action == TransferAction.PLAYER_SELL && Misc.isAutomated(member)) {
+			if (market.isPlayerOwned() || (market.getFaction() != null && market.getFaction().isNeutralFaction())) return false;
+			return market.getFaction().getIllegalCommodities().contains(Commodities.AI_CORES);  // not submarket faction since that's player, which does ban cores
+		}
 		return super.isIllegalOnSubmarket(member, action);
 	}
 	
