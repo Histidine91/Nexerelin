@@ -155,7 +155,7 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
             if (NexRouteManager.DEBUG_MODE) Global.getLogger(this.javaClass).info(
                 String.format(
                     "Blockade wrapper %s returning %.1f of %.1f points to fleet pool",
-                    this.name, fp * refundMult, fleetPoolRequest?.amountDrawn ?: 0
+                    this.name, fp * refundMult, fleetPoolRequest?.amountDrawn ?: 0f
                 )
             )
         } catch (npe: NullPointerException) {
