@@ -314,7 +314,7 @@ public class ProcureEquipment extends CovertActionIntel implements HasDestinatio
 	public void addCurrentActionPara(TooltipMakerAPI info, float pad) {
 		String action = getActionString("intelStatus_procureEquipment", false);
 		String destName = destination.getName();
-		String cost = getCost() + "";
+		String cost = Misc.getDGSCredits(getCost());
 		action = StringHelper.substituteToken(action, "$price", cost);
 		action = StringHelper.substituteToken(action, "$market", destName);
 		
