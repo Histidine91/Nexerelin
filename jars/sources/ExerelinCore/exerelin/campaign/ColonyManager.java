@@ -370,7 +370,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 
 	public void applyFleetPoolModifiers(MarketAPI market) {
-		if (!FleetPoolManager.USE_POOL) {
+		boolean use = FleetPoolManager.USE_POOL && SectorManager.isFactionAlive(market.getFactionId());
+
+		if (!use) {
 			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).unmodify(FleetPoolManager.MARKET_STAT_FLEET_POOL);
 			return;
 		}
@@ -379,7 +381,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		float max = FleetPoolManager.getManager().getMaxPool(market.getFactionId());
 
 		if (pool > max/2) {
-			float bonusLevel = NexUtilsMath.lerp(1, FleetPoolManager.MARKET_FLEET_SIZE_MAX_BONUS, pool*2/max-1);
+			float alpha = (pool*2/max)-1;
+			if (alpha > 1) alpha = 1;
+			float bonusLevel = NexUtilsMath.lerp(1, FleetPoolManager.MARKET_FLEET_SIZE_MAX_BONUS, alpha);
 			market.getStats().getDynamic().getMod(Stats.COMBAT_FLEET_SIZE_MULT).modifyMult(FleetPoolManager.MARKET_STAT_FLEET_POOL, bonusLevel, StringHelper.getString("nex_fleetPool", "fleetSizeMultStat_high"));
 		}
 		else if (pool < 0) {
