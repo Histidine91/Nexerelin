@@ -353,9 +353,9 @@ public class NexWarSimScript {
             if (!willFactionSideWithUs(fleet.getFaction(), faction, enemy)) continue;
             if (fleet.isStationMode()) continue;
             if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_TRADE_FLEET)) continue;
-            report.addEntry(new FactionStrengthReportEntry(fleet));
             if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_SMUGGLER)) continue;
             if (fleet.isPlayerFleet()) continue;
+            report.addEntry(new FactionStrengthReportEntry(fleet));
 
             seenFleets.add(fleet);
         }
