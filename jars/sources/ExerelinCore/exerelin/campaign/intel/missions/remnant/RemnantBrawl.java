@@ -255,13 +255,19 @@ public class RemnantBrawl extends HubMissionWithBarEvent implements FleetEventLi
 			if (!system.hasTag(Tags.THEME_REMNANT)) continue;
 			boolean highPower = false;
 			
-			for (CampaignFleetAPI fleet : system.getFleets()) 
+			for (CampaignFleetAPI fleet : system.getFleets())
 			{
-				if (!Factions.REMNANTS.equals(fleet.getFaction().getId())) 
+				if (!Factions.REMNANTS.equals(fleet.getFaction().getId()))
 					continue;
 
 				if (!fleet.isStationMode()) continue;
-				if (fleet.getMemoryWithoutUpdate().getBoolean("$ArtilleryStation")) continue;
+				// need to filter out IndEvo artillery stations
+				// a big problem here is that Industrial.Evolution stations are entities containing a fleet (like market stations) but Remnant station fleets are just standalone
+				// and worse, for some reason the fleet in this iterator seems to have different tags (none) and memory keys from the one the player actually encounters and can do a devmode memory dump on??
+				// so instead I have to use this crude hack to tell
+				// ts pmo
+				String fleetType = NexUtilsFleet.getFleetType(fleet);
+				if (FleetTypes.PATROL_SMALL.equals(fleetType) || FleetTypes.PATROL_LARGE.equals(fleetType)) continue;
 
 				//log.info(String.format("Checking nexus in %s, highPower %s", system.getNameWithLowercaseTypeShort(), highPower));
 				float dist = MathUtils.getDistance(fleet.getLocation(), center);
