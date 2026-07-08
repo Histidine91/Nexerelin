@@ -43,6 +43,8 @@ public class RaidAction extends OffensiveFleetAction {
         if (!concern.getDef().hasTag("canRaid") && !concern.getDef().hasTag(SAIConstants.TAG_WANT_CAUSE_HARM))
             return false;
 
+        if (!super.canUse(concern)) return false;
+
         float pointReq = NexConfig.pointsRequiredForInvasionFleet;
         float pointHave = InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId());
 
@@ -57,6 +59,6 @@ public class RaidAction extends OffensiveFleetAction {
         if (concern.getFaction() == Global.getSector().getFaction("nex_derelict")) return false;
         if (concern.getMarket() != null && concern.getMarket().getFaction().getId().equals("nex_derelict")) return false;
 
-        return super.canUse(concern);
+        return true;
     }
 }

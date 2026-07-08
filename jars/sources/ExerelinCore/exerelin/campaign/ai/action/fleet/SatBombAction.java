@@ -20,6 +20,8 @@ public class SatBombAction extends OffensiveFleetAction {
 
         if (!InvasionFleetManager.canSatBomb(ai.getFaction(), faction)) return false;
 
+        if (!super.canUse(concern)) return false;
+
         float pointReq = NexConfig.pointsRequiredForInvasionFleet;
         float pointHave = InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId());
 
@@ -31,7 +33,7 @@ public class SatBombAction extends OffensiveFleetAction {
             return false;
         }
 
-        return super.canUse(concern);
+        return true;
     }
 
     @Override

@@ -117,6 +117,8 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
 						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
 		}
+
+		applyOffensiveCooldown();
 	}
 
 	@Override

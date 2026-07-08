@@ -38,10 +38,22 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("agentEventFilterLevel", "int", NexConfig.agentEventFilterLevel, 0, 2);
         addSetting("ngcShowIntro", "boolean", false);
 
-        addHeader("invasions", tabFleets);
+        addHeader("hostileFleet", tabFleets);
+        addText("invPointInfo", tabFleets);
         addSetting("enableHostileFleetEvents", "boolean", tabFleets, NexConfig.enableHostileFleetEvents);
+        addSetting("pointsRequiredForInvasionFleet", "int", tabFleets, Math.round(NexConfig.pointsRequiredForInvasionFleet), 2000, 100000);
+        addSetting("baseInvasionPointsPerFaction", "int", tabFleets, Math.round(NexConfig.baseInvasionPointsPerFaction), 0, 1000);
+        addSetting("invasionPointsPerPlayerLevel", "int", tabFleets, Math.round(NexConfig.invasionPointsPerPlayerLevel), 0, 100);
+        addSetting("invasionPointEconomyMult", "float", tabFleets, NexConfig.invasionPointEconomyMult, 0, 10);
+        addSetting("invasionFleetSizeMult", "float", tabFleets, NexConfig.invasionFleetSizeMult, 0.1, 10);
+        addSetting("invasionGracePeriod", "int", tabFleets, Math.round(NexConfig.invasionGracePeriod), 0, 365*5);
+        addSetting("invasionGlobalCooldown", "int", tabFleets, Math.round(NexConfig.invasionGlobalCooldown), 0, 90);
+        addSetting("fleetRequestCostPerFP", "int", tabFleets, Math.round(NexConfig.fleetRequestCostPerFP), 1, 10000);
+        addSetting("creditLossOnColonyLossMult", "float", tabFleets, NexConfig.creditLossOnColonyLossMult, 0, 1);
+        addSetting("remnantRaidSizeMult", "float", tabFleets, Global.getSettings().getFloat("nex_remnantRaidSizeMult"), 0.25f, 5);
+
+        addHeader("invasions", tabFleets);
         addSetting("enableInvasions", "boolean", tabFleets, NexConfig.enableInvasions);
-        addSetting("legacyInvasions", "boolean", tabFleets, NexConfig.legacyInvasions);
         addSetting("invasionsOnlyAfterPlayerColony", "boolean", tabFleets, NexConfig.invasionsOnlyAfterPlayerColony);
         addSetting("allowInvadeStoryCritical", "boolean", tabFleets, NexConfig.allowInvadeStoryCritical);
         addSetting("allowInvadeStartingMarkets", "boolean", tabFleets, NexConfig.allowInvadeStartingMarkets);
@@ -49,17 +61,8 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("allowPirateInvasions", "boolean", tabFleets, NexConfig.allowPirateInvasions);
         addSetting("retakePirateMarkets", "boolean", tabFleets, NexConfig.retakePirateMarkets);
 
-        addSetting("invasionGracePeriod", "int", tabFleets, Math.round(NexConfig.invasionGracePeriod), 0, 365*5);
-        addSetting("pointsRequiredForInvasionFleet", "int", tabFleets, Math.round(NexConfig.pointsRequiredForInvasionFleet), 2000, 100000);
-        addSetting("baseInvasionPointsPerFaction", "int", tabFleets, Math.round(NexConfig.baseInvasionPointsPerFaction), 0, 1000);
-        addSetting("invasionPointsPerPlayerLevel", "int", tabFleets, Math.round(NexConfig.invasionPointsPerPlayerLevel), 0, 100);
-        addSetting("invasionPointEconomyMult", "float", tabFleets, NexConfig.invasionPointEconomyMult, 0, 10);
-        addSetting("invasionFleetSizeMult", "float", tabFleets, NexConfig.invasionFleetSizeMult, 0.1, 10);
-        addSetting("fleetRequestCostPerFP", "int", tabFleets, Math.round(NexConfig.fleetRequestCostPerFP), 1, 10000);
-        addSetting("creditLossOnColonyLossMult", "float", tabFleets, NexConfig.creditLossOnColonyLossMult, 0, 1);
-        addSetting("remnantRaidSizeMult", "float", tabFleets, Global.getSettings().getFloat("nex_remnantRaidSizeMult"), 0.25f, 5);
-
         addHeader("groundBattles", tabFleets);
+        addSetting("legacyInvasions", "boolean", tabFleets, NexConfig.legacyInvasions);
         addSetting("groundBattleDamageMult", "float", tabFleets, NexConfig.groundBattleDamageMult, 0, 5);
         addSetting("groundBattleGarrisonSizeMult", "float", tabFleets, NexConfig.groundBattleGarrisonSizeMult, 0.25f, 4);
         addSetting("groundBattleGarrisonXP", "float", tabFleets, NexConfig.groundBattleGarrisonXP, 0, 1);
@@ -184,6 +187,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.allowPirateInvasions = (boolean)loadSetting("allowPirateInvasions", "boolean");
         NexConfig.retakePirateMarkets = (boolean)loadSetting("retakePirateMarkets", "boolean");
         NexConfig.invasionGracePeriod = (int)loadSetting("invasionGracePeriod", "int");
+        NexConfig.invasionGlobalCooldown = (int)loadSetting("invasionGlobalCooldown", "int");
         NexConfig.pointsRequiredForInvasionFleet = (int)loadSetting("pointsRequiredForInvasionFleet", "int");
         NexConfig.baseInvasionPointsPerFaction = (int)loadSetting("baseInvasionPointsPerFaction", "int");
         NexConfig.invasionPointsPerPlayerLevel = (int)loadSetting("invasionPointsPerPlayerLevel", "int");
@@ -363,6 +367,14 @@ public class LunaConfigHelper implements LunaSettingsListener {
     public static void addHeader(String id, String title, String tab) {
         if (tab == null) tab = "";
         LunaSettings.SettingsCreator.addHeader(ExerelinConstants.MOD_ID, id, title, tab);
+    }
+
+    public static void addText(String id, String tab) {
+        addText(id, getString("text_" + id), tab);
+    }
+
+    public static void addText(String id, String text, String tab) {
+        LunaSettings.SettingsCreator.addText(ExerelinConstants.MOD_ID, id, text, tab);
     }
 
     public static Double objectToDouble(Object obj) {

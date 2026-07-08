@@ -53,6 +53,7 @@ import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_
 public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDelegate, StrategicActionDelegate {
 	
 	public static final String MEM_KEY_ACTION_DONE = "$nex_raidActionDone";
+	public static final String MEM_KEY_OFFENSIVE_COOLDOWN = "$nex_offensiveFleetCooldown";
 	public static final Object ENTERED_SYSTEM_UPDATE = new Object();
 	public static final Object OUTCOME_UPDATE = new Object();
 	public static final Object BUTTON_AUTO_DEF_FLEET = new Object();
@@ -330,6 +331,15 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public void setForceSpawnInSystem(boolean force, float duration) {
 		if (NexRouteManager.USE_FORCE_SPAWN)
 			Misc.setFlagWithReason(target.getContainingLocation().getMemoryWithoutUpdate(), NexRouteManager.MEM_KEY_LOCATION_FORCE_SPAWN, "nex_offensive_action_" + this.hashCode(), force, duration);
+	}
+
+	public static void applyOffensiveCooldown() {
+		if (NexConfig.invasionGlobalCooldown <= 0) return;
+		Global.getSector().getMemoryWithoutUpdate().set(MEM_KEY_OFFENSIVE_COOLDOWN, true, NexConfig.invasionGlobalCooldown);
+	}
+
+	public static boolean isOffensiveCooldown() {
+		return Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_OFFENSIVE_COOLDOWN);
 	}
 
 	@Override

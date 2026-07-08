@@ -31,6 +31,8 @@ public class InvasionAction extends OffensiveFleetAction {
             return false;
         }
 
+        if (!super.canUse(concern)) return false;
+
         float pointReq = NexConfig.pointsRequiredForInvasionFleet;
         float pointHave = InvasionFleetManager.getManager().getSpawnCounter(ai.getFactionId());
 
@@ -42,7 +44,7 @@ public class InvasionAction extends OffensiveFleetAction {
             return false;
         }
 
-        return super.canUse(concern);
+        return true;
     }
 
     @Override

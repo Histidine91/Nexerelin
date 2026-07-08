@@ -1036,6 +1036,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 	protected void processInvasionPoints()
 	{
 		SectorAPI sector = Global.getSector();
+		if (OffensiveFleetIntel.isOffensiveCooldown()) return;
+
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 		//float marineStockpile = 0;
 		//log.info("Starting invasion fleet check");

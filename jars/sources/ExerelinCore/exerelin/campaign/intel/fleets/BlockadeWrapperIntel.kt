@@ -85,6 +85,7 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
                 )
             }
         }
+        applyOffensiveCooldown()
     }
 
     /**

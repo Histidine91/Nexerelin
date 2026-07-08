@@ -147,6 +147,7 @@ public abstract class OffensiveFleetAction extends BaseStrategicAction {
     @Override
     public boolean canUse(StrategicConcern concern) {
         if (!NexConfig.enableHostileFleetEvents) return false;
+        if (OffensiveFleetIntel.isOffensiveCooldown()) return false;
 
         if (ai.getFaction().isPlayerFaction() && !NexConfig.followersInvasions)
             return false;

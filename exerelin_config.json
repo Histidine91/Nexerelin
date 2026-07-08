@@ -61,6 +61,7 @@
     "invasionFleetSizeMult": 1,
     "responseFleetSizeMult": 1,
     "invasionGracePeriod": 180,  # factions won't accumulate invasion points for this many days at start
+    "invasionGlobalCooldown": 0,	# days after an offensive fleet action after which no others (for the most part) can be generated
     "pointsRequiredForInvasionFleet": 30000,    # name is a bit misleading, but anyway bigger number = longer delay between invasion fleets
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 30,

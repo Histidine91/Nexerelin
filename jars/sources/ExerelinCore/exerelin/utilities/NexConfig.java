@@ -66,6 +66,7 @@ public class NexConfig
     public static float invasionFleetSizeMult = 1;
     public static float responseFleetSizeMult = 1;
     public static float invasionGracePeriod = 90;
+    public static float invasionGlobalCooldown = 0;
     public static float pointsRequiredForInvasionFleet = InvasionFleetManager.BASE_INVASION_COST;
     public static float baseInvasionPointsPerFaction = 30f;
     public static float invasionPointsPerPlayerLevel = 1;
@@ -229,6 +230,7 @@ public class NexConfig
             invasionFleetSizeMult = (float)settings.optDouble("invasionFleetSizeMult", invasionFleetSizeMult);
             responseFleetSizeMult = (float)settings.optDouble("responseFleetSizeMult", responseFleetSizeMult);
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
+            invasionGlobalCooldown = (float)settings.optDouble("invasionGlobalCooldown", invasionGlobalCooldown);
             pointsRequiredForInvasionFleet = (float)settings.optDouble("pointsRequiredForInvasionFleet", pointsRequiredForInvasionFleet);
             baseInvasionPointsPerFaction = (float)settings.optDouble("baseInvasionPointsPerFaction", baseInvasionPointsPerFaction);
             invasionPointsPerPlayerLevel = (float)settings.optDouble("invasionPointsPerPlayerLevel", invasionPointsPerPlayerLevel );
