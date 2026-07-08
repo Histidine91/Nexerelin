@@ -148,6 +148,7 @@ public class NexFactionConfig
     public String difficultyString = "";
     
     public boolean noStartingContact = false;
+    public boolean noRandomStartLocation = false;
     
     // vengeance
     public List<String> vengeanceLevelNames = new ArrayList<>();
@@ -272,6 +273,7 @@ public class NexFactionConfig
             showIntelEvenIfDead = settings.optBoolean("showIntelEvenIfDead", showIntelEvenIfDead);
             noMissionTarget = settings.optBoolean("noMissionTarget", noMissionTarget);
             noStartingContact = settings.optBoolean("noStartingContact", noStartingContact);
+            noRandomStartLocation = settings.optBoolean("noRandomStartLocation", noRandomStartLocation);
             
             allowAgentActions = settings.optBoolean("allowAgentActions", allowAgentActions);
             allowPrisonerActions = settings.optBoolean("allowPrisonerActions", allowPrisonerActions);

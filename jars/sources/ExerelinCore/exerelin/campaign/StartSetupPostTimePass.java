@@ -432,7 +432,7 @@ public class StartSetupPostTimePass {
 				entity = Global.getSector().getEntityById(mem.getString("$nex_startLocation"));
 			}
 		}
-		else if (ExerelinSetupData.getInstance().randomStartLocation) {
+		else if (ExerelinSetupData.getInstance().randomStartLocation && !NexConfig.getFactionConfig(factionId).noRandomStartLocation) {
 			entity = pickRandomStartLocation(factionId, false);
 		}
 		else if (SectorManager.getManager().isCorvusMode())
