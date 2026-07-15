@@ -109,7 +109,7 @@ public class KantasDen extends BaseLandmarkDef {
 	public void createAt(SectorEntityToken entity)
 	{
 		SectorEntityToken pirateStation = entity.getContainingLocation().addCustomEntity("kantas_den",
-				StringHelper.getString("exerelin_misc", "marketKantasDen"), "station_side06", "pirates");
+				StringHelper.getString("exerelin_misc", "marketKantasDen"), "station_side06", Factions.PIRATES);
 		setupStationOrbit(pirateStation, entity);
 		pirateStation.setCustomDescriptionId("station_kantas_den");
 		pirateStation.setInteractionImage("illustrations", "pirate_station");
@@ -120,10 +120,9 @@ public class KantasDen extends BaseLandmarkDef {
 	
 	protected void configureKantasDen(SectorEntityToken station) {
 		MarketAPI market = Global.getFactory().createMarket("kantas_den", station.getName(), 3);
-		market.setSize(4);
 		market.setFactionId(Factions.PIRATES);
 		market.setSurveyLevel(SurveyLevel.FULL);
-		market.setFactionId(station.getFaction().getId());
+		market.setSize(4);
 		
 		market.setPrimaryEntity(station);
 		station.setMarket(market);

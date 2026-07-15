@@ -791,6 +791,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
     @Override
     public void reportColonySizeChanged(MarketAPI market, int prevSize) {
+        if (market.getFaction() == null) return;
         if (!market.getFaction().isPlayerFaction()) return;
 
         activate();
