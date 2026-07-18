@@ -30,6 +30,11 @@ import lombok.extern.log4j.Log4j;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Handles Omega encounter on finding a coronal hypershunt; perma-hate from sat bombing; other stuff?
  */
@@ -39,6 +44,8 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 	
 	public static final String MEMORY_KEY_FLAGSHIP_WORKAROUND = "$nex_flagship_workaround";	
 	public static final boolean USE_OMEGA_DFE = true;
+
+	public Map<String, List<SpecialItemData>> stolenItems = new HashMap<>();
 	
 	public MiscEventsManager() {
 		super(false);
@@ -49,6 +56,11 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 		Global.getSector().addTransientListener(manager);
 		Global.getSector().getListenerManager().addListener(manager, true);
 		return manager;
+	}
+
+	protected Object readResolve() {
+		if (stolenItems == null) stolenItems = new HashMap<>();
+		return this;
 	}
 
 	@Override
@@ -193,6 +205,21 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 		//Global.getLogger(this.getClass()).info("Creating Omega complication");
 		//Global.getSector().getCampaignUI().addMessage("Creating Omega complication");
 	}
+
+	public List<SpecialItemData> getStolenItems(String factionId, boolean createIfNecessary) {
+		List<SpecialItemData> items = stolenItems.get(factionId);
+		if (items == null) {
+			if (!createIfNecessary) return null;
+			items = new ArrayList<>();
+			stolenItems.put(factionId, items);
+		}
+		return items;
+	}
+
+	public void addItemsStolenFromFaction(String factionId, List<SpecialItemData> items) {
+		getStolenItems(factionId, true).addAll(items);
+		// TODO: max rep losses
+	}
 	
 	@Override
 	public void reportFleetSpawned(CampaignFleetAPI fleet) {
@@ -225,7 +252,20 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 
 	@Override
 	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, 
-			MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {}
+			MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {
+		String factionId = market.getFactionId();
+		List<SpecialItemData> specials = new ArrayList<>();
+		for (CargoStackAPI stack : cargo.getStacksCopy()) {
+			if (!stack.isSpecialStack()) continue;
+
+			SpecialItemData item = stack.getSpecialDataIfSpecial();
+			for (int i=0; i<stack.getSize(); i++) {
+				specials.add(item);
+			}
+		}
+		if (specials.isEmpty()) return;
+		addItemsStolenFromFaction(factionId, specials);
+	}
 
 	@Override
 	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, 
