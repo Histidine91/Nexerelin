@@ -16,6 +16,10 @@ import java.util.Set;
 
 public interface StrategicConcern extends Comparable<StrategicConcern> {
 
+    /*
+        Current flow: in findConcerns, module instantiates concern, calls generate(), asks listeners if concern is valid, applies priority modifiers, adds to module's list of concerns
+     */
+
     StrategicAI getAI();
     void setAI(StrategicAI ai, StrategicAIModule module);
 

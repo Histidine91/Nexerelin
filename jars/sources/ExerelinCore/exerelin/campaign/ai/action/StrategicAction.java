@@ -11,6 +11,17 @@ import exerelin.campaign.ai.concern.StrategicConcern;
 
 public interface StrategicAction extends Comparable<StrategicAction> {
 
+    /*
+        Current flow: in actOnConcerns, if not too many actions ongoing already, executive module does for each concern:
+            - Checks if already have action, on cooldown, or too low priority
+            - Tells each concern to call getUsableActions()
+                - This involves each of those actions doing several usability checks and computing its priority
+            - Sort actions by priority
+            - For each of those actions:
+                - Init the action, which involves generate()
+                - If action successfully generated, done, else try the next one
+     */
+
     StrategicAI getAI();
     void setAI(StrategicAI ai);
     StrategicActionDelegate.ActionStatus getStatus();

@@ -300,7 +300,8 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     // Stuff here should be moved to new game once it is expected that no existing saves lack them
     protected void addScriptsAndEventsIfNeeded() {
-
+        // don't really need to add this to existing saves (yet?)
+        // FactionRecognitionIntel.createIfNeeded(false);
     }
 
 
