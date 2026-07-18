@@ -1,4 +1,6 @@
-Version 0.12.1x
+Version 0.12.2
+
+(changes since beta 0.12.1x are prefixed accordingly)
 
 ### Gameplay ###
 * Broadly replace invasion point system with a new 'fleet pool' (and 'ground pool') system
@@ -7,6 +9,7 @@ Version 0.12.1x
     * Fleet pool accumulation isn't penalized from being at peace or having multiple ongoing events in the sector
     * Invasion settings in files or the mod settings menu should generally still work as expected
 	* Invasion grace period default 90 -> 180 to account for differences in when points start accumulating
+* [post-beta] Add a setting for global invasion/raid cooldowns
 * Autoresolved combat for faraway invasions/raids will damage participants
 * Strategic AI enhancements
     * Try to increase accessibility if needed for exports, and transfer fleet points to other factions if they're fighting people we don't like
@@ -24,12 +27,16 @@ Version 0.12.1x
 * Override vanilla's ship quality manager
     * Now always uses highest quality available regardless of output
 * NPC offensive fleet actions can lower relations between the involved factions
+* [post-beta] Automated ships can be stored if the market faction does not ban AI cores
 * Add a certain major event for colonies (currently cosmetic, will be used with future diplomacy features)
 
 ### UI ###
+* Resort and reword the fleet-related (and other) settings in mod settings menu
 * Add parameter autocompletes for most console commands
 * Breakdown of modifiers to maximum faction relations can be seen in a few places
 * `keepSModsForRecoveredShips` setting now accessible in LunaLib ingame menu
+* [post-beta] Text formatting for operative procure equipment action
+* [post-beta] (maybe) Fix displayed reason when blockade aborted
 
 ### Fixes ###
 * Fix some bugs when custom starts inappropriately remember last selected background
@@ -40,6 +47,7 @@ Version 0.12.1x
 * Fix war weariness not incrementing from failed invasions/raids/etc. as intended
 * Fix fleet requests being able to circumvent markets going to commissioner (now can/have to use Andrada option)
 * Showdown mission handles sequence break if player skips spawning the straggler
+* [post-beta] Fix Showdown being able to target IndEvo artillery stations for real
 * Ensure transponder is not required to dock at player-ruled markets, including outposts
 * Add further safety to player special task group recovery cost
 * Fix some vanilla dialog text for explored ruins on gas giants potentially not being used
@@ -54,6 +62,8 @@ Version 0.12.1x
 * Add an alliance event listener
 * Add a scroller to create ground unit buttons
 * Add some support for ground units having an equipment commodity but no personnel commodity
+* [post-beta] Add noRandomStartLocation faction config tag
+* [post-beta] Fix alliance invalid factions list not being `public`
 
 ### Misc ###
 * Remove some unwanted logging messages
