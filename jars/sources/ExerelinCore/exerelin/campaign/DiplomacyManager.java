@@ -73,8 +73,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float MIN_INTERVAL_BETWEEN_WARS = 30f;
     public static final float BADBOY_DECAY_PER_MONTH = 3f;
 
-    public static final float DISAVOW_THRESHOLD_BLESS = 25;
-    public static final float DISAVOW_THRESHOLD_OWN = -20;
+    public static final float DISAVOW_THRESHOLD_BLESS = 30;
+    public static final float DISAVOW_THRESHOLD_OWN = -40;
     
     public static final float DOMINANCE_MIN = 0.25f;
     public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.67f;
@@ -1692,7 +1692,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
 
         msg = "[test] " + msg;
-        Global.getSector().getCampaignUI().addMessage(msg, color, cf.getDisplayName(), of.getDisplayName(), cf.getBaseUIColor(), of.getBaseUIColor());
+        //Global.getSector().getCampaignUI().addMessage(msg, color, cf.getDisplayName(), of.getDisplayName(), cf.getBaseUIColor(), of.getBaseUIColor());
     }
 
     /**
@@ -1708,7 +1708,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         score += commissioner.getRelationship(Factions.PLAYER); // like us more = less likely to disavow
         score -= commissioner.getRelationship(otherFactionId);  // like the other faction more = more likely to disavow
         if (AllianceManager.areFactionsAllied(commissionerId, otherFactionId)) {
-            score -= 40;    // attacking allies is particularly heinous
+            score -= 50;    // attacking allies is particularly heinous
         }
 
         // modifier for how big player is?
@@ -1720,14 +1720,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             ourSize += market.getSize();
         }
         int commissionerSize = NexUtilsFaction.getFactionMarketSizeSum(commissionerId, false);
-        score += ourSize/(float)commissionerSize * 20;
+        score += ourSize/(float)commissionerSize * ourSize;
 
         // modifier for how big enemy is
         int enemySize = NexUtilsFaction.getFactionMarketSizeSum(otherFactionId);
         score -= enemySize;
-        if (enemySize == 0) score += 25;    // small fry, fuck 'em!
+        if (enemySize == 0) score += 50;    // small fry, fuck 'em!
 
-        // if AotD QoL, add modifier from ranking
+        // TODO: if AotD QoL or Privateering, add modifier from ranking
 
         // get response based on score
         if (score < DISAVOW_THRESHOLD_OWN && enemySize > 0) return DisavowResponse.DISAVOW;
