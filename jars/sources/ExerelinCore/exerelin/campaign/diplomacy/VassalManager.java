@@ -51,7 +51,7 @@ public class VassalManager implements AllianceEventListener, EconomyTickListener
         return manager;
     }
 
-    public void vassalize(String vassalId, String overlordId) {
+    public Alliance vassalize(String vassalId, String overlordId) {
         FactionAPI vassal = Global.getSector().getFaction(vassalId);
         FactionAPI overlord = Global.getSector().getFaction(overlordId);
 
@@ -59,13 +59,15 @@ public class VassalManager implements AllianceEventListener, EconomyTickListener
         if (!AllianceManager.areFactionsAllied(vassalId, overlordId)) {
             AllianceManager.leaveAlliance(vassalId, false);
         }
-        AllianceManager.createAlliance(vassalId, overlordId);
+        Alliance alliance = AllianceManager.createAlliance(vassalId, overlordId);
 
         vassalages.put(vassalId, overlordId);
         libertyDesires.put(vassalId, new MutableStat(BASE_LIBERTY_DESIRE));
         updateLibertyDesire(vassalId);
 
         // TODO: intel event? maybe just stuff the info in the vassal's diplo profile
+
+        return alliance;
     }
 
     public void devassalize(String vassalId, boolean leaveAlliance) {
