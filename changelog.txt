@@ -1,3 +1,15 @@
+Version 0.12.2b
+
+* Fleet pools start at 100 points
+* Operative action fixes
+    * Properly handle combination of event filter level and intel queue settings (this also applies to diplomacy intel)
+    * Fix some covert actions still not being reported to their manager 
+    * Fix action time penalty for having excess operatives also applying to NPC factions
+* Fix gaining extra skill point at start under certain conditions
+* Fix recognition event crash if reaching market size >8
+* Modding: VassalManager.vassalize returns the alliance it creates
+
+
 Version 0.12.2
 
 (changes since beta 0.12.1x are prefixed accordingly)
@@ -5,20 +17,20 @@ Version 0.12.2
 ### Gameplay ###
 * Broadly replace invasion point system with a new 'fleet pool' (and 'ground pool') system
     * Fleet pool is spent on largely the same things as before, a few more Nex things that create fleets, and vanilla patrols
-	* A high fleet pool will increase the fleet size multiplier of the faction's markets somewhat, negative values will greatly reduce it (down to 0.5 times)
+    * A high fleet pool will increase the fleet size multiplier of the faction's markets somewhat, negative values will greatly reduce it (down to 0.5 times)
     * Fleet pool accumulation isn't penalized from being at peace or having multiple ongoing events in the sector
     * Invasion settings in files or the mod settings menu should generally still work as expected
-	* Invasion grace period default 90 -> 180 to account for differences in when points start accumulating
+    * Invasion grace period default 90 -> 180 to account for differences in when points start accumulating
 * [post-beta] Add a setting for global invasion/raid cooldowns
 * Autoresolved combat for faraway invasions/raids will damage participants
 * Strategic AI enhancements
     * Try to increase accessibility if needed for exports, and transfer fleet points to other factions if they're fighting people we don't like
     * When cancelling a build action, don't abort any actually ongoing constructions
-	* 'Make peace' action increases in priority based on current war weariness
+    * 'Make peace' action increases in priority based on current war weariness
 * Add Siege Bombardment Mode fleet ability
     * While active, the nearest ground battle where player is an attacker will not end even if no attacker ground units remain
-	* Uses Fire Support ability every time it comes off cooldown
-	* This is intended to automate the 'pre-bombardment' tactic for players who use it
+    * Uses Fire Support ability every time it comes off cooldown
+    * This is intended to automate the 'pre-bombardment' tactic for players who use it
 * Reduce swinginess of peace/war states
     * Ceasefire time 150 -> 240
     * Recent war (no ceasefire) time 120 -> 180
