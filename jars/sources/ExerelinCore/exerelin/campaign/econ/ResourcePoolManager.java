@@ -35,6 +35,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 	// or maybe it could be a bit lower, since it never seems to actually get exhausted
 	public static final float INVASION_POINT_CONVERSION_MULT = 0.012f;
 	public static final float PLAYER_AUTONOMOUS_POINT_MULT = 0.25f;
+	public static final float STARTING_POOL_SIZE = 100;
 	@Deprecated public static final float POOL_MAX = 50000;	// 50k
 	public static final float POOL_MAX_MULT = 365;	// 1 year of storage
 	public static final float COMMODITY_IMPORT_MULT = 0.75f;
@@ -79,7 +80,7 @@ public abstract class ResourcePoolManager extends BaseIntelPlugin {
 	 */
 	protected float getCurrentPoolInternal(String factionId) {
 		if (!factionPools.containsKey(factionId)) {
-			factionPools.put(factionId, 0f);
+			factionPools.put(factionId, STARTING_POOL_SIZE);
 		}
 		return factionPools.get(factionId);
 	}
