@@ -22,10 +22,14 @@ public class NGCClearStartingGear extends BaseCommandPlugin {
 		data.getStartingCargo().clear();
 		data.clearAdditionalShips();
 		data.getStartingCargo().getCredits().set(0);
+
+		// should not have any person data to reset at this point
+		/*
 		data.getPerson().getStats().setLevel(1);
 		data.getPerson().getStats().setPoints(1);
 		data.getPerson().getStats().setStoryPoints(0);
 		data.getPerson().getStats().setXP(0);
+		 */
 		//data.getScripts().clear();
 		//data.getScriptsBeforeTimePass().clear();
 		
