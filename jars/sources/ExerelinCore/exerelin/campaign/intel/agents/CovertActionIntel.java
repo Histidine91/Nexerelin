@@ -187,7 +187,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 			time *= 1 + 0.25f * (market.getSize() - 3);
 		}
 
-		time *= getTimeMultForOverMaxAgents();
+		if (playerInvolved) time *= getTimeMultForOverMaxAgents();
 
 		if (CovertOpsManager.isDebugMode() || NexUtils.isNonPlaytestDevMode())
 			time *= 0.05f;
@@ -638,27 +638,35 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		}
 		if (shouldReportEvent()) {
 			boolean notify = shouldNotify();
-			if (NexConfig.nexIntelQueued <= 1) {
-				if (NexConfig.nexIntelQueued <= 0
-					||	affectsPlayerRep()
-					||	playerInvolved
-					||	agentFaction == PlayerFactionStore.getPlayerFaction()
-					||	targetFaction.isPlayerFaction()
-					||	targetFaction == Misc.getCommissionFaction()) {
-					Global.getSector().getIntelManager().addIntel(this, !notify);
-
-					if (!notify && ExerelinModPlugin.isNexDev) {
-						Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification "
-								+ getName() + " due to filter level", Misc.getHighlightColor());
-					}
-				}
-				else Global.getSector().getIntelManager().queueIntel(this);
+			if (!notify && ExerelinModPlugin.isNexDev) {
+				Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification "
+						+ getName() + " due to filter level", Misc.getHighlightColor());
 			}
 
-			else Global.getSector().getIntelManager().queueIntel(this);
+			if (NexConfig.nexIntelQueued <= 1) {
+				if (shouldDeliverImmediately())
+					Global.getSector().getIntelManager().addIntel(this, !notify);
+				else if (notify)
+					Global.getSector().getIntelManager().queueIntel(this);
+			}
+			else if (notify)
+				Global.getSector().getIntelManager().queueIntel(this);
 
-			endAfterDelay();
+			if (shouldEndOnReport()) endAfterDelay();
 		}
+	}
+
+	protected boolean shouldDeliverImmediately() {
+		return NexConfig.nexIntelQueued <= 0
+				||	affectsPlayerRep()
+				||	playerInvolved
+				||	agentFaction == PlayerFactionStore.getPlayerFaction()
+				||	targetFaction.isPlayerFaction()
+				||	targetFaction == Misc.getCommissionFaction();
+	}
+
+	protected boolean shouldEndOnReport() {
+		return true;
 	}
 
 	public float getAlertLevelIncrease() {

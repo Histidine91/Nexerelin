@@ -19,7 +19,6 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 import lombok.NoArgsConstructor;
 
@@ -128,40 +127,10 @@ public class RaiseRelations extends CovertActionIntel {
 	}
 
 	@Override
-	protected void reportEvent() {
-		timestamp = Global.getSector().getClock().getTimestamp();
-		if (ExerelinModPlugin.isNexDev) {
-			//Global.getSector().getCampaignUI().addMessage("reportEvent() called in RaiseRelations");
-			if (shouldReportEvent()){
-				//Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() @ RaiseRelations TRUE;if intel doesn't display, something bad happened.");
-			}
-		}
-		if (shouldReportEvent()) {
-			boolean notify = shouldNotify();
-			if (NexConfig.nexIntelQueued <= 1) {
-				if (NexConfig.nexIntelQueued <= 0
-					||	affectsPlayerRep()
-					||	playerInvolved
-					||	agentFaction == PlayerFactionStore.getPlayerFaction()
-					||	targetFaction.isPlayerFaction()
-					||	targetFaction == Misc.getCommissionFaction()
-					||	thirdFaction == Misc.getCommissionFaction()
-					||	thirdFaction.isPlayerFaction()){
-					Global.getSector().getIntelManager().addIntel(this, !notify);
-
-					if (!notify && ExerelinModPlugin.isNexDev) {
-						Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification "
-								+ getName() + " due to filter level", Misc.getHighlightColor());
-					}
-				}
-				else Global.getSector().getIntelManager().queueIntel(this);
-				//TODO: make it so if an agent action makes 2 factions hostile, add it
-			}
-
-			else Global.getSector().getIntelManager().queueIntel(this);
-
-			endAfterDelay();
-		}
+	protected boolean shouldDeliverImmediately() {
+		return super.shouldDeliverImmediately()
+				||	thirdFaction == Misc.getCommissionFaction()
+				|| 	thirdFaction == PlayerFactionStore.getPlayerFaction();
 	}
 
 	@Override

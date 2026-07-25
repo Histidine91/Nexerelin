@@ -96,11 +96,11 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 					commFacId.equals(factionId2)) {
 				Global.getSector().getIntelManager().addIntel(this, !notify);
 			}
-			else {
+			else if (notify) {
 				Global.getSector().getIntelManager().queueIntel(this);
 			}
 		}
-		else {
+		else if (notify) {
 			Global.getSector().getIntelManager().queueIntel(this);
 		}
 		Global.getSector().addScript(this);

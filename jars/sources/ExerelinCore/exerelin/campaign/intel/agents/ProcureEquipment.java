@@ -232,14 +232,9 @@ public class ProcureEquipment extends CovertActionIntel implements HasDestinatio
 	public int getAbortRefund() {
 		return (int)cost;	// full refund
 	}
-	
-	// Don't end after delay, event will only end when goods are delivered
-	@Override
-	protected void reportEvent() {
-		timestamp = Global.getSector().getClock().getTimestamp();
-		if (shouldReportEvent()) {
-			Global.getSector().getIntelManager().addIntel(this);
-		}
+
+	protected boolean shouldEndOnReport() {
+		return false;   // only end when delivery made
 	}
 	
 	@Override

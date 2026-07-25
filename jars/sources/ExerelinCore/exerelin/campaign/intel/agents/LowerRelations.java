@@ -16,7 +16,6 @@ import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.*;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 import lombok.NoArgsConstructor;
 
@@ -84,39 +83,10 @@ public class LowerRelations extends CovertActionIntel {
 	}
 
 	@Override
-	protected void reportEvent() {
-		timestamp = Global.getSector().getClock().getTimestamp();
-		if (ExerelinModPlugin.isNexDev) {
-			//Global.getSector().getCampaignUI().addMessage("reportEvent() called in LowerRelations");
-			if (shouldReportEvent()){
-				//Global.getSector().getCampaignUI().addMessage("shouldReportEvent() in reportEvent() @ LowerRelations TRUE;if intel doesn't display, something bad happened.");
-			}
-		}
-		if (shouldReportEvent()) {
-			boolean notify = shouldNotify();
-			if (NexConfig.nexIntelQueued <= 1) {
-				if (NexConfig.nexIntelQueued <= 0
-					||	affectsPlayerRep()
-					||	playerInvolved
-					||	agentFaction == PlayerFactionStore.getPlayerFaction()
-					||	targetFaction.isPlayerFaction()
-					||	targetFaction == Misc.getCommissionFaction()
-					||	thirdFaction == Misc.getCommissionFaction()
-					|| 	thirdFaction == PlayerFactionStore.getPlayerFaction()) {
-					Global.getSector().getIntelManager().addIntel(this, !notify);
-
-					if (!notify && ExerelinModPlugin.isNexDev) {
-						Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification "
-								+ getName() + " due to filter level", Misc.getHighlightColor());
-					}
-				}
-				else Global.getSector().getIntelManager().queueIntel(this);
-			}
-
-			else Global.getSector().getIntelManager().queueIntel(this);
-
-			endAfterDelay();
-		}
+	protected boolean shouldDeliverImmediately() {
+		return super.shouldDeliverImmediately()
+				||	thirdFaction == Misc.getCommissionFaction()
+				|| 	thirdFaction == PlayerFactionStore.getPlayerFaction();
 	}
 
 	@Override

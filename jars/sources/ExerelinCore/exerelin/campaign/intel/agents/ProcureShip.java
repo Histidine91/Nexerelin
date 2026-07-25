@@ -360,14 +360,9 @@ public class ProcureShip extends CovertActionIntel implements HasDestinationDial
 		reportEvent();
 		endAfterDelay();
 	}
-	
-	// Don't end after delay, event will only end when ship is delivered
-	@Override
-	protected void reportEvent() {
-		timestamp = Global.getSector().getClock().getTimestamp();
-		if (shouldReportEvent()) {
-			Global.getSector().getIntelManager().addIntel(this);
-		}
+
+	protected boolean shouldEndOnReport() {
+		return false;   // only end when delivery made
 	}
 	
 	@Override
