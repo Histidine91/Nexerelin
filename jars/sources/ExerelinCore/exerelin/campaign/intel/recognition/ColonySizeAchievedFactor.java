@@ -30,7 +30,7 @@ public class ColonySizeAchievedFactor extends BaseRecognitionEventFactor {
     public void computeScore() {
         int index = size;
         if (index >= POINTS_PER_SIZE.length) index = POINTS_PER_SIZE.length - 1;
-        recogPoints = POINTS_PER_SIZE[size];
+        recogPoints = POINTS_PER_SIZE[index];
     }
 
     @Override
