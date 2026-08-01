@@ -37,7 +37,13 @@ public class CounterInvasionIntel extends InvasionIntel {
 		
 		marinesTotal = 10 * Math.round(str/10);
 	}
-	
+
+	@Override
+	protected void applyRelationshipEffect() {
+		// do nothing
+		//super.applyRelationshipEffect();
+	}
+
 	@Override
 	public String getActionName() {
 		return StringHelper.getString("exerelin_invasion", "counterInvasion");

@@ -252,6 +252,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		}
 		else return;
 
+		delta *= 0.01f;
 		repEffect = DiplomacyManager.adjustRelations(faction, targetFaction, delta, atBest, null, 0, limit, false);
 		storedRelation = faction.getRelationship(targetFaction.getId());
 	}

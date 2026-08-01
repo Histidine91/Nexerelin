@@ -341,6 +341,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		}
 		else return;
 
+		delta *= 0.01f;
 		repEffect = DiplomacyManager.adjustRelations(faction, targetFaction, delta, null, null, 0, limit, false);
 		storedRelation = faction.getRelationship(targetFaction.getId());
 	}
