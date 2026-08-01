@@ -254,7 +254,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 				if (candidate.getAI().isFleeing() || candidate.getAI().isMaintainingContact())
 					continue;
 			}
-			int cost = getFuelCost(fleet);
+			int cost = getFuelCost(candidate);
 			if (candidate.getCargo().getMaxFuel() >= cost) {
 				fleet = candidate;
 				break;
@@ -272,7 +272,7 @@ public class FireSupportAbilityPlugin extends AbilityPlugin {
 			IndustryForBattle ifb = candidate.industry;
 			targetsFiltered.add(ifb);
 		}
-		targetsFiltered.removeAll(validTargets);
+		targetsFiltered.retainAll(validTargets);
 		if (targetsFiltered.isEmpty()) return false;
 		
 		target = validTargets.get(0);
