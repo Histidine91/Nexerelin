@@ -248,6 +248,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         //NexRouteManager.replaceExistingRouteManager();  // automatically takes over due to xstream alias
 
         if (VassalManager.getInstance() == null) VassalManager.create();
+
+        for (FactionAPI faction : Global.getSector().getAllFactions()) {
+            if (faction.isHostileTo(faction)) {
+                faction.setRelationship(faction.getId(), 1);
+            }
+        }
     }
     
     // runcode exerelin.plugins.ExerelinModPlugin.debug();
