@@ -1,3 +1,10 @@
+Version 0.12.2c
+
+* Fix post-fleet-event relationship losses being 100 times larger than intended and applying to counter-invasions
+    * This latter issue resulted in factions becoming hostile to themselves
+* Fix ground battle AI not finding fire support targets
+
+
 Version 0.12.2b
 
 * Fleet pools start at 100 points
