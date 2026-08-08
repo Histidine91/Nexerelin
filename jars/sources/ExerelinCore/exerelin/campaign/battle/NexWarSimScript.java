@@ -66,8 +66,6 @@ public class NexWarSimScript {
                 fsr1.addEntry(new FactionStrengthReportEntry(station));
             }
             else if (willFactionSideWithUs(target.getFaction(), side2, side1)) {
-                float str1 = Misc.getMemberStrength(station.getFlagship());
-                float str2 = station.getEffectiveStrength();
                 fsr2.addEntry(new FactionStrengthReportEntry(station));
             }
         }
