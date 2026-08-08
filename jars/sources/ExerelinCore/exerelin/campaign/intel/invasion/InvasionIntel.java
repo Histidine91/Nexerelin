@@ -134,41 +134,17 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		}
 		
 		Global.getSector().getListenerManager().addListener(this);
-
-		int nexIntelQueued = NexConfig.nexIntelQueued;
-		switch (nexIntelQueued) {
-
-			case 0:
-				addIntelIfNeeded();
-				break;
-
-			case 1:
-				if ((isPlayerTargeted() || playerSpawned || targetFaction == Misc.getCommissionFaction()) || faction == Misc.getCommissionFaction())
-					addIntelIfNeeded();
-				else if (shouldDisplayIntel())
-					queueIntelIfNeeded();
-				break;
-
-			case 2:
-				if (playerSpawned)
-					addIntelIfNeeded();
-				else if (shouldDisplayIntel()) {
-					Global.getSector().getIntelManager().queueIntel(this);
-					intelQueuedOrAdded = true;
-				}
-				break;
-
-			default:
-				addIntelIfNeeded();
-				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in InvasionIntel, " +
-					"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
-					"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
-		}
+		addOrQueueIntelIfNeeded();
 
 		if (!(this instanceof CounterInvasionIntel))
 			applyOffensiveCooldown();
 	}
-	
+
+	@Override
+	public boolean shouldNotify() {
+		return true;
+	}
+
 	/**
 	 * Do we think we'll be allowed to tactically bombard the target when we get there?
 	 * @return

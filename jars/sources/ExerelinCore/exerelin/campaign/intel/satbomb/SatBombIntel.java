@@ -26,7 +26,6 @@ import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.fleets.*;
 import exerelin.campaign.intel.invasion.InvActionStage;
 import exerelin.campaign.intel.raid.NexRaidAssembleStage;
-import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import org.lwjgl.util.vector.Vector2f;
@@ -83,29 +82,7 @@ public class SatBombIntel extends OffensiveFleetIntel {
 		
 		addStage(new NexReturnStage(this));
 
-		int nexIntelQueued = NexConfig.nexIntelQueued; //TODO: sat bombs are extreme. some players might want it added but everything else queued, do that?
-		switch (nexIntelQueued) {
-
-			case 0:
-
-			case 1:
-
-				addIntelIfNeeded();
-				break;
-
-			case 2:
-
-				Global.getSector().getIntelManager().queueIntel(this);
-				intelQueuedOrAdded = true;
-				break;
-
-			default:
-
-				addIntelIfNeeded();
-				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in SatBombIntel, " +
-						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
-						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
-		}
+		addOrQueueIntelIfNeeded();
 
 		applyOffensiveCooldown();
 	}

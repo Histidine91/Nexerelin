@@ -8,7 +8,10 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
-import com.fs.starfarer.api.impl.campaign.ids.*;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage;
 import com.fs.starfarer.api.ui.Alignment;
@@ -21,6 +24,7 @@ import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.FilterableIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFleet;
@@ -31,13 +35,13 @@ import lombok.Setter;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage.MEMORY_KEY_RECENT;
 import static com.fs.starfarer.api.impl.campaign.rulecmd.Nex_StabilizePackage.STABILIZE_INTERVAL;
 
-public class ReliefFleetIntelAlt extends BaseIntelPlugin {
+public class ReliefFleetIntelAlt extends BaseIntelPlugin implements FilterableIntel {
 	
 	public static final Object LAUNCHED_UPDATE = new Object();
 	public static final Object ENDED_UPDATE = new Object();
@@ -357,38 +361,28 @@ public class ReliefFleetIntelAlt extends BaseIntelPlugin {
 	}
 
 	public void init() {
-		int nexIntelQueued = NexConfig.nexIntelQueued;
-		switch (nexIntelQueued) {
-
-			case 0:
-				Global.getSector().getIntelManager().addIntel(this);
-				break;
-
-			case 1:
-				if 	(factionId.equals(Factions.PLAYER)
-							||targetFactionId.equals(Factions.PLAYER)
-							||targetFactionId.equals(PlayerFactionStore.getPlayerFactionId())
-							||factionId.equals(PlayerFactionStore.getPlayerFactionId()))
-					{
-						Global.getSector().getIntelManager().addIntel(this);
-					}
-				else Global.getSector().getIntelManager().queueIntel(this);
-				break;
-				
-			case 2:
-				Global.getSector().getIntelManager().queueIntel(this);
-				break;
-				
-			default:
-				Global.getSector().getIntelManager().addIntel(this);
-				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in ReliefFleetIntel, " +
-						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
-						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
-		}
+		addIntelWithFilterChecks();
 		Global.getSector().addScript(this);
 	}
-	
-	public void checkAbort() 
+
+	protected boolean targetsOrIsTargetingPlayer() {
+		FactionAPI pf = PlayerFactionStore.getPlayerFaction();
+		return source.getFaction().isPlayerFaction() || source.getFaction() == pf || target.getFaction().isPlayerFaction() || target.getFaction() == pf;
+	}
+
+	@Override
+	public boolean shouldNotify() {
+		if (NexConfig.fleetEventFilterLevel <= 0) return true;
+		if (NexConfig.fleetEventFilterLevel >= 2) return false;
+		return targetsOrIsTargetingPlayer();
+	}
+
+	@Override
+	public boolean shouldQueueImpl() {
+		return targetsOrIsTargetingPlayer();
+	}
+
+	public void checkAbort()
 	{
 		if (assembling) {
 			if (!source.getFactionId().equals(factionId))

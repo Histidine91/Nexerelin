@@ -156,6 +156,7 @@ public class NexConfig
     public static boolean ceasefireNotificationPopup = true;
     public static int diplomacyEventFilterLevel = 0;
     public static int agentEventFilterLevel = 0;
+    public static int fleetEventFilterLevel = 0;
     public static int nexIntelQueued = 0;
     public static boolean queuedNexMissions = false;
     public static boolean enableStrategicAI = true;
@@ -332,6 +333,7 @@ public class NexConfig
             ceasefireNotificationPopup = settings.optBoolean("ceasefireNotificationPopup", ceasefireNotificationPopup);
             diplomacyEventFilterLevel = settings.optInt("diplomacyEventFilterLevel", diplomacyEventFilterLevel);
             agentEventFilterLevel = settings.optInt("agentEventFilterLevel", agentEventFilterLevel);
+            fleetEventFilterLevel = settings.optInt("fleetEventFilterLevel", fleetEventFilterLevel);
             nexIntelQueued = settings.optInt("nexIntelQueued", nexIntelQueued);
             queuedNexMissions = settings.optBoolean("queuedNexMissions", queuedNexMissions);
             enableStrategicAI = settings.optBoolean("enableStrategicAI", enableStrategicAI);

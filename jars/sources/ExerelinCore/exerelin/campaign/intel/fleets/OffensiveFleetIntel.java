@@ -250,18 +250,32 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		intelQueuedOrAdded = true;
 	}
 
+	protected boolean targetsOrIsTargetingPlayer() {
+		FactionAPI pf = PlayerFactionStore.getPlayerFaction();
+		return faction.isPlayerFaction() || faction == pf || targetFaction.isPlayerFaction() || targetFaction == pf;
+	}
+
+	@Override
+	public boolean shouldQueue() {
+		if (this.playerSpawned) return false;
+		return FilterableIntel.super.shouldQueue();
+	}
+
 	@Override
 	public boolean shouldQueueImpl() {
-		FactionAPI pf = PlayerFactionStore.getPlayerFaction();
-		return !(faction.isPlayerFaction() || faction == pf || targetFaction.isPlayerFaction() || targetFaction == pf);
+		return !targetsOrIsTargetingPlayer();
 	}
 
 	@Override
 	public boolean shouldNotify() {
-		return true;    // TODO: filter level
+		if (playerSpawned) return true;
+		if (!shouldIntelBeKnownToPlayer()) return false;
+		if (NexConfig.fleetEventFilterLevel <= 0) return true;
+		if (NexConfig.fleetEventFilterLevel >= 2) return false;
+		return targetsOrIsTargetingPlayer();
 	}
 
-	protected boolean shouldDisplayIntel()
+	protected boolean shouldIntelBeKnownToPlayer()
 	{
 		if (INTEL_ALWAYS_VISIBLE) return true;
 		if (Global.getSettings().isDevMode()) return true;

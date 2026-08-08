@@ -13,15 +13,11 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
-import exerelin.utilities.NexConfig;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class BaseStrikeIntel extends NexRaidIntel {
 	
@@ -60,29 +56,7 @@ public class BaseStrikeIntel extends NexRaidIntel {
 
 		addStage(new NexReturnStage(this));
 
-		int nexIntelQueued = NexConfig.nexIntelQueued;
-		switch (nexIntelQueued) {
-			case 0:
-				addIntelIfNeeded();
-				break;
-
-			case 1:
-			case 2:
-				if (playerSpawned)
-					addIntelIfNeeded();
-
-				else if (shouldDisplayIntel()) {
-					Global.getSector().getIntelManager().queueIntel(this);
-					intelQueuedOrAdded = true;
-				}
-				break;
-
-			default:
-				addIntelIfNeeded();
-				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in BaseStrikeIntel, " +
-						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
-						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
-		}
+		addOrQueueIntelIfNeeded();
 	}
 	
 	// Same as OffensiveFleetIntel's one

@@ -10,10 +10,8 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
-import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.battle.EncounterLootHandler;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -72,31 +70,7 @@ public class RemnantRaidIntel extends NexRaidIntel {
 		
 		addStage(new RemnantRaidReturnStage(this));
 
-		int nexIntelQueued = NexConfig.nexIntelQueued;
-		switch (nexIntelQueued) {
-
-			case 0:
-				addIntelIfNeeded();
-				break;
-			case 1:
-				if ((isPlayerTargeted() || targetFaction == Misc.getCommissionFaction()))
-					addIntelIfNeeded();
-				else if (shouldDisplayIntel())
-					queueIntelIfNeeded();
-				break;
-			case 2:
-				if (shouldDisplayIntel()) {
-					Global.getSector().getIntelManager().queueIntel(this);
-					intelQueuedOrAdded = true;
-				}
-				break;
-
-			default:
-				addIntelIfNeeded();
-				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in RemnantRaidIntel, " +
-						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
-						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
-		}
+		addOrQueueIntelIfNeeded();
 
 		//setOffensiveCooldown();   // don't apply cooldown for Remnant raids
 	}
@@ -134,7 +108,7 @@ public class RemnantRaidIntel extends NexRaidIntel {
 	}
 	
 	@Override
-	protected boolean shouldDisplayIntel()
+	protected boolean shouldIntelBeKnownToPlayer()
 	{
 		if (INTEL_ALWAYS_VISIBLE) return true;
 		if (Global.getSettings().isDevMode()) return true;

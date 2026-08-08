@@ -30,7 +30,6 @@ import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
-import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
@@ -89,35 +88,7 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 		GroundPoolManager.getManager().drawFromPool(faction.getId(), grp);
 		this.groundPoolRequest = grp;
 
-		int nexIntelQueued = NexConfig.nexIntelQueued;
-		switch (nexIntelQueued) {
-
-			case 0:
-				addIntelIfNeeded();
-				break;
-
-			case 1:
-				if ((isPlayerTargeted() || playerSpawned || targetFaction == Misc.getCommissionFaction())) //TODO all intel has the problem of not updating without active comm relays and not queueing the update
-					addIntelIfNeeded();
-				else if (shouldDisplayIntel())
-					queueIntelIfNeeded();
-				break;
-
-			case 2:
-				if (playerSpawned)
-					addIntelIfNeeded();
-				else if (shouldDisplayIntel()) {
-					Global.getSector().getIntelManager().queueIntel(this);
-					intelQueuedOrAdded = true;
-				}
-				break;
-
-			default:
-				addIntelIfNeeded();
-				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in NexRaidIntel, " +
-						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
-						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
-		}
+		addOrQueueIntelIfNeeded();
 
 		applyOffensiveCooldown();
 	}
