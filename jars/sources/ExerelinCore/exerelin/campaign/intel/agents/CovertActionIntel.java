@@ -17,6 +17,7 @@ import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
+import exerelin.campaign.intel.FilterableIntel;
 import exerelin.campaign.intel.MilestoneTracker;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.plugins.ExerelinModPlugin;
@@ -41,7 +42,7 @@ import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
  * Each individual action (e.g. "raise relations with Hegemony" or "sabotage Spaceport") represents an instance of a child class.
  */
 @NoArgsConstructor
-public abstract class CovertActionIntel extends BaseIntelPlugin implements StrategicActionDelegate, Cloneable {
+public abstract class CovertActionIntel extends BaseIntelPlugin implements StrategicActionDelegate, FilterableIntel, Cloneable {
 	
 	public static final String[] EVENT_ICONS = new String[]{
 		"graphics/exerelin/icons/intel/spy4.png",
@@ -613,7 +614,7 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		return level;
 	}
 	
-	protected boolean shouldNotify() {
+	public boolean shouldNotify() {
 		if (ALWAYS_REPORT || playerInvolved || NexUtils.isNonPlaytestDevMode()) 
 			return true;
 		if (repResult != null && (repResult.isHostile != repResult.wasHostile))
@@ -626,6 +627,15 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		
 		return NexConfig.agentEventFilterLevel <= maxLevelToNotify;
 	}
+
+	@Override
+	public boolean shouldQueueImpl() {
+		return !(affectsPlayerRep()
+				||	playerInvolved
+				||	agentFaction == PlayerFactionStore.getPlayerFaction()
+				||	targetFaction.isPlayerFaction()
+				||	targetFaction == Misc.getCommissionFaction());
+	}
 	
 	protected void reportEvent() {
 		CovertOpsManager.reportAgentAction(this);
@@ -637,32 +647,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 			}
 		}
 		if (shouldReportEvent()) {
-			boolean notify = shouldNotify();
-			if (!notify && ExerelinModPlugin.isNexDev) {
-				Global.getSector().getCampaignUI().addMessage("Suppressed agent action notification "
-						+ getName() + " due to filter level", Misc.getHighlightColor());
-			}
-
-			if (NexConfig.nexIntelQueued <= 1) {
-				if (shouldDeliverImmediately())
-					Global.getSector().getIntelManager().addIntel(this, !notify);
-				else if (notify)
-					Global.getSector().getIntelManager().queueIntel(this);
-			}
-			else if (notify)
-				Global.getSector().getIntelManager().queueIntel(this);
+			addIntelWithFilterChecks();
 
 			if (shouldEndOnReport()) endAfterDelay();
 		}
-	}
-
-	protected boolean shouldDeliverImmediately() {
-		return NexConfig.nexIntelQueued <= 0
-				||	affectsPlayerRep()
-				||	playerInvolved
-				||	agentFaction == PlayerFactionStore.getPlayerFaction()
-				||	targetFaction.isPlayerFaction()
-				||	targetFaction == Misc.getCommissionFaction();
 	}
 
 	protected boolean shouldEndOnReport() {

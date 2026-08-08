@@ -127,10 +127,8 @@ public class RaiseRelations extends CovertActionIntel {
 	}
 
 	@Override
-	protected boolean shouldDeliverImmediately() {
-		return super.shouldDeliverImmediately()
-				||	thirdFaction == Misc.getCommissionFaction()
-				|| 	thirdFaction == PlayerFactionStore.getPlayerFaction();
+	public boolean shouldQueueImpl() {
+		return super.shouldQueueImpl() && thirdFaction != Misc.getCommissionFaction() && thirdFaction != PlayerFactionStore.getPlayerFaction();
 	}
 
 	@Override

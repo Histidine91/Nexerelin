@@ -12,7 +12,6 @@ import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.VassalManager;
-import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
@@ -21,11 +20,11 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 @Log4j
-public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDelegate {
+public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDelegate, FilterableIntel {
 	
 	public static final Object BUTTON_RENAME = new Object();
 	
@@ -45,18 +44,20 @@ public class AllianceIntel extends BaseIntelPlugin implements StrategicActionDel
 		this.faction2 = faction2;
 		this.allianceId = allianceId;
 		this.allianceName = allianceName;
-		if (NexConfig.nexIntelQueued <= 0 || NexConfig.nexIntelQueued == 1) {
-			Global.getSector().getIntelManager().addIntel(this, true);
-		}
-		else {
-			Global.getSector().getIntelManager().queueIntel(this);
-			if (ExerelinModPlugin.isNexDev){
-				Global.getSector().getCampaignUI().addMessage("queueIntel() called in AllianceIntel");
-			}
-		}
+		addIntelWithFilterChecks();
 		Map<String, Object> params = new HashMap<>();
 		params.put("type", UpdateType.FORMED);
 		this.sendUpdateIfPlayerHasIntel(params, false);
+	}
+
+	@Override
+	public boolean shouldQueueImpl() {
+		return false;
+	}
+
+	@Override
+	public boolean shouldNotify() {
+		return true;
 	}
 
 	public void setAllianceName(String name) {

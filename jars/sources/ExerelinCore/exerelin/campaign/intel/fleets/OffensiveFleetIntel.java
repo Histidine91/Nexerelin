@@ -33,6 +33,7 @@ import exerelin.campaign.econ.GroundPoolManager;
 import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.NexRouteManager;
+import exerelin.campaign.intel.FilterableIntel;
 import exerelin.campaign.intel.defensefleet.DefenseFleetIntel;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
@@ -50,7 +51,7 @@ import java.util.List;
 import static exerelin.campaign.battle.NexWarSimScript.*;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
 
-public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDelegate, StrategicActionDelegate {
+public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDelegate, StrategicActionDelegate, FilterableIntel {
 	
 	public static final String MEM_KEY_ACTION_DONE = "$nex_raidActionDone";
 	public static final String MEM_KEY_OFFENSIVE_COOLDOWN = "$nex_offensiveFleetCooldown";
@@ -239,27 +240,27 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	public boolean shouldMakeImportantIfTargetingPlayer() {
 		return false;
 	}
-	
-	protected void queueIntelIfNeeded()
-	{
+
+	protected void addOrQueueIntelIfNeeded() {
 		if (intelQueuedOrAdded) return;
-		if (faction.isPlayerFaction())
-			Global.getSector().getIntelManager().addIntel(this);
-		else
-			Global.getSector().getIntelManager().queueIntel(this);
-		intelQueuedOrAdded = true;
-	}
-	
-	protected void addIntelIfNeeded()
-	{
-		if (intelQueuedOrAdded) return;
-		if (shouldMakeImportantIfTargetingPlayer() 
+		if (shouldMakeImportantIfTargetingPlayer()
 				&& (targetFaction.isPlayerFaction() || targetFaction == PlayerFactionStore.getPlayerFaction()))
 			setImportant(true);
-		Global.getSector().getIntelManager().addIntel(this);
+		addIntelWithFilterChecks();
 		intelQueuedOrAdded = true;
 	}
-	
+
+	@Override
+	public boolean shouldQueueImpl() {
+		FactionAPI pf = PlayerFactionStore.getPlayerFaction();
+		return !(faction.isPlayerFaction() || faction == pf || targetFaction.isPlayerFaction() || targetFaction == pf);
+	}
+
+	@Override
+	public boolean shouldNotify() {
+		return true;    // TODO: filter level
+	}
+
 	protected boolean shouldDisplayIntel()
 	{
 		if (INTEL_ALWAYS_VISIBLE) return true;
@@ -359,13 +360,13 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			}
 			return;
 		}
-		addIntelIfNeeded();
+		addOrQueueIntelIfNeeded();
 		sendUpdateIfPlayerHasIntel(OUTCOME_UPDATE, false);
 		outcomeUpdateSent = true;
 	}
 	
 	public void sendEnteredSystemUpdate() {
-		queueIntelIfNeeded();
+		addOrQueueIntelIfNeeded();
 		sendUpdateIfPlayerHasIntel(ENTERED_SYSTEM_UPDATE, false);
 	}
 	
@@ -428,6 +429,10 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
 			initPad = 0f;
 			addETABullet(info, tc, Misc.getHighlightColor(), initPad);
+		}
+
+		if (repEffect != null) {
+			DiplomacyIntel.addRelationshipChangePara(info, faction.getId(), targetFaction.getId(), storedRelation, repEffect, 10);
 		}
 	}
 

@@ -68,23 +68,7 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
         fgi = NexBlockadeFGI(params, bParams, this)
         fgi.listener = this
 
-        when (NexConfig.nexIntelQueued) {
-            0 -> addIntelIfNeeded()
-            1 -> if (isPlayerTargeted || playerSpawned || targetFaction === Misc.getCommissionFaction()) //TODO all intel has the problem of not updating without active comm relays and not queueing the update
-                addIntelIfNeeded() else if (shouldDisplayIntel()) queueIntelIfNeeded()
-            2 -> if (playerSpawned) addIntelIfNeeded() else if (shouldDisplayIntel()) {
-                Global.getSector().intelManager.queueIntel(fgi)
-                intelQueuedOrAdded = true
-            }
-            else -> {
-                addIntelIfNeeded()
-                Global.getSector().campaignUI.addMessage(
-                    "Switch statement within init(), in BlockadeWrapperIntel, " +
-                            "defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
-                            "is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!"
-                )
-            }
-        }
+        addOrQueueIntelIfNeeded()
         applyOffensiveCooldown()
     }
 
@@ -112,20 +96,12 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
         }
     }
 
-    override fun queueIntelIfNeeded() {
-        if (intelQueuedOrAdded) return
-        if (faction.isPlayerFaction) Global.getSector().intelManager.addIntel(fgi) else Global.getSector().intelManager.queueIntel(
-            fgi
-        )
-        intelQueuedOrAdded = true
-    }
-
-    override fun addIntelIfNeeded() {
+    override fun addOrQueueIntelIfNeeded() {
         if (intelQueuedOrAdded) return
         if (shouldMakeImportantIfTargetingPlayer()
             && (targetFaction.isPlayerFaction || targetFaction === PlayerFactionStore.getPlayerFaction())
         ) fgi.isImportant = true
-        Global.getSector().intelManager.addIntel(fgi)
+        addIntelWithFilterChecks()
         intelQueuedOrAdded = true
     }
 

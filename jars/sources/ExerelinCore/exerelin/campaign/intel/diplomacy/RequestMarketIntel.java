@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_TransferMarket;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -125,6 +126,20 @@ public class RequestMarketIntel extends TimedDiplomacyIntel {
 		return rep;
 	}
 
+	public void checkMarketState() {
+		if (isEnding() || isEnded()) return;
+
+		if (!market.isInEconomy()) {
+			reject();
+		}
+		else if (!Nex_IsFactionRuler.isRuler(market.getFaction())) {
+			reject();
+		}
+		else if (market.getFactionId().equals(factionId)) {
+			accept();
+		}
+	}
+
 	@Override
 	public void acceptImpl() {
 		credits = ConquestMissionIntel.calculateReward(market, true);
@@ -157,6 +172,7 @@ public class RequestMarketIntel extends TimedDiplomacyIntel {
 	@Override
 	protected void advanceImpl(float amount) {
 		super.advanceImpl(amount);
+		checkMarketState();
 	}
 
 	@Override

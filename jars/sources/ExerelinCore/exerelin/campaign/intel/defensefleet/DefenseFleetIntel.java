@@ -23,7 +23,6 @@ import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
 import exerelin.campaign.intel.fleets.OffensiveFleetIntel;
-import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtilsMarket;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
@@ -76,13 +75,7 @@ public class DefenseFleetIntel extends OffensiveFleetIntel implements RaidDelega
 		addStage(action);
 		
 		addStage(new NexReturnStage(this));
-
-		if ((NexConfig.nexIntelQueued <= 0) || (NexConfig.nexIntelQueued == 1 && playerSpawned))
-			addIntelIfNeeded();
-		else {
-			Global.getSector().getIntelManager().queueIntel(this);
-			intelQueuedOrAdded = true;
-		}
+		addOrQueueIntelIfNeeded();
 	}
 	
 	public void giveReturnOrders() {

@@ -16,20 +16,17 @@ import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.ai.StrategicAI;
 import exerelin.campaign.ai.action.StrategicAction;
 import exerelin.campaign.ai.action.StrategicActionDelegate;
-import exerelin.plugins.ExerelinModPlugin;
-import exerelin.utilities.NexConfig;
-import exerelin.utilities.NexUtilsFaction;
-import exerelin.utilities.NexUtilsReputation;
-import exerelin.utilities.StringHelper;
+import exerelin.campaign.intel.FilterableIntel;
+import exerelin.utilities.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDelegate {
+public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDelegate, FilterableIntel {
 	
 	protected String eventId;
 	protected String factionId1;
@@ -79,30 +76,7 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 	}
 
 	public void addEvent() {
-		boolean notify = shouldNotify();
-		String commFacId = Misc.getCommissionFactionId();
-		if (commFacId == null) commFacId = "";
-		if (!notify && ExerelinModPlugin.isNexDev) {
-			Global.getSector().getCampaignUI().addMessage("Suppressed diplomacy notification " 
-					+ getName() + " due to filter level");
-		}
-		if (NexConfig.nexIntelQueued<=0 || NexConfig.nexIntelQueued==1) {
-			if (NexConfig.nexIntelQueued<=0 ||
-					isWar ||
-					isPeace ||
-					Factions.PLAYER.equals(factionId1) ||
-					Factions.PLAYER.equals(factionId2) ||
-					commFacId.equals(factionId1) ||
-					commFacId.equals(factionId2)) {
-				Global.getSector().getIntelManager().addIntel(this, !notify);
-			}
-			else if (notify) {
-				Global.getSector().getIntelManager().queueIntel(this);
-			}
-		}
-		else if (notify) {
-			Global.getSector().getIntelManager().queueIntel(this);
-		}
+		addIntelWithFilterChecks();
 		Global.getSector().addScript(this);
 		endAfterDelay();
 	}
@@ -250,6 +224,12 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 		}
 				
 		return filterLevel <= 0;
+	}
+
+	public boolean shouldQueueImpl() {
+		String commFacId = Misc.getCommissionFactionId();
+		if (commFacId == null) commFacId = "";
+		return !(isWar || isPeace || Factions.PLAYER.equals(factionId1) || Factions.PLAYER.equals(factionId2) || commFacId.equals(factionId1) || commFacId.equals(factionId2));
 	}
 	
 	/*

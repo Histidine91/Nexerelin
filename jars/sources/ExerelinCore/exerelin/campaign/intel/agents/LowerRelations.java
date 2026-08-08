@@ -83,10 +83,8 @@ public class LowerRelations extends CovertActionIntel {
 	}
 
 	@Override
-	protected boolean shouldDeliverImmediately() {
-		return super.shouldDeliverImmediately()
-				||	thirdFaction == Misc.getCommissionFaction()
-				|| 	thirdFaction == PlayerFactionStore.getPlayerFaction();
+	public boolean shouldQueueImpl() {
+		return super.shouldQueueImpl() && thirdFaction != Misc.getCommissionFaction() && thirdFaction != PlayerFactionStore.getPlayerFaction();
 	}
 
 	@Override
@@ -147,7 +145,7 @@ public class LowerRelations extends CovertActionIntel {
 	}
 	
 	@Override
-	protected boolean shouldNotify() {
+	public boolean shouldNotify() {
 		if (repResult2 != null && repResult2.wasHostile != repResult2.isHostile)
 			return true;
 		return super.shouldNotify();

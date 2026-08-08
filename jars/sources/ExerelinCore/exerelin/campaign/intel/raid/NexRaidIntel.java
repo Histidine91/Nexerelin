@@ -25,6 +25,7 @@ import exerelin.campaign.econ.GroundPoolManager;
 import exerelin.campaign.econ.RaidCondition;
 import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.fleets.NexOrganizeStage;
 import exerelin.campaign.intel.fleets.NexReturnStage;
 import exerelin.campaign.intel.fleets.NexTravelStage;
@@ -151,6 +152,10 @@ public class NexRaidIntel extends OffensiveFleetIntel {
 			info.addPara(name, tc, initPad);
 		}
 		addETABullet(info, tc, h, 0);
+
+		if (repEffect != null) {
+			DiplomacyIntel.addRelationshipChangePara(info, faction.getId(), targetFaction.getId(), storedRelation, repEffect, 10);
+		}
 	}
 
 	protected List<FactionAPI> getTargetFactions() {

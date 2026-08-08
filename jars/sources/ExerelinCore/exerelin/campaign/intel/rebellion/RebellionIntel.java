@@ -26,6 +26,7 @@ import exerelin.campaign.*;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.intel.FilterableIntel;
 import exerelin.campaign.intel.agents.AgentIntel;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
@@ -43,7 +44,7 @@ import static exerelin.campaign.SectorManager.MEMORY_KEY_RECENTLY_CAPTURED_BY_PL
 import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 
 public class RebellionIntel extends BaseIntelPlugin implements InvasionListener, 
-		FleetEventListener {
+		FleetEventListener, FilterableIntel {
 
 	public static final boolean DEBUG_MODE = false;
 
@@ -168,43 +169,7 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			ip.checkOutPerson(rebelRep, "nex_rebel_representative");
 		}
 		Global.getSector().getListenerManager().addListener(this);
-		int nexIntelQueued = NexConfig.nexIntelQueued;
-		switch (nexIntelQueued) {
-
-			case 0:
-
-				Global.getSector().getIntelManager().addIntel(this, true);
-				break;
-
-			case 1:
-
-				if (govtFaction == Misc.getCommissionFaction()
-					|| rebelFaction == Misc.getCommissionFaction()
-					|| govtFaction == PlayerFactionStore.getPlayerFaction()
-					|| rebelFaction == PlayerFactionStore.getPlayerFaction()){
-					Global.getSector().getIntelManager().addIntel(this, true);
-				}
-
-				else Global.getSector().getIntelManager().queueIntel(this);
-				break;
-
-			case 2:
-
-				if (rebelFaction == PlayerFactionStore.getPlayerFaction()) {
-					Global.getSector().getIntelManager().addIntel(this, true);
-				}
-
-				else
-				Global.getSector().getIntelManager().queueIntel(this);
-				break;
-
-			default:
-
-				Global.getSector().getIntelManager().addIntel(this, true);
-				Global.getSector().getCampaignUI().addMessage("Switch statement within init(), in RebellionIntel, " +
-						"defaulted. This is not supposed to happen. If your nexIntelQueued setting within ExerelinConfig " +
-						"is below 0 or above 2, that is the likely cause. Otherwise, please contact the mod author!");
-		}
+		addIntelWithFilterChecks();
 		conditionToken = market.addCondition("nex_rebellion_condition");
 		
 		if (instant) {
@@ -221,7 +186,22 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 		}
 		
 	}
-	
+
+	protected boolean targetsOrIsTargetingPlayer() {
+		FactionAPI pf = PlayerFactionStore.getPlayerFaction();
+		return govtFaction.isPlayerFaction() || govtFaction == pf || rebelFaction.isPlayerFaction() || rebelFaction == pf;
+	}
+
+	@Override
+	public boolean shouldQueueImpl() {
+		return !targetsOrIsTargetingPlayer();
+	}
+
+	@Override
+	public boolean shouldNotify() {
+		return true;
+	}
+
 	public static float getSizeMod(int size)
 	{
 		return (float)Math.pow(2, size - 1);
