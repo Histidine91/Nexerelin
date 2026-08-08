@@ -706,7 +706,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 	}
 
 	public boolean checkNonHostileAbort() {
-		return abortIfNonHostile && !faction.isHostileTo(target.getFaction());
+		return isAbortIfNonHostile() && !faction.isHostileTo(target.getFaction());
 	}
 
 	/**

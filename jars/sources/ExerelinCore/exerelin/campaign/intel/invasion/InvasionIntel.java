@@ -834,7 +834,7 @@ public class InvasionIntel extends OffensiveFleetIntel implements RaidDelegate,
 		}
 		
 		// to proceed, planet must either have an ongoing ground battle or be hostile
-		if (!faction.isHostileTo(target.getFaction()) && GroundBattleIntel.getOngoing(target) == null) {
+		if (checkNonHostileAbort() && GroundBattleIntel.getOngoing(target) == null) {
 			terminateEvent(OffensiveOutcome.NO_LONGER_HOSTILE);
 			return;
 		}
