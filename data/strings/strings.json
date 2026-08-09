@@ -932,7 +932,7 @@
 		"intelReturnMarketCredits":"Received %s",
 		"dialogCeasefireTitle":"|| Priority Notification ||",
 		"dialogCeasefireText":"You have received a $ceasefireOrPeaceTreaty offer from $theFaction. A response is required in $timeLeft $days.",
-		"dialogCeasefireText2":"You can disable this popup in the %s settings file.",
+		"dialogCeasefireText2":"You can disable this popup in the ==mod settings menu==, or if that is unavailable the ==exerelin_config.json== settings file.",
 		"dialogCeasefireOptionGotoIntel":"Open intel screen",
 		
 		"intelInterveneTitle":"Intervention Warning",

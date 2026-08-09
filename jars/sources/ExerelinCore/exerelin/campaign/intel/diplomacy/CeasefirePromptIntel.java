@@ -19,6 +19,7 @@ import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.input.Keyboard;
+import org.magiclib.util.MagicTxt;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -257,7 +258,7 @@ public class CeasefirePromptIntel extends TimedDiplomacyIntel implements PopupDi
 		
 		text.setFontSmallInsignia();
 		str = StringHelper.getString("exerelin_diplomacy", "dialogCeasefireText2");
-		dialog.getTextPanel().addPara(str, Color.CYAN, NexConfig.CONFIG_PATH);
+		MagicTxt.addPara(dialog.getTextPanel(), str, Misc.getTextColor(), Color.CYAN);
 		text.setFontInsignia();
 	}
 
