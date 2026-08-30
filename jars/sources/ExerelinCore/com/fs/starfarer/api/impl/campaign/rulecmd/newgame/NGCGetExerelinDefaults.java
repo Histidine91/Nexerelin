@@ -21,6 +21,14 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
+		boolean preload = false;
+		if (!params.isEmpty()) preload = params.get(0).getBoolean(memoryMap);
+
+		if (preload) {
+			if (QuestChainSkipEntry.getEntries() == null) QuestChainSkipEntry.initEntries();
+			return true;
+		}
+
 		//ExerelinSetupData.resetInstance();
 		if (!loaded) {
 			ExerelinSetupData.readFromFile();

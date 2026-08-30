@@ -2,7 +2,8 @@ id,trigger,conditions,script,text,options,notes
 #RULESET_NAME Nexerelin,,,,,,
 ,,,,,,
 # NGC options,,,,,,
-ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,FireBest ExerelinNGCIntroPicker,,,override SS+ NGC
+ExerelinOnNewGameCreationStart,BeginNewGameCreation,!$doesFakeVariableExist score:999,"FireBest ExerelinNGCIntroPicker
+NGCGetExerelinDefaults true",,,override SS+ NGC
 ,,,,,,
 ExerelinNGCSkipIntro,ExerelinNGCIntroPicker,,"$isInIntro = false 0
 FireAll ExerelinNGCIntroPage
