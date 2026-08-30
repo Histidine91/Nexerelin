@@ -1,9 +1,9 @@
 {
 	id:"nex_derelict",
-	"displayName":"Derelict",
-	"displayNameWithArticle":"the derelict",
-	"displayNameLong":"Domain Exploration Derelict",
-	"displayNameLongWithArticle":"the Domain Exploration Derelict",
+	"displayName":"Derelict Empire",
+	"displayNameWithArticle":"the Derelict Empire",
+	"displayNameLong":"Rampant Domain Exploration Derelict",
+	"displayNameLongWithArticle":"the Rampant Domain Exploration Derelict",
 	"entityNamePrefix":"Derelict",
 	"personNamePrefix":"Derelict",
 	"personNamePrefixAOrAn":"a",

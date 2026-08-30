@@ -6,7 +6,7 @@
     "noSyncRelations":true,
     "allowAgentActions":false,
     "allowPrisonerActions":false,
-    "hostileToAll":1,
+    "hostileToAll":2,
     "noMissionTarget":true,
     
     "maxRelationships":{ "default":-0.6 },
