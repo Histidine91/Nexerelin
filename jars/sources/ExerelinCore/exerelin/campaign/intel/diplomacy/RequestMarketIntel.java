@@ -1,19 +1,25 @@
 package exerelin.campaign.intel.diplomacy;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_TransferMarket;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.intel.missions.ConquestMissionIntel;
+import exerelin.utilities.InvasionListener;
 import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
@@ -22,10 +28,11 @@ import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class RequestMarketIntel extends TimedDiplomacyIntel {
+public class RequestMarketIntel extends TimedDiplomacyIntel implements InvasionListener {
 
 	public static final float COOLDOWN = 365;
 	public static final String MEM_KEY_COOLDOWN = "$nex_requestMarket_cooldown";
@@ -43,6 +50,7 @@ public class RequestMarketIntel extends TimedDiplomacyIntel {
 	public void init() {
 		this.setImportant(true);
 		Global.getSector().getIntelManager().addIntel(this);
+		Global.getSector().getListenerManager().addListener(this);
 		Global.getSector().addScript(this);
 	}
 	
@@ -146,7 +154,9 @@ public class RequestMarketIntel extends TimedDiplomacyIntel {
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		float rep = getRepChange();
 
-		SectorManager.transferMarket(market, faction, market.getFaction(), false, false, null, 0);
+		// don't re-transfer to self if already transferred
+		if (faction != market.getFaction())
+			SectorManager.transferMarket(market, faction, market.getFaction(), false, false, null, 0);
 		repResult = NexUtilsReputation.adjustPlayerReputation(faction, rep);
 		storedRelation = faction.getRelationship(PlayerFactionStore.getPlayerFactionId());
 		Global.getSector().getPlayerFleet().getCargo().getCredits().add(credits);
@@ -162,8 +172,8 @@ public class RequestMarketIntel extends TimedDiplomacyIntel {
 	}
 
 	@Override
-	public void endAfterDelay() {
-		super.endAfterDelay();
+	protected void notifyEnding() {
+		Global.getSector().getListenerManager().removeListener(this);
 		if (state != 1) {
 			market.getMemoryWithoutUpdate().set(MEM_KEY_COOLDOWN, true, COOLDOWN);
 		}
@@ -173,6 +183,33 @@ public class RequestMarketIntel extends TimedDiplomacyIntel {
 	protected void advanceImpl(float amount) {
 		super.advanceImpl(amount);
 		checkMarketState();
+	}
+
+	@Override
+	public void reportInvadeLoot(InteractionDialogAPI dialog, MarketAPI market,
+	                             Nex_MarketCMD.TempDataInvasion actionData, CargoAPI cargo) {
+	}
+
+	@Override
+	public void reportInvasionRound(InvasionRound.InvasionRoundResult result,
+	                                CampaignFleetAPI fleet, MarketAPI defender, float atkStr, float defStr) {
+	}
+
+	@Override
+	public void reportInvasionFinished(CampaignFleetAPI fleet, FactionAPI attackerFaction,
+	                                   MarketAPI market, float numRounds, boolean success) {
+	}
+
+	@Override
+	public void reportMarketTransfered(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved,
+	                                   boolean isCapture, List<String> factionsToNotify, float repChangeStrength) {
+		if (market != this.market) return;
+
+		if (factionId.equals(newOwner.getId())) {
+			if (playerInvolved) accept();
+		} else if (!Nex_IsFactionRuler.isRuler(newOwner)) {
+			reject();
+		}
 	}
 
 	@Override
