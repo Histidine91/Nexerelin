@@ -7,7 +7,10 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.LabelAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipLocation
 import com.fs.starfarer.api.util.Misc
+import lunalib.backend.ui.components.util.TooltipHelper
+import lunalib.lunaUI.LunaUIUtils
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
@@ -96,7 +99,7 @@ open class NexLunaElement : CustomUIPanelPlugin {
         Global.getSoundPlayer().playUISound(id, pitch, volume)
     }
 
-    fun addText(text: String, baseColor: Color = Misc.getTextColor(), highlightColor: Color = Misc.getHighlightColor(), highlights: List<String> = listOf())
+    fun addText(text: String, baseColor: Color = Misc.getTextColor(), highlightColor: Color = Misc.getHighlightColor(),  highlights: List<String> = listOf())
     {
         paragraph = innerElement.addPara(text, 0f, baseColor, highlightColor, *highlights.toTypedArray())
     }
@@ -116,6 +119,30 @@ open class NexLunaElement : CustomUIPanelPlugin {
             addText("")
         }
         paragraph!!.position.inTL(width / 2 - paragraph!!.computeTextWidth(paragraph!!.text) / 2, height / 2 - paragraph!!.computeTextHeight(paragraph!!.text) / 2)
+    }
+
+    fun addTooltip(text: String, maxWidth: Float, location: TooltipLocation, vararg highlights: String) {
+        parentElement.addTooltipToPrevious(TooltipHelper(text, 300f, *highlights), location)
+    }
+
+    fun select() {
+        if (selectionGroup != "")
+        {
+            LunaUIUtils.selectedElements.set(selectionGroup, elementID)
+        }
+    }
+
+    fun unselect() {
+        if (LunaUIUtils.selectedElements.get(selectionGroup) == elementID)
+        {
+            LunaUIUtils.selectedElements.set(selectionGroup, null)
+        }
+    }
+
+    fun isSelected() : Boolean {
+        if (LunaUIUtils.selectedElements.get(selectionGroup) == null) return false
+        if (LunaUIUtils.selectedElements.get(selectionGroup) == elementID) return true
+        return false
     }
 
     fun getCustomData(id: String) = customData.get(id)
