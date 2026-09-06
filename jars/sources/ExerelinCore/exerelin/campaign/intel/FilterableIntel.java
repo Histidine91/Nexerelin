@@ -19,19 +19,24 @@ public interface FilterableIntel {
 
 	boolean shouldQueueImpl();
 
-	/**
-	 * @return True if event was added or queued, false if filtered out
-	 */
 	default boolean addIntelWithFilterChecks() {
 		if (!(this instanceof BaseIntelPlugin bip)) return false;
+		return addIntelWithFilterChecks(bip);
+	}
+
+	/**
+	 * @return True if event was added or queued, false if filtered out.
+	 */
+	default boolean addIntelWithFilterChecks(BaseIntelPlugin intel) {
+
 		boolean notify = this.shouldNotify();
 		boolean queue = this.shouldQueue();
 
 		if (notify) {
 			if (queue) {
-				Global.getSector().getIntelManager().queueIntel(bip);
+				Global.getSector().getIntelManager().queueIntel(intel);
 			} else {
-				Global.getSector().getIntelManager().addIntel(bip, false);
+				Global.getSector().getIntelManager().addIntel(intel, false);
 			}
 			return true;
 		} else {
@@ -40,11 +45,11 @@ public interface FilterableIntel {
 
 		if (ExerelinModPlugin.isNexDev) {
 			if (!notify) {
-				String str = String.format("Suppressed notification for [%s] (%s) due to filter level", bip.getSmallDescriptionTitle(), bip.getClass().getName());
+				String str = String.format("Suppressed notification for [%s] (%s) due to filter level", intel.getSmallDescriptionTitle(), intel.getClass().getName());
 				Global.getSector().getCampaignUI().addMessage(str);
 			}
 			else if (notify && queue) {
-				String str = String.format("Queueing intel notification for [%s] (%s)", bip.getSmallDescriptionTitle(), bip.getClass().getName());
+				String str = String.format("Queueing intel notification for [%s] (%s)", intel.getSmallDescriptionTitle(), intel.getClass().getName());
 				Global.getSector().getCampaignUI().addMessage(str);
 			}
 		}

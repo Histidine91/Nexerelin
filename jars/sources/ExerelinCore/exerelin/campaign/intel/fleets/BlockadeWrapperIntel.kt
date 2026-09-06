@@ -101,7 +101,7 @@ class BlockadeWrapperIntel(attacker: FactionAPI?, from: MarketAPI?, target: Mark
         if (shouldMakeImportantIfTargetingPlayer()
             && (targetFaction.isPlayerFaction || targetFaction === PlayerFactionStore.getPlayerFaction())
         ) fgi.isImportant = true
-        addIntelWithFilterChecks()
+        addIntelWithFilterChecks(fgi)
         intelQueuedOrAdded = true
     }
 
