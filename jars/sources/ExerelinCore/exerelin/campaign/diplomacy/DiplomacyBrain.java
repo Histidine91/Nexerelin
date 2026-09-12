@@ -83,7 +83,9 @@ Bla
 */
 
 public class DiplomacyBrain {
-	
+
+	public static final float POSITIVE_EFFECT_GENERAL = 20f;
+	public static final float NEGATIVE_EFFECT_GENERAL = -20f;
 	public static final float RELATIONS_MULT = 25f;
 	public static final float ALIGNMENT_MULT = 2f;
 	public static final float ALIGNMENT_DIPLOMATIC_MULT = 1.5f;
@@ -296,6 +298,7 @@ public class DiplomacyBrain {
 		float currTraitScore = 0;
 		if (disposition.getFlatMods().containsKey("traits"))
 			currTraitScore = disposition.getFlatStatMod("traits").getValue();
+		delta *= NexConfig.diplomacyTraitEffectMult;
 		//log.info(factionId + " modifying trait score by " + delta);
 		disposition.modifyFlat("traits", currTraitScore + delta, "Traits");
 	}
@@ -401,6 +404,25 @@ public class DiplomacyBrain {
 		
 		if (DiplomacyTraits.hasTrait(otherFactionId, TraitIds.MONSTROUS)) {
 			modifyDispositionFromTraits(disposition, MONSTROUS_PENALTY);
+		}
+
+		boolean isClaimant = DiplomacyTraits.hasTrait(factionId, TraitIds.DOMAIN_CLAIMAINT);
+		boolean otherIsClaimant = DiplomacyTraits.hasTrait(otherFactionId, TraitIds.DOMAIN_CLAIMAINT);
+		boolean isLoyalist = DiplomacyTraits.hasTrait(factionId, TraitIds.DOMAIN_LOYALIST);
+		boolean isRebel = DiplomacyTraits.hasTrait(factionId, TraitIds.DOMAIN_REBEL);
+		boolean otherIsRebel = DiplomacyTraits.hasTrait(otherFactionId, TraitIds.DOMAIN_REBEL);
+
+		if (isClaimant && otherIsClaimant) {
+			modifyDispositionFromTraits(disposition, NEGATIVE_EFFECT_GENERAL);
+		}
+		if (isLoyalist && otherIsClaimant) {
+			modifyDispositionFromTraits(disposition, POSITIVE_EFFECT_GENERAL);
+		}
+		if (isClaimant && otherIsRebel) {
+			modifyDispositionFromTraits(disposition, NEGATIVE_EFFECT_GENERAL);
+		}
+		if (isRebel && otherIsClaimant) {
+			modifyDispositionFromTraits(disposition, NEGATIVE_EFFECT_GENERAL);
 		}
 	}
 		

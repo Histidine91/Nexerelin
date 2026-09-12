@@ -8,24 +8,21 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMath;
-import java.awt.Color;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
 
 public class DiplomacyTraits {
 	
 	public static final String DEF_PATH = "data/config/exerelin/factionTraits.json";
 	public static final String MEM_KEY_RANDOM_TRAITS = "$nex_random_diplomacy_traits";
+	public static final String MEM_KEY_TRAITS_ADD = "$nex_diplomacyTraits_add";
+	public static final String MEM_KEY_TRAITS_REMOVE = "$nex_diplomacyTraits_remove";
 	protected static final List<TraitDef> TRAITS = new ArrayList<>();
 	protected static final Map<String, TraitDef> TRAITS_BY_ID = new HashMap<>();
 	
@@ -46,6 +43,7 @@ public class DiplomacyTraits {
 			String name = entryJson.getString("name");
 			String desc = entryJson.getString("desc");
 			String icon = entryJson.optString("icon");
+			float sortOrder = (float)entryJson.optDouble("sortOrder", i);
 			boolean noRandom = entryJson.optBoolean("noRandom", false);
 			JSONArray colorJson = entryJson.optJSONArray("color");
 			int[] color = null;
@@ -53,7 +51,7 @@ public class DiplomacyTraits {
 				color = new int[] {colorJson.getInt(0), colorJson.getInt(1), colorJson.getInt(2)};
 			}
 			
-			TraitDef trait = new TraitDef(id, name, desc, icon, color, noRandom);
+			TraitDef trait = new TraitDef(id, name, desc, icon, color, noRandom, sortOrder);
 			
 			if (entryJson.has("incompatible")) {
 				JSONArray incompatJson = entryJson.getJSONArray("incompatible");
@@ -109,21 +107,66 @@ public class DiplomacyTraits {
 	}
 	
 	public static List<String> getFactionTraits(String factionId) {
+		MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
+		List<String> traits;
 		if (NexConfig.allowRandomDiplomacyTraits && DiplomacyManager.getManager().getStartRelationsMode().isRandom()
 				&& NexConfig.getFactionConfig(factionId).allowRandomDiplomacyTraits) 
 		{
-			MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
 			if (!mem.contains(MEM_KEY_RANDOM_TRAITS)) {
 				mem.set(MEM_KEY_RANDOM_TRAITS, generateRandomTraits(null));
 			}
-			return (List<String>)mem.get(MEM_KEY_RANDOM_TRAITS);
+			traits = (List<String>)mem.get(MEM_KEY_RANDOM_TRAITS);
 		}
-		
-		List<String> traits = new ArrayList<>(NexConfig.getFactionConfig(factionId).diplomacyTraits);
+		else {
+			traits = new ArrayList<>(NexConfig.getFactionConfig(factionId).diplomacyTraits);
+		}
+
+		traits.addAll(getAddedTraits(factionId));
+		traits.removeAll(getRemovedTraits(factionId));
 		
 		return traits;
 	}
-	
+
+	public static Set<String> getAddedTraits(String factionId) {
+		MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
+		if (mem.contains(MEM_KEY_TRAITS_ADD)) {
+			return (Set<String>)mem.get(MEM_KEY_TRAITS_ADD);
+		}
+		return new HashSet<>();
+	}
+
+	public static Set<String> getRemovedTraits(String factionId) {
+		MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
+		if (mem.contains(MEM_KEY_TRAITS_REMOVE)) {
+			return (Set<String>)mem.get(MEM_KEY_TRAITS_REMOVE);
+		}
+		return new HashSet<>();
+	}
+
+	public static boolean addAddedTrait(String factionId, String trait) {
+		MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
+		if (!mem.contains(MEM_KEY_TRAITS_ADD)) {
+			mem.set(MEM_KEY_TRAITS_ADD, new HashSet<>());
+		}
+		return getAddedTraits(factionId).add(trait);
+	}
+
+	public static boolean removeAddedTrait(String factionId, String trait) {
+		return getAddedTraits(factionId).remove(trait);
+	}
+
+	public static boolean addRemovedTrait(String factionId, String trait) {
+		MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
+		if (!mem.contains(MEM_KEY_TRAITS_REMOVE)) {
+			mem.set(MEM_KEY_TRAITS_REMOVE, new HashSet<>());
+		}
+		return getRemovedTraits(factionId).add(trait);
+	}
+
+	public static boolean removeRemovedTrait(String factionId, String trait) {
+		return getRemovedTraits(factionId).remove(trait);
+	}
+
 	public static boolean hasTrait(String factionId, String trait) {
 		return getFactionTraits(factionId).contains(trait);
 	}
@@ -142,10 +185,11 @@ public class DiplomacyTraits {
 		public final String desc;
 		public final String icon;
 		public final Color color;
+		public final float sortOrder;
 		public final boolean noRandom;
 		public final Set<String> incompatibilities = new HashSet<>();
 		
-		public TraitDef(String id, String name, String desc, String icon, int[] color, boolean noRandom) 
+		public TraitDef(String id, String name, String desc, String icon, int[] color, boolean noRandom, float sortOrder)
 		{
 			this.id = id;
 			this.name = name;
@@ -156,6 +200,7 @@ public class DiplomacyTraits {
 			else
 				this.color = Color.WHITE;
 			this.noRandom = noRandom;
+			this.sortOrder = sortOrder;
 		}
 	}
 	
@@ -182,5 +227,8 @@ public class DiplomacyTraits {
 		public static final String DEVIOUS			= "devious";
 		public static final String MONSTROUS		= "monstrous";
 		public static final String PREDATORY		= "predatory";
+		public static final String DOMAIN_CLAIMAINT = "domain_claimant";
+		public static final String DOMAIN_LOYALIST  = "domain_loyalist";
+		public static final String DOMAIN_REBEL     = "domain_rebel";
 	}
 }

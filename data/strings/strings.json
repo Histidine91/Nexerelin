@@ -3289,6 +3289,8 @@
 		"tooltip_allowRandomDiplomacyTraits":"When faction relations are randomized, apply random diplomacy traits to each faction as well.",
 		"name_useRelationshipBounds":"Use relationship bounds",
 		"tooltip_useRelationshipBounds":"Relationship boundaries are set in faction config; e.g. some factions can never become really friendly with one another. Bounds do not apply when faction relations are randomized or flattened.",
+		"name_diplomacyTraitEffectMult":"Diplomacy trait effect mult",
+		"tooltip_diplomacyTraitEffectMult":"Multiplies the disposition effect between factions from their diplomacy traits. Does not control secondary effects like Low Profile's operative use.\nMay take a few days to update; viewing a diplomacy profile will trigger an immediate refresh.",
 		
 		"name_enableAlliances":"Enable faction alliances",
 		"tooltip_enableAlliances":"",

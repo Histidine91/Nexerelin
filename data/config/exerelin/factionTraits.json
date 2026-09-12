@@ -174,7 +174,35 @@
 			"color":[224, 32, 48],
 			"icon":"graphics/exerelin/icons/intel/claw.png",
 			"noRandom":true,
-		}
+		},
 		# vindictive?
+		
+		{
+			"id":"domain_claimant",
+			"name":"Domain Claimant",
+			"desc":"This faction claims to be the (true) inheritor of the Domain's legacy.",
+			"color":[255, 191, 0],	# make it gold
+			"icon":"graphics/factions/crest_domain.png",
+			"noRandom":true,
+			"sortOrder": -3
+		},
+		{
+			"id":"domain_loyalist",
+			"name":"Domain Loyalist",
+			"desc":"This faction prides itself on its loyalty to the Domain and its successor(s).",
+			"color":[178, 102, 32],	# bronze?
+			"icon":"graphics/icons/markets/capital.png",
+			"noRandom":true,
+			"sortOrder": -2
+		},
+		{
+			"id":"domain_rebel",
+			"name":"Domain Rebel",
+			"desc":"This faction positions itself in opposition to the old Domain.",
+			"color":[188, 91, 124],	# magenta
+			"icon":"graphics/icons/markets/dissidents.png",
+			"noRandom":true,
+			"sortOrder": -1
+		},
 	],
 }

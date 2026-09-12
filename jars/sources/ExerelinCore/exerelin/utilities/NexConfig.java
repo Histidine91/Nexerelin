@@ -84,6 +84,7 @@ public class NexConfig
 
     // Diplomacy
     public static boolean enableDiplomacy = true;
+    public static float diplomacyTraitEffectMult = 1;
     public static boolean allowRandomDiplomacyTraits = true;
     public static boolean syncPlayerRelationsWithCommisioner = true;    // recommend not making it false, I expect it'd really be a headache to deal with
     
@@ -248,6 +249,7 @@ public class NexConfig
 
             enableDiplomacy = settings.optBoolean("enableDiplomacy", enableDiplomacy);
             allowRandomDiplomacyTraits = settings.optBoolean("allowRandomDiplomacyTraits", allowRandomDiplomacyTraits);
+            diplomacyTraitEffectMult = (float)settings.optDouble("diplomacyTraitEffectMult", diplomacyTraitEffectMult);
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
 
             enableAlliances = settings.optBoolean("enableAlliances", enableAlliances);

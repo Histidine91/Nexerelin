@@ -74,6 +74,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("followersDiplomacy", "boolean", tabDiplomacy, NexConfig.followersDiplomacy);
         addSetting("diplomacyInterval", "float", tabDiplomacy, DiplomacyManager.getBaseInterval(), 5, 60);
         addSetting("allowRandomDiplomacyTraits", "boolean", tabDiplomacy, NexConfig.allowRandomDiplomacyTraits);
+        addSetting("diplomacyTraitEffectMult", "float", tabDiplomacy, NexConfig.diplomacyTraitEffectMult, 0, 5);
         addSetting("useRelationshipBounds", "boolean", tabDiplomacy, NexConfig.useRelationshipBounds);
 
         addHeader("alliances", tabDiplomacy);
@@ -209,6 +210,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.followersDiplomacy = (boolean)loadSetting("followersDiplomacy", "boolean");
         DiplomacyManager.setBaseInterval((float)loadSetting("diplomacyInterval", "float"));
         NexConfig.allowRandomDiplomacyTraits = (boolean)loadSetting("allowRandomDiplomacyTraits", "boolean");
+        NexConfig.diplomacyTraitEffectMult = (float)loadSetting("diplomacyTraitEffectMult", "float");
         NexConfig.useRelationshipBounds = (boolean)loadSetting("useRelationshipBounds", "boolean");
 
         NexConfig.enableAlliances = (boolean)loadSetting("enableAlliances", "boolean");
