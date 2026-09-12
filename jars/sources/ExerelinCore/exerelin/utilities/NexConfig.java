@@ -47,6 +47,7 @@ public class NexConfig
     public static int maxAgents = 2;
     public static boolean agentStealAllShips = true;
     public static boolean useAgentSpecializations = true;
+    public static boolean npcAgentActivity = true;
 
     public static String[] builtInFactions = new String[]{};
     public static String[] supportedModFactions = new String[]{};
@@ -217,6 +218,7 @@ public class NexConfig
             maxAgents = settings.optInt("maxAgents", maxAgents);
             agentStealAllShips = settings.optBoolean("agentStealAllShips", agentStealAllShips);
             useAgentSpecializations = settings.optBoolean("useAgentSpecializations", useAgentSpecializations);
+            npcAgentActivity = settings.optBoolean("npcAgentActivity", npcAgentActivity);
 
             enableHostileFleetEvents = settings.optBoolean("enableHostileFleetEvents", enableHostileFleetEvents);
             enableInvasions = settings.optBoolean("enableInvasions", enableInvasions);

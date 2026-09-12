@@ -3329,6 +3329,8 @@
 		"tooltip_useAgentSpecializations":"Restrict operatives to conducting certain operation types, depending on their specialization (negotiatior, saboteur, hybrid)",
 		"name_followersAgents":"Player faction conducts operative actions",
 		"tooltip_followersAgents":"If enabled, player faction will independently conduct covert operations like NPC factions do, independent of your actions.",
+		"name_npcAgentActivity":"NPC operative activity",
+		"tooltip_npcAgentActivity":"",
 
 		"name_allowNPCSatBomb":"Allow NPC saturation bombardments",
 		"tooltip_allowNPCSatBomb":"Does not affect territorial bombardments of player colonies in claimed systems.",

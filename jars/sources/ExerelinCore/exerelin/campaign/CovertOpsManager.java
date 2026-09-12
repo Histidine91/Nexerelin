@@ -475,6 +475,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     {
         if (Global.getSector().isInNewGameAdvance())
             return;
+
+		if (!NexConfig.npcAgentActivity) return;
         
         log.info("Starting covert warfare event creation");
         SectorAPI sector = Global.getSector();

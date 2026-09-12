@@ -95,6 +95,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("agentStealMarketShipsOnly", "boolean", !NexConfig.agentStealAllShips);
         addSetting("useAgentSpecializations", "boolean", NexConfig.useAgentSpecializations);
         addSetting("followersAgents", "boolean", NexConfig.followersAgents);
+        addSetting("npcAgentActivity", "boolean", NexConfig.npcAgentActivity);
 
         addHeader("prisoners", null);
         addSetting("prisonerRepatriateRepValue", "float", NexConfig.prisonerRepatriateRepValue, 0, 1);
@@ -228,6 +229,7 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.agentStealAllShips = !(boolean)loadSetting("agentStealMarketShipsOnly", "boolean");
         NexConfig.useAgentSpecializations = (boolean)loadSetting("useAgentSpecializations", "boolean");
         NexConfig.followersAgents = (boolean)loadSetting("followersAgents", "boolean");
+        NexConfig.npcAgentActivity = (boolean)loadSetting("npcAgentActivity", "boolean");
 
         NexConfig.prisonerRepatriateRepValue = (float)loadSetting("prisonerRepatriateRepValue", "float");
         NexConfig.prisonerBaseRansomValue = (float)loadSetting("prisonerBaseRansomValue", "float");
