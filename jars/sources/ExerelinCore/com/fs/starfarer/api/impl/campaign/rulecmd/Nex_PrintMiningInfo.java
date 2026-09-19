@@ -1,20 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
-import java.awt.Color;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CoreInteractionListener;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.ResourceCostPanelAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.campaign.econ.EconomyAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
@@ -32,15 +19,14 @@ import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.MiningHelperLegacy.MiningReport;
-import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.StringHelper;
+
+import java.awt.*;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Locale;
+import java.util.*;
+import java.util.List;
 
-
+@Deprecated
 public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 
 	protected static final String STRING_CATEGORY = "exerelin_mining";

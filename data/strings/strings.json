@@ -192,6 +192,9 @@
 		"siegeBombardmentTooltip2":"Automatically disabled if no valid ground battles are in range, or the fleet does not have enough fuel remaining.",
 		"siegeBombardmentTooltipNoBattle":"No battle found",
 		"siegeBombardmentTooltipNoFuel":"Not enough fuel to support battle on %s",
+		
+		"autoMineFloatText":"Auto-mining enabled",
+		"autoMineTooltip":"Automatically executes a mining action on the closest mineable entity whenever mining is off cooldown. Will not check for issues such as full cargo holds, having no mining ships, running out of crew, or ships on the brink of falling apart.",
 	},
 
 	"exerelin_alliances":{
@@ -2003,6 +2006,14 @@
 		"crewLost":"crew lost",
 		"machineryLost":"heavy machinery lost",
 		"cargoFull":"Cargo overloaded",
+		
+		"abilityBulletCache":"Hidden caches: %s",
+		"abilityBulletCrewLost":"%s crew",
+		"abilityBulletMachineryLost":"%s machinery",
+		"abilityBulletAccidents":"Accidents: %s",
+		"abilityBulletShipsDamaged":"%s ship(s) damaged",
+		"abilityBulletShipsLostCR":"%s ship(s) lost CR",
+		"abilityBulletShipsDestroyed":"%s ship(s) destroyed",
 		
 		"optionOpenCargo":"Open cargo screen",
 		

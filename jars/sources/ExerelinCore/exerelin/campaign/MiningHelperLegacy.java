@@ -1200,8 +1200,8 @@ public class MiningHelperLegacy {
 	}
 	
 	public static class MiningReport {
-		public Map<String, Map<String, Float>> outputByCondition = new HashMap<>();
-		public Map<String, Float> totalOutput = new HashMap<>();
+		public Map<String, Map<String, Float>> outputByCondition = new HashMap<>(); // key is commodity ID
+		public Map<String, Float> totalOutput = new HashMap<>();    // key is commodity ID
 		public float exhaustion = 0;
 		public float danger = 0;
 		public boolean isPlayer = false;
