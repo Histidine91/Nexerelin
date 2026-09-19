@@ -505,6 +505,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         main.addTitle(getName(), Misc.getBasePlayerColor());
 
         addPanel(main, true);
+        main.addSectionHeading(getString("headerRespect"), Alignment.MID, 32);
         addPanel(main, false);
 
         panel.addUIElement(main).inTL(0, 0);

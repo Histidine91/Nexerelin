@@ -13,19 +13,20 @@ import com.fs.starfarer.api.util.Pair
 import exerelin.campaign.PlayerFactionStore
 import exerelin.campaign.StatsTracker
 import exerelin.campaign.intel.diplomacy.DiplomacyProfileIntel
-import exerelin.campaign.ui.CustomPanelPluginWithInput
-import exerelin.campaign.ui.FramedCustomPanelPlugin
-import exerelin.campaign.ui.MusicPickerDialogDelegate
-import exerelin.campaign.ui.VictoryScreenScript
+import exerelin.campaign.ui.*
 import exerelin.campaign.ui.VictoryScreenScript.VictoryDialog
 import exerelin.utilities.ModPluginEventListener
 import exerelin.utilities.NexConfig
 import exerelin.utilities.NexUtils
+import exerelin.utilities.NexUtilsGUI
 import exerelin.utilities.StringHelper
 import org.lazywizard.lazylib.ext.logging.i
 import java.awt.Color
 import java.lang.NullPointerException
 
+/**
+ * The 'Personal Info' intel, with honorific and music pickers, ethos display, etc.
+ */
 open class PersonalConfigIntel : BaseIntelPlugin(), ModPluginEventListener {
 
     companion object {
@@ -98,10 +99,11 @@ open class PersonalConfigIntel : BaseIntelPlugin(), ModPluginEventListener {
                               dialog : MusicPickerDialogDelegate?) {
             val pad = 3f
             val row : CustomPanelAPI = outerPanel.createCustomPanel(width, MUSIC_ROW_HEIGHT, null)
+            val cpp = dialog?.customPanelPlugin as CustomPanelPluginWithInput?
 
             val rowTT : TooltipMakerAPI = row.createUIElement(width, MUSIC_ROW_HEIGHT, false)
             rowTT.setForceProcessInput(true)
-            //log.info("Adding row with id $id, title $title, track ")
+            //log.info("Adding row with id $id, title $title, track")
             val titleLabel = rowTT.addPara(title, titleColor ?: Misc.getTextColor(), 0f)
             var x = MUSIC_TITLE_WIDTH + pad
 
@@ -112,7 +114,7 @@ open class PersonalConfigIntel : BaseIntelPlugin(), ModPluginEventListener {
             val playBtn = rowTT.addButton(getString("btnPlayMusic"), "preview_" + id, MUSIC_BUTTON_WIDTH, MUSIC_ROW_HEIGHT, 0f)
             playBtn.position.inTL(x, 0f)
             x += MUSIC_BUTTON_WIDTH + pad
-            dialog?.customPanelPlugin?.addButton(object :
+            cpp?.addButton(object :
                 CustomPanelPluginWithInput.ButtonEntry(playBtn, "preview_" + id) {
                 override fun onToggle() {
                     playMusic(trackName!!)
@@ -122,14 +124,14 @@ open class PersonalConfigIntel : BaseIntelPlugin(), ModPluginEventListener {
             val changeBtn = rowTT.addButton(getString("btnChangeMusic"), "change_" + id, MUSIC_BUTTON_WIDTH, MUSIC_ROW_HEIGHT, 0f)
             changeBtn.position.inTL(x, 0f)
             x += MUSIC_BUTTON_WIDTH + pad
-            dialog?.customPanelPlugin?.addButton(object :
+            cpp?.addButton(object :
                 CustomPanelPluginWithInput.ButtonEntry(changeBtn, "change_" + id) {
                 override fun onToggle() {
                     //log.info("wololo changing music to $id")
-                    saveMusic(dialog.musicType, trackName)
+                    saveMusic(dialog!!.musicType, trackName)
                     dialog.callback?.dismissCustomDialog(0)
                     dialog.interactionDialog?.dismiss()
-                    dialog.intelUIAPI.updateUIForItem(dialog.intel)
+                    dialog.intelUIAPI?.updateUIForItem(dialog.intel)
                 }
             })
 
@@ -176,7 +178,9 @@ open class PersonalConfigIntel : BaseIntelPlugin(), ModPluginEventListener {
         val height = (Global.getSettings().screenHeight * 0.8f).coerceAtLeast(640f)
 
         val delegate = MusicPickerDialogDelegate(musicType, width, height, intelUI, this)
-        intelUI.showDialog(Global.getSector().playerFleet, MusicPickerDialogDelegate.MusicPickerDialogPlugin(delegate))
+        intelUI.showDialog(Global.getSector().playerFleet,
+            NexBaseCustomDialogDelegate.SimpleDialogWithDelegate(delegate)
+        )
     }
 
     fun addMusicSelector(outerPanel: CustomPanelAPI, tooltip: TooltipMakerAPI, ttWidth: Float) {
@@ -394,15 +398,15 @@ open class PersonalConfigIntel : BaseIntelPlugin(), ModPluginEventListener {
             return
         }
 
-        if (buttonId is String && (buttonId as String).startsWith("preview_")) {
-            val type = (buttonId as String).substring("preview_".length)
+        if (buttonId is String && buttonId.startsWith("preview_")) {
+            val type = buttonId.substring("preview_".length)
             val musicSetId = Global.getSector().playerFaction.musicMap[type] ?: return
             playMusic(musicSetId)
             return
         }
 
-        if (buttonId is String && (buttonId as String).startsWith("change_")) {
-            val type = (buttonId as String).substring("change_".length)
+        if (buttonId is String && buttonId.startsWith("change_")) {
+            val type = buttonId.substring("change_".length)
             createMusicSelectorWindow(type, ui!!)
             return
         }

@@ -8,6 +8,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.NexUtilsMath;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +62,7 @@ public class DiplomacyTraits {
 			TRAITS.add(trait);
 			TRAITS_BY_ID.put(id, trait);
 		}
+		Collections.sort(TRAITS);
 	}
 	
 	/**
@@ -179,7 +181,7 @@ public class DiplomacyTraits {
 		return TRAITS_BY_ID.get(id);
 	}
 	
-	public static class TraitDef {
+	public static class TraitDef implements Comparable<TraitDef> {
 		public final String id;
 		public final String name;
 		public final String desc;
@@ -201,6 +203,11 @@ public class DiplomacyTraits {
 				this.color = Color.WHITE;
 			this.noRandom = noRandom;
 			this.sortOrder = sortOrder;
+		}
+
+		@Override
+		public int compareTo(@NotNull TraitDef other) {
+			return Float.compare(sortOrder, other.sortOrder);
 		}
 	}
 	

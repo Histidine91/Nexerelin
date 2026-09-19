@@ -26,14 +26,16 @@ import exerelin.campaign.econ.FleetPoolManager;
 import exerelin.campaign.econ.GroundPoolManager;
 import exerelin.campaign.econ.ResourcePoolManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.ui.DiploTraitPickerDialogDelegate;
+import exerelin.campaign.ui.NexBaseCustomDialogDelegate;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.*;
 import exerelin.utilities.NexFactionConfig.Morality;
 import lombok.extern.log4j.Log4j;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 @Log4j
 public class DiplomacyProfileIntel extends BaseIntelPlugin {
@@ -43,7 +45,9 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	public static final float MARGIN = 40;
 	public static final float ALIGNMENT_BUTTON_WIDTH = 40;
 	public static final float ALIGNMENT_BUTTON_HEIGHT = 20;
+	public static final float TRAIT_ROW_HEIGHT = 40;
 	public static final Object BUTTON_DISPOSITION_DIR = new Object();
+	public static final Object BUTTON_PICK_TRAITS = new Object();
 	
 	public static final Set<String> NO_PROFILE_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
 		Factions.DERELICT, "nex_derelict"
@@ -491,7 +495,10 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 	public void listTraits(TooltipMakerAPI tooltip, float pad) 
 	{
 		tooltip.addSectionHeading(getString("traitsHeader"), com.fs.starfarer.api.ui.Alignment.MID, pad);
-				
+		if (faction.isPlayerFaction()) {
+			tooltip.addButton(StringHelper.getString("select", true), BUTTON_PICK_TRAITS, 120, ALIGNMENT_BUTTON_HEIGHT, pad);
+		}
+
 		List<String> traits = DiplomacyTraits.getFactionTraits(faction.getId()); 
 		// display all traits (for screenshots or such)
 		/*
@@ -505,7 +512,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			TraitDef trait = DiplomacyTraits.getTrait(traitId);
 			if (trait == null) continue;
 			
-			TooltipMakerAPI entry = tooltip.beginImageWithText(trait.icon, 40);
+			TooltipMakerAPI entry = tooltip.beginImageWithText(trait.icon, TRAIT_ROW_HEIGHT);
 			entry.addPara(trait.name, trait.color, 0);
 			entry.addPara(trait.desc, 3);
 			tooltip.addImageWithText(pad);
@@ -538,6 +545,14 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 			}
 		} catch (Exception ex) {}
 		tooltip.addIconGroup(32, 0);
+	}
+
+	protected void createTraitPickerWindow(IntelUIAPI intelUI) {
+		float width = Math.max(Global.getSettings().getScreenWidth() * 0.75f, 1024);
+		float height = Math.max(Global.getSettings().getScreenHeight() * 0.6f, 800f);
+
+		DiploTraitPickerDialogDelegate delegate = new DiploTraitPickerDialogDelegate(width, height, intelUI, this);
+		intelUI.showDialog(Global.getSector().getPlayerFleet(),	new NexBaseCustomDialogDelegate.SimpleDialogWithDelegate(delegate));
 	}
 
 	// adapted from Starship Legends' BattleReport
@@ -604,6 +619,11 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 		if (buttonId == BUTTON_DISPOSITION_DIR) {
 			showInwardDisposition = !showInwardDisposition;
 			ui.updateUIForItem(this);
+			return;
+		}
+
+		if (buttonId == BUTTON_PICK_TRAITS) {
+			createTraitPickerWindow(ui);
 			return;
 		}
 		

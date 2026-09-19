@@ -10,14 +10,18 @@ import com.fs.starfarer.api.util.Misc
 import exerelin.ExerelinConstants
 import exerelin.campaign.intel.PersonalConfigIntel
 import exerelin.utilities.NexConfig
+import exerelin.utilities.NexUtilsGUI
 import org.magiclib.util.MagicSettings
 import java.awt.Color
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashSet
 
-class MusicPickerDialogDelegate(val musicType: String, val width : Float, val height : Float, val intelUIAPI: IntelUIAPI, val intel: PersonalConfigIntel?) :
-    BaseCustomDialogDelegate() {
+/**
+ * Handles the interaction dialog music picker from [exerelin.campaign.intel.PersonalConfigIntel].
+ */
+class MusicPickerDialogDelegate(val musicType: String, width : Float, height : Float, val intelUIAPI: IntelUIAPI, val intel: PersonalConfigIntel?) :
+    NexBaseCustomDialogDelegate(width, height) {
 
     companion object {
         @JvmField val CUSTOM_TRACKS : MutableList<String> = MagicSettings.getList(ExerelinConstants.MOD_ID, "customFactionTracks")
@@ -28,17 +32,6 @@ class MusicPickerDialogDelegate(val musicType: String, val width : Float, val he
             CUSTOM_TRACKS.sort();
         }
     }
-
-    val customPanelPlugin = FramedCustomPanelPlugin(0.25f, Misc.getBasePlayerColor(), false)
-    var mainPanel : CustomPanelAPI? = null
-    var callback : CustomDialogDelegate.CustomDialogCallback? = null
-    var interactionDialog : InteractionDialogAPI? = null
-
-    fun getPlugin() : CustomPanelPluginWithInput {
-        return customPanelPlugin
-    }
-
-
 
     fun getMusicSetsAndColors(): Pair<Set<String>, Map<String, Color>> {
         val tracks = LinkedHashSet<String>()
@@ -86,10 +79,6 @@ class MusicPickerDialogDelegate(val musicType: String, val width : Float, val he
         panel.addUIElement(tooltip).inTL(0f, 0f)
     }
 
-    override fun getCustomPanelPlugin(): CustomUIPanelPlugin? {
-        return customPanelPlugin
-    }
-
     override fun customDialogConfirm() {
         interactionDialog?.dismiss()
     }
@@ -98,35 +87,5 @@ class MusicPickerDialogDelegate(val musicType: String, val width : Float, val he
         customDialogConfirm()
     }
 
-    class MusicPickerDialogPlugin(val delegate: MusicPickerDialogDelegate) : InteractionDialogPlugin {
-        override fun init(dialog: InteractionDialogAPI?) {
-            delegate.interactionDialog = dialog
-            dialog!!.showCustomDialog(delegate.width, delegate.height, delegate)
-        }
 
-        override fun optionSelected(optionText: String?, optionData: Any?) {
-
-        }
-
-        override fun optionMousedOver(optionText: String?, optionData: Any?) {
-
-        }
-
-        override fun advance(amount: Float) {
-
-        }
-
-        override fun backFromEngagement(battleResult: EngagementResultAPI?) {
-
-        }
-
-        override fun getContext(): Any? {
-            return null
-        }
-
-        override fun getMemoryMap(): MutableMap<String, MemoryAPI>? {
-            return null
-        }
-
-    }
 }

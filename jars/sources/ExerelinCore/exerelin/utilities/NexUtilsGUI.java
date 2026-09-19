@@ -18,6 +18,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Various helper methods for UI.
+ */
 public class NexUtilsGUI {
 		
 	public static TooltipCreator createSimpleTextTooltip(final String str, final float width) {
@@ -163,21 +166,18 @@ public class NexUtilsGUI {
 
 		int numPrevious = prevElements.size();
 		if (numPrevious == 0) {
-			// first card, place in TL
+			// first element, place in top-left
 			addToCustomPanel(holder, element).inTL(0, 3);
-			//log.info("Placing card in TL");
 		}
 		else if (numPrevious % maxPerRow == 0) {
-			// row filled, place under first card of previous row
+			// row filled, place under first element of previous row
 			int rowNum = numPrevious/maxPerRow - 1;
 			UIPanelAPI firstOfPrevious = prevElements.get(maxPerRow * rowNum);
 			addToCustomPanel(holder, element).belowLeft(firstOfPrevious, 3);
-			//log.info("Placing card in new row");
 		}
 		else {
-			// right of last card
+			// right of last element
 			addToCustomPanel(holder, element).rightOfTop(prevElements.get(numPrevious - 1), xpad);
-			//log.info("Placing card in current row");
 		}
 	}
 	

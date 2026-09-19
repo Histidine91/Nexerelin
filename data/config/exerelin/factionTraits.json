@@ -11,7 +11,7 @@
 		{
 			"id":"predatory",
 			"name":"Predatory",
-			"desc":"Can opportunistically declare war regardless of disposition score, at Favorable (Suspicious if Player) reputation level or lower",
+			"desc":"Can opportunistically declare war regardless of disposition score, at Favorable (Suspicious if Player) reputation level or lower.",
 			"icon":"graphics/icons/markets/pirate_moot.png",
 			"color":[255, 32, 32]
 		},
@@ -182,7 +182,7 @@
 			"name":"Domain Claimant",
 			"desc":"This faction claims to be the (true) inheritor of the Domain's legacy.",
 			"color":[255, 191, 0],	# make it gold
-			"icon":"graphics/factions/crest_domain.png",
+			"icon":"graphics/icons/missions/eventide.png",
 			"noRandom":true,
 			"sortOrder": -3
 		},
