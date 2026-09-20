@@ -39,6 +39,8 @@ import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.campaign.intel.raid.NexRaidActionStage;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.Setter;
@@ -447,8 +449,24 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 		}
 
 		if (repEffect != null) {
-			DiplomacyIntel.addRelationshipChangePara(info, faction.getId(), targetFaction.getId(), storedRelation, repEffect, 10);
+			addRepEffectBullet(info, tc);
 		}
+	}
+
+	protected LabelAPI addRepEffectBullet(TooltipMakerAPI info, Color tc) {
+		Color deltaColor = Global.getSettings().getColor("textEnemyColor");
+		String delta = (int)(repEffect.delta * 100) + "";
+		String newRel = NexUtilsReputation.getRelationStr(storedRelation);
+		String fName = NexUtilsFaction.getFactionShortName(targetFaction.getId());
+		String str = StringHelper.getString("exerelin_diplomacy", "repChangeMsg");
+		str = StringHelper.substituteToken(str, "$theFaction", fName);
+		str = StringHelper.substituteToken(str, "$changedBy", delta);
+		str = StringHelper.substituteToken(str, "$currentRep", newRel);
+
+		LabelAPI para = info.addPara(str, tc, 0);
+		para.setHighlight(fName, delta, newRel);
+		para.setHighlightColors(targetFaction.getBaseUIColor(), deltaColor, NexUtilsReputation.getRelColor(storedRelation));
+		return para;
 	}
 
 	protected float getWantedStrengthForRequestedDefenseFleet() {
