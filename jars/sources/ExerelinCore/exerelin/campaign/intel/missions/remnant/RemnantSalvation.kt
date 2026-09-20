@@ -95,6 +95,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         protected set
     var hiredEndbringer = false
         protected set
+    var knightSawShroudMods = false
+        protected set
 
     @Deprecated("Unused") protected var warpFleet2Delay = 0.2f;
     var timerToPK : Float = 30f
@@ -550,7 +552,8 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         //fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_MAKE_ALWAYS_PURSUE] = true
         fleet.memoryWithoutUpdate["\$genericHail"] = true
         fleet.memoryWithoutUpdate["\$genericHail_openComms"] = "Nex_RemSalvationHail_Towering"
-        fleet.memoryWithoutUpdate.set(MemFlags.MEMORY_KEY_PURSUE_PLAYER, true, 1f)
+        if (this.knightSawShroudMods)
+            fleet.memoryWithoutUpdate.set(MemFlags.MEMORY_KEY_PURSUE_PLAYER, true, 1f)
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE] = true
         fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_MAKE_HOSTILE] = true
         //fleet.memoryWithoutUpdate[MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE_ONE_BATTLE_ONLY] = true
@@ -561,7 +564,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         fleet.memoryWithoutUpdate[MemFlags.FLEET_IGNORES_OTHER_FLEETS] = true
         fleet.memoryWithoutUpdate[MemFlags.FLEET_DO_NOT_IGNORE_PLAYER] = true
         fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true, 1f)
-        fleet.memoryWithoutUpdate.set(NexAutoresolveListener.MEM_KEY_STRENGTH_MULT, 1.25f);
+        fleet.memoryWithoutUpdate.set(NexAutoresolveListener.MEM_KEY_STRENGTH_MULT, 1.5f);
 
         fleet.inflateIfNeeded()
 
@@ -624,7 +627,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         // chase player if player is near target, else chase the knight fleet
         var player = Global.getSector().playerFleet
-        if (planet.containingLocation == player.containingLocation && Misc.getDistance(player, planet) <= 800) {
+        if (planet.containingLocation == player.containingLocation && Misc.getDistance(player, planet) <= 800 && !knightSawShroudMods) {
             fleet.addAssignment(FleetAssignment.INTERCEPT, player, 2f)
             knightFleet?.addAssignmentAtStart(FleetAssignment.ORBIT_PASSIVE, player, 0.5f, null)   // so NexFIDPI will pull it in
         }
@@ -720,7 +723,12 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         spawnFlagship2Wreck()
         if (targetPKed) completeMissionBadEnd(dialog, memoryMap)
         else {
-            setCurrentStage(Stage.EPILOGUE, dialog, memoryMap)
+            if (knightSawShroudMods) {
+                completeMission(dialog, memoryMap)
+            }
+            else {
+                setCurrentStage(Stage.EPILOGUE, dialog, memoryMap)
+            }
             knightFleet!!.memoryWithoutUpdate["\$genericHail"] = true
             knightFleet!!.memoryWithoutUpdate.unset(MemFlags.MEMORY_KEY_IGNORE_PLAYER_COMMS)
         }
@@ -990,7 +998,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
 
         val fleet = Misc.getStationFleet(target)
         if (fleet != null) {
-            fleet.memoryWithoutUpdate.set(NexAutoresolveListener.MEM_KEY_STRENGTH_MULT, 0.25f, 20f);
+            fleet.memoryWithoutUpdate.set(NexAutoresolveListener.MEM_KEY_STRENGTH_MULT, 0.4f, 20f);
             //fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true, 2f)  // not needed
             fleet.memoryWithoutUpdate.set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true, 2f)
         }
@@ -1135,6 +1143,11 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
                 makeUnimportant(knightFleet, Stage.DEFEND_PLANET)
                 return true
             }
+            "shroudOops" -> {
+                knightSawShroudMods = true
+                return true
+            }
+
             "complete" -> {completeMission(dialog, memoryMap); return true}
         }
         return false
@@ -1322,7 +1335,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
             reportWonBattle1(null, null)
         }
         // knight fleet gone
-        else if (fleet == this.knightFleet) {
+        else if (fleet == this.knightFleet && !knightSawShroudMods) {
             var knight = RemnantQuestUtils.getOrCreateArgent()
             target!!.addPerson(knight)
             target!!.commDirectory.addPerson(knight)

@@ -14,8 +14,6 @@ class NexAutoresolveListener : CoreAutoresolveListener {
         if (!fleet.memoryWithoutUpdate.contains(MEM_KEY_STRENGTH_MULT)) return
         var strMult = fleet.memoryWithoutUpdate.getFloat(MEM_KEY_STRENGTH_MULT)
 
-        for (member in data!!.members) {
-            member.strength *= strMult
-        }
+        data.fightingStrength *= strMult
     }
 }

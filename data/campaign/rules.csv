@@ -3432,7 +3432,7 @@ nex_remSalvation_base6,DialogOptionSelected,"$option == nex_remSalvation_base6
 $nex_remSalvation_metSiyavongBefore","BeginConversation siyavong false true
 Call $global.nex_remSalvation_ref updateData","After an interminable wait of five-plus minutes, during which the shuttle adopts a holding pattern, a new face appears on your screen. 
 
-The $manOrWoman's eyebrows rise in surprised recognition. ""Hello again, Captain $playerName. I suppose I should not have expected anyone else to show up like this. 
+The man's eyebrows rise in surprised recognition. ""Hello again, Captain $playerName. I suppose I should not have expected anyone else to show up like this. 
 
 ""Now that your ruse has worked, perhaps you would be so kind as to tell me what you want?""",nex_remSalvation_base7:Transmit Midnight's letter of introduction,
 nex_remSalvation_base6FirstMeet,DialogOptionSelected,"$option == nex_remSalvation_base6
@@ -3733,7 +3733,8 @@ You receive an updated introduction letter, in case you need it. It contains a p
 nex_remSalvation_return6NoHelp:""I think I can handle this.""",
 nex_remSalvation_return6Help,DialogOptionSelected,$option == nex_remSalvation_return6Help,"Call $global.nex_remSalvation_ref hireMerc
 ShowSecondPerson nex_endbringer
-Call $global.nex_remSalvation_ref startDefendStage","""So it shall be, friend $playerFirstName. Self has instance of omega recruited, to our cause aid.""
+Call $global.nex_remSalvation_ref startDefendStage
+FireAll Nex_RemSalvationWeirdModsPreCheck","""So it shall be, friend $playerFirstName. Self has instance of omega recruited, to our cause aid.""
 
 A new image appears on your display, one of a different AI.
 
@@ -3744,9 +3745,12 @@ Midnight has paid my retainer fee on your behalf, I hope we can get along
 print(""^__^"")""
 
 ""Friend Terminal brings strength of omega,"" $personFirstName interjects. ""Will in combat prove very useful. Go with omega, $playerFirstName.""",nex_remSalvation_return7:Thank $himOrHer and cut the comm link,
-nex_remSalvation_return6NoHelp,DialogOptionSelected,$option == nex_remSalvation_return6NoHelp,Call $global.nex_remSalvation_ref startDefendStage,"""Then very well, $playerFirstName."" $personFirstName seems to hesitate very briefly, apparently considering $hisOrHer words. ""omega guide you to victory.""",nex_remSalvation_return7:Thank $himOrHer and cut the comm link,
+nex_remSalvation_return6NoHelp,DialogOptionSelected,$option == nex_remSalvation_return6NoHelp,"Call $global.nex_remSalvation_ref startDefendStage
+FireAll Nex_RemSalvationWeirdModsPreCheck","""Then very well, $playerFirstName."" $personFirstName seems to hesitate very briefly, apparently considering $hisOrHer words. ""omega guide you to victory.""",nex_remSalvation_return7:Thank $himOrHer and cut the comm link,
+nex_remSalvation_return6ShroudCheck,Nex_RemSalvationWeirdModsPreCheck,PlayerFleetHasShroudedShips,"Highlight ""hullmods of abyssal origin""","""Oh, and advice a little more? Those hullmods of abyssal origin remove, to antagonize our allies refrain.""",,
 nex_remSalvation_return7,DialogOptionSelected,$option == nex_remSalvation_return7,"EndConversation NO_CONTINUE
 FireAll PopulateOptions",You cut the comm link and prepare for departure.,,
+,,,,,,
 nex_remSalvationKnightHail,Nex_RemSalvationHail_Knight,"Call $global.nex_remSalvation_ref updateData
 !$nex_remSalvation_targetPKed
 !$nex_remSalvation_fleet2Defeated","$option = nex_remSalvation_knight1 0
@@ -3818,7 +3822,7 @@ nex_remSalvation_knight6Trust:""I trust Midnight. She is not malicious.""
 nex_remSalvation_knight6Betray:""I am gaining their trust now, so that I may betray them later.""
 nex_remSalvation_knight6Other:""I have my own reasons.""",
 nex_remSalvation_knight6Money,DialogOptionSelected,$option == nex_remSalvation_knight6Money,"Call $global.nex_remSalvation_ref floorChurchRep
-$player.ethosCynical++","$personLastName sighs wearily. ""Yet another given to the sin of Mammon... Even if,"" $heOrShe closes $hisOrHer eyes, ""it serves the Church's purposes, just this once.""
+$player.ethosMercenary++","$personLastName sighs wearily. ""Yet another given to the sin of Mammon... Even if,"" $heOrShe closes $hisOrHer eyes, ""it serves the Church's purposes, just this once.""
 
 $HisOrHer eyes open again. ""Very well. Just this once, we shall consent to work with you.""",nex_remSalvation_knightPreBattle:Continue,
 nex_remSalvation_knight6Trust,DialogOptionSelected,$option == nex_remSalvation_knight6Trust,"Call $global.nex_remSalvation_ref floorChurchRep
@@ -3935,6 +3939,81 @@ $global.nex_remSalvation_ref != null score:5
 OR
 ""This is not the time for idle chatter.""",cutCommLink:Cut the comm link,If player randomly decides to chat while Mauve is attacking
 #END Remnant salvation mission,,,,,,
+,,,,,,
+# salvation extra: Argent convo if Dweller hullmods,,,,,,
+nex_remSalvationKnightHailShrouded,Nex_RemSalvationHail_Knight,"Call $global.nex_remSalvation_ref updateData
+!$nex_remSalvation_targetPKed
+!$nex_remSalvation_fleet2Defeated
+PlayerFleetHasShroudedShips score:10","unset $entity.genericHail
+unset $entity.genericHail_openComms
+$metAlready = true
+$option = nex_remSalvation_knight1 0
+FireBest DialogOptionSelected",,,
+nex_remSalvation_knightShrouded1Unknown,DialogOptionSelected,"$option == nex_remSalvation_knight1
+!$entity.knowsWhoPlayerIs
+PlayerFleetHasShroudedShips score:10","$metAlready = true
+FireAll MostLuddicEthosRefresh","""Halt, stranger! You—"" The $post cuts off abruptly, staring wide-eyed at a red flash from a secondary display.
+
+""Ludd forgive us our sins,"" $heOrShe whispers.","nex_remSalvation_knightShroudedEndUnknown:""Is there a problem, $post?""",
+nex_remSalvation_knightShroudedEndUnknown,DialogOptionSelected,$option == nex_remSalvation_knightShroudedEndUnknown,"AddTextSmall ""Hostility due to use of unusual modifications"" bad
+AdjustRep luddic_church HOSTILE -30
+MakeOtherFleetHostile true
+MakeOtherFleetAllowDisengage true
+$entity.ignorePlayerCommRequests = true 90
+Call $global.nex_remSalvation_ref shroudOops
+Call $global.nex_remSalvation_ref reportTalkedToKnight
+EndConversation
+ShowDefaultVisual","""An abomination, a devil-$shipOrFleet of Belial himself is before us!""
+
+You catch a glimpse of the $post turning to $hisOrHer crew, before the link shudders into static. ""Though we be beset by the demons from two hells this day, let us not falter in our—""",,
+nex_remSalvation_knightShrouded1,DialogOptionSelected,"$option == nex_remSalvation_knight1
+$entity.knowsWhoPlayerIs
+PlayerFleetHasShroudedShips score:10",FireAll MostLuddicEthosRefresh,"""This is $personRank $personName, of the Knights of—"" The $post cuts off abruptly, staring wide-eyed at a red flash from a secondary display.
+
+""Ludd forgive us our sins,"" $heOrShe whispers.","nex_remSalvation_knightShrouded2:""Is there a problem, $post?""",
+nex_remSalvation_knightShrouded2Unknown,DialogOptionSelected,$option == nex_remSalvation_knightShrouded2,FireAll Nex_RemSalvationWeirdModsOpts,"""Consorter with the demonic,"" $heOrShe breathes. ""Mortal enemy of mother Church, accursed in the eyes of God and all who hold faith.""
+
+$HeOrShe closes $hisOrHer eyes. ""If there is still a sliver of worth in your corrupted heart, wicked one, you will depart now. Leave us to face only one set of demons today.""",,
+nex_remSalvation_weirdModsOpt3a,Nex_RemSalvationWeirdModsOpts,$player.fcm_faction == luddic_church,,,"nex_remSalvation_weirdModsOpt3aSel:""I am commissioned by the Church!""",
+nex_remSalvation_weirdModsOpt3b,Nex_RemSalvationWeirdModsOpts,$player.luddicAttitudeFaithfulOrPather,,,"nex_remSalvation_weirdModsOpt3bSel:""Hold your condemnation for a moment, for I share your Faith.""",
+nex_remSalvation_weirdModsOpt3c,Nex_RemSalvationWeirdModsOpts,,,,"nex_remSalvation_weirdModsOpt3cSel:""Let's discuss this before jumping to conclusions...""",
+nex_remSalvation_weirdModsOpt3d,Nex_RemSalvationWeirdModsOpts,,,,"nex_remSalvation_weirdModsOpt3dSel:""Perhaps we come to an 'arrangement'? Just name a price...""",
+nex_remSalvation_weirdModsOpt3e,Nex_RemSalvationWeirdModsOpts,$player.luddicAttitudeCynicalOrAtheistic,,,"nex_remSalvation_weirdModsOpt3eSel:""This is an irrational outburst, $post.""",
+nex_remSalvation_weirdModsOpt3aSel,DialogOptionSelected,$option == nex_remSalvation_weirdModsOpt3aSel,"$option = nex_remSalvation_knightShroudedEnd 0
+FireBest DialogOptionSelected","""You are no longer,"" $heOrShe says.",,
+nex_remSalvation_weirdModsOpt3bSel,DialogOptionSelected,$option == nex_remSalvation_weirdModsOpt3bSel,"$option = nex_remSalvation_knightShroudedEnd 0
+FireBest DialogOptionSelected","""I abjure your heresy ,"" $heOrShe says.",,
+nex_remSalvation_weirdModsOpt3cSel,DialogOptionSelected,$option == nex_remSalvation_weirdModsOpt3cSel,"$option = nex_remSalvation_knightShroudedEnd 0
+FireBest DialogOptionSelected",,,
+nex_remSalvation_weirdModsOpt3dSel,DialogOptionSelected,$option == nex_remSalvation_weirdModsOpt3dSel,"$option = nex_remSalvation_knightShroudedEnd 0
+FireBest DialogOptionSelected","""Corruptor, mammonite!"" $heOrShe spits.",,
+nex_remSalvation_weirdModsOpt3eSel,DialogOptionSelected,$option == nex_remSalvation_weirdModsOpt3eSel,"$option = nex_remSalvation_knightShroudedEnd 0
+FireBest DialogOptionSelected",,,
+nex_remSalvation_knightShroudedEnd,DialogOptionSelected,$option == nex_remSalvation_knightShroudedEnd,"AdjustRep luddic_church HOSTILE -200
+AddTextSmall ""Hostility due to use of unusual modifications"" bad
+MakeOtherFleetAllowDisengage true
+$entity.ignorePlayerCommRequests = true 90
+Call $global.nex_remSalvation_ref shroudOops
+Call $global.nex_remSalvation_ref reportTalkedToKnight
+EndConversation
+ShowDefaultVisual","""Begone, evildoer. Your time will yet come.""
+
+The link shudders into static, the last image is of hands clasped in a brief prayer.",,
+nex_remSalvation_knightShroudedEndWithExcommunicate,DialogOptionSelected,"$option == nex_remSalvation_knightShroudedEnd
+$player.mostLuddicEthosFaithful
+!$player.excommunicatedFromChurch","AdjustRep luddic_church HOSTILE -200
+AddTextSmall ""Hostility due to use of unusual modifications"" bad
+AddTextSmall ""Excommunicated from the Church of Galactic Redemption"" bad
+MakeOtherFleetAllowDisengage true
+$player.excommunicatedFromChurch = true
+$entity.ignorePlayerCommRequests = true 90
+Call $global.nex_remSalvation_ref shroudOops
+Call $global.nex_remSalvation_ref reportTalkedToKnight
+EndConversation
+ShowDefaultVisual","""Begone, evildoer. Your time will yet come.""
+
+The link shudders into static, the last image is of hands clasped in a brief prayer.",,
+#END salvation extra: Argent convo if Dweller hullmods,,,,,,
 ,,,,,,
 # salvation: extra stuff for Kallichore Archive if got Arroyo through our own mission,,,,,,
 nex_gaKAArroyoGreeting_alreadyMet,PickGreeting,"$id == arroyo
