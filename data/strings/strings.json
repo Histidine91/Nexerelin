@@ -3237,6 +3237,10 @@
 		"tooltip_diplomacyEventFilterLevel":"0 = no filter, 1 = popup only events affecting player/commissioner faction, 2 = filter out all events. War/peace events are always shown.",
 		"name_agentEventFilterLevel":"Operative event filter level",
 		"tooltip_agentEventFilterLevel":"Works more or less the same way as the diplomacy filter.",
+		"name_fleetEventFilterLevel":"Fleet event filter level",
+		"tooltip_fleetEventFilterLevel":"Works more or less the same way as the diplomacy filter. Some major events like invasions are always shown.",
+		"name_intelQueueLevel":"Intel queue level",
+		"tooltip_intelQueueLevel":"Makes some intel events be transmitted only when player is near a comm relay, rather than being sent immediately. Level 1 queues some less-important intel; level 2 queues everything that is affected by this setting.",
 		"name_ngcShowIntro":"Always show intro on new game",
 		"tooltip_ngcShowIntro":"Shows the intro text about this mod in the new game dialog. Normally it will only be shown once.",
 		

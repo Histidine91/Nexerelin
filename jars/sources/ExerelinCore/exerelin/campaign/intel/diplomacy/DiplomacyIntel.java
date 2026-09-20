@@ -226,6 +226,10 @@ public class DiplomacyIntel extends BaseIntelPlugin implements StrategicActionDe
 		return filterLevel <= 0;
 	}
 
+	public boolean shouldSend() {
+		return shouldNotify();
+	}
+
 	public boolean shouldQueueImpl() {
 		String commFacId = Misc.getCommissionFactionId();
 		if (commFacId == null) commFacId = "";

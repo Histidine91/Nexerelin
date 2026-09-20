@@ -6,6 +6,17 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.NexConfig;
 
 public interface FilterableIntel {
+
+	/**
+	 * @return False to hide the message completely (doesn't appear in intel screen). Can probably return {@code shouldNotify()} for non-ongoing intel items.
+	 */
+	default boolean shouldSend() {
+		return true;
+	}
+
+	/**
+	 * @return False to keep the message out of the notification section in bottom-left of campaign screen.
+	 */
 	boolean shouldNotify();
 
 	/**
@@ -25,27 +36,29 @@ public interface FilterableIntel {
 	}
 
 	/**
-	 * @return True if event was added or queued, false if filtered out.
+	 * @return True if the message was sent, false otherwise.
 	 */
 	default boolean addIntelWithFilterChecks(BaseIntelPlugin intel) {
 
 		boolean notify = this.shouldNotify();
 		boolean queue = this.shouldQueue();
+		boolean send = this.shouldSend();
 
-		if (notify) {
+		if (send) {
 			if (queue) {
 				Global.getSector().getIntelManager().queueIntel(intel);
 			} else {
-				Global.getSector().getIntelManager().addIntel(intel, false);
+				Global.getSector().getIntelManager().addIntel(intel, !notify);
 			}
-			return true;
-		} else {
-
 		}
 
 		if (ExerelinModPlugin.isNexDev) {
-			if (!notify) {
-				String str = String.format("Suppressed notification for [%s] (%s) due to filter level", intel.getSmallDescriptionTitle(), intel.getClass().getName());
+			if (!send) {
+				String str = String.format("Did not send [%s] (%s) due to filter level", intel.getSmallDescriptionTitle(), intel.getClass().getName());
+				Global.getSector().getCampaignUI().addMessage(str);
+			}
+			else if (!notify) {
+				String str = String.format("Avoiding notification for [%s] (%s) due to filter level", intel.getSmallDescriptionTitle(), intel.getClass().getName());
 				Global.getSector().getCampaignUI().addMessage(str);
 			}
 			else if (notify && queue) {
@@ -54,6 +67,6 @@ public interface FilterableIntel {
 			}
 		}
 
-		return false;
+		return send;
 	}
 }

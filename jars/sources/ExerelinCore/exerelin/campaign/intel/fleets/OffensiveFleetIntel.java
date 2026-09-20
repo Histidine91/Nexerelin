@@ -359,6 +359,7 @@ public abstract class OffensiveFleetIntel extends RaidIntel implements RaidDeleg
 
 	@Override
 	public boolean shouldSendUpdate() {
+		// called when event ends I think
 		// FIXME: super version always sends updates if player is targeted,
 		// maybe we should also make it obey NexIntelQueued level 2?
 		

@@ -36,6 +36,8 @@ public class LunaConfigHelper implements LunaSettingsListener {
         addSetting("ceasefireNotificationPopup", "boolean", NexConfig.ceasefireNotificationPopup);
         addSetting("diplomacyEventFilterLevel", "int", NexConfig.diplomacyEventFilterLevel, 0, 2);
         addSetting("agentEventFilterLevel", "int", NexConfig.agentEventFilterLevel, 0, 2);
+        addSetting("fleetEventFilterLevel", "int", NexConfig.fleetEventFilterLevel, 0, 2);
+        addSetting("intelQueueLevel", "int", NexConfig.nexIntelQueued, 0, 2);
         addSetting("ngcShowIntro", "boolean", false);
 
         addHeader("hostileFleet", tabFleets);
@@ -176,6 +178,8 @@ public class LunaConfigHelper implements LunaSettingsListener {
         NexConfig.directoryDialogKey = (int)loadSetting("directoryDialogKey", "key");
         NexConfig.diplomacyEventFilterLevel = (int)loadSetting("diplomacyEventFilterLevel", "int");
         NexConfig.agentEventFilterLevel = (int)loadSetting("agentEventFilterLevel", "int");
+        NexConfig.fleetEventFilterLevel = (int)loadSetting("fleetEventFilterLevel", "int");
+        NexConfig.nexIntelQueued = (int)loadSetting("intelQueueLevel", "int");
 
         NexConfig.crewLootMult = (float)loadSetting("crewLootMult", "float");
 

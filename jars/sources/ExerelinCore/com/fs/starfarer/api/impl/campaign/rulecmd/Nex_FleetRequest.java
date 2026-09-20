@@ -721,11 +721,11 @@ public class Nex_FleetRequest extends PaginatedOptionsPlus {
 					return false;
 			}
 			intel.setPlayerFee(Math.round(cost));
+			intel.setPlayerSpawned(true);
 			intel.init();
 			if (fleetType == FleetType.INVASION) {
 				((InvasionIntel)intel).setMarinesTotal(marines);
 			}
-			intel.setPlayerSpawned(true);
 			setFP(fp);
 			dialog.getTextPanel().addPara(getString("fleetSpawnMessage"));
 			Global.getSector().getIntelManager().addIntelToTextPanel(intel, dialog.getTextPanel());

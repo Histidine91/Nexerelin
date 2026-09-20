@@ -628,6 +628,10 @@ public abstract class CovertActionIntel extends BaseIntelPlugin implements Strat
 		return NexConfig.agentEventFilterLevel <= maxLevelToNotify;
 	}
 
+	public boolean shouldSend() {
+		return shouldNotify();
+	}
+
 	@Override
 	public boolean shouldQueueImpl() {
 		return !(affectsPlayerRep()
