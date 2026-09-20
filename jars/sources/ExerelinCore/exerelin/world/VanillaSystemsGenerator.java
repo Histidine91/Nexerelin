@@ -197,7 +197,7 @@ public class VanillaSystemsGenerator {
 		
 		MarketAPI chalcedon = getMarket("chalcedon");
 		//chalcedon.addIndustry(Industries.ORBITALSTATION);
-		chalcedon.addIndustry(Industries.WAYSTATION);
+		//chalcedon.addIndustry(Industries.WAYSTATION);
 
 		MarketAPI cibola = getMarket("cibola");
 		cibola.addCondition(Conditions.HOT);
@@ -220,7 +220,7 @@ public class VanillaSystemsGenerator {
 		eldfell.addCondition(Conditions.ORE_SPARSE);
 		
 		MarketAPI epiphany = getMarket("epiphany");
-		epiphany.addIndustry(Industries.WAYSTATION);
+		//epiphany.addIndustry(Industries.WAYSTATION);
 		
 		MarketAPI eochu_bres = getMarket("eochu_bres");
 		eochu_bres.getIndustry(Industries.STARFORTRESS_HIGH).setAICoreId("alpha_core");
