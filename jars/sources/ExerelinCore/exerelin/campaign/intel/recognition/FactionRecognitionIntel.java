@@ -20,10 +20,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.campaign.intel.agents.RaiseRelations;
-import exerelin.utilities.AgentActionListener;
-import exerelin.utilities.InvasionListener;
-import exerelin.utilities.NexUtilsMarket;
-import exerelin.utilities.StringHelper;
+import exerelin.utilities.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.magiclib.util.MagicTxt;
@@ -784,7 +781,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
             ConquerMarketFactor conq = new ConquerMarketFactor(market, oldOwner, oldOwner.getId().equals(origOwner));
             addFactor(conq, Global.getSector().getCampaignUI().getCurrentInteractionDialog());
         }
-        if (oldOwner.isPlayerFaction() && !isCapture && newOwner.getId().equals(origOwner)) {
+        if (oldOwner.isPlayerFaction() && !isCapture && newOwner.getId().equals(origOwner) && !BaseRecognitionEventFactor.isOutlawFaction(newOwner)) {
             ReturnMarketFactor ret = new ReturnMarketFactor(market, oldOwner);
             addFactor(ret, Global.getSector().getCampaignUI().getCurrentInteractionDialog());
         }
