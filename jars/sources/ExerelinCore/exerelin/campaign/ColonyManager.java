@@ -1616,6 +1616,9 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 		if (cond != null) {
 			((FactionConditionPlugin)cond.getPlugin()).checkForRegen();
 		}
+		else {
+			market.addCondition(FactionConditionPlugin.CONDITION_ID);
+		}
 	}
 
 	public void reportSatBomb(MarketAPI market, MarketCMD.TempData actionData) {
