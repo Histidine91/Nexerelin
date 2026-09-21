@@ -44,11 +44,10 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
             List<Pair<Alliance, Float>> alliances = getEligibleAlliances(enemyId);
             for (Pair<Alliance, Float> entry : alliances) {
                 Alliance all = entry.one;
-                float allyScore = entry.two;
                 if (all.canJoin(ai.getFaction())) {
                     StrategicAction allyAct = joinAlliance(ourId, all);
                     if (allyAct != null && concern.canTakeAction(allyAct) && allyAct.canUse(concern)) {
-                        allyAct.getPriority().modifyFlat("allyScore", allyScore, StrategicAI.getString("statAllianceScore", true));
+                        allyAct.getPriority().applyMods(this.priority);
                         return allyAct;
                     }
                 } else {
@@ -88,6 +87,7 @@ public class CoalitionAction extends BaseStrategicAction implements ShimAction {
                     allyAct = createAlliance(ofid);
 
                 if (allyAct != null && concern.canTakeAction(allyAct) && allyAct.canUse(concern)) {
+                    allyAct.getPriority().applyMods(this.priority);
                     return allyAct;
                 }
             } else {
