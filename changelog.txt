@@ -1,3 +1,25 @@
+Version 0.12.2d
+
+* Remove starting Waystations from the Luddic Path planets (they help accessibility in general but also enable shortages of commodities they shouldn't care about)
+* Salvation: Change final stage if player gets caught with Shroud hullmods; fix autoresolve strength modifiers not working; tweaks
+* Add an auto-mine ability
+* Derelict Empire now hostile to player at start (previously inhospitable); gets clearer faction names
+* Player faction's diplomacy traits can be set in its diplomacy profile
+* Add a bullet point to offensive fleet intels for rep change (if any)
+* Add some new settings in LunaLib
+    * Fleet event filter
+    * NPC operative activity toggle
+    * Multiplier for diplomacy trait effects on dispositions
+* Fix crash when autoresolving battles against some stations
+* Request market intel correctly handles player transferring market through other channels
+* Fix a hot and cold condition being applied to Cethlenn instead of their intended planets
+* Fix crash with new game dev start from unskipped intro
+* Modding changes
+    * Add Domain Claimant, Domain Loyalist and Domain Rebel diplomacy traits
+    * Fix owning-faction market condition only applying to colonies that didn't exist at start
+    * Fix `InvasionIntel` child classes not obeying `abortIfNonHostile`
+
+
 Version 0.12.2c
 
 * Fix post-fleet-event relationship losses being 100 times larger than intended and applying to counter-invasions
