@@ -44,6 +44,10 @@ public class Nex_DynamicPaginatedOptions extends PaginatedOptionsPlus {
 			case "addOptionAllPages":
 				addOptionAllPages(ruleId, params, memoryMap);
 				return true;
+			case "addColor":
+			case "setColor":
+				addColor(params, memoryMap);
+				return true;
 			case "addTooltip":
 				addTooltip(ruleId, params, memoryMap);
 				return true;
@@ -70,6 +74,12 @@ public class Nex_DynamicPaginatedOptions extends PaginatedOptionsPlus {
 		String optId = params.get(1).getString(memoryMap);
 		String text = params.get(2).getStringWithTokenReplacement(ruleId, dialog, memoryMap);
 		optionsAllPagesSt.add(new PaginatedOption(text, optId));
+	}
+
+	public void addColor(List<Token> params, Map<String, MemoryAPI> memoryMap) {
+		String optId = params.get(1).getString(memoryMap);
+		Color color = params.get(2).getColor(memoryMap);
+		optionColorsSt.put(optId, color);
 	}
 	
 	public void addTooltip(String ruleId, List<Token> params, Map<String, MemoryAPI> memoryMap) {
