@@ -221,6 +221,9 @@ public class ExerelinModPlugin extends BaseModPlugin
                 break;
             }
         }
+        // add other abilities, but skip the slot
+        Global.getSector().getCharacterData().addAbility("nex_siege_bombard");
+        Global.getSector().getCharacterData().addAbility("nex_auto_mine");
 
         new exerelin.world.ExerelinNewGameSetup().addPrismMarket(Global.getSector(), false);
         

@@ -1748,6 +1748,7 @@ $HeOrShe doesn't look amused, and doesn't manage to imbue $hisOrHer words with q
 ,,,,,,
 nex_tut_janContactReport3,DialogOptionSelected,$option == tutReport3 score:5,"$player.finishedTutorial = true
 AddAbility exerelin_follow_me 7
+AddAbility nex_auto_mine 8
 SetShortcut cutCommLinkPolite ""ESCAPE""
 Nex_NGCarePackage spawnAtCurrentLocation","""Finally, you could take a commission with the Hegemony - due to the Galatia business, your standing is high enough that such a request would be accepted.""
 
