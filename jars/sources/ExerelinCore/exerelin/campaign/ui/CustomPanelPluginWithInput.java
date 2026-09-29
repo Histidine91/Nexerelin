@@ -23,7 +23,7 @@ public abstract class CustomPanelPluginWithInput extends BaseCustomUIPanelPlugin
 
     protected Set<CustomUIPanelInputListener> listeners = new HashSet<>();
 
-    @Getter @Setter CustomPanelPluginWithInput buttonPressHandler;
+    @Getter @Setter CustomPanelPluginWithInput buttonPressHandler;  // delegates presses to other panels where desired
 
     @Override
     public void positionChanged(PositionAPI pos) {
@@ -50,17 +50,32 @@ public abstract class CustomPanelPluginWithInput extends BaseCustomUIPanelPlugin
                 lmbDown = true;
                 //String format = String.format("LMB down: x/y [%s, %s], dx/dy [%s, %s]", event.getX(), event.getY(), event.getDX(), event.getDY());
                 //log.info(format);
-
+                notifyListeners(event, getInputListenerParams(event));
+                mouseDownImpl(event);
             }
             else if (event.isLMBUpEvent() && lmbDown) {
                 lmbDown = false;
-                if (pos.containsEvent(event)) {
-                    notifyListeners(event, new HashMap<String, Object>());
-                }
+                notifyListeners(event, getInputListenerParams(event));
                 //String format = String.format("LMB up: x/y [%s, %s], dx/dy [%s, %s]", event.getX(), event.getY(), event.getDX(), event.getDY());
                 //log.info(format);
+                mouseUpImpl(event);
             }
         }
+    }
+
+    protected Map<String, Object> getInputListenerParams(InputEventAPI event) {
+        Map<String, Object> map = new HashMap<>();
+        //map.put("event", event);
+        map.put("source", this);
+        return map;
+    }
+
+    protected void mouseDownImpl(InputEventAPI event) {
+
+    }
+
+    protected void mouseUpImpl(InputEventAPI event) {
+
     }
 
     public void notifyListeners(InputEventAPI event, Map<String, Object> params) {

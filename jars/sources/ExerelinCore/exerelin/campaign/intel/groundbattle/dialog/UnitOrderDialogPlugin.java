@@ -71,6 +71,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	protected boolean didAnything;
 	
 	protected boolean quickMove;	// True when clicking on the "fast move button"
+	protected boolean ultraQuickMove;   // True with the drag-and-drop interface;
 	
 	public UnitOrderDialogPlugin(GroundBattleIntel intel, GroundUnit unit, IntelUIAPI ui) 
 	{
@@ -93,7 +94,10 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		dialog.setOptionOnEscape(StringHelper.getString("cancel", true), OptionId.LEAVE);
 		
 		showUnitPanel();
-		if (quickMove) {
+		if (ultraQuickMove) {
+			showDeploymentConfirmScreen(deployTarget);
+		}
+		else if (quickMove) {
 			selectMoveOrDeployDestination(!unit.isDeployed());
 		} else {
 			optionSelected(null, OptionId.INIT);
@@ -113,6 +117,13 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 	
 	public void setQuickMove(boolean fastMove) {
 		this.quickMove = fastMove;
+		if (!fastMove) ultraQuickMove = false;
+	}
+
+	public void setUltraQuickMove(IndustryForBattle target) {
+		this.quickMove = true;
+		this.ultraQuickMove = true;
+		deployTarget = target;
 	}
 	
 	public int getCurrentSupplies() {
@@ -724,13 +735,13 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		if (didAnything) ui.updateUIForItem(intel);	
 	}
 	
-	protected void playSound(String event) {
+	public static void playSound(String event) {
 		String id = getSound(event);
 		if (id != null)
 			Global.getSoundPlayer().playUISound(id, 1, 1);
 	}
 	
-	protected String getSound(String event) {
+	public static String getSound(String event) {
 		switch (event) {
 			case "attrition":
 				return "nex_sfx_gb_attrition";
@@ -742,6 +753,8 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 				return "ui_raid_prepared";
 			case "disrupt":
 				return "nex_sfx_deciv_bomb";
+			case "disabled":
+				return "ui_button_disabled_pressed";
 			default:
 				return null;
 		}

@@ -133,6 +133,13 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	protected transient boolean resolving;
 	
 	protected transient List<Pair<Boolean, AbilityPlugin>> abilitiesUsedLastTurn = new ArrayList<>();
+
+	protected transient Map<GroundUnit, GroundUnitPanelPlugin> unitPanelPlugins = new LinkedHashMap<>();
+
+	// used for some UI manipulation, including resetting scrollbar when regenerating intel
+	@Getter protected transient IntelUIAPI lastUIAPI;
+	protected transient ScrollPanelAPI lastScrollPanel;
+	protected transient float lastScrollerPos;
 	
 	// =========================================================================
 	// setup, getters/setters and other logic
@@ -2093,6 +2100,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 				map.init();
 				CustomPanelAPI mapPanel = map.getPanel();
 				info.addCustom(mapPanel, 10);
+
+				for (GroundUnitPanelPlugin pp : this.unitPanelPlugins.values()) {
+					pp.addListener(map.getPanelPlugin());
+				}
 			}
 			else {
 				info.beginTable(Global.getSector().getPlayerFaction(), 0,
@@ -2460,9 +2471,15 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			}
 		}
 	}
+
+	public void saveScrollerPos() {
+		if (lastScrollPanel != null)
+			lastScrollerPos = lastScrollPanel.getYOffset();
+	}
 		
 	@Override
 	public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+		saveScrollerPos();
 		
 		if (GBDebugCommands.processDebugButtons(this, ui, buttonId)) {
 			return;
@@ -2554,8 +2571,11 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 	// adapted from Starship Legends' BattleReport
     @Override
     public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
+		lastUIAPI = panel.getIntelUI();
 		float opad = 10;
 		FactionAPI faction = market.getFaction();
+
+		unitPanelPlugins = new LinkedHashMap<>();
 		
 		TooltipMakerAPI outer = panel.createUIElement(width, height, true);
 		
@@ -2568,6 +2588,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 			generateIndustryDisplay(outer, panel, width);
 			
 			panel.addUIElement(outer).inTL(0, 0);
+			lastScrollPanel = outer.getExternalScroller();
 			return;
 		}
 		
@@ -2578,6 +2599,7 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		if (viewMode == ViewMode.HELP) {
 			generateHelpDisplay(outer, panel, width);
 			panel.addUIElement(outer).inTL(0, 0);
+			lastScrollPanel = outer.getExternalScroller();
 			return;
 		}
 		
@@ -2596,8 +2618,10 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		}
 		
 		generateIndustryDisplay(outer, panel, width);
-		
+
 		panel.addUIElement(outer).inTL(0, 0);
+	    lastScrollPanel = outer.getExternalScroller();
+		lastScrollPanel.setYOffset(lastScrollerPos);
 	}
 	
 	@Override

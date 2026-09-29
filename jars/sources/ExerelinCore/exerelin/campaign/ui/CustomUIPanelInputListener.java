@@ -7,6 +7,6 @@ import java.util.Map;
 
 public interface CustomUIPanelInputListener {
 
-    public void notifyInput(CustomUIPanelPlugin plugin, InputEventAPI input, Map<String, Object> params);
+    void notifyInput(CustomUIPanelPlugin plugin, InputEventAPI input, Map<String, Object> params);
 
 }

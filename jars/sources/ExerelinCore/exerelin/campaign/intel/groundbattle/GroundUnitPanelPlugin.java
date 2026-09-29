@@ -4,13 +4,15 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.ui.PositionAPI;
+import exerelin.campaign.ui.CustomPanelPluginWithInput;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
+import lombok.Getter;
 import org.lwjgl.opengl.GL11;
 
 public class GroundUnitPanelPlugin extends FramedCustomPanelPlugin {
 
-	protected FactionAPI faction;
-	protected GroundUnit unit;
+	@Getter protected FactionAPI faction;
+	@Getter	protected GroundUnit unit;
 	protected String logo;
 	
 	public GroundUnitPanelPlugin(FactionAPI faction, GroundUnit unit, String logo)
@@ -25,6 +27,11 @@ public class GroundUnitPanelPlugin extends FramedCustomPanelPlugin {
 	@Override
 	public void positionChanged(PositionAPI pos) {
 		this.pos = pos;
+	}
+
+	@Override
+	public void setButtonPressHandler(CustomPanelPluginWithInput buttonPressHandler) {
+		super.setButtonPressHandler(buttonPressHandler);
 	}
 
 	@Override

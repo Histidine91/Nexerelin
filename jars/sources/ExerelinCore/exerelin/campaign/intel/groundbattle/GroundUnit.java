@@ -78,6 +78,8 @@ public class GroundUnit {
 	@Getter protected IndustryForBattle location;
 	@Getter protected IndustryForBattle destination;
 
+	@Getter protected transient LabelAPI orderLabel;
+
 	@Deprecated
 	public GroundUnit(GroundBattleIntel intel, ForceType type, int num, int index) {
 		this.intel = intel;
@@ -543,21 +545,27 @@ public class GroundUnit {
 	public boolean isAttackPrevented() {
 		return data.containsKey("preventAttack");
 	}
-	
-	public void addActionText(TooltipMakerAPI info) {
-		Color color = Misc.getTextColor();
+
+	public boolean canMove() {
+		if (isPlayer && location == null) {
+			if (getDeployCost() > Global.getSector().getPlayerFleet().getCargo().getSupplies())
+				return false;
+		}
+		return !isReorganizing()
+				&& intel.getSide(this.isAttacker()).getMovementPointsSpent().getModifiedValue() < intel.getSide(this.isAttacker()).getMovementPointsPerTurn().getModifiedValue();
+	}
+
+	public String getWantedActionText() {
 		String strId = "currAction";
-		
+
 		if (GBConstants.ACTION_WITHDRAW.equals(currAction)) {
 			strId += "Withdrawing";
 		}
 		else if (isReorganizing() && isAttackPrevented()) {
 			strId += "Shocked";
-			color = Misc.getNegativeHighlightColor();
 		}
 		else if (isReorganizing()) {
 			strId += "Reorganizing";
-			color = Misc.getNegativeHighlightColor();
 		}
 		else if (destination != null) {
 			strId += "Moving";
@@ -578,8 +586,23 @@ public class GroundUnit {
 		else if (location != null && location.isContested()) {
 			str = String.format(str, location.ind.getCurrentName());
 		}
-		
-		info.addPara(str, color, 0);
+		return str;
+	}
+	
+	public void addActionText(TooltipMakerAPI info) {
+		Color color = Misc.getTextColor();
+		String str = getWantedActionText();
+
+		if (isReorganizing() || isAttackPrevented()) {
+			color = Misc.getNegativeHighlightColor();
+		}
+
+		orderLabel = info.addPara(str, color, 0);
+	}
+
+	public void updateActionText() {
+		String str = getWantedActionText();
+		orderLabel.setText(str);
 	}
 	
 	public void setMorale(float morale) {
@@ -804,26 +827,40 @@ public class GroundUnit {
 	
 	public CustomPanelAPI createUnitCard(CustomPanelAPI parent, boolean forDialog)
 	{
-		float sizeMult = 1, pad = 3;
+		float sizeMult = 1;
 		if (forDialog) {
 			sizeMult = 1.5f;
-			pad = 4.5f;
 		}
-		
-		String commoditySprite = unitDef.getSprite();
+
 		String crest = faction.getCrest();
 		
 		CustomPanelAPI card = parent.createCustomPanel(PANEL_WIDTH * sizeMult, 
 				PANEL_HEIGHT * sizeMult, 
 				new GroundUnitPanelPlugin(faction, this, crest));
-		TooltipMakerAPI title = card.createUIElement(PANEL_WIDTH * sizeMult, 
+		fillUnitCard(card, forDialog);
+
+		if (!forDialog) {
+			intel.unitPanelPlugins.put(this, (GroundUnitPanelPlugin)card.getPlugin());
+		}
+		
+		return card;
+	}
+
+	protected void fillUnitCard(CustomPanelAPI card, boolean forDialog) {
+		float sizeMult = 1, pad = 3;
+		if (forDialog) {
+			sizeMult = 1.5f;
+			pad = 4.5f;
+		}
+
+		TooltipMakerAPI title = card.createUIElement(PANEL_WIDTH * sizeMult,
 				TITLE_HEIGHT * sizeMult, false);
 		if (forDialog) title.setParaSmallInsignia();
 		title.addPara(name, faction.getBaseUIColor(), pad);
 		card.addUIElement(title).inTL(0, 0);
-		
+
 		// begin stats section
-		TooltipMakerAPI stats = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH)/2 * sizeMult, 
+		TooltipMakerAPI stats = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH)/2 * sizeMult,
 				(PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT) * sizeMult, false);
 
 		String commodityId;
@@ -840,7 +877,7 @@ public class GroundUnit {
 			stats.addTooltipToPrevious(createTooltip("marines"), TooltipLocation.BELOW);
 		}
 
-		
+
 		// number of equipment, e.g. heavy arms
 		int equipment = getEquipmentCount();
 		if (equipment > 0) {
@@ -854,37 +891,37 @@ public class GroundUnit {
 		else {
 			stats.addSpacer(19 * sizeMult);
 		}
-		
+
 		// morale
-		line = stats.beginImageWithText("graphics/icons/insignia/16x_star_circle.png", 
+		line = stats.beginImageWithText("graphics/icons/insignia/16x_star_circle.png",
 				16 * sizeMult);
 		Color moraleColor = getMoraleColor(morale);
 		String moraleStr = Math.round(this.morale * 100) + "%";
 		line.addPara(moraleStr, moraleColor, 0);
 		stats.addImageWithText(pad);
 		stats.addTooltipToPrevious(createTooltip("morale"), TooltipLocation.BELOW);
-		
+
 		card.addUIElement(stats).belowLeft(title, 0);
-		
-		TooltipMakerAPI stats2 = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH)/2 * sizeMult, 
+
+		TooltipMakerAPI stats2 = card.createUIElement((PANEL_WIDTH - BUTTON_SECTION_WIDTH)/2 * sizeMult,
 				(PANEL_HEIGHT - TITLE_HEIGHT - LOCATION_SECTION_HEIGHT) * sizeMult, false);
-		
+
 		// attack power
-		line = stats2.beginImageWithText(Global.getSettings().getSpriteName("misc", 
+		line = stats2.beginImageWithText(Global.getSettings().getSpriteName("misc",
 				"nex_groundunit_attackpower"), 16 * sizeMult);
 		line.addPara(String.format("%.0f", getAttackStrength()), 0);
 		stats2.addImageWithText(pad);
 		stats2.addTooltipToPrevious(createTooltip("attackPower"), TooltipLocation.BELOW);
 		card.addUIElement(stats2).rightOfTop(stats, 0);
-		
+
 		// defence power
-		line = stats2.beginImageWithText(Global.getSettings().getSpriteName("misc", 
+		line = stats2.beginImageWithText(Global.getSettings().getSpriteName("misc",
 				"nex_groundunit_defensepower"), 16 * sizeMult);
 		line.addPara(String.format("%.2f", getAdjustedDamageTaken(1)), 0);
 		stats2.addImageWithText(pad);
 		stats2.addTooltipToPrevious(createTooltip("defensePower"), TooltipLocation.BELOW);
 		card.addUIElement(stats2).rightOfTop(stats, 0);
-		
+
 		// deploy cost
 		if (true || location == null) {
 			line = stats2.beginImageWithText(Global.getSettings().getCommoditySpec(
@@ -895,20 +932,20 @@ public class GroundUnit {
 		}
 		else {
 			//stats.addSpacer(19);
-		}		
+		}
 		// end stats section
-		
+
 		// location
-		TooltipMakerAPI loc = card.createUIElement(PANEL_WIDTH * sizeMult, 
+		TooltipMakerAPI loc = card.createUIElement(PANEL_WIDTH * sizeMult,
 				LOCATION_SECTION_HEIGHT * sizeMult, false);
-		
+
 		// with image version
 		if (USE_LOCATION_IMAGE) {
 			String img = location != null ? location.ind.getCurrentImage() : "graphics/illustrations/free_orbit.jpg";
 			line = loc.beginImageWithText(img, 32 * sizeMult);
 			addActionText(line);
 			loc.addImageWithText(pad);
-			
+
 		} else {
 			if (location != null) {
 				String locStr = String.format(getString("currLocation"), location.getName());
@@ -917,28 +954,26 @@ public class GroundUnit {
 			addActionText(loc);
 		}
 		card.addUIElement(loc).inBL(0, 2 * sizeMult);
-		
-		
+
+
 		// button holder
 		if (!forDialog) {
-			TooltipMakerAPI buttonHolder = card.createUIElement(BUTTON_SECTION_WIDTH * sizeMult, 
-				PANEL_HEIGHT * sizeMult * 2, false);
-			buttonHolder.addButton(StringHelper.getString("action", true), this, 
+			TooltipMakerAPI buttonHolder = card.createUIElement(BUTTON_SECTION_WIDTH * sizeMult,
+					PANEL_HEIGHT * sizeMult * 2, false);
+			buttonHolder.addButton(StringHelper.getString("action", true), this,
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
-			ButtonAPI qm = buttonHolder.addButton(getString("btnQuickMove", true), new UnitQuickMoveHax(this), 
+			ButtonAPI qm = buttonHolder.addButton(getString("btnQuickMove", true), new UnitQuickMoveHax(this),
 					(BUTTON_SECTION_WIDTH - 6) * sizeMult, 16 * sizeMult, 0);
 			boolean deployed = location != null;
 			boolean canDeploy = !deployed && getDeployCost() <= Global.getSector().getPlayerFleet().getCargo().getSupplies()
 					&& isFleetInRange();
 			if (isReorganizing() || intel.getSide(isAttacker).getMovementPointsRemaining() <= 0
-					|| (!deployed && !canDeploy)) 
+					|| (!deployed && !canDeploy))
 			{
 				qm.setEnabled(false);
 			}
 			card.addUIElement(buttonHolder).inTR(1 * sizeMult, 2 * sizeMult);
 		}
-		
-		return card;
 	}
 	
 	public static Color getMoraleColor(float morale) {

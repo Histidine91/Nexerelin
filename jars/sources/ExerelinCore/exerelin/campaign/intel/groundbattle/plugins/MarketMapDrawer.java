@@ -1,29 +1,37 @@
 package exerelin.campaign.intel.groundbattle.plugins;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.intel.groundbattle.GroundBattleIntel;
 import exerelin.campaign.intel.groundbattle.GroundUnit;
+import exerelin.campaign.intel.groundbattle.GroundUnitPanelPlugin;
 import exerelin.campaign.intel.groundbattle.IndustryForBattle;
+import exerelin.campaign.intel.groundbattle.dialog.UnitOrderDialogPlugin;
 import exerelin.campaign.ui.CustomPanelPluginWithBorder;
+import exerelin.campaign.ui.CustomUIPanelInputListener;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexUtils;
 import exerelin.utilities.rectanglepacker.Packer;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.ui.LazyFont;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * Draws the tacticool planet map.
@@ -64,7 +72,8 @@ public class MarketMapDrawer {
 	protected float width;
 	protected GroundBattleIntel intel;
 	protected CustomPanelAPI panel;
-	protected MarketMapPanelPlugin panelPlugin;
+	@Getter	protected MarketMapPanelPlugin panelPlugin;
+	protected transient Map<IndustryForBattle, CustomPanelAPI> industryPanels = new HashMap<>();
 	
 	public static float getIndustryPanelSizeMult() {
 		//if (true) return 0.6f;
@@ -122,21 +131,73 @@ public class MarketMapDrawer {
 			float y = ifb.getPosOnMap().y;
 			CustomPanelAPI indPanel = ifb.renderPanelNew(panel, panelWidth, panelHeight, plugin);
 			panel.addComponent(indPanel).inTL(x, y);
+			industryPanels.put(ifb, indPanel);
 			
 			index++;
 		}
 	}
-	
+
+	public IndustryForBattle getIFBPanelAtEvent(InputEventAPI event) {
+		for (IndustryForBattle ifb : industryPanels.keySet()) {
+			CustomPanelAPI panel = industryPanels.get(ifb);
+			if (panel.getPosition().containsEvent(event)) {
+				return ifb;
+			}
+		}
+		return null;
+	}
+
+	protected void processUnitMove(GroundUnit unit, IndustryForBattle dest) {
+		if (unit == null) return;
+		if (!unit.canMove()) {
+			UnitOrderDialogPlugin.playSound("disabled");
+			return;
+		}
+
+		// if we're already there, cancel current move order
+		if (unit.getLocation() == dest) {
+			unit.cancelMove();
+			unit.updateActionText();
+			UnitOrderDialogPlugin.playSound("move");
+			return;
+		}
+
+		if (unit.getLocation() != null) {
+			unit.setDestination(dest);
+			unit.updateActionText();
+			UnitOrderDialogPlugin.playSound("move");
+		} else {
+			// when deploying from space
+			IntelUIAPI ui = intel.getLastUIAPI();
+
+			float attrition = intel.getSide(unit.isAttacker()).getDropAttrition().getModifiedValue();
+			if (attrition > 0) {    // use the dialog to display losses on drop
+				UnitOrderDialogPlugin dialog = new UnitOrderDialogPlugin(intel, unit, ui);
+				dialog.setUltraQuickMove(dest);
+				intel.saveScrollerPos();
+				ui.showDialog(intel.getMarket().getPrimaryEntity(), dialog);
+			}
+			else {
+				unit.deploy(dest, null);
+				UnitOrderDialogPlugin.playSound("deploy");
+				intel.saveScrollerPos();
+				ui.updateUIForItem(intel);
+			}
+		}
+	}
+
 	public CustomPanelAPI getPanel() {
 		return panel;
 	}
 	
 	
-	public static class MarketMapPanelPlugin extends FramedCustomPanelPlugin {
+	public static class MarketMapPanelPlugin extends FramedCustomPanelPlugin implements CustomUIPanelInputListener {
 	
 		protected MarketMapDrawer map;
 		protected String bg;
 		protected List<Rectangle> debugRects;
+
+		protected transient GroundUnit liftedUnit;
 
 		public MarketMapPanelPlugin(MarketMapDrawer map) 
 		{			
@@ -153,6 +214,10 @@ public class MarketMapDrawer {
 		@Override
 		public void render(float alphaMult) {
 			super.render(alphaMult);
+
+			if (liftedUnit != null && liftedUnit.getBackgroundIcon() != null) {
+				drawLiftedUnit(alphaMult);
+			}
 
 			if (!DEBUG_MODE) return;
 
@@ -174,6 +239,27 @@ public class MarketMapDrawer {
 				drawDebugSpot(ifb.getPosOnMap().x, ifb.getPosOnMap().y, color);
 			}
 			 */
+		}
+
+		protected void drawLiftedUnit(float alphaMult) {
+			GL11.glPushMatrix();
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			float screenScale = Global.getSettings().getScreenScaleMult();
+
+			float x = Mouse.getX()/screenScale;
+			float y = Mouse.getY()/screenScale;
+			float sizeMult = 0.5f * screenScale;
+
+			// marine/armored sprite
+			SpriteAPI sprite = Global.getSettings().getSprite(liftedUnit.getBackgroundIcon());
+			sprite.setAlphaMult(alphaMult * 0.5f);
+			sprite.setSize(sprite.getWidth() * sizeMult, sprite.getHeight() * sizeMult);
+			//GL11.glScalef(0.5f, 0.5f, 1);
+			sprite.renderAtCenter(x, y);
+
+			GL11.glPopMatrix();
 		}
 
 		public boolean doesRectOverlapEdge(Rectangle rect) {
@@ -311,6 +397,24 @@ public class MarketMapDrawer {
 			}
 			GL11.glDisable(GL11.GL_LINE_STIPPLE);
 			GL11.glPopMatrix();
+		}
+
+		@Override
+		public void notifyInput(CustomUIPanelPlugin plugin, InputEventAPI input, Map<String, Object> params) {
+			//log.info(params);
+			if (params.get("source") instanceof GroundUnitPanelPlugin gupp) {
+				if (input.isLMBDownEvent()) {
+					liftedUnit = gupp.getUnit();
+					if (!liftedUnit.canMove()) liftedUnit = null;
+				}
+				else if (input.isLMBUpEvent()) {
+					IndustryForBattle droppedAt = map.getIFBPanelAtEvent(input);
+					if (droppedAt != null) {
+						map.processUnitMove(liftedUnit, droppedAt);
+					}
+					liftedUnit = null;
+				}
+			}
 		}
 	}
 	
