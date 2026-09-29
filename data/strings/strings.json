@@ -1045,6 +1045,8 @@
 		"introRespect1":"Not all recognized polities are equally respected. Your conduct over this key period will determine how the interstellar community sees you.",
 		
 		"tooltipStageStart":"You are still treated as an unusually successful trader or freebooter rather than a head of state.",
+		"tooltipStageGreatFleet1":"With your growing recognition in the Sector, you have unlocked the ==Great Azure Fleet== events.",
+		"tooltipStageGreatFleet2":"Go to any size ==6== or larger market of a recognized faction (that is ==Welcoming== or better with you) and conduct an official visit in the ==Special Options== menu, to gain recognition and faction reputation. This requires a ==non-civilian capital ship== and can be done once per faction.",
 		"tooltipStageEnd":"You are a recognized state in the Sector, able to interact with the established powers on an equal basis.",
 		"tooltipStageRespectable":"You are an upstanding member of the interstellar community.",
 		"tooltipStageRogue":"The Sector has had enough Leonises, Kantas and Andradas already. They react to your rise as they would to the outbreak of an invasive plant.",
@@ -1060,6 +1062,7 @@
 		"factorDesc_raiseRelations":"Operative raised relations",
 		"factorDesc_returnMarket":"Returned market %s (size %s)",
 		"factorDesc_satBomb":"Saturation bombardment of %s (size %s)",
+		"factorDesc_greatFleetVisit":"Great Azure Fleet visited %s",
 		
 		"factorTooltip_colonyIncome":"Profitable colonies make your faction a polity to be acknowledged. Every ==%s== credits of net income generates ==1== point.",
 		"factorTooltip_colonySize":"In these times of decay, growing a colony is a symbol of hope and recovery.",
@@ -1073,6 +1076,7 @@
 		"factorTooltip_raiseRelationsInfo":"Operatives can conduct lobbying efforts on your behalf, although this will only help if done with a polity that is itself respectable.",
 		"factorTooltip_returnMarket":"Your return of territory to ==%s== is a virtuous act that speaks well of you. Effect is based on the ==cube of market size==.",
 		"factorTooltip_satBomb":"With a few exceptions, saturation bombardment is considered an act of mass terror by an enemy of all in the Sector. Effect is based on the ==[market size] power of 10==.",
+		"factorTooltip_greatFleetVisit":"The visit of your fleet to %s has impressed all who were around to witness it.",
 		
 		"respect":"respect",
 		"recognition":"recognition",

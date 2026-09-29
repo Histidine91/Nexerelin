@@ -10,8 +10,8 @@ import com.fs.starfarer.api.campaign.listeners.EconomyTickListener;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventFactor;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD;
@@ -20,7 +20,10 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.intel.agents.CovertActionIntel;
 import exerelin.campaign.intel.agents.RaiseRelations;
-import exerelin.utilities.*;
+import exerelin.utilities.AgentActionListener;
+import exerelin.utilities.InvasionListener;
+import exerelin.utilities.NexUtilsMarket;
+import exerelin.utilities.StringHelper;
 import lombok.Getter;
 import lombok.Setter;
 import org.magiclib.util.MagicTxt;
@@ -34,10 +37,16 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
     public static final String DATA_KEY = "nex_factionRecognition";
     public static final String MEMORY_KEY_RECOGNIZED = "$nex_factionRecognized";
+    public static final String MEMORY_KEY_GREAT_FLEET_ENABLED = "$nex_recog_enableGreatFleetEvent"; // player memory
+    public static final String MEMORY_KEY_GREAT_FLEET_VISITED = "$nex_recog_greatFleetVisited"; // recipient faction memory
     public static final int PROGRESS_MAX = 1000;
+    public static final int GREAT_FLEET_RECOGNITION = 30;
+    public static final int GREAT_FLEET_RESPECT = 0;    // 25
+    public static final int GREAT_FLEET_MARKET_MIN_SIZE = 6;
 
     public enum Stage {
         START,
+        GREAT_FLEET,
         END
     }
 
@@ -98,6 +107,9 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
     protected Object readResolve() {
         if (completedCrises == null) completedCrises = new HashSet<>();
+        if (getDataFor(Stage.GREAT_FLEET) == null) {
+            addStage(Stage.GREAT_FLEET, PROGRESS_MAX/2);
+        }
         return this;
     }
 
@@ -117,7 +129,8 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         setMaxProgress(PROGRESS_MAX);
 
         addStage(Stage.START, 0);
-        addStage(Stage.END, PROGRESS_MAX, true, StageIconSize.LARGE);
+        addStage(Stage.GREAT_FLEET, PROGRESS_MAX/2);
+        addStage(Stage.END, PROGRESS_MAX, StageIconSize.LARGE);
 
         ColonyIncomeFactor income = new ColonyIncomeFactor();
         addFactor(income);
@@ -352,12 +365,15 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         main.addSpacer(opad);
 
         // MODIFIED
+        // idk if I want to use this
         /*
-        for (EventStageData curr : thisStages) {
-            if (curr.wasEverReached && curr.isOneOffEvent && !curr.isRepeatable) continue;
-            addStageDescriptionWithImage(main, curr.id);
+        if (first) {
+            for (EventStageData curr : thisStages) {
+                if (curr.id != Stage.GREAT_FLEET) continue;
+                addStageDescriptionWithImage(main, curr.id);
+            }
         }
-        */
+         */
 
         afterStageDescriptions(main);
 
@@ -468,6 +484,9 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
             applyRecognition();
             endAfterDelay(15);
         }
+        else if (stage.id == Stage.GREAT_FLEET) {
+            Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(MEMORY_KEY_GREAT_FLEET_ENABLED, true);
+        }
     }
 
     protected void applyRecognition() {
@@ -537,11 +556,15 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
     }
 
     public void addStageDesc(TooltipMakerAPI info, Object stageId, float initPad, boolean forTooltip) {
-        float opad = 10f;
+        float pad = 3;
         Color h = Misc.getHighlightColor();
         Color text = Misc.getTextColor();
         if (stageId == Stage.START) {
             MagicTxt.addPara(info, getString("tooltipStageStart"), initPad, text, h);
+        }
+        if (stageId == Stage.GREAT_FLEET) {
+            MagicTxt.addPara(info, getString("tooltipStageGreatFleet1"), initPad, text, Misc.getBasePlayerColor());
+            MagicTxt.addPara(info, getString("tooltipStageGreatFleet2"), pad, text, h);
         }
         if (stageId == Stage.END) {
             MagicTxt.addPara(info, getString("tooltipStageEnd"), initPad, text, h);
@@ -556,20 +579,15 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
     @Override
     public TooltipMakerAPI.TooltipCreator getStageTooltipImpl(Object stageId) {
-        return new TooltipMakerAPI.TooltipCreator() {
-            @Override
-            public boolean isTooltipExpandable(Object tooltipParam) {
-                return false;
-            }
+        final EventStageData esd = getDataFor(stageId);
 
-            @Override
-            public float getTooltipWidth(Object tooltipParam) {
-                return BaseEventFactor.TOOLTIP_WIDTH;
-            }
 
+        return new BaseFactorTooltip() {
             @Override
             public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
                 addStageDesc(tooltip, stageId, 0, true);
+                if (esd != null && stageId.equals(Stage.GREAT_FLEET))
+                    esd.addProgressReq(tooltip, 10);
             }
         };
     }
@@ -611,6 +629,9 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
     protected String getStageIconImpl(Object stageId) {
         if (stageId == Stage.START) {
             return Global.getSettings().getSpriteName("intel", "nex_recognition_stage0");
+        }
+        if (stageId == Stage.GREAT_FLEET) {
+            return Global.getSettings().getSpriteName("intel", "nex_recognition_stage1");
         }
         if (stageId == Stage.END) {
             return Global.getSector().getPlayerFaction().getCrest();

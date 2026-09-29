@@ -4637,7 +4637,8 @@ FireAll PopulateOptions","""Then it will be as friend $playerFirstName proposes.
 nex_dissonantAndSierraConvoOpt,PopulateOptions,"$id == nex_dissonant
 !$nex_sierraConvoSeen
 $rel > 0.25
-Nex_MiscCMD hasSierra",SetOptionColor nex_dissonantAndSierraConvo1 sierraTextColor,,"30:nex_dissonantAndSierraConvo1:""Might I introduce you to a friend of mine?""",
+Nex_MiscCMD hasSierra","Nex_MiscCMD setRelColorForSierraConvo
+SetOptionColor nex_dissonantAndSierraConvo1 sierraTextColor",,"30:nex_dissonantAndSierraConvo1:""Might I introduce you to a friend of mine?""",
 nex_dissonantAndSierraConvo1,DialogOptionSelected,$option == nex_dissonantAndSierraConvo1,$nex_sierraConvoSeen = true,"""Friend of $playerFirstName?"" $HeOrShe seems to give a subtle nod. ""Then, please connect.""",nex_dissonantAndSierraConvo2:Confirm with Sierra,
 nex_dissonantAndSierraConvo2,DialogOptionSelected,$option == nex_dissonantAndSierraConvo2,"AddText ""You send a quick message to Sierra to gauge her availability and interest. A reply comes near-instantaneously.""
 AddTextSmall ""sierra0B: You want to speak with one of THEM? After they kidnapped me?!"" sierraTextColor
@@ -5393,6 +5394,27 @@ nex_HA_policeRaid_respRights,DialogOptionSelected,$option == nex_HA_policeRaid_r
 ""We have meticulously crossed all our i's and dotted our t's on this one, captain. Your attempt at legalese will not shield the scum pouring drugs into the hab-corridors of Chicomoztoc and guns in the hands of Lost Astropolis gangs.""",,
 ,,,,,,
 #END hostile activity,,,,,,
+,,,,,,
+# Faction recognition event—Great Azure Fleet,,,,,,
+nex_marketSpecial_recognitionGreatFleetOpt,ExerelinMarketSpecial,"$hasMarket
+$faction.id != player
+Nex_RecognitionEvent canDoGreatFleet","SetStoryOption nex_marketSpecial_recognitionGreatFleet 0 none ui_char_spent_story_point_leadership ""Great Azure Fleet visited $factionName""",,nex_marketSpecial_recognitionGreatFleet:Make an official visit for recognition,
+nex_marketSpecial_recognitionGreatFleet,DialogOptionSelected,$option == nex_marketSpecial_recognitionGreatFleet,"ShowVisual ""graphics/illustrations/freighters.jpg""
+FireBest Nex_GreatFleetVisitFlavor","You contact the local planetary administration and finalize the arrangements—set up well ahead of time, naturally.
+
+Eighteen hours later, your $shipOrFleet is drifting impressively in the skies of $marketName, a living demonstration of the glory of the emerging $player.factionName. Below, you appear before a horde of local dignitaries, journalists and gawkers. Just like any other combat scenario, really.
+
+Hands are shaken, holos are taken. Speeches are made extolling the friendship between $theFaction and your own $player.factionName. The most important dignitaries get to do their verbosity aboard your very flagship.",nex_marketSpecial_recognitionGreatFleetCont:Continue,
+nex_marketSpecial_recognitionGreatFleetFlavorHegemony,Nex_GreatFleetVisitFlavor,$faction.id == hegemony,,"The number of medals bedecking your dress uniform is competitive with any of the Eventide graduates posing with you, and arguably they are no less earned.",,
+nex_marketSpecial_recognitionGreatFleetFlavorLuddic,Nex_GreatFleetVisitFlavor,$faction.id == luddic_church,,"Church curates bless you as if you were the Son of Ludd himself. Fortunately, no-one involved is quite shameless enough to engage in comparative hagiography between you and the Church's early saints.",,
+nex_marketSpecial_recognitionGreatFleetFlavorGeneric,Nex_GreatFleetVisitFlavor,,,"On dining tables, shamelessly expensive delicacies are devoured with devastating efficiency. You refrain from thinking of how many Hellbore shells those Volturnian lobsters could have bought.",,
+nex_marketSpecial_recognitionGreatFleetContNothing,DialogOptionSelected,$option == nex_marketSpecial_recognitionGreatFleetCont,"$option = nex_marketSpecial_recognitionGreatFleetEnd 0
+FireBest DialogOptionSelected","After interminable hours of socializing, you return to your $shipOrFleet. The whole affair has taken its toll on your combat readiness, but you've scored a victory in advancing your goal of promoting your nascent polity's legitimacy.",,# in principle we could make extra stuff happen here
+nex_marketSpecial_recognitionGreatFleetEnd,DialogOptionSelected,$option == nex_marketSpecial_recognitionGreatFleetEnd,"Nex_RecognitionEvent applyGreatFleet
+AdjustRep $faction.id COOPERATIVE 10
+$option = exerelinMarketSpecialBack 0
+FireBest DialogOptionSelected",,,
+#END Faction recognition event—Great Azure Fleet,,,,,,
 ,,,,,,
 # Misc. dialog,,,,,,
 Nex_SierraThoughtsRemnantFragments,SierrasThoughts,"$global.nex_remFragments_deployedShards score:5

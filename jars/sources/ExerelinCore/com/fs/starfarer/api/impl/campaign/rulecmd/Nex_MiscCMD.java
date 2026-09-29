@@ -32,7 +32,7 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 		switch(arg)
 		{
 			case "hasSierra":
-				return hasSierra(memoryMap.get(MemKeys.LOCAL));
+				return hasSierra();
 			case "hasMidnightContact":
 				return ContactIntel.playerHasIntelItemForContact(Global.getSector().getImportantPeople().getPerson(RemnantQuestUtils.PERSON_DISSONANT));
 			case "isRemoteConnection":
@@ -50,16 +50,18 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 			case "disableRemnantRaids":
 				toggleRemnantRaids(dialog, false);
 				return true;
+			case "setRelColorForSierraConvo":
+				memoryMap.get(MemKeys.LOCAL).set("$nex_relColor", NexUtilsReputation.getRelColor(-0.2f), 0);
+				return true;
 			default:
 				return false;
 		}
 	}
 	
-	public static boolean hasSierra(MemoryAPI mem) {
+	public static boolean hasSierra() {
 		if (Global.getSector().getPlayerFleet() != null) {
 			for (FleetMemberAPI member : Global.getSector().getPlayerFleet().getFleetData().getMembersListCopy()) {
 				if (member.getVariant().hasHullMod("sotf_sierrasconcord") && !member.getVariant().hasTag("sotf_inert")) {
-					mem.set("$nex_relColor", NexUtilsReputation.getRelColor(-0.2f), 0);
 					return true;
 				}
 			}

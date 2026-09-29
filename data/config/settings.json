@@ -225,10 +225,11 @@
 		},
 		"illustrations":{
 			"facility_explosion":"graphics/illustrations/facility_explosion.jpg",
+			"freighters":"graphics/illustrations/freighters.jpg",
 			"fly_away":"graphics/illustrations/fly_away.jpg",
 			"corporate_lobby":"graphics/illustrations/corporate_lobby.jpg",
 			"victory_apostate":"graphics/exerelin/illustrations/victory_apostate.jpg",
-			"omega_blueprint":"graphics/exerelin/illustrations/omega_blueprint.png",
+			"omega_blueprint":"graphics/exerelin/illustrations/omega_blueprint.png",			
 		},
 		
 		"characters":{
@@ -294,6 +295,7 @@
 			"nex_spaceport":"graphics/icons/markets/spaceport.png",
 			
 			"nex_recognition_stage0":"graphics/icons/intel/player.png",
+			"nex_recognition_stage1":"graphics/icons/campaign/increased_defenses.png",
 		},
 		
 		"marketConditions":{
