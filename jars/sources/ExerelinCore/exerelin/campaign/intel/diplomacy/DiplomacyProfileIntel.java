@@ -549,7 +549,7 @@ public class DiplomacyProfileIntel extends BaseIntelPlugin {
 
 	protected void createTraitPickerWindow(IntelUIAPI intelUI) {
 		float width = Math.max(Global.getSettings().getScreenWidth() * 0.75f, 1024);
-		float height = Math.max(Global.getSettings().getScreenHeight() * 0.6f, 800f);
+		float height = Math.max(Global.getSettings().getScreenHeight() * 0.6f, 720f);
 
 		DiploTraitPickerDialogDelegate delegate = new DiploTraitPickerDialogDelegate(width, height, intelUI, this);
 		intelUI.showDialog(Global.getSector().getPlayerFleet(),	new NexBaseCustomDialogDelegate.SimpleDialogWithDelegate(delegate));
