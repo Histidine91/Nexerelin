@@ -1,9 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.RuleBasedDialog;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -13,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionIntel.AntiInspectionOrders;
+import com.fs.starfarer.api.loading.AbilitySpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.intel.missions.remnant.RemnantQuestUtils;
@@ -53,8 +52,24 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 			case "setRelColorForSierraConvo":
 				memoryMap.get(MemKeys.LOCAL).set("$nex_relColor", NexUtilsReputation.getRelColor(-0.2f), 0);
 				return true;
+			case "readdAbilitiesAfterTutorial":
+				readdAbilitiesAfterTutorial(dialog);
+				return true;
 			default:
 				return false;
+		}
+	}
+
+	public static void readdAbilitiesAfterTutorial(InteractionDialogAPI dialog) {
+		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		CharacterDataAPI player = Global.getSector().getCharacterData();
+		for (String abId : Global.getSettings().getSortedAbilityIds()) {
+			boolean have = playerFleet.hasAbility(abId);    // player.getAbilities().contains(abId)
+			if (have) continue;
+			AbilitySpecAPI spec = Global.getSettings().getAbilitySpec(abId);
+			if (!spec.isUnlockedAtStart()) continue;
+			player.addAbility(abId);
+			AddRemoveCommodity.addAbilityGainText(abId, dialog.getTextPanel());
 		}
 	}
 	
