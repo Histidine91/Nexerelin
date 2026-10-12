@@ -32,6 +32,7 @@ public class FleetPoolHelperListener extends BaseCampaignEventListener implement
     public static final float PATROL_POOL_RETURN_EFFICIENCY = 0.98f;
     public static final float ECONOMY_POOL_RETURN_EFFICIENCY = 0.95f;
     public static final String MEM_KEY_STARTING_FP = "$nex_fphl_startingFP";
+    public static final float PATROL_POOL_COST_MULT = 0.5f;
 
     protected List<NexRouteManager.NexRouteData> toAdd = new ArrayList<>();
 
@@ -53,11 +54,12 @@ public class FleetPoolHelperListener extends BaseCampaignEventListener implement
         if (FleetPoolManager.hasRouteReturnedToPool(route)) return;
         float returnMult = FleetPoolManager.getRouteReturnEfficiency(route);
         if (returnMult <= 0) return;
+        float costMult = FleetPoolManager.getRouteCostMult(route);
+        if (costMult <= 0) return;
 
         float fp = NexUtilsFleet.getRouteFPWithDamage(route);
         if (fp <= 0) return;
-        float refund = fp * returnMult;
-        if (refund < 0) refund = 0;
+        float refund = fp * returnMult * costMult;
         if (refund <= 0) return;
 
         String factionId = FleetPoolManager.getRouteFactionId(route);
@@ -80,7 +82,7 @@ public class FleetPoolHelperListener extends BaseCampaignEventListener implement
      */
     public void addRoute(NexRouteManager.NexRouteData route) {
         ResourcePoolManager.RequisitionParams rp = new ResourcePoolManager.RequisitionParams();
-        rp.amount = NexUtilsFleet.getRouteFPWithDamage(route);
+        rp.amount = NexUtilsFleet.getRouteFPWithDamage(route) * FleetPoolManager.getRouteCostMult(route);
         if (rp.amount <= 0) return;
         String factionId = FleetPoolManager.getRouteFactionId(route);
 
@@ -121,9 +123,10 @@ public class FleetPoolHelperListener extends BaseCampaignEventListener implement
         return fp;
     }
 
-    public void preAddRoute(NexRouteManager.NexRouteData route, String factionId, float returnEfficiency) {
+    public void preAddRoute(NexRouteManager.NexRouteData route, String factionId, float returnEfficiency, float costMult) {
         FleetPoolManager.setRouteFactionId(route, factionId);
         FleetPoolManager.setRouteReturnEfficiency(route, returnEfficiency);
+        FleetPoolManager.setRouteCostMult(route, costMult);
         toAdd.add(route);
     }
 
@@ -131,19 +134,16 @@ public class FleetPoolHelperListener extends BaseCampaignEventListener implement
     public void reportRouteAdded(RouteManager.RouteData route) {
         if (route instanceof NexRouteManager.NexRouteData nrd) {
             if (route.getCustom() instanceof MilitaryBase.PatrolFleetData) {
-                preAddRoute(nrd, route.getFactionId(), PATROL_POOL_RETURN_EFFICIENCY);
+                preAddRoute(nrd, route.getFactionId(), PATROL_POOL_RETURN_EFFICIENCY, PATROL_POOL_COST_MULT);
             }
             else if (route.getCustom() instanceof EconomyFleetAssignmentAI.EconomyRouteData) {
                 // don't think these guys have usable FP
                 //addRoute(nrd, route.getFactionId(), ECONOMY_POOL_RETURN_EFFICIENCY);
             }
             else if (route.getSpawner() instanceof PerseanLeagueBlockade) {
-
+            }
             // was gonna add pirate RaidIntels here but does anything even use that anymore?
             //else if (route.getSpawner() instanceof RaidIntel && (route.getSpawner() instanceof OffensiveFleetIntel))
-
-
-            }
         }
     }
 

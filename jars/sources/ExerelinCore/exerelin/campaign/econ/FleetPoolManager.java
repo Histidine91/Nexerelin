@@ -27,6 +27,7 @@ public class FleetPoolManager extends ResourcePoolManager {
 	public static final boolean USE_POOL = true;
 	public static final String ROUTE_DATA_HAS_RETURNED_KEY = "nex_fleetPoolHasReturned";
 	public static final String ROUTE_DATA_RETURN_EFFICIENCY_KEY = "nex_fleetPoolReturnEfficiency";
+	public static final String ROUTE_DATA_COST_MULT = "nex_fleetPoolCostMult";
 	public static final String ROUTE_DATA_FACTION_KEY = "nex_fleetPoolFactionId";
 	public static final String MARKET_STAT_FLEET_POOL = "nex_fleetPool";
 	public static final float MARKET_FLEET_SIZE_MAX_BONUS = 1.15f;	// multiplier
@@ -46,10 +47,23 @@ public class FleetPoolManager extends ResourcePoolManager {
 
 	public static float getRouteReturnEfficiency(NexRouteManager.NexRouteData routeData) {
 		if (!routeData.getDataStore().containsKey(ROUTE_DATA_RETURN_EFFICIENCY_KEY)) {
-			return 0;
+			return 0.8f;
 		}
 		return (Float)routeData.getDataStore().get(ROUTE_DATA_RETURN_EFFICIENCY_KEY);
 	}
+
+	public static void setRouteCostMult(NexRouteManager.NexRouteData routeData, float mult) {
+		routeData.getDataStore().put(ROUTE_DATA_COST_MULT, mult);
+	}
+
+	public static float getRouteCostMult(NexRouteManager.NexRouteData routeData) {
+		if (!routeData.getDataStore().containsKey(ROUTE_DATA_COST_MULT)) {
+			return 1;
+		}
+		return (Float)routeData.getDataStore().get(ROUTE_DATA_COST_MULT);
+	}
+
+
 
 	public static void setRouteReturnedToPool(NexRouteManager.NexRouteData routeData, boolean returned) {
 		routeData.getDataStore().put(ROUTE_DATA_HAS_RETURNED_KEY, returned);
