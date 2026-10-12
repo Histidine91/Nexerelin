@@ -1,9 +1,13 @@
 package exerelin.campaign.battle;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.BattleAutoresolverPluginImpl;
@@ -412,13 +416,8 @@ public class NexWarSimScript {
 
         Set<CampaignFleetAPI> seenFleets = new HashSet<CampaignFleetAPI>();
         for (CampaignFleetAPI fleet : system.getFleets()) {
+            if (!canParticipate(fleet)) continue;
             FactionAPI fleetFaction = fleet.getFaction();
-            if (fleet.isStationMode()) continue;
-            if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_TRADE_FLEET)) continue;
-            if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_SMUGGLER)) continue;
-
-            if (fleet.isPlayerFleet()) continue;
-
             if (!willFactionSideWithUs(fleetFaction, faction, enemyFaction)) continue;
 
             strength += fleet.getEffectiveStrength();
@@ -439,6 +438,21 @@ public class NexWarSimScript {
         }
 
         return strength;
+    }
+
+    public static boolean canParticipate(CampaignFleetAPI fleet) {
+        if (fleet.isPlayerFleet()) return false;
+        if (fleet.isStationMode()) return false;
+
+        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
+
+        boolean noMilitary = memory.getBoolean(MemFlags.FLEET_NO_MILITARY_RESPONSE);
+        if (noMilitary) return false;
+
+        boolean patrol = memory.getBoolean(MemFlags.MEMORY_KEY_PATROL_FLEET);
+        boolean warFleet = memory.getBoolean(MemFlags.MEMORY_KEY_WAR_FLEET);
+        boolean pirate = memory.getBoolean(MemFlags.MEMORY_KEY_PIRATE);
+        return patrol || warFleet || pirate;
     }
 
     /**
