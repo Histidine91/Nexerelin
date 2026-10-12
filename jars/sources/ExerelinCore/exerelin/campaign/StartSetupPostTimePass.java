@@ -163,6 +163,9 @@ public class StartSetupPostTimePass {
 		} else if (setupData.enableCarePackage == 2) {
 			useCarePackage = true;
 		}
+		if (isPlayer && !freeStart) {
+			useCarePackage = true;
+		}
 		if (Global.getSector().getMemoryWithoutUpdate().getBoolean("$nex_tutorialStart"))
 			useCarePackage = false;
 
@@ -180,10 +183,10 @@ public class StartSetupPostTimePass {
 		}
 
 		// Starting blueprints or care package
-		if (useCarePackage || (isPlayer && !freeStart)) {
+		if (useCarePackage) {
 			Global.getSector().addScript(new CreateCarePackageScript(startLocation));
 		}
-		else {
+		else if (!freeStart) {
 			for (NexFactionConfig.SpecialItemSet set : conf.startSpecialItems) {
 				set.pickItemsAndAddToCargo(Global.getSector().getPlayerFleet().getCargo(), 
 						random);
@@ -587,7 +590,7 @@ public class StartSetupPostTimePass {
 		protected SectorEntityToken startLocation;
 
 		public CreateCarePackageScript(SectorEntityToken startLocation) {
-			super(0.01f);
+			super(0.05f);
 			this.startLocation = startLocation;
 		}
 
@@ -600,6 +603,16 @@ public class StartSetupPostTimePass {
 			pods.getMemoryWithoutUpdate().set("$nex_startingCarePackage", true);
 			Misc.makeImportant(pods, "$nex_startingCarePackage_imp");
 			if (startLocation != null) pods.setCircularOrbitWithSpin(startLocation, random.nextFloat() * 360, startLocation.getRadius() + 100, 30, 15, 25);
+
+			// already called on init, shouldn't be needed
+			/*
+			try {
+				 CargoPodsEntityPlugin plugin = (CargoPodsEntityPlugin)pods.getCustomPlugin();
+				 ReflectionUtils.invoke(CargoPodsEntityPlugin.class, plugin, "readResolve");
+			} catch (Exception ex) {
+				log.warn(ex);
+			}
+			 */
 		}
 	}
 }
