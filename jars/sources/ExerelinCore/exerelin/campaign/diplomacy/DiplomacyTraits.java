@@ -2,6 +2,7 @@ package exerelin.campaign.diplomacy;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
@@ -111,7 +112,7 @@ public class DiplomacyTraits {
 	public static List<String> getFactionTraits(String factionId) {
 		MemoryAPI mem = Global.getSector().getFaction(factionId).getMemoryWithoutUpdate();
 		List<String> traits;
-		if (NexConfig.allowRandomDiplomacyTraits && DiplomacyManager.getManager().getStartRelationsMode().isRandom()
+		if (!Factions.PLAYER.equals(factionId) && NexConfig.allowRandomDiplomacyTraits && DiplomacyManager.getManager().getStartRelationsMode().isRandom()
 				&& NexConfig.getFactionConfig(factionId).allowRandomDiplomacyTraits) 
 		{
 			if (!mem.contains(MEM_KEY_RANDOM_TRAITS)) {
