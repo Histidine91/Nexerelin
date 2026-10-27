@@ -419,8 +419,10 @@ public class AllianceManager extends BaseCampaignEventListener implements EveryF
         if (!alliances.contains(alliance)) return;
 		
 		WeightedRandomPicker<String> memberPicker = new WeightedRandomPicker<>();
+		Set<String> members = alliance.getMembersCopy();
+	    alliance.clearMembers();
         
-        for (String member : alliance.getMembersCopy())
+        for (String member : members)
         {
             alliancesByFactionId.remove(member);
             reportFactionLeftAlliance(alliance, Global.getSector().getFaction(member));
@@ -429,7 +431,6 @@ public class AllianceManager extends BaseCampaignEventListener implements EveryF
         alliancesByName.remove(alliance.getName());
 		//alliancesById.remove(alliance.uuId);	// events will still want to read this
         alliances.remove(alliance);
-		alliance.clearMembers();
 
         if (!silent)
             alliance.updateIntel(memberPicker.pickAndRemove(), memberPicker.pickAndRemove(), UpdateType.DISSOLVED);
