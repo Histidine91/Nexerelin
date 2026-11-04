@@ -284,6 +284,24 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		
 		return max;
 	}
+
+	public static int getMaxTransferable(GroundUnit source, GroundUnit dest) {
+		int min = source.getIntel().getUnitSize().getMinSizeForType(source.getUnitDef()), max = source.getIntel().getUnitSize().getMaxSizeForType(source.getUnitDef());
+		int num = source.getSize();
+		int numOther = dest.getSize();
+		if (num + numOther <= max) return num;
+		num -= min;
+		num = Math.min(num, max - numOther);
+
+		return num;
+	}
+
+	public static boolean canConsiderForMerge(GroundUnit unit, GroundUnit other) {
+		if (other == unit) return false;
+		if (other.getLocation() != unit.getLocation()) return false;
+		if (other.getType() != unit.getType()) return false;
+		return true;
+	}
 	
 	protected void showResizeScreen() {
 		options.clearOptions();
@@ -436,7 +454,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		playSound("disrupt");
 	}
 	
-	protected void mergeUnit(GroundUnit other) {
+	public static void mergeUnit(GroundUnit unit, GroundUnit other) {
 		int ourSize = unit.getSize(), theirSize = other.getSize();
 		float theirMorale = other.getMorale() * theirSize;
 		float ourMorale = unit.getMorale() * unit.getSize();
@@ -445,26 +463,56 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		unit.setSize(ourSize + theirSize, false);
 		unit.setMorale((ourMorale + theirMorale)/totalSize);
 		other.removeUnit(false);
-		didAnything = true;
 	}
-	
-	protected void transfer(GroundUnit other, float sliderValue) {
-		int ourSizeNew = (int)Math.round(sliderValue);
-		
+
+	/**
+	 * @param unit
+	 * @param other
+	 * @param delta The size change of the *first* unit.
+	 */
+	public static void transfer(GroundUnit unit, GroundUnit other, int delta) {
 		int ourSize = unit.getSize(), theirSize = other.getSize();
-		
-		int delta = ourSizeNew - ourSize;
-		
-		if (delta == 0) return;
-		
+
 		GroundUnit recipient = delta > 0 ? unit : other;
 		GroundUnit donor = delta < 0 ? unit : other;
-		
+
 		float donorMorale = Math.abs(delta) * donor.getMorale();
 		float recipientMorale = recipient.getSize() * recipient.getMorale();
-		
+
 		other.setSize(theirSize - delta, false);
 		unit.setSize(ourSize + delta, false);
+
+		recipient.setMorale((donorMorale + recipientMorale)/recipient.getSize());
+	}
+
+	public static void split(GroundUnit unit) {
+		GroundBattleIntel intel = unit.getIntel();
+		GroundUnit otherUnit = intel.createPlayerUnit(unit.getUnitDefId());
+
+		for (String commodityId : unit.getPersonnelMap().keySet()) {
+			int count = unit.getPersonnelMap().get(commodityId);
+			int halfCount = count/2;
+			unit.getPersonnelMap().put(commodityId, halfCount);
+			otherUnit.getPersonnelMap().put(commodityId, count - halfCount);
+		}
+		for (String commodityId : unit.getEquipmentMap().keySet()) {
+			int count = unit.getEquipmentMap().get(commodityId);
+			int halfCount = count/2;
+			unit.getEquipmentMap().put(commodityId, halfCount);
+			otherUnit.getEquipmentMap().put(commodityId, count - halfCount);
+		}
+
+		otherUnit.setMorale(unit.getMorale());
+		otherUnit.setLocation(unit.getLocation());
+	}
+	
+	protected void transferDialog(GroundUnit other, float sliderValue) {
+		int ourSizeNew = Math.round(sliderValue);
+		int delta = ourSizeNew - unit.getSize();
+		
+		if (delta == 0) return;
+
+		transfer(unit, other, delta);
 		
 		//dialog.getTextPanel().addPara(String.format("Recipient is %s, otherUnit is %s", recipient.getName(), other.getName
 		/*
@@ -473,7 +521,6 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		dialog.getTextPanel().addPara(String.format("New recipient size: %s, division result: %s", 
 				recipient.getSize(), (donorMorale + recipientMorale)/recipient.getSize()));
 		*/
-		recipient.setMorale((donorMorale + recipientMorale)/recipient.getSize());
 		didAnything = true;
 		unitForTransfer = null;
 	}
@@ -560,7 +607,6 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		label.setHighlight(str, morale);
 		label.setHighlightColors(Misc.getHighlightColor(), GroundUnit.getMoraleColor(other.getMorale()));
 		
-		
 		if (!self) {
 			String buttonId = "transfer_" + other.id;
 			TooltipMakerAPI buttonTransferHolder = info.createUIElement(buttonWidth, 48, false);
@@ -596,7 +642,8 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			{
 				@Override
 				public void onToggle() {
-					mergeUnit(other);
+					mergeUnit(unit, other);
+					didAnything = true;
 					optionSelected(null, OptionId.INIT_RESHOW_PANEL);
 				}
 			};
@@ -617,36 +664,12 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 		Nex_VisualCustomPanel.createPanel(dialog, true);
 		showUnitForMerge(unit);
 		for (GroundUnit other : intel.getPlayerData().getUnits()) {
-			if (other == unit) continue;
-			if (other.getLocation() != unit.getLocation()) continue;
-			if (other.getType() != unit.getType()) continue;
+			if (!canConsiderForMerge(unit, other)) continue;
 			showUnitForMerge(other);
 		}
 		Nex_VisualCustomPanel.addTooltipToPanel();
 		options.clearOptions();
 		options.addOption(StringHelper.getString("back", true), OptionId.INIT_RESHOW_PANEL, null);
-	}
-	
-	protected void split() {
-		GroundUnit otherUnit = intel.createPlayerUnit(unit.getUnitDefId());
-
-		for (String commodityId : unit.getPersonnelMap().keySet()) {
-			int count = unit.getPersonnelMap().get(commodityId);
-			int halfCount = count/2;
-			unit.getPersonnelMap().put(commodityId, halfCount);
-			otherUnit.getPersonnelMap().put(commodityId, count - halfCount);
-		}
-		for (String commodityId : unit.getEquipmentMap().keySet()) {
-			int count = unit.getEquipmentMap().get(commodityId);
-			int halfCount = count/2;
-			unit.getEquipmentMap().put(commodityId, halfCount);
-			otherUnit.getEquipmentMap().put(commodityId, count - halfCount);
-		}
-		
-		otherUnit.setMorale(unit.getMorale());
-		otherUnit.setLocation(unit.getLocation());
-		
-		didAnything = true;
 	}
 	
 	public void showUnitPanel() {
@@ -701,7 +724,8 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			confirmResize();
 			break;
 		case SPLIT:
-			split();
+			split(unit);
+			didAnything = true;
 			showUnitPanel();
 			addChoiceOptions();
 			break;
@@ -710,7 +734,7 @@ public class UnitOrderDialogPlugin implements InteractionDialogPlugin {
 			break;
 		case TRANSFER_CONFIRM:
 			float val = dialog.getOptionPanel().getSelectorValue(TRANSFER_SELECTOR_ID);
-			transfer(unitForTransfer, val);
+			transferDialog(unitForTransfer, val);
 			showMergeScreen();
 			break;
 		case DISBAND:

@@ -8,10 +8,13 @@ import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.ui.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI.TooltipCreator;
 import com.fs.starfarer.api.util.Misc;
 import lombok.RequiredArgsConstructor;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 import org.magiclib.util.MagicTxt;
 
 import java.awt.*;
@@ -200,6 +203,33 @@ public class NexUtilsGUI {
 		List<FleetMemberAPI> temp = new ArrayList<>();
 		temp.add(ship);
 		info.addShipList(1, 1, width, Global.getSettings().getBasePlayerColor(), temp, pad);
+	}
+
+	/**
+	 * Automatically adjusts for UI scale factor.
+	 * @param spriteName
+	 * @param x
+	 * @param y
+	 * @param alpha
+	 * @param sizeMult
+	 */
+	public static void drawSpriteAtPoint(String spriteName, float x, float y, float alpha, float sizeMult) {
+		float screenScale = Global.getSettings().getScreenScaleMult();
+		x = Mouse.getX()/screenScale;
+		y = Mouse.getY()/screenScale;
+
+		GL11.glPushMatrix();
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+		SpriteAPI sprite = Global.getSettings().getSprite(spriteName);
+		sprite.setAlphaMult(alpha);
+		sprite.setSize(sprite.getWidth() * sizeMult * screenScale, sprite.getHeight() * sizeMult * screenScale);
+		//GL11.glScalef(0.5f, 0.5f, 1);
+		sprite.renderAtCenter(x, y);
+
+		GL11.glPopMatrix();
 	}
 	
 	public static class CustomPanelGenResult {

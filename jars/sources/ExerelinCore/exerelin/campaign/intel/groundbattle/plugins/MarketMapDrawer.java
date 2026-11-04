@@ -19,6 +19,7 @@ import exerelin.campaign.ui.CustomPanelPluginWithBorder;
 import exerelin.campaign.ui.CustomUIPanelInputListener;
 import exerelin.campaign.ui.FramedCustomPanelPlugin;
 import exerelin.utilities.NexUtils;
+import exerelin.utilities.NexUtilsGUI;
 import exerelin.utilities.rectanglepacker.Packer;
 import lombok.Getter;
 import org.apache.log4j.Logger;
@@ -242,24 +243,7 @@ public class MarketMapDrawer {
 		}
 
 		protected void drawLiftedUnit(float alphaMult) {
-			GL11.glPushMatrix();
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			float screenScale = Global.getSettings().getScreenScaleMult();
-
-			float x = Mouse.getX()/screenScale;
-			float y = Mouse.getY()/screenScale;
-			float sizeMult = 0.5f * screenScale;
-
-			// marine/armored sprite
-			SpriteAPI sprite = Global.getSettings().getSprite(liftedUnit.getBackgroundIcon());
-			sprite.setAlphaMult(alphaMult * 0.5f);
-			sprite.setSize(sprite.getWidth() * sizeMult, sprite.getHeight() * sizeMult);
-			//GL11.glScalef(0.5f, 0.5f, 1);
-			sprite.renderAtCenter(x, y);
-
-			GL11.glPopMatrix();
+			NexUtilsGUI.drawSpriteAtPoint(liftedUnit.getBackgroundIcon(), Mouse.getX(), Mouse.getY(), alphaMult * 0.5f, 0.5f);
 		}
 
 		public boolean doesRectOverlapEdge(Rectangle rect) {

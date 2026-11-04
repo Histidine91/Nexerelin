@@ -55,8 +55,8 @@ import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * Primary class for handling ground battles.
@@ -1954,8 +1954,9 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 		int NUM_ROWS = (int)Math.ceil((float)numCards/CARDS_PER_ROW);
 		//log.info("Number of rows: " + NUM_ROWS);
 		//log.info("Cards per row: " + CARDS_PER_ROW);
-		
-		CustomPanelAPI unitPanel = outer.createCustomPanel(width, NUM_ROWS * (GroundUnit.PANEL_HEIGHT + pad), null);
+
+		GroundUnitListPanelPlugin unitDisplayPlugin = new GroundUnitListPanelPlugin();
+		CustomPanelAPI unitPanel = outer.createCustomPanel(width, NUM_ROWS * (GroundUnit.PANEL_HEIGHT + pad), unitDisplayPlugin);
 		
 		//TooltipMakerAPI test = unitPanel.createUIElement(64, 64, true);
 		//test.addPara("wololo", 0);
@@ -1969,12 +1970,18 @@ public class GroundBattleIntel extends BaseIntelPlugin implements
 
 				NexUtilsGUI.placeElementInRows(unitPanel, unitCard, unitCards, CARDS_PER_ROW, GroundUnit.PADDING_X);
 				unitCards.add(unitCard);
+				unitDisplayPlugin.getUnitPanels().put(unit, unitCard);
 			}
 			if (playerIsAttacker != null && listToRead.size() < MAX_PLAYER_UNITS) {
 				CustomPanelAPI newCard = GroundUnit.createBlankCard(unitPanel, unitSize);
 				NexUtilsGUI.placeElementInRows(unitPanel, newCard, unitCards, CARDS_PER_ROW, GroundUnit.PADDING_X);
+				unitDisplayPlugin.setNewUnitPanel(newCard);
 			}
-			
+
+			for (GroundUnitPanelPlugin gupp : unitPanelPlugins.values()) {
+				gupp.addListener(unitDisplayPlugin);
+			}
+
 		} catch (Exception ex) {
 			log.error("Failed to display unit cards", ex);
 		}
