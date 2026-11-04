@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
@@ -369,6 +370,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		}
 
 		createColonyStatic(target, planet, faction, false, playerSpawned && !aotdHandover, 3);
+		NexUtilsMarket.addMarketPeople(target);
 		String newName = target.getName();
 		if (!oldName.equals(newName))
 			this.newName = newName;
@@ -472,6 +474,12 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 		if (MarketDescChanger.getInstance() != null) {
 			MarketDescChanger.getInstance().reportMarketTransfered(market, faction,
 				Global.getSector().getFaction(Factions.NEUTRAL), false, false, null, 0);
+		}
+
+		if (isPlayer) {
+			ListenerUtil.reportPlayerColonizedPlanet(planet);
+		} else {
+			// huh we don't have an NPC colonization listener?
 		}
 	}
 	
