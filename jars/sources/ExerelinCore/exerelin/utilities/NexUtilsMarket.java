@@ -388,7 +388,7 @@ public class NexUtilsMarket {
 		for (Industry curr : market.getIndustries()) {
 			if (curr.getSpec().hasTag(Industries.TAG_STATION)) {
 				hasStation = true;
-				continue;
+				break;
 			}
 		}
 		if (hasStation) {

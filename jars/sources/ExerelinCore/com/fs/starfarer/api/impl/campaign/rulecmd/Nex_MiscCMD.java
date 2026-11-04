@@ -64,8 +64,9 @@ public class Nex_MiscCMD extends BaseCommandPlugin {
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		CharacterDataAPI player = Global.getSector().getCharacterData();
 		for (String abId : Global.getSettings().getSortedAbilityIds()) {
-			boolean have = playerFleet.hasAbility(abId);    // player.getAbilities().contains(abId)
-			if (have) continue;
+			boolean fleetHave = playerFleet.hasAbility(abId);    // player.getAbilities().contains(abId)
+			if (fleetHave) continue;
+			//boolean charHave = player.getAbilities().contains(abId);  // shouldn't need to add to character data, since if our fleet gets replaced the new one should still reference the same character
 			AbilitySpecAPI spec = Global.getSettings().getAbilitySpec(abId);
 			if (!spec.isUnlockedAtStart()) continue;
 			player.addAbility(abId);
