@@ -55,7 +55,7 @@ open class NexRouteManager : RouteManager() {
             val existing = getInstance()
             if (existing is NexRouteManager) return
             log.info("Swapping out route manager")
-            var existingRoutes = ReflectionUtils.get(existing, "routes", null, true) as List<RouteManager.RouteData>
+            var existingRoutes = existing.routes
             for (existingRoute : RouteData in existingRoutes) {
                 val newRoute = NexRouteData(existingRoute)
                 nexMan.routes.add(newRoute)

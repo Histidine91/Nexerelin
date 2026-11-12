@@ -203,7 +203,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements I
 			combat = Math.round(10f + (float) 0.5f * 5f) * 5f;
 			break;
 		}
-		return (int) Math.round(combat);
+		return Math.round(combat);
 	}
 	
 	/**

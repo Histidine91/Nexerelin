@@ -12,6 +12,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.NexUtilsFleet;
 import exerelin.world.scenarios.ScenarioManager;
+
 import java.util.List;
 import java.util.Map;
 
@@ -22,13 +23,22 @@ public class Nex_NGCFinalize extends BaseCommandPlugin {
 		if (data.startScenario != null) {
 			ScenarioManager.prepScenario(data.startScenario);
 		}
+
+		CharacterCreationData ccd = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
+
 		if ("tutorialStart".equals(memoryMap.get(MemKeys.LOCAL).getString("$nex_customStart"))) 
 		{
-			CharacterCreationData ccd = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
 			if (ccd.getPerson().getStats().getLevel() == 1) {
 				ccd.getPerson().getStats().addPoints(-1);
 			}
 		}
+
+		ccd.addScriptBeforeTimePass(() -> {
+			boolean extendedMode = ccd.isExtMode();
+			if (extendedMode) {
+				Global.getSector().getMemoryWithoutUpdate().set("$extendedMode", true);
+			}
+		});
 
 		addStartingDModScript(memoryMap.get(MemKeys.LOCAL));
 		

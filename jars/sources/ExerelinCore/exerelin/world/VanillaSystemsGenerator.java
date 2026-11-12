@@ -198,9 +198,6 @@ public class VanillaSystemsGenerator {
 		MarketAPI chalcedon = getMarket("chalcedon");
 		//chalcedon.addIndustry(Industries.ORBITALSTATION);
 		//chalcedon.addIndustry(Industries.WAYSTATION);
-
-		MarketAPI cibola = getMarket("cibola");
-		cibola.addCondition(Conditions.HOT);
 		
 		MarketAPI culann = getMarket("culann");
 		culann.getIndustry(Industries.BATTLESTATION_HIGH).setAICoreId("alpha_core");
@@ -234,9 +231,6 @@ public class VanillaSystemsGenerator {
 
 		MarketAPI hesperus = getMarket("hesperus");
 		NexUtilsMarket.upgradeIndustryToTarget(hesperus.getIndustry(Industries.ORBITALSTATION), null, false, true);
-
-		MarketAPI madeira = getMarket("madeira");
-		madeira.addCondition(Conditions.COLD);
 		
 		MarketAPI mazalot = getMarket("mazalot");
 		//mazalot.getMemoryWithoutUpdate().set(ExerelinConstants.MEMKEY_MARKET_STARTING_FACTION, Factions.LUDDIC_CHURCH);

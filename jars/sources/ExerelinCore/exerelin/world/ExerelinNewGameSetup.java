@@ -304,7 +304,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 				0, 0, // center of nebula
 				sector.getHyperspace(), // location to add to
 				"terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
-				4, 4, Terrain.HYPERSPACE, StarAge.ANY); // number of cells in texture
+				4, 4, Terrain.HYPERSPACE, null); // number of cells in texture
 
 		// make Prism before core systems, unless we're in random sector with one system
 		// in which case we'll need to populate that system and then put Prism in it

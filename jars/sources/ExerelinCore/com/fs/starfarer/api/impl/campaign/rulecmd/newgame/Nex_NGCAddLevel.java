@@ -1,9 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -13,6 +10,9 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.utilities.StringHelper;
+
+import java.util.List;
+import java.util.Map;
 
 public class Nex_NGCAddLevel extends BaseCommandPlugin {
 	
@@ -27,7 +27,7 @@ public class Nex_NGCAddLevel extends BaseCommandPlugin {
 		data.getPerson().getStats().addXP(xp);
 		addXPGainText(xp, dialog.getTextPanel());
 		
-		int storyPoints = (level - 1) * Global.getSettings().getInt("storyPointsPerLevel");
+		int storyPoints = (level - 1) * Global.getSettings().getLevelupPlugin().getStoryPointsPerLevel();
 		data.getPerson().getStats().addStoryPoints(storyPoints, dialog.getTextPanel(), false);
 		
 		return true;

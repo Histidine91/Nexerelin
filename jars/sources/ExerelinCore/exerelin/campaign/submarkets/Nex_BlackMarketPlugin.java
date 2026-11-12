@@ -17,7 +17,7 @@ public class Nex_BlackMarketPlugin extends BlackMarketPlugin {
 			// this was already done in super method, so what we're doing is doubling weapon/fighter counts
 			boolean military = Misc.isMilitary(market);
 
-			WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<String>();
+			WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<String>(itemGenRandom);
 			factionPicker.add(market.getFactionId(), 15f - market.getStabilityValue());
 			factionPicker.add(Factions.INDEPENDENT, 4f);
 			factionPicker.add(submarket.getFaction().getId(), 6f);

@@ -597,7 +597,7 @@ public class PlayerSpecialForcesIntel extends SpecialForcesIntel implements Econ
 
 		float officerSalary = 0;
 		for (OfficerDataAPI officer : fleet.getFleetData().getOfficersCopy()) {
-			officerSalary += Misc.getOfficerSalary(officer.getPerson());
+			officerSalary += Misc.getOfficerSalary(officer.getPerson(), false, false, false);	// don't check officer location, since this will use *player* location
 		}
 		officerSalary *= OFFICER_SALARY_MULT;
 		FDNode officerNode = processMonthlyReportNode(report, psfNode, "nex_node_id_psf_offSal", 

@@ -64,15 +64,20 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 
 	// Don't restore KIA/MIA officers
 	@Override
-	protected void restoreOrigCaptains() {
+	protected void restoreOrigCaptains(List<FleetMemberAPI> members) {
 		if (origCaptains != null) {
 			List<OfficerDataAPI> lostOfficers = ((NexFleetEncounterContext) context).getPlayerLostOfficers();
+			List<OfficerDataAPI> recoveredOfficers = ((NexFleetEncounterContext) context).getPlayerRecoverableOfficers();
 			Set<PersonAPI> noRestore = new HashSet<>();
 			for (OfficerDataAPI officer : lostOfficers) {
 				noRestore.add(officer.getPerson());
 			}
+			for (OfficerDataAPI officer : recoveredOfficers) {
+				noRestore.add(officer.getPerson());
+			}
 			
 			for (FleetMemberAPI member : origCaptains.keySet()) {
+				if (members != null && !members.contains(member)) continue;
 				PersonAPI captain = origCaptains.get(member);
 				if (captain != null && !noRestore.contains(captain)) {
 					member.setCaptain(captain);

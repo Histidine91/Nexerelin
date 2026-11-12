@@ -410,6 +410,9 @@ public class SSP_BattleCreationPluginImpl extends BattleCreationPluginImpl {
         }
         */
 
+        width += context.extraMapWidth;
+        height += context.extraMapHeight;
+
         sizeMod = (width / 18000f) * (height / 18000f);
 
         createMap(random);

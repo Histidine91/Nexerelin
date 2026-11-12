@@ -33,7 +33,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 	// START IBB HANDLING
 	
 	@Override
-	public List<FleetMemberAPI> getRecoverableShips(BattleAPI battle, CampaignFleetAPI winningFleet, CampaignFleetAPI otherFleet) {
+	public List<FleetMemberAPI> getRecoverableShips(BattleAPI battle, CampaignFleetAPI winningFleet, CampaignFleetAPI otherFleet, boolean playerSideOnly) {
 		// not part of the IBB handling, just some hax to make S-mods kept
 		if (Global.getSettings().getBoolean("nex_keepSModsForRecoveredShips")) {
 			DataForEncounterSide winnerData = getDataFor(winningFleet);
@@ -55,8 +55,11 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			}
 		}
 
-		List<FleetMemberAPI> result = super.getRecoverableShips(battle, winningFleet, otherFleet);
+		List<FleetMemberAPI> result = super.getRecoverableShips(battle, winningFleet, otherFleet, playerSideOnly);
 
+		if (playerSideOnly) {   // this is true when doing recovery from a losingPath, in which case we're not recovering enemy ships anyway
+			return result;
+		}
 
 		if (!ExerelinModPlugin.HAVE_SWP) {
 			return result;

@@ -2,36 +2,35 @@ Files to check on Starsector update, because they significantly modify vanilla c
 Partial list.
     protip: keep a copy of the API for each version and diff it against the previous version?
 
+--------------------
+- Classes to check
+--------------------
 Most likely to have changed:
-- NexCoreLifecyclePlugin
+- [done] NexCoreLifecyclePlugin
 
 Others:
-- ExerelinNewGameSetup (generateStarSystems in particular?)
-    - VanillaSystemsGenerator
-- rules.csv "vanilla overrides"
-- NexFleetInteractionDialogPluginImpl
-- NexFleetEncounterContext
-- Nex_PunitiveExpeditionManager
-- Nex_MarketCMD
-- Nex_SustainedBurnAbilityAI
-- Nex_AICores
-- NexHostileActivityEventIntel, NexHostileActivityManager
-- [idk] SSP_BattleCreationPluginImpl
-- InvasionFleetManager.getPatrolCombatFP
-- Submarket plugins
-- Colony manager: getFreePortGrowthBonus()
-- Objective entity plugins
-- NexRouteManager
-
-Which of these could be replaced by PatchLib?
-- Wait for @Redirect annotation
-- Submarket plugins?
+- [done] rules.csv "vanilla overrides"
+- [done?] ExerelinNewGameSetup (generateStarSystems in particular?)
+    - [done?] VanillaSystemsGenerator
+- [done] NexFleetInteractionDialogPluginImpl
+- [done] NexFleetEncounterContext
+- [done] Nex_PunitiveExpeditionManager
+- [done] Nex_MarketCMD
+- [done] Nex_SustainedBurnAbilityAI
+- [done] Nex_AICores
+- [done] NexHostileActivityEventIntel, NexHostileActivityManager
+- [done] SSP_BattleCreationPluginImpl
+- [done] InvasionFleetManager.getPatrolCombatFP
+- [done] Submarket plugins
+- [done] ColonyManager.getFreePortGrowthBonus
+- [done] Objective entity plugins
+- [done] NexRouteManager
 
 Honestly, do I care?
 - Everything that uses Industries.TAG_UNRAIDABLE
 - CreateFleetPlugin if I make one
 
-
+--------------------
 0.96 notes:
 
 Do on future SS release:

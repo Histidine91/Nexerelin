@@ -2235,7 +2235,7 @@ public class Nex_MarketCMD extends MarketCMD {
 				
 		Random random = getRandom();
 		
-		if (!DebugFlags.MARKET_HOSTILITIES_DEBUG) {
+		if (!DebugFlags.MARKET_HOSTILITIES_DEBUG && market != null && !temp.nonMarket) {
 			Misc.increaseMarketHostileTimeout(market, HOSTILE_ACTIONS_TIMEOUT_DAYS);
 		}
 		
@@ -2288,6 +2288,13 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 			randomizedLosses = Math.round(randomizedLosses);
 			losses = (int) randomizedLosses;
+
+			// if the losses are minor, add a chance to have no losses
+			if (losses <= 5) {
+				if (random.nextFloat() < 1f - (0.25f + losses * 0.1f)) {
+					losses = 0;
+				}
+			}
 			
 			if (losses < 0) losses = 0;
 			if (losses > marines) losses = marines;

@@ -11,10 +11,7 @@ import com.fs.starfarer.api.characters.SkillsChangeRemoveExcessOPEffect;
 import com.fs.starfarer.api.characters.SkillsChangeRemoveSmodsEffect;
 import com.fs.starfarer.api.characters.SkillsChangeRemoveVentsCapsEffect;
 import com.fs.starfarer.api.impl.PlayerFleetPersonnelTracker;
-import com.fs.starfarer.api.impl.campaign.CoreLifecyclePluginImpl;
-import com.fs.starfarer.api.impl.campaign.HasslePlayerScript;
-import com.fs.starfarer.api.impl.campaign.HullModItemManager;
-import com.fs.starfarer.api.impl.campaign.SmugglingScanScript;
+import com.fs.starfarer.api.impl.campaign.*;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.econ.impl.Cryorevival;
 import com.fs.starfarer.api.impl.campaign.econ.impl.PopulationAndInfrastructure;
@@ -68,6 +65,8 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		if (Global.getSettings().isDevMode()) {
 			listeners.addListener(new TestIndustryOptionProvider(), true);
 		}
+
+		listeners.addListener(new DomainGradePartsPlugin(), true);
 
 		if (!listeners.hasListenerOfClass(StandardGroundRaidObjectivesCreator.class)) {
 			listeners.addListener(new StandardGroundRaidObjectivesCreator(), true);
@@ -253,6 +252,13 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		}
 		if (!sector.hasScript(HasslePlayerScript.class)) {
 			sector.addScript(new HasslePlayerScript());
+		}
+
+		if (!sector.hasScript(RetirementScript.class)) {
+			sector.addScript(new RetirementScript());
+		}
+		if (!sector.hasScript(OfficerTracker.class)) {
+			sector.addScript(new OfficerTracker());
 		}
 		
 		PlaythroughLog.getInstance();
