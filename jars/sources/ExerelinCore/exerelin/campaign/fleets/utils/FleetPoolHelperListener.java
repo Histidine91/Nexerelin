@@ -95,7 +95,7 @@ public class FleetPoolHelperListener extends BaseCampaignEventListener implement
             Global.getLogger(this.getClass()).info(String.format("%s drawing %.1f of %.1f points from fleet pool", name, rp.amountDrawn, curr));
         }
 
-        if (route.getExtra().fp == null && !route.getDataStore().containsKey(DATA_KEY_ESTIMATED_FP)) {
+        if (route.getExtra() != null && route.getExtra().fp == null && !route.getDataStore().containsKey(DATA_KEY_ESTIMATED_FP)) {
             route.getDataStore().put(DATA_KEY_ESTIMATED_FP, NexUtilsFleet.getRouteFP(route));
         }
     }

@@ -371,7 +371,7 @@ public class NexUtilsFleet
 
 	public static float getRouteFPWithDamage(RouteManager.RouteData route) {
 		float fp = getRouteFP(route);
-		if (route.getExtra().damage != null) {
+		if (route.getExtra() != null && route.getExtra().damage != null) {
 			fp *= (1 - route.getExtra().damage);
 		}
 
@@ -388,13 +388,13 @@ public class NexUtilsFleet
 		if (route instanceof NexRouteManager.NexRouteData nrd && nrd.getDataStore().containsKey(FleetPoolHelperListener.DATA_KEY_ESTIMATED_FP)) {
 			return (float)nrd.getDataStore().get(FleetPoolHelperListener.DATA_KEY_ESTIMATED_FP);
 		}
-		else if (route.getExtra().fp != null) {
+		else if (route.getExtra() != null && route.getExtra().fp != null) {
 			return route.getExtra().fp;
 		}
 		else if (route.getCustom() instanceof MilitaryBase.PatrolFleetData pfd && pfd.spawnFP > 0) {
 			return pfd.spawnFP;
 		}
-		else if (route.getExtra().strength != null) {
+		else if (route.getExtra() != null && route.getExtra().strength != null) {
 			float mult = Misc.getAdjustedStrength(100, route.getMarket())/100;
 			return route.getExtra().strength/mult;
 		}
