@@ -50,6 +50,7 @@ public class Nex_NGCFinalize extends BaseCommandPlugin {
 		data.addScript(new Script() {
 			public void run() {
 				CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
+				NexUtilsFleet.setAllVariantsCloned(fleet);
 				if (fleet.getMemoryWithoutUpdate().contains("$nex_addedStartingDMods"))
 					return;
 				NexUtilsFleet.addDMods(fleet, ExerelinSetupData.getInstance().dModLevel);

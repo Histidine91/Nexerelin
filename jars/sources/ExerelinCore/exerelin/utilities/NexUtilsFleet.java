@@ -313,6 +313,12 @@ public class NexUtilsFleet
         }
         return false;
     }
+
+	public static void setAllVariantsCloned(CampaignFleetAPI fleet) {
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			NexUtilsFleet.setClonedVariant(member, true);
+		}
+	}
 	
 	public static void addDMods(CampaignFleetAPI fleet, int level) {
 		log.info("Adding D-mods to fleet, level " + level);
@@ -322,8 +328,7 @@ public class NexUtilsFleet
 		
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			// needed to make the effect stick between saves
-			ShipVariantAPI v = NexUtilsFleet.setClonedVariant(member, true);
-			member.setVariant(v, false, false);
+			ShipVariantAPI v = NexUtilsFleet.setClonedVariant(member, true);    // in case it hasn't run yet
 			
 			int num = level;
 			if (random.nextFloat() <= DMOD_INCREASE_CHANCE)
@@ -338,7 +343,16 @@ public class NexUtilsFleet
 		fleet.getFleetData().syncIfNeeded();
 	}
 
+	/**
+	 * Creates a cloned variant with REFIT source and applies it to the specified member.
+	 * @param member
+	 * @param setNullOrigVariant
+	 * @return
+	 */
 	public static ShipVariantAPI setClonedVariant(FleetMemberAPI member, boolean setNullOrigVariant) {
+		if (member.getVariant().getSource() == VariantSource.REFIT)
+			return member.getVariant(); // should be safe to skip if it's already refit, right?
+
 		ShipVariantAPI var = member.getVariant().clone();
 		var.setHullVariantId(member.getHullId() + "_" + Misc.genUID());
 		var.setSource(VariantSource.REFIT);
