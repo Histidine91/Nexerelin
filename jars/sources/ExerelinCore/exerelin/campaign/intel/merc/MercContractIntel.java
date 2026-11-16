@@ -176,7 +176,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	 */
 	public int getModifiedFeeUpfront() {
 		MercCompanyDef def = this.getDef();
-		return def.feeUpfront + Math.round(startingShipValue * def.fleetFeeMult);
+		return def.getFeeUpfrontWithSurivalModeAdjustment() + Math.round(startingShipValue * def.fleetFeeMult * (Misc.isExtended() ? MercDataManager.feeSurvivalMult : 1));
 	}
 	
 	public void accept(MarketAPI market, TextPanelAPI text) {
@@ -212,7 +212,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		
 		offeredFleet = null;
 		
-		int rep = getDef().feeUpfront/20000;
+		int rep = getDef().feeUpfront/20000;    // without the survival mode adjustment
 		
 		NexUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(faction), null, rep * 0.01f,
 						0, null, text);
@@ -348,7 +348,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		float f = 1f / numIter;
 		MercCompanyDef def = getDef();
 		
-		float fee = def.feeMonthly * f;
+		float fee = def.getFeeMonthlyWithSurvivalModeAdjustment() * f;
 		MonthlyReport.FDNode fleetNode = report.getNode(MonthlyReport.FLEET);
 		
 		MonthlyReport.FDNode mercNode = report.getNode(fleetNode, "nex_merc_" + def.id);
@@ -479,7 +479,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 		info.addPara(str, opad, def.getFaction().getBaseUIColor(), def.name);
 		
 		String fee1 = Misc.getDGSCredits(getModifiedFeeUpfront());
-		String fee2 = Misc.getDGSCredits(def.feeMonthly);
+		String fee2 = Misc.getDGSCredits(def.getFeeMonthlyWithSurvivalModeAdjustment());
 		info.addPara(getString("intel_desc_feeUpfront") + ": " + fee1, opad, h, fee1);
 		info.addPara(getString("intel_desc_feeMonthly") + ": " + fee2, pad, h, fee2);
 		

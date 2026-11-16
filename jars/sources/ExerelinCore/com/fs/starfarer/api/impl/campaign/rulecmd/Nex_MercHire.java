@@ -303,7 +303,7 @@ public class Nex_MercHire extends BaseCommandPlugin {
 		info.addPara(def.desc, pad);
 		
 		String fee1 = Misc.getDGSCredits(intel.getModifiedFeeUpfront());
-		String fee2 = Misc.getDGSCredits(def.feeMonthly);
+		String fee2 = Misc.getDGSCredits(def.getFeeMonthlyWithSurvivalModeAdjustment());
 		info.addPara(getString("intel_desc_feeUpfront") + ": " + fee1, opad, h, fee1);
 		info.addPara(getString("intel_desc_feeMonthly") + ": " + fee2, pad, h, fee2);
 
@@ -379,7 +379,7 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			text.addPara(def.name, def.getFaction().getBaseUIColor(), 0);
 			//text.setParaFontDefault();
 			String fee1 = Misc.getDGSCredits(feeCalc);
-			String fee2 = Misc.getDGSCredits(def.feeMonthly);
+			String fee2 = Misc.getDGSCredits(def.getFeeMonthlyWithSurvivalModeAdjustment());
 			text.addPara(fee1 + " + " + fee2 + "/mth", pad, enough ? Misc.getHighlightColor() 
 					: Misc.getNegativeHighlightColor(), fee1, fee2);
 

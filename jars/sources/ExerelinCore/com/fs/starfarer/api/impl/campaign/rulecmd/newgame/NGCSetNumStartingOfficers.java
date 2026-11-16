@@ -30,7 +30,7 @@ public class NGCSetNumStartingOfficers extends BaseCommandPlugin {
 			setupData.numStartingOfficers = num;
 		}
 
-		addOfficersGainText(num, dialog.getTextPanel());
+		addOfficersGainText(num, dialog.getTextPanel(), agents);
 		return true;
 	}
 	

@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.characters.FullName.Gender;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.NexUtils;
 import org.json.JSONArray;
@@ -28,6 +29,7 @@ public class MercDataManager {
 	public static float feeUpfrontMult;
 	public static float feeMonthlyMult;
 	public static float feeUpfrontRefundMult;
+	public static float feeSurvivalMult;
 	
 	static {
 		loadDefs();
@@ -135,6 +137,7 @@ public class MercDataManager {
 			feeUpfrontMult = (float)jsonBase.optDouble("feeUpfrontMult", 1);
 			feeMonthlyMult = (float)jsonBase.optDouble("feeMonthlyMult", 1);
 			feeUpfrontRefundMult = (float)jsonBase.optDouble("feeUpfrontRefundMult", 1);
+			feeSurvivalMult = (float)jsonBase.optDouble("feeSurvivalMult", 1);
 			
 			List<String> enabled = NexUtils.JSONArrayToArrayList(jsonBase.getJSONArray("enabledFactions"));
 			List<String> disabled = NexUtils.JSONArrayToArrayList(jsonBase.getJSONArray("disabledFactions"));
@@ -257,6 +260,14 @@ public class MercDataManager {
 		public String getLogo() {
 			if (logo != null) return logo;
 			return getFaction().getCrest();
+		}
+
+		public int getFeeUpfrontWithSurivalModeAdjustment() {
+			return Math.round(feeUpfront * (Misc.isExtended() ? feeSurvivalMult : 1));
+		}
+
+		public int getFeeMonthlyWithSurvivalModeAdjustment() {
+			return Math.round(feeMonthly * (Misc.isExtended() ? feeSurvivalMult : 1));
 		}
 		
 		public String getRandomShip(int index) {

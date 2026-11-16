@@ -21,6 +21,9 @@ import java.util.Map;
 
 public class Nex_NGCarePackage extends BaseCommandPlugin {
 
+    public static float freeStartPointMult = 0.5f;
+    public static float survivalPointMult = 0.5f;
+
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
         String arg = params.get(0).getString(memoryMap);
 
@@ -69,7 +72,11 @@ public class Nex_NGCarePackage extends BaseCommandPlugin {
         }
         copy.sort();
 
-        final int max = Global.getSettings().getInt("nex_factionSetupMaxPoints") / (home == null ? 2 : 1);
+        float maxTemp = Global.getSettings().getInt("nex_factionSetupMaxPoints");
+        if (home == null) maxTemp *= freeStartPointMult;
+        if (Misc.isExtended()) maxTemp *= survivalPointMult;
+
+        final int max = Math.round(maxTemp);
 
         final float sideWidth = 210f;
         final float screenWidth = Global.getSettings().getScreenWidth() * 3/4;

@@ -12,6 +12,7 @@
 	"feeUpfrontMult":1,
 	"feeMonthlyMult":2,
 	"feeUpfrontRefundMult":0.5,	# on contract completion
+	"feeSurvivalMult":2,
 	
 	"companies":{
 		# Example merc company. Note that these settings are provided for convenience;
