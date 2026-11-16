@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Missions;
 import com.fs.starfarer.api.impl.campaign.ids.People;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
 
 public class UsurpersQuestSkipPlugin extends BaseQuestSkipPlugin {
@@ -21,7 +22,7 @@ public class UsurpersQuestSkipPlugin extends BaseQuestSkipPlugin {
         macario.getRelToPlayer().setRel(0.01f);
 
         CampaignFleetAPI pf = Global.getSector().getPlayerFleet();
-        addShipToPlayerFleet("executor_Hull");
+        addShipToPlayerFleet(Misc.isExtended() ? "falcon_LG_Hull" : "executor_Hull");
         pf.getCargo().addWeapons("kineticblaster", 3);
         pf.getCargo().addWeapons("gigacannon", 1);
 

@@ -68,6 +68,22 @@ public class NexUtils
 		intel.endAfterDelay();
 	}
 
+	/**
+	 * @param isNGCSurvival True if we're in new game creation (since {@code Misc.isExtended()} doesn't return true there).
+	 *                      Otherwise, leave as false (the levelup plugin will do the extended check and return accordingly).
+	 * @return
+	 */
+	public static int getStoryPointsPerLevel(boolean isNGCSurvival) {
+		// yeah one gets an int, the other gets a float and casts to int
+		// idk Alexcode anymore
+		if (isNGCSurvival) {
+			return Global.getSettings().getInt("ext_storyPointsPerLevel");
+		}
+		//return (int) Global.getSettings().getFloat("storyPointsPerLevel");
+		return Global.getSettings().getLevelupPlugin().getStoryPointsPerLevel();
+	}
+
+
 	public static Object getRandomArrayElement(Object[] array)
 	{
 		if (array.length == 0)

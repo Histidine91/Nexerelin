@@ -9,6 +9,7 @@ import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class Nex_NGCAddLevel extends BaseCommandPlugin {
 		data.getPerson().getStats().addXP(xp);
 		addXPGainText(xp, dialog.getTextPanel());
 		
-		int storyPoints = (level - 1) * Global.getSettings().getLevelupPlugin().getStoryPointsPerLevel();
+		int storyPoints = (level - 1) * NexUtils.getStoryPointsPerLevel(data.isExtMode());
 		data.getPerson().getStats().addStoryPoints(storyPoints, dialog.getTextPanel(), false);
 		
 		return true;

@@ -17,6 +17,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.NexFactionConfig.StartFleetType;
+import exerelin.utilities.NexUtils;
 import exerelin.utilities.StringHelper;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.input.Keyboard;
@@ -116,7 +117,7 @@ public class Nex_NGCStartResources extends BaseCommandPlugin {
 		charData.getPerson().getStats().addXP(xp);
 		Nex_NGCAddLevel.addXPGainText(xp, text);
 
-		int storyPoints = (level - 1) * Global.getSettings().getInt("storyPointsPerLevel");
+		int storyPoints = (level - 1) * NexUtils.getStoryPointsPerLevel(charData.isExtMode());
 		charData.getPerson().getStats().addStoryPoints(storyPoints, text, false);
 
 		charData.getStartingCargo().getCredits().add(credits);

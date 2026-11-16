@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
@@ -90,7 +91,16 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 					supplies += (int)temp.getCargoCapacity()/2;
 					machinery += (int)temp.getCargoCapacity()/8;
 				}
-				fuel += (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
+
+				// account for extended/survival mode's fuel capacity modifiers
+				float fuelCap = temp.getFuelCapacity();
+				if (data.isExtMode()) {
+					boolean isTanker = temp.getHullSpec().getHints().contains(ShipHullSpecAPI.ShipTypeHints.TANKER);
+					if (isTanker) fuelCap *= Global.getSettings().getFloat("ext_fuelCapacityMultTanker");
+					else fuelCap *= Global.getSettings().getFloat("ext_fuelCapacityMult");
+				}
+
+				fuel += (int)Math.min(temp.getFuelUse() * 20, fuelCap);
 				
 				temp.getRepairTracker().setCR(0.7f);
 				

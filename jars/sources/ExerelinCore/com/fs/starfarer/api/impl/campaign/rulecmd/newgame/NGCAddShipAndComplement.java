@@ -2,9 +2,6 @@ package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType;
-import java.util.List;
-import java.util.Map;
-
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -16,7 +13,11 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 
+import java.util.List;
+import java.util.Map;
 
+// Only used in devmode starts, so whatever
+@Deprecated
 public class NGCAddShipAndComplement extends BaseCommandPlugin {
 	
 	@Override
