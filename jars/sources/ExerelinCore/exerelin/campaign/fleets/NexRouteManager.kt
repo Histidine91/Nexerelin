@@ -250,7 +250,7 @@ open class NexRouteManager : RouteManager() {
         var dam = Misc.getSnapshotFPLost(fleet)
         if (extra.damage == null) route.extra.damage = 0f
         extra.damage += dam/baseFP
-        extra.damage.coerceAtMost(1f)
+        extra.damage = extra.damage.coerceAtMost(1f)
         if (DEBUG_MODE) log.info(String.format("Fleet %s took damage %s vs. base fp %s (%s), now at %s damage",
             fleet.nameWithFaction, dam, baseFP, Math.round(100*dam/baseFP), String.format("%.1f", route.extra.damage * 100)))
     }

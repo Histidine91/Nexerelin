@@ -281,9 +281,9 @@ open class RemnantLostScientist : HubMissionWithBarEvent() {
         fleet.forceSync()
 
         val player = Global.getSector().playerFleet
-        val dist = player.getMaxSensorRangeToDetect(fleet)
-        dist.coerceAtLeast(1000f)
-        dist.coerceAtMost(3000f)
+        var dist = player.getMaxSensorRangeToDetect(fleet)
+        dist = dist.coerceAtLeast(1000f)
+        dist = dist.coerceAtMost(3000f)
         system.addEntity(fleet)
 
         var pos: Vector2f
