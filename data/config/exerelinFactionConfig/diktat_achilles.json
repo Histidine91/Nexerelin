@@ -1,0 +1,64 @@
+{
+    "playableFaction":false,
+    "corvusCompatible":true,
+
+    "baseFleetCostMultiplier":1.0,
+    
+    "rebelFleetSuffix":"Dissidents",
+    
+    "marketSpawnWeight":0.75,
+    
+    "morality":"neutral",
+    
+    "alignments":{
+        "militarist":0.5,
+		"technocratic":0.5,
+        "diplomatic":0,
+        "hierarchical":0.5,
+    },
+    "diplomacyTraits":["neutralist"],
+
+    "factionIdForHqResponse":"lions_guard",
+    "specialForcesNamerClass":"exerelin.campaign.intel.specialforces.namer.PlanetNamer",
+    "specialForcesMaxFleets":1,
+    
+    "startShipsSolo":[
+      ["centurion_LG_Assault"]
+    ],
+    "startShipsCombatSmall":[
+      ["hammerhead_LG_Elite", "vigilance_AP", "brawler_LG_Elite"]
+    ],
+    "startShipsTradeSmall":[["tarsus_Standard", "centurion_LG_Assault", "mercury_PD"]],
+    "startShipsCombatLarge":[
+      ["swp_vulture_sta", "sunder_LG_Assault", "swp_alastor_sta"],
+      ["eagle_LG_Support", "hammerhead_LG_Elite", "vigilance_FS"]
+    ],
+    "startShipsTradeLarge":[["colossus_Standard", "mule_Standard", "wayfarer_Standard"]],
+    "startShipsExplorerLarge":[["venture_Balanced", "gemini_Standard", "wayfarer_Standard"]],
+    #"startShipsCarrierSmall":[["drover_Strike", "vigilance_Standard", "brawler_Elite"]],
+    #"startShipsCarrierLarge":[
+    #  ["swp_heron_lions_guard_eli", "swp_archon_att", "kite_Standard"],
+    #  ["heron_Strike", "sunder_Assault", "centurion_Starting"]
+    #],
+    
+    "startSpecialItems":[
+        [["midline_package", ""]],
+    ],
+    
+    "defenceStations":[
+        {"ids":["orbitalstation", "battlestation", "starfortress"], "weight":0.5},
+        {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"]},
+        {"ids":["orbitalstation_high", "battlestation_high", "starfortress_high"], "weight":0.5},
+    ],
+    
+    "industrySeeds":[
+        {"id":"fuelprod", "mult":0.2},
+        {"id":"orbitalworks", "mult":0.1},
+    ],
+    
+    "bonusSeeds":[
+        {"id":"synchrotron", "count":1},
+        {"id":"nanoforge_corrupted", "count":1},
+        {"id":"aiCore_station", "count":1},
+    ],
+}
