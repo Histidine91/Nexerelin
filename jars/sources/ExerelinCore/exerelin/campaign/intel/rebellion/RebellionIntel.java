@@ -1856,6 +1856,11 @@ public class RebellionIntel extends BaseIntelPlugin implements InvasionListener,
 			RebellionIntel reb = (RebellionIntel)intel;
 			if (!reb.isEnding() && !reb.isEnded() && reb.market == market) return reb;
 		}
+		for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getCommQueue(RebellionIntel.class))
+		{
+			RebellionIntel reb = (RebellionIntel)intel;
+			if (!reb.isEnding() && !reb.isEnded() && reb.market == market) return reb;
+		}
 		return null;
 	}
 	
