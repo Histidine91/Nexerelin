@@ -132,6 +132,9 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         addStage(Stage.GREAT_FLEET, PROGRESS_MAX/2);
         addStage(Stage.END, PROGRESS_MAX, StageIconSize.LARGE);
 
+        getDataFor(Stage.START).showIconIfFirstStage = true;
+        getDataFor(Stage.START).alwaysShowIconAtFullBrightness = true;
+
         ColonyIncomeFactor income = new ColonyIncomeFactor();
         addFactor(income);
         CommissionFactor comm = new CommissionFactor();
@@ -152,8 +155,10 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         maxProgress2 = PROGRESS_MAX;
         setProgress2(PROGRESS_MAX/2);
 
-        getDataFor(Stage.START).keepIconBrightWhenLaterStageReached = true;
-        getDataFor(Stage.END).keepIconBrightWhenLaterStageReached = true;
+        getDataFor(Stage.START).showIconIfFirstStage = true;
+        getDataFor(Stage.START).alwaysShowIconAtFullBrightness = true;
+        getDataFor(Stage.END).alwaysShowIconAtFullBrightness = true;
+
 
         checkInitialProgress();
     }
@@ -314,7 +319,6 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
     protected void addPanel(TooltipMakerAPI main, boolean first) {
         float opad = 10;
-        float barPad = 24;
 
         float visualProgressMult = first ? 1 : maxProgress/maxProgress2;
 
@@ -322,8 +326,12 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
         List<EventStageData> thisStages = first ? stages : stages2;
         float thisProgress = first ? progress : progress2;
 
+        float extraXOff = getBarXOffset();
         EventProgressBarAPI bar = main.addEventProgressBar(this, 100f);
-        bar.getPosition().setXAlignOffset(barPad);
+        if (extraXOff != 0) {
+            bar.getPosition().setXAlignOffset(extraXOff);
+            main.addSpacer(0f).getPosition().setXAlignOffset( - extraXOff);
+        }
         TooltipMakerAPI.TooltipCreator barTC = null;    // getBarTooltip();
         if (barTC != null) {
             main.addTooltipToPrevious(barTC, TooltipMakerAPI.TooltipLocation.BELOW, false);
@@ -345,6 +353,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
             EventStageDisplayData data = createDisplayData(curr.id);
             UIComponentAPI marker = main.addEventStageMarker(data);
             float xOff = bar.getXCoordinateForProgress(curr.progress * visualProgressMult) - bar.getPosition().getX();
+            xOff += extraXOff;
             marker.getPosition().aboveLeft(bar, data.downLineLength).setXAlignOffset(xOff - data.size / 2f - 1);
 
             TooltipMakerAPI.TooltipCreator tc = getStageTooltip(curr.id);
@@ -361,7 +370,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
                     .setXAlignOffset(xOff - getBarProgressIndicatorWidth() / 2 - 1);
         }
 
-        main.addSpacer(opad).getPosition().setXAlignOffset(-barPad);
+        //main.addSpacer(opad).getPosition().setXAlignOffset(-barPad);
         main.addSpacer(opad);
 
         // MODIFIED
@@ -377,7 +386,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
 
         afterStageDescriptions(main);
 
-        float barW = getBarWidth() + barPad * 2;    // MODIFIED
+        float barW = getBarWidth() + extraXOff * 2;    // MODIFIED
         float factorWidth = (barW) / 2f - opad;
 
         if (withMonthlyFactors() != withOneTimeFactors()) {
@@ -648,6 +657,16 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
     }
 
     @Override
+    public float getBarWidth() {
+        return 700f;
+    }
+
+    @Override
+    public float getBarXOffset() {
+        return 9f;
+    }
+
+    @Override
     public Color getBarColor() {
         if (forRespectValues) {
             return Misc.interpolateColor(Misc.getNegativeHighlightColor(), Misc.getPositiveHighlightColor(), (float)progress2/maxProgress2);
@@ -757,6 +776,7 @@ public class FactionRecognitionIntel extends BaseEventIntel implements ColonyPla
     @Override
     public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, MarketCMD.TempData actionData) {
         if (!active) return;
+        if (market == null) return;
         FactionAPI faction = market.getFaction();
         if (actionData instanceof Nex_MarketCMD.NexTempData ntd) {
             faction = ntd.targetFaction;

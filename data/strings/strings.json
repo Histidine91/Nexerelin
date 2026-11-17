@@ -1041,7 +1041,7 @@
 		"intro1":"Although you now possess your own colony, this does not get you treated as being on the level of the major interstellar polities in the Sector. To be ==recognized== as their equal will require some combination of impressive feats, undeniable prestige, and lobbying the established powers.",
 		"intro2":"Actions that can generate recognition may include ==economic advancement==, ==conquest==, ==official diplomacy==, and certain other ==more dangerous== acts.",
 		#"intro3":"Achieving recognition will have effects including:",
-		"intro3":"[This event is currently cosmetic. Thank you for testing!]",
+		"intro3":"[This event is currently (mostly) cosmetic. Thank you for testing!]",
 		"introRespect1":"Not all recognized polities are equally respected. Your conduct over this key period will determine how the interstellar community sees you.",
 		
 		"tooltipStageStart":"You are still treated as an unusually successful trader or freebooter rather than a head of state.",
