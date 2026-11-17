@@ -294,6 +294,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     @Override
     public void reportRaidForValuablesFinishedBeforeCargoShown(
             InteractionDialogAPI dialog, MarketAPI market, TempData actionData, CargoAPI cargo) {
+        if (market == null) return;
         if (haveOrphans(market.getFactionId())) {
             int orphans = addOrphansFromMilitaryAction(market.getSize() - 2, actionData.raidMult);
             log.info("Making " + orphans + " orphans from raid for valuables");
@@ -306,6 +307,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     @Override
     public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, 
             TempData actionData, Industry industry) {
+        if (market == null) return;
         if (haveOrphans(market.getFactionId())) {
             int orphans = addOrphansFromMilitaryAction(market.getSize() - 2, actionData.raidMult);
             log.info("Making " + orphans + " orphans from raid to disrupt");
@@ -317,6 +319,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     @Override
     public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, 
             MarketAPI market, TempData actionData) {
+        if (market == null) return;
         if (haveOrphans(market.getFactionId())) {
             int orphans = addOrphansFromMilitaryAction(market.getSize() - 1, -1);
             log.info("Making " + orphans + " orphans from tactical bombardment");
@@ -328,6 +331,7 @@ public class StatsTracker extends BaseCampaignEventListener implements ColonyPla
     @Override
     public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, 
             MarketAPI market, TempData actionData) {
+        if (market == null) return;
         if (haveOrphans(market.getFactionId())) {
             int oldSize = market.getSize() + 1;
             float deaths = NexUtilsMarket.getPopulation(oldSize) - NexUtilsMarket.getPopulation(market.getSize());

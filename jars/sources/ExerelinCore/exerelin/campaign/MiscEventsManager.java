@@ -253,6 +253,7 @@ public class MiscEventsManager extends BaseCampaignEventListener implements
 	@Override
 	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, 
 			MarketAPI market, MarketCMD.TempData actionData, CargoAPI cargo) {
+		if (market == null) return;
 		String factionId = market.getFactionId();
 		List<SpecialItemData> specials = new ArrayList<>();
 		for (CargoStackAPI stack : cargo.getStacksCopy()) {

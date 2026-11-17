@@ -1622,6 +1622,7 @@ public class ColonyManager extends BaseCampaignEventListener implements EveryFra
 	}
 
 	public void reportSatBomb(MarketAPI market, MarketCMD.TempData actionData) {
+		if (market == null) return;
 		checkIndustriesAfterSatBomb(market);
 
 		// increment attacker badboy

@@ -122,8 +122,8 @@ public class Nex_MarketCMD extends MarketCMD {
 			}
 			mem.set(key, temp, 0f);
 		}
-		
-		initForInvasion(entity);
+
+		if (market != null) initForInvasion(entity);
 	}
 	
 	@Override
@@ -790,6 +790,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	 * Puts the responder fleet back in storage. Do _not_ use this for when the fleet needs to despawn.
 	 */
 	public void cleanupResponder() {
+		if (market == null) return;
 		CampaignFleetAPI responder = memoryMap.get(MemKeys.MARKET).getFleet(ResponseFleetManager.MEMORY_KEY_FLEET);
 		cleanupResponder(responder);
 	}

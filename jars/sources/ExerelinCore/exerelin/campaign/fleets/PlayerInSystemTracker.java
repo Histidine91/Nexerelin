@@ -127,22 +127,26 @@ public class PlayerInSystemTracker implements EveryFrameScript, ColonyPlayerHost
 	@Override
 	public void reportRaidForValuablesFinishedBeforeCargoShown(InteractionDialogAPI dialog, MarketAPI market, TempData actionData, CargoAPI cargo) 
 	{
+		if (market == null) return;
 		spotPlayer(market.getFactionId());
 	}
 
 	@Override
 	public void reportRaidToDisruptFinished(InteractionDialogAPI dialog, MarketAPI market, TempData actionData, Industry industry)
 	{
+		if (market == null) return;
 		spotPlayer(market.getFactionId());
 	}
 
 	@Override
 	public void reportTacticalBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, TempData actionData) {
+		if (market == null) return;
 		spotPlayer(market.getFactionId(), REMEMBER_PLAYER_TIME * 2);
 	}
 
 	@Override
 	public void reportSaturationBombardmentFinished(InteractionDialogAPI dialog, MarketAPI market, TempData actionData) {
+		if (market == null) return;
 		spotPlayer(market.getFactionId(), REMEMBER_PLAYER_TIME * 3);
 	}
 

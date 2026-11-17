@@ -114,6 +114,8 @@ public class MilitaryAIModule extends StrategicAIModule implements RaidListener,
     }
 
     public void reportPlayerHostileAction(String name, String type, MarketAPI target, float impactMult, boolean success) {
+        if (target == null) return;
+
         FactionAPI attacker = PlayerFactionStore.getPlayerFaction();
         FactionAPI defender = target.getFaction();
         if (attacker != ai.faction && defender != ai.faction) {
