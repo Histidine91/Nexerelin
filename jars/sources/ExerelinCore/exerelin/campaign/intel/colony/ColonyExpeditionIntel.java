@@ -427,7 +427,7 @@ public class ColonyExpeditionIntel extends OffensiveFleetIntel implements RaidDe
 			market.setFreePort(true);
 		}
 		
-		market.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
+		market.getTariff().modifyFlat(NexUtilsMarket.BASE_TARIFF_ID, Global.getSector().getFaction(factionId).getTariffFraction());
 		NexUtilsMarket.setTariffs(market);
 					
 		// submarkets

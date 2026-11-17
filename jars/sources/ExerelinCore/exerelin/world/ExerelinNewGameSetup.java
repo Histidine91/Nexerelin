@@ -114,7 +114,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
-		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
+		market.getTariff().modifyFlat(NexUtilsMarket.BASE_TARIFF_ID, sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
 		NexUtilsMarket.setTariffs(market);
 		market.addSubmarket("exerelin_prismMarket");
 		market.setPrimaryEntity(prismEntity);

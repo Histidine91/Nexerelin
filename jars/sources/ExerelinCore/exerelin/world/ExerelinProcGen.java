@@ -1426,7 +1426,7 @@ public class ExerelinProcGen {
 		
 		//ExerelinMarketBuilder.addStartingMarketCommodities(market);
 		
-		market.getTariff().modifyFlat("generator", 0.2f);
+		market.getTariff().modifyFlat(NexUtilsMarket.BASE_TARIFF_ID, 0.2f);
 		market.getTariff().modifyMult("isFreeMarket", 0.5f);
 		market.setPrimaryEntity(avesta);
 		avesta.setMarket(market);

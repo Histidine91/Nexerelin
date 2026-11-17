@@ -37,6 +37,8 @@ import java.util.List;
 
 @Log4j
 public class NexUtilsMarket {
+
+	public static final String BASE_TARIFF_ID = "default_tariff";
 	
 	// use the memory key instead of this wherever possible
 	public static final List<String> NO_INVADE_MARKETS = Arrays.asList(new String[]{"SCY_prismFreeport", "prismFreeport", "prismFreeport_market"});

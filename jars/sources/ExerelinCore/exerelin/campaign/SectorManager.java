@@ -1196,7 +1196,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // tariffs
         
         // no, this risks screwing market-specific tariffs
-        //market.getTariff().modifyFlat("generator", Global.getSector().getFaction(newOwnerId).getTariffFraction());    
+        //market.getTariff().modifyFlat(NexUtilsMarket.BASE_TARIFF_ID, Global.getSector().getFaction(newOwnerId).getTariffFraction());
         
         // (un)apply free port and hazard pay if needed
         ColonyManager.updateFreePortSetting(market);
