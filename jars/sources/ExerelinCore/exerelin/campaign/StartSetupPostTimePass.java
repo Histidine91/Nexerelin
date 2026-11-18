@@ -150,8 +150,8 @@ public class StartSetupPostTimePass {
 		}
 		
 		// Galatian stipend
-		if (!TutorialMissionIntel.isTutorialInProgress() && !SectorManager.getManager().isHardMode() && !Misc.isSpacerStart()
-				&& ExerelinSetupData.getInstance().enableStipend)
+		if (ExerelinSetupData.getInstance().enableStipend && !TutorialMissionIntel.isTutorialInProgress()
+				&& !SectorManager.getManager().isHardMode() && !Misc.isSpacerStart() && !Misc.isExtended())
 		{
 			new Nex_GalatianAcademyStipend();
 		}
