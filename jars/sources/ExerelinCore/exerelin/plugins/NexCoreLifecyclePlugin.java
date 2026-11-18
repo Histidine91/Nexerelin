@@ -42,6 +42,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.colony.NexAbandonMarketPlugin;
 import exerelin.campaign.colony.NexStabilizeMarketPlugin;
 import exerelin.campaign.econ.NexShipQuality;
+import exerelin.campaign.events.DummyFactionHostilityManager;
 import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.intel.bases.Nex_LuddicPathBaseManager;
 import exerelin.campaign.intel.bases.Nex_PirateBaseManager;
@@ -50,7 +51,7 @@ import exerelin.campaign.intel.hostileactivity.NexHostileActivityManager;
 
 public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 	
-	// don't add hostility event manager
+	// replaces hostility event manager with a dummy
 	// add own versions of punitive expedition manager, Hegemony inspection manager
 	// also own versions of base managers, stabilize market plugin and ship quality
 	@Override
@@ -220,15 +221,10 @@ public class NexCoreLifecyclePlugin extends CoreLifecyclePluginImpl {
 		}
 		
 		// MODIFIED
-		/*
-		if (!sector.hasScript(FactionHostilityManager.class)) {
-			sector.addScript(new FactionHostilityManager());
-			
-			FactionHostilityManager.getInstance().startHostilities(Factions.HEGEMONY, Factions.TRITACHYON);
-			FactionHostilityManager.getInstance().startHostilities(Factions.HEGEMONY, Factions.PERSEAN);
-			FactionHostilityManager.getInstance().startHostilities(Factions.TRITACHYON, Factions.LUDDIC_CHURCH);
+		if (FactionHostilityManager.getInstance() == null) {
+			//sector.addScript(new DummyFactionHostilityManager());
+			new DummyFactionHostilityManager(); // just instantiate the class so getInstance() returns something, don't need to add as an everyframe
 		}
-		*/
 		
 		if (!sector.hasScript(GenericMissionManager.class)) {
 			sector.addScript(new GenericMissionManager());
