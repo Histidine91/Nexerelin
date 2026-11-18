@@ -114,6 +114,7 @@ public class GalatiaQuestSkipPlugin extends BaseQuestSkipPlugin {
             cotton.getRelToPlayer().setRel(0.01f);
             zal.getRelToPlayer().setRel(0.2f);
             Global.getSector().getImportantPeople().getPerson(People.KANTA).getRelToPlayer().setRel(-0.15f);
+            Global.getSector().getImportantPeople().getPerson(People.CYDONIA).getMarket().getCommDirectory().getEntryForPerson(People.CYDONIA).setHidden(false);
 
             scanGateInSystem(Global.getSector().getStarSystem("Galatia"));
             scanGateInSystem(Global.getSector().getStarSystem("Magec"));
