@@ -210,7 +210,7 @@
 			"name":"The Last Crusader",	# reference to the 1989 Indiana Jones film
 			"desc":"This ship has allegedly been fighting since the peak of the first AI War. Dark rumors swirl about it, rumors that it has become what it fights.",
 			"feeUpfront":150000,
-			"feeMonthly":10000,	# higher since you're saving on the crew and officer salaries
+			"feeMonthly":5000,	# higher since you're saving on the crew and officer salaries... you do have to pay a huge chunk in combat fees in Survival tho
 			"faction":"luddic_church",
 			"minRep":"FAVORABLE",
 			"minLevel":10,
