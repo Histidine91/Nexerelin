@@ -155,26 +155,30 @@ public class Nex_MercHire extends BaseCommandPlugin {
 			//dialog.getVisualPanel().showPersonInfo(getPerson(), true);
 			((RuleBasedInteractionDialogPluginImpl)dialog.getPlugin()).notifyActivePersonChanged();
 			
-			MemoryAPI local = dialog.getPlugin().getMemoryMap().get(MemKeys.LOCAL);
-			local.set("$nex_mercContract_ref", curr, 0);
-			local.set("$nex_mercCompanyId", curr.getDef().id, 0);
-			local.set("$nex_mercCompanyName", curr.getDef().name, 0);
-			
-			// money stuff
-			long diff = Math.round(curr.getShipValueDiff() * MercDataManager.valueDifferencePaymentMult);
-			if (diff < 0) diff = 0;
-			local.set("$nex_mercValueDiffVal", diff, 0);
-			local.set("$nex_mercValueDiffStr", Misc.getDGSCredits(diff), 0);
-			int refund = Math.round(curr.getModifiedFeeUpfront() * MercDataManager.feeUpfrontRefundMult);
-			local.set("$nex_mercRetainerRefundVal", refund, 0);
-			local.set("$nex_mercRetainerRefundStr", Misc.getDGSCredits(refund), 0);
-			long net = refund - diff;	// paid to player
-			local.set("$nex_mercNetPaymentVal", net, 0);
-			local.set("$nex_mercNetPaymentAbsVal", Math.abs(net), 0);
-			local.set("$nex_mercNetPaymentStr", Misc.getDGSCredits(Math.abs(net)), 0);
+			setMercMemoryKeys(curr, dialog);
 			return true;
 		}		
 		return false;
+	}
+
+	public static void setMercMemoryKeys(MercContractIntel curr, InteractionDialogAPI dialog) {
+		MemoryAPI local = dialog.getPlugin().getMemoryMap().get(MemKeys.LOCAL);
+		local.set("$nex_mercContract_ref", curr, 0);
+		local.set("$nex_mercCompanyId", curr.getDef().id, 0);
+		local.set("$nex_mercCompanyName", curr.getDef().name, 0);
+
+		// money stuff
+		long diff = Math.round(curr.getShipValueDiff() * MercDataManager.valueDifferencePaymentMult);
+		if (diff < 0) diff = 0;
+		local.set("$nex_mercValueDiffVal", diff, 0);
+		local.set("$nex_mercValueDiffStr", Misc.getDGSCredits(diff), 0);
+		int refund = Math.round(curr.getModifiedFeeUpfront() * MercDataManager.feeUpfrontRefundMult);
+		local.set("$nex_mercRetainerRefundVal", refund, 0);
+		local.set("$nex_mercRetainerRefundStr", Misc.getDGSCredits(refund), 0);
+		long net = refund - diff;	// paid to player
+		local.set("$nex_mercNetPaymentVal", net, 0);
+		local.set("$nex_mercNetPaymentAbsVal", Math.abs(net), 0);
+		local.set("$nex_mercNetPaymentStr", Misc.getDGSCredits(Math.abs(net)), 0);
 	}
 	
 	public void processPayment(InteractionDialogAPI dialog, MemoryAPI local) {

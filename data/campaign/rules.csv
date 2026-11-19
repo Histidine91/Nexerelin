@@ -4798,13 +4798,17 @@ FireAll PopulateOptions",,,
 ,,,,,,
 nex_mercLeaving_initial,MarketPostDock,"$tradeMode != NONE
 Nex_MercHire checkLeave score:1000",,"As your $shipOrFleet docks at $entity.name, you receive a high-priority call from one of the mercenary officers in your employment.",nex_mercLeave_answer:Accept the comm request,
-nex_mercLeaving_openComm,DialogOptionSelected,$option == nex_mercLeave_answer,FireBest Nex_MercsLeavingGreeting,,,
+nex_mercLeaving_openComm,DialogOptionSelected,$option == nex_mercLeave_answer,"FireBest Nex_MercsLeavingGreeting
+FireBest Nex_MercLeavingOptions",,,
 nex_mercLeaving_options,Nex_MercLeavingOptions,$nex_mercNetPaymentVal >= 0,"SetTextHighlightColors good bad good
 Highlight $nex_mercRetainerRefundStr $nex_mercValueDiffStr $nex_mercNetPaymentStr","The partial refund of your retainer fee is $nex_mercRetainerRefundStr. Under the terms of the contract, you are liable for a payment of $nex_mercValueDiffStr credits due to ship damage and/or losses. You will receive a net $nex_mercNetPaymentStr.","nex_mercLeaving_letGo:Wish them well in their future endeavors
 nex_mercLeaving_letGoJerk:Tell them off for their disloyalty",
 nex_mercLeaving_optionsPay,Nex_MercLeavingOptions,$nex_mercNetPaymentVal < 0,"SetTextHighlightColors good bad bad h
-Highlight $nex_mercRetainerRefundStr $nex_mercValueDiffStr $nex_mercNetPaymentStr $player.creditsStrC","The partial refund of your retainer fee is $nex_mercRetainerRefundStr. Under the terms of the contract, you are liable for a payment of $nex_mercValueDiffStr credits due to ship damage and/or losses. You will have to pay a net $nex_mercNetPaymentStr. You have $player.creditsStrC.","nex_mercLeaving_letGo:Make the payment and wish them well in their future endeavors
-nex_mercLeaving_letGoRefusePay:Refuse to pay",
+Highlight $nex_mercRetainerRefundStr $nex_mercValueDiffStr $nex_mercNetPaymentStr $player.creditsStrC
+SetTooltip nex_mercLeaving_refit Use this to fix up your mercs' ships real quick before sending them off, if you can.","The partial refund of your retainer fee is $nex_mercRetainerRefundStr. Under the terms of the contract, you are liable for a payment of $nex_mercValueDiffStr credits due to ship damage and/or losses. You will have to pay a net $nex_mercNetPaymentStr. You have $player.creditsStrC.","nex_mercLeaving_letGo:Make the payment and wish them well in their future endeavors
+nex_mercLeaving_letGoRefusePay:Refuse to pay
+nex_mercLeaving_refit:Open refit screen",
+nex_mercLeaving_refitOpt,DialogOptionSelected,$option == nex_mercLeaving_refit,Nex_MercRefitBeforeDismiss $entity.tradeMode,,,
 nex_mercLeaving_letGoOpt,DialogOptionSelected,$option == nex_mercLeaving_letGo,"$nex_mercLetGoType = normal 0
 FireBest Nex_MercLetGoBlurb
 Nex_MercHire processPayment
