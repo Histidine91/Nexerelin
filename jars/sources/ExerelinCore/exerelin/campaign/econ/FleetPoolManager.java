@@ -47,7 +47,7 @@ public class FleetPoolManager extends ResourcePoolManager {
 
 	public static float getRouteReturnEfficiency(NexRouteManager.NexRouteData routeData) {
 		if (!routeData.getDataStore().containsKey(ROUTE_DATA_RETURN_EFFICIENCY_KEY)) {
-			return 0.8f;
+			return 0f;  // don't return anything to pool unless we know it was actually billed for it beforehand, e.g. distress calls have routes and don't consume from pool
 		}
 		return (Float)routeData.getDataStore().get(ROUTE_DATA_RETURN_EFFICIENCY_KEY);
 	}

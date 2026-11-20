@@ -64,6 +64,12 @@ public class FleetPoolHelperListener extends BaseCampaignEventListener implement
 
         String factionId = FleetPoolManager.getRouteFactionId(route);
         if (factionId == null) factionId = route.getFactionId();
+        if (factionId == null && route.getActiveFleet() != null && route.getActiveFleet().getFaction() != null)
+            factionId = route.getActiveFleet().getFaction().getId();
+
+        if (factionId == null) {
+            return;
+        }
         FleetPoolManager.getManager().modifyPool(factionId, refund);
         FleetPoolManager.setRouteReturnedToPool(route, true);
 
