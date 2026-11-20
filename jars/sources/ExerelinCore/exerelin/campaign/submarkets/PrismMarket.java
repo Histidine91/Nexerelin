@@ -212,7 +212,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 picker.add(spec.getWeaponId(), weight);
             }
         }
-        for (int i = 0; i < max; i++) {
+        int existing = cargo.getWeapons().size();
+
+        for (int i = existing; i < max; i++) {
             if (picker.isEmpty()) break;
             String weaponId = picker.pickAndRemove();
             int quantity = 2;
@@ -221,6 +223,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 quantity = 8;
             else if (spec.getSize() == WeaponSize.MEDIUM)
                 quantity = 4;
+            if (Misc.isExtended()) quantity /= 2;
+
             cargo.addWeapons(weaponId, quantity);
         }
     }
@@ -229,7 +233,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
     {
         int present = getCargo().getWeapons().size();
         float variation = (float)itemGenRandom.nextFloat() * 0.5f + 0.75f;
-        addRandomWeapons(Math.round(NexConfig.prismMaxWeapons*variation) - present);
+        int count = NexConfig.prismMaxWeapons;
+        if (Misc.isExtended()) count = this.getModifiedNum(count, true, "ext_weaponForSaleFraction");
+        addRandomWeapons(Math.round(count*variation) - present);
     }
     
     protected void addWings()
@@ -246,7 +252,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
         {
             picks += quantity.getCount();
         }
-        while (!fighterPicker.isEmpty() && picks < NexConfig.prismNumWings) {
+        int count = NexConfig.prismNumWings;
+        if (Misc.isExtended()) count = this.getModifiedNum(count, true, "ext_fighterForSaleFraction");
+        while (!fighterPicker.isEmpty() && picks < count) {
             String id = fighterPicker.pick();        
             cargo.addItems(CargoAPI.CargoItemType.FIGHTER_CHIP, id, 1);
             picks++;
@@ -295,9 +303,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
         }
         
         //renew the stock
-        float variation=(float)itemGenRandom.nextFloat() * 0.5f + 0.75f;
+        float variation=itemGenRandom.nextFloat() * 0.5f + 0.75f;
         int tries = 0;
-        int target = Math.round(NexConfig.prismNumShips*variation);
+        int target = NexConfig.prismNumShips;
+        if (Misc.isExtended()) target = this.getModifiedNum(target, true, "ext_shipForSaleFraction");
+
+        target = Math.round(target*variation);
         for (int i=0; i<target; i=cargo.getMothballedShips().getNumMembers()){
             //pick the role and faction
             List<ShipRolePick> picks = null;
