@@ -1,7 +1,5 @@
 package exerelin.campaign.intel.missions.remnant;
 
-import java.util.List;
-
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
@@ -17,6 +15,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.missions.SurplusShipHull;
 import com.fs.starfarer.api.util.Misc;
+
+import java.util.List;
 
 public class RemnantSurplusShipHull extends SurplusShipHull {
 
@@ -77,11 +77,14 @@ public class RemnantSurplusShipHull extends SurplusShipHull {
 		}
 		member.getCrewComposition().setCrew(100000);
 		member.getRepairTracker().setCR(0.7f);
-		
+
+		float extMult = Misc.isExtended() ? Global.getSettings().optFloatFromArray("ext_shipBuyPriceMult", variant.getHullSpec().getHullSize().ordinal() - 2, 1f) : 1f;
+		if (Misc.isExtended()) extMult *= Global.getSettings().getFloat("ext_surplusHullPriceMult");
+
 		if (BASE_PRICE_MULT_REM == 1f) {
-			price = (int) Math.round(variant.getHullSpec().getBaseValue());
+			price = (int) (Math.round(variant.getHullSpec().getBaseValue()) * extMult);
 		} else {
-			price = getRoundNumber(variant.getHullSpec().getBaseValue() * BASE_PRICE_MULT_REM);
+			price = getRoundNumber(variant.getHullSpec().getBaseValue() * BASE_PRICE_MULT * extMult);
 		}
 		
 		setRepFactionChangesTiny();
