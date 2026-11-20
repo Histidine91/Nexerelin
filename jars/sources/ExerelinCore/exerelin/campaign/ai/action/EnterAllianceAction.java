@@ -59,7 +59,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
     public boolean canUse(StrategicConcern concern) {
         if (!NexConfig.enableDiplomacy) return false;
         if (!NexConfig.enableAlliances) return false;
-        if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
+        if (!NexUtilsFaction.isDiplomacyEnabled(ai.getFactionId())) return false;
 
         if (!ALLIANCE_DEBUGGING && NexUtils.getTrueDaysSinceStart() < NexConfig.allianceGracePeriod) return false;
         if (!concern.getDef().hasTag("canAlly") && !concern.getDef().hasTag("canCoalition")) return false;
@@ -77,7 +77,7 @@ public class EnterAllianceAction extends DiplomacyAction implements StrategicAct
         }
 
         if (faction != null) {
-            if (NexConfig.getFactionConfig(faction.getId()).disableDiplomacy) return false;
+            if (!NexUtilsFaction.isDiplomacyEnabled(faction.getId())) return false;
             if (alliance == null) {
                 if (!AllianceManager.getManager().canAlly(ai.getFactionId(), faction.getId())) return false;
             }

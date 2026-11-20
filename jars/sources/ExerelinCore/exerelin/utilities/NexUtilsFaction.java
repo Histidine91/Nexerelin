@@ -10,6 +10,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
 import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
+import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
@@ -283,6 +284,12 @@ public class NexUtilsFaction {
 	public static void addFactionNamePara(TooltipMakerAPI info, float pad, Color color, FactionAPI faction) {
 		String name = Misc.ucFirst(faction.getDisplayName());
 		info.addPara(name, pad, color, faction.getBaseUIColor(), name);
+	}
+
+	public static boolean isDiplomacyEnabled(String factionId) {
+		if (NexConfig.getFactionConfig(factionId).disableDiplomacy) return false;
+		if (FactionHostilityManager.getInstance().isExcluded(factionId)) return false;  // for convenience to exclude Sindrian Diktat during the civil war
+		return true;
 	}
 
 	// redundant method; remains here because Roider Union uses it

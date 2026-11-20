@@ -9,6 +9,7 @@ import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.diplomacy.DiplomacyTraits;
 import exerelin.campaign.intel.diplomacy.InterventionIntel;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 
 public class InterventionAction extends DeclareWarAction {
 
@@ -54,7 +55,7 @@ public class InterventionAction extends DeclareWarAction {
             return false;
         }
 
-        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy
+        return NexUtilsFaction.isDiplomacyEnabled(ai.getFactionId())
                 && !DiplomacyTraits.hasTrait(ai.getFactionId(), DiplomacyTraits.TraitIds.PACIFIST)
                 && DiplomacyManager.getWarWeariness(ai.getFactionId(), true) <= DiplomacyBrain.MAX_WEARINESS_FOR_WAR;
     }

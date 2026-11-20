@@ -10,6 +10,7 @@ import exerelin.campaign.diplomacy.VassalManager;
 import exerelin.campaign.intel.diplomacy.DiplomacyIntel;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
+import exerelin.utilities.NexUtilsFaction;
 
 public class DiplomacyAction extends BaseStrategicAction {
 
@@ -122,7 +123,7 @@ public class DiplomacyAction extends BaseStrategicAction {
     public boolean canUse(StrategicConcern concern) {
         if (!NexConfig.enableDiplomacy) return false;
 
-        if (NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy) return false;
+        if (!NexUtilsFaction.isDiplomacyEnabled(ai.getFactionId())) return false;
 
         if (Global.getSector().getMemoryWithoutUpdate().getBoolean(MEM_KEY_GLOBAL_COOLDOWN))
             return false;
@@ -140,6 +141,8 @@ public class DiplomacyAction extends BaseStrategicAction {
             if (ourWeariness > DiplomacyBrain.MAX_WEARINESS_FOR_WAR)
                 return false;
         }
+
+        if (faction != null && !NexUtilsFaction.isDiplomacyEnabled(faction.getId())) return false;
 
         if ((ai.getFaction().isPlayerFaction() || faction == Global.getSector().getPlayerFaction())) {
             if (!NexConfig.followersDiplomacy) return false;

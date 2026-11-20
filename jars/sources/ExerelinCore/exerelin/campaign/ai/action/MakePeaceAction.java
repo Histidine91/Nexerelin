@@ -4,6 +4,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ai.concern.StrategicConcern;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.utilities.NexConfig;
+import exerelin.utilities.NexUtilsFaction;
 import exerelin.utilities.StringHelper;
 import lombok.extern.log4j.Log4j;
 
@@ -39,6 +40,6 @@ public class MakePeaceAction extends DiplomacyAction {
         if (faction != null && !faction.isHostileTo(ai.getFaction())) {
             return false;
         }
-        return !NexConfig.getFactionConfig(ai.getFactionId()).disableDiplomacy;
+        return NexUtilsFaction.isDiplomacyEnabled(ai.getFactionId());
     }
 }
