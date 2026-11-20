@@ -31,7 +31,7 @@ public class Nex_RecognitionEvent extends BaseCommandPlugin {
 			case "canDoGreatFleet":
 				if (!Global.getSector().getCharacterData().getMemoryWithoutUpdate().getBoolean(FactionRecognitionIntel.MEMORY_KEY_GREAT_FLEET_ENABLED))
 					return false;
-				if (!FactionRecognitionIntel.getInstance().isActive()) return false;
+				//if (!FactionRecognitionIntel.getInstance().isActive()) return false;
 				if (BaseRecognitionEventFactor.isOutlawFaction(faction)) return false;
 				if (memoryMap.get(MemKeys.PLAYER).getInt("$maxCombatHullSize") < 4) return false;
 				if (market == null || market.getSize() < FactionRecognitionIntel.GREAT_FLEET_MARKET_MIN_SIZE)
