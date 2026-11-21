@@ -3402,10 +3402,12 @@ nex_remSalvation_base3,DialogOptionSelected,$option == nex_remSalvation_base3,,"
 A hail is promptly transmitted. ""Unknown shuttle, you are entering a restricted area! Change course immediately or be fired upon! This is your only warning!""",nex_remSalvation_base4:Continue,
 nex_remSalvation_base4,DialogOptionSelected,$option == nex_remSalvation_base4,"Call $global.nex_remSalvation_ref setupConvoWithOperator
 Call $global.nex_remSalvation_ref updateData
+FireBest SetPLtitle
 FireBest Nex_RemSalvation_base4_Message","The shuttle adjusts course, flying at a tangent to the area of coverage. More or less complying with the order, but not in any great hurry to leave. It transmits a message to the angry Fleet sailor.",nex_remSalvation_base5:Continue,
-nex_remSalvation_base4Commission,Nex_RemSalvation_base4_Message,$nex_remSalvation_playerFactionId == persean score:100,,"""I am Captain $playerName, commissioned by the Persean League Fleet. I was directed to transport classified intelligence regarding the Remnant attack on $marketName. You will grant me authorization to deliver it to your superiors.""",,Have League commission
+nex_remSalvation_base4Demarchon,Nex_RemSalvation_base4_Message,$player.isLeagueMember score:150,,"""I am $TitlePL $playerName of the Persean League. I am personally transporting classified intelligence regarding the Remnant attack on $marketName. You will stand down and prepare to receive my shuttle.""",,League member
+nex_remSalvation_base4Commission,Nex_RemSalvation_base4_Message,$nex_remSalvation_playerFactionId == persean score:100,,"""I am $TitlePL $playerName, commissioned by the Persean League Fleet. I was directed to transport classified intelligence regarding the Remnant attack on $marketName. You will grant me authorization to deliver it to your superiors.""",,Have League commission
 nex_remSalvation_base4CommissionOther,Nex_RemSalvation_base4_Message,"$nex_remSalvation_playerFactionId != persean
-$nex_remSalvation_isRepresentingState score:10",,"""I am Captain $playerName, representing $nex_remSalvation_thePlayerFaction. I am carrying classified intelligence regarding the Remnant attack on $marketName. You will grant me authorization to deliver it to your superiors.""",,"Have commission with some other faction, or is uncommissioned with a live player faction"
+$nex_remSalvation_isRepresentingState score:10",,"""I am $TitlePL $playerName, representing $nex_remSalvation_thePlayerFaction. I am carrying classified intelligence regarding the Remnant attack on $marketName. You will grant me authorization to deliver it to your superiors.""",,"Have commission with some other faction, or is uncommissioned with a live player faction"
 nex_remSalvation_base4CommissionFree,Nex_RemSalvation_base4_Message,,,"""I am the independent starfarer $playerName. I was directed to transport classified intelligence regarding the Remnant attack on $marketName. You will grant me authorization to deliver it to your superiors.""",,Not commissioned and no live player faction
 nex_remSalvation_base5,DialogOptionSelected,$option == nex_remSalvation_base5,"FireBest Nex_RemSalvation_base5_Message
 FireAll Nex_RemSalvation_base5_MessagePost","""A likely story! You — did you say Remnants?"" Well, anyone watching the news could come up with that one, but best not to point it out.",nex_remSalvation_base6:Continue,
@@ -3418,35 +3420,44 @@ $nex_remSalvation_playerFactionId == player",,"The $personRank is starting to sw
 nex_remSalvation_base5Post,Nex_RemSalvation_base5_MessagePost,,,"By now the $personRank is looking like $heOrShe wants to disappear into $hisOrHer uniform. $HeOrShe has been led to believe that this is way above $hisOrHer pay grade, and in truth, $heOrShe is right. ""Stand by, please,"" $heOrShe croaks, before vanishing into the crest of the Persean League Fleet.",,
 nex_remSalvation_base6,DialogOptionSelected,"$option == nex_remSalvation_base6
 $nex_remSalvation_metSiyavongBefore","BeginConversation siyavong false true
+FireBest SetPLtitle
 Call $global.nex_remSalvation_ref updateData","After an interminable wait of five-plus minutes, during which the shuttle adopts a holding pattern, a new face appears on your screen. 
 
-The man's eyebrows rise in surprised recognition. ""Hello again, Captain $playerName. I suppose I should not have expected anyone else to show up like this. 
+The man's eyebrows rise in surprised recognition. ""Hello again, $TitlePL $playerName. I suppose I should not have expected anyone else to show up like this. 
 
 ""Now that your ruse has worked, perhaps you would be so kind as to tell me what you want?""",nex_remSalvation_base7:Transmit Midnight's letter of introduction,
 nex_remSalvation_base6FirstMeet,DialogOptionSelected,"$option == nex_remSalvation_base6
 !$nex_remSalvation_metSiyavongBefore","BeginConversation siyavong false true
+FireBest SetPLtitle
 Call $global.nex_remSalvation_ref updateData","After an interminable wait of five-plus minutes, during which the shuttle adopts a holding pattern, a new face appears on your screen. 
 
-""Hello, Captain... $playerName, was it? I am Agent Finlay Siyavong, of Fleet Intelligence. Now that your ruse has worked, perhaps you would be so kind as to tell me what you want?""",nex_remSalvation_base7:Transmit Midnight's letter of introduction,
+""Hello, $TitlePL... $playerName, was it? I am Agent Finlay Siyavong, of Fleet Intelligence. Now that your ruse has worked, perhaps you would be so kind as to tell me what you want?""",nex_remSalvation_base7:Transmit Midnight's letter of introduction,
 nex_remSalvation_base7,DialogOptionSelected,$option == nex_remSalvation_base7,,"$personLastName says nothing, but seems to pale as $heOrShe views the message from Midnight. At length, $heOrShe closes the message and looks squarely at you.
 
-""All right. You win, Captain. What is it you wish to know?""",nex_remSalvation_base8:Ask about the attack,
+""All right. You win, $titlePL. What is it you wish to know?""",nex_remSalvation_base8:Ask about the attack,
 nex_remSalvation_base8,DialogOptionSelected,$option == nex_remSalvation_base8,,"$personLastName smiles. Kind of. ""Not on an unsecure channel, I hope. Take your shuttle down to Pad #3 — I'll have control clear your landing — and we'll find someplace to talk."" $HeOrShe raises an eyebrow. ""Are you actually in that shuttle?""
 
 Of course not. You were hardly going to risk getting blown out of the sky by a hypervelocity missile if the defenders were jittery enough to shoot first and ask questions later. The shuttle's communications gear is perfectly capable of relaying transmissions from your $shipOrFleet.
 
 For the first time in this conversation, $personLastName smiles. ""Very wise, $playerLastName. Very well, we shall speak of this once you are down here.""",nex_remSalvation_base9:Cut the comm link and continue,
-nex_remSalvation_base9,DialogOptionSelected,$option == nex_remSalvation_base9,ShowLargePlanet,"You board your actual shuttle and ride it down to $marketName. The defense grid cautiously greenlights your arrival, and the craft touches down smoothly on its assigned pad.
+nex_remSalvation_base9,DialogOptionSelected,$option == nex_remSalvation_base9,"ShowLargePlanet
+$option = nex_remSalvation_base9Pt2
+FireBest DialogOptionSelected","You board your actual shuttle and ride it down to $marketName. The defense grid cautiously greenlights your arrival, and the craft touches down smoothly on its assigned pad.
 
-Half a platoon of armored League Marines is there to receive you, along with a couple of light armored vehicles further back, their autocannons ready to hose API rounds through the shuttle hatch. Quite excessive considering the threat you can actually pose in person, but no-one's taking any chances.
+Half a platoon of armored League Marines is there to receive you, along with a couple of light armored vehicles further back, their autocannons ready to hose API rounds through the shuttle hatch. Quite excessive considering the threat you can actually pose in person, but no-one's taking any chances.",,
+nex_remSalvation_base9Demarchon,DialogOptionSelected,"$option == nex_remSalvation_base9
+$player.isLeagueMember","ShowLargePlanet
+$option = nex_remSalvation_base9Pt2
+FireBest DialogOptionSelected","You board your actual shuttle and ride it down to $marketName. The defense grid cautiously greenlights your arrival, and the craft touches down smoothly on its assigned pad.
 
-A Fleet lieutenant greets you with a sharp Academy salute. ""Captain $playerName. I will escort you to Agent Siyavong. This way, please.""
+Half a platoon of armored League Marines is there to receive you, along with a couple of light armored vehicles further back. Their autocannons aren't quite pointed your way—they're not showing that kind of disrespect to a $titlePL—but close enough to respond swiftly if it turns out you're a hostile imposter.",,
+nex_remSalvation_base9Pt2,DialogOptionSelected,$option == nex_remSalvation_base9Pt2,,"A Fleet lieutenant greets you with a sharp Academy salute. ""$TitlePL. I will escort you to Agent Siyavong. This way, please.""
 
-You are led to a small office in an administrative building, only slightly scarred by the recent violence. The guard in unpowered armor gives a small nod of acknowledgement and steps aside slightly to let you pass, leaving your bodyguards outside.",nex_remSalvation_base10:Step inside,
+You are led to a small office in an administrative building, only slightly scarred by the recent violence. A guard in unpowered armor gives a small nod of acknowledgement and steps aside slightly to let you pass, leaving your bodyguards outside.",nex_remSalvation_base10:Step inside,
 nex_remSalvation_base10,DialogOptionSelected,$option == nex_remSalvation_base10,"ShowPersonVisual
 $metAlready = true","$personName is seated behind a cheap desk, working on his TriPad instead of the silent console in front of him. $HeOrShe stands and offers a hand.
 
-""Captain $playerName, in the flesh. You truly are quite the flashy character. Take a seat, why don't you?""",nex_remSalvation_base11:Inquire again about the attack,
+""$TitlePL $playerName, in the flesh. You truly are quite the flashy character. Take a seat, why don't you?""",nex_remSalvation_base11:Inquire again about the attack,
 nex_remSalvation_base11,DialogOptionSelected,$option == nex_remSalvation_base11,FireAll Nex_RemSalvation_SiyavongQuestionOpts,"""Where to begin? They arrived in-system and immediately burned for $nex_remSalvation_baseName, ignoring all hails. The one patrol to try and stop them got annihilated, as did our orbital defenses. The base's security perimeter was crashed by a cyber attack — easy enough to do when you have an alpha core or ten, I suppose — and then their drones came down. 
 
 ""The raid was, in the words of several survivors, 'excellently coordinated' and 'fearless and ruthless.' The garrison was quickly driven back, the raiders penetrating into a secure facility. They rapidly withdrew once they had seized what they wanted and carried it off.""",,
@@ -3461,7 +3472,7 @@ FireAll Nex_RemSalvation_SiyavongQuestionOpts","""You've heard the rumors, of co
 
 ""What's also interesting is that they used,"" $heOrShe quickly looks down at the report on $hisOrHer TriPad, ""a Transverse Jump. Apparently it's considered an extremely risky method to enter or leave a star system without using a jump point. But perhaps Remnants have a different sense of risk than we do.""",,
 nex_remSalvation_siyavongQuestionLoot,DialogOptionSelected,$option == nex_remSalvation_siyavongQuestionLoot,"$nex_remSalvation_askedLoot = true 0
-FireAll Nex_RemSalvation_SiyavongQuestionOpts","$personLastName's half-smile is all fake. ""A highly valuable item, the nature of which I am absolutely not at liberty to disclose, Captain.""",,
+FireAll Nex_RemSalvation_SiyavongQuestionOpts","$personLastName's half-smile is all fake. ""A highly valuable item, the nature of which I am absolutely not at liberty to disclose, $TitlePL.""",,
 nex_remSalvation_siyavongQuestionLeads,DialogOptionSelected,$option == nex_remSalvation_siyavongQuestionLeads,"SetTextHighlightColors h $nex_remSalvation_ttColor
 Highlight $nex_remSalvation_remnantSystem ""TT executives""","""A couple, which the Fleet Intelligence Service will certainly be looking up at the first opportunity. If you decide to pursue them, you will be a good citizen of the Persean Sector and share them with us, won't you?
 
@@ -3472,7 +3483,7 @@ nex_remSalvation_base13,DialogOptionSelected,$option == nex_remSalvation_base13,
 
 $HeOrShe cocks $hisOrHer head. ""I may already have killed my career — or worse — by talking to you at all. Only success can pardon my sin; for our sakes, and that of the League — and the Sector as a whole, I hope we are both successful.""
 
-You both stand, and $heOrShe offers $hisOrHer hand again. ""As you spacers say, burn bright, captain.""",nex_remSalvation_base14:Leave,
+You both stand, and $heOrShe offers $hisOrHer hand again. ""As you spacers say, burn bright, $titlePL.""",nex_remSalvation_base14:Leave,
 nex_remSalvation_base14,DialogOptionSelected,$option == nex_remSalvation_base14,"Call $global.nex_remSalvation_ref beginLeadsStage
 ShowDefaultVisual
 EndConversation NO_CONTINUE",Your bodyguards and your shuttle are still where you left them. You take both back to your $shipOrFleet.,,

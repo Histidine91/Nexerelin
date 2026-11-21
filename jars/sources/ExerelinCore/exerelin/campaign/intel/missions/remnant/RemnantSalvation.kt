@@ -1181,7 +1181,7 @@ open class RemnantSalvation : HubMissionWithBarEvent(), FleetEventListener {
         set("\$nex_remSalvation_playerFactionLeaderRank", faction.getRank(Ranks.FACTION_LEADER))
         set("\$nex_remSalvation_haveOwnFaction", faction.isPlayerFaction && SectorManager.isFactionAlive(Factions.PLAYER))
 
-        val metSiyavong = Global.getSector().importantPeople.getPerson(People.SIYAVONG)?.memoryWithoutUpdate?.getBoolean("\$metAlready")
+        val metSiyavong = Global.getSector().importantPeople.getPerson(People.SIYAVONG)?.memoryWithoutUpdate!!.getBoolean("\$metAlready") || Global.getSector().characterData.memoryWithoutUpdate.getBoolean("\$metSiyavong")
         set("\$nex_remSalvation_metSiyavongBefore", metSiyavong)
         set("\$nex_remSalvation_metArroyoBefore", metArroyoBefore())
         set("\$nex_remSalvation_haveArroyoComms", haveArroyoComms())
