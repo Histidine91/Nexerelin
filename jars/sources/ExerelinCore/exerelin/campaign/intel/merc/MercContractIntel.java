@@ -450,7 +450,7 @@ public class MercContractIntel extends BaseIntelPlugin implements EconomyTickLis
 	protected void addBulletPoints(TooltipMakerAPI info, ListInfoMode mode, boolean isUpdate, 
 									Color tc, float initPad){
 		if (!contractOver)
-			info.addPara(getString("intel_bullet_daysRemaining"), 3, Misc.getHighlightColor(), (int)daysRemaining + "");
+			info.addPara(getString("intel_bullet_daysRemaining"), 3, tc, Misc.getHighlightColor(), (int)daysRemaining + "");
 	}
 	
 	
