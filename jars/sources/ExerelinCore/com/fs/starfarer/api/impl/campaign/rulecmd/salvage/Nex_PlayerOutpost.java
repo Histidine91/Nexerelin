@@ -1,18 +1,12 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd.salvage;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
-import com.fs.starfarer.api.campaign.CoreInteractionListener;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.ResourceCostPanelAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -212,6 +206,12 @@ public class Nex_PlayerOutpost extends BaseCommandPlugin {
 		cargo.addCommodity(Commodities.HEAVY_MACHINERY, PlayerOutpostIntel.getMachineryRequired()/2);
 		cargo.addCommodity(Commodities.SUPPLIES, PlayerOutpostIntel.getSuppliesRequired()/2);
 		cargo.addCommodity(Commodities.GAMMA_CORE, PlayerOutpostIntel.getGammaCoresRequired());
+		FleetDataAPI player = Global.getSector().getPlayerFleet().getFleetData();
+
+		for (FleetMemberAPI member : cargo.getMothballedShips().getMembersListCopy()) {
+			cargo.getMothballedShips().removeFleetMember(member);
+			player.addFleetMember(member);
+		}
 
 		for (PlayerColonizationListener listener : Global.getSector().getListenerManager().getListeners(PlayerColonizationListener.class)) {
 			listener.reportPlayerAbandonedColony(intel.getMarket());
