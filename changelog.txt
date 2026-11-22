@@ -1,3 +1,29 @@
+Version 0.12.3
+
+* Compatibility with Starsector 0.98.5a
+    * Various things adjusted in Survival mode
+    * Very limited support for new Diktat missions, for now
+* Add 'Great Azure Fleet' feature to the recognition event
+* Fleet pool: Patrols get a 50% discount on draw/refund
+* Free blueprints (when not using care package) no longer appear in free start
+* After completing tutorial, ensure player has all skills they would have on a normal game start (including from other mods)
+* Add a drag-and-drop interface for units in ground battles
+    * Drag a unit card onto an industry to go there
+    * Drag onto another unit card to attempt to merge, or transfer all possible members if too large
+    * Drag onto the 'create unit' card to split
+* Tighten criteria for whether a fleet participates in fleet event autoresolve
+* Halve frequency of NPC base strike missions
+* Dismantling an outpost returns ships in storage to player fleet
+* Diplomacy trait randomization doesn't touch player
+* Ensure an admin is generated on comm board when a colony expedition event completes
+* New portrait for the Remnant quest knight, by Quacken
+* Fix crash when an alliance containing a vassal dissolves
+* Fix Nex abilities not being added when adding to existing save
+* Fix trait picker window's too-large minimum height
+* Fix some player variants at game start not being preserved after save/load
+* Fix Galatia quest skip not adding Cydonia to comm directory
+* Add `addColor`/`setColor` commands for `Nex_DynamicPaginatedOptions`
+
 Version 0.12.2d
 
 * Remove starting Waystations from the Luddic Path planets (they help accessibility in general but also enable shortages of commodities they shouldn't care about)
