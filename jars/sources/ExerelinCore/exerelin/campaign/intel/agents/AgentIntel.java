@@ -1162,7 +1162,11 @@ public class AgentIntel extends BaseIntelPlugin {
 		NEGOTIATOR, SABOTEUR, HYBRID;
 		
 		public static Specialization pickRandomSpecialization() {
-			WeightedRandomPicker<Specialization> picker = new WeightedRandomPicker<>();
+			return pickRandomSpecialization(new Random());
+		}
+
+		public static Specialization pickRandomSpecialization(Random random) {
+			WeightedRandomPicker<Specialization> picker = new WeightedRandomPicker<>(random);
 			picker.addAll(Arrays.asList(Specialization.values()));
 			Specialization spec = picker.pick();
 			//log.info("Picked random specialization: " + spec);

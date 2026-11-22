@@ -15,13 +15,15 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.CovertOpsManager;
-import static exerelin.campaign.intel.agents.AgentIntel.getString;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.Map;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.util.Map;
+
+import static exerelin.campaign.intel.agents.AgentIntel.getString;
 
 public class AgentBarEvent extends BaseBarEventWithPerson {
 	
@@ -74,7 +76,7 @@ public class AgentBarEvent extends BaseBarEventWithPerson {
 		if (this.market == market) return;
 		super.regen(market);
 		level = picker.pick();
-		spec = AgentIntel.Specialization.pickRandomSpecialization();
+		spec = AgentIntel.Specialization.pickRandomSpecialization(this.random);
 		
 		Global.getLogger(this.getClass()).info("Generated agent at " + market.getName() + " bar");
 	}
