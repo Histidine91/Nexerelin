@@ -11,10 +11,12 @@ import com.fs.starfarer.api.campaign.econ.MutableCommodityQuantity;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.ImportantPeopleAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.Nex_MarketCMD.TempDataInvasion;
+import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.loading.IndustrySpecAPI;
 import com.fs.starfarer.api.ui.MarkerData;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -73,15 +75,30 @@ public class NexUtilsMarket {
 	{
 		String factionId = market.getFactionId();
 		NexFactionConfig conf = NexConfig.getFactionConfig(factionId);
-		market.getTariff().modifyMult("nexerelinMult", NexConfig.baseTariffMult);
-		market.getTariff().modifyMult("nexerelinFactionMult", conf.tariffMult);
-		if (factionId.equals(Factions.PLAYER) || market.hasCondition(Conditions.FREE_PORT))
-		{
-			market.getTariff().modifyMult("nexerelin_freeMarket", NexConfig.freeMarketTariffMult);
-		}
-		else
-		{
-			market.getTariff().unmodify("nexerelin_freeMarket");
+
+		if (Misc.isExtended()) {
+			MutableStat stat = market.getStats().getDynamic().getStat(BaseSubmarketPlugin.MARKET_TARIFF_MULT);
+			stat.modifyMult("nexerelinMult", NexConfig.baseTariffMult);
+			stat.modifyMult("nexerelinFactionMult", conf.tariffMult);
+			if (factionId.equals(Factions.PLAYER) || market.hasCondition(Conditions.FREE_PORT))
+			{
+				stat.modifyMult("nexerelin_freeMarket", NexConfig.freeMarketTariffMult);
+			}
+			else
+			{
+				stat.unmodify("nexerelin_freeMarket");
+			}
+		} else {
+			market.getTariff().modifyMult("nexerelinMult", NexConfig.baseTariffMult);
+			market.getTariff().modifyMult("nexerelinFactionMult", conf.tariffMult);
+			if (factionId.equals(Factions.PLAYER) || market.hasCondition(Conditions.FREE_PORT))
+			{
+				market.getTariff().modifyMult("nexerelin_freeMarket", NexConfig.freeMarketTariffMult);
+			}
+			else
+			{
+				market.getTariff().unmodify("nexerelin_freeMarket");
+			}
 		}
 	}
 	

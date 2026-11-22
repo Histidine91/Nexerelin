@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.misc.ProductionReportIntel;
+import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
@@ -424,7 +425,10 @@ public class ProcureEquipment extends CovertActionIntel implements HasDestinatio
 			}
 			@Override
 			public float getCostMult() {
-				return getDef().baseCost;
+				float val = getDef().baseCost;
+				float tariff = Misc.isExtended() ? Global.getSettings().getFloat("ext_normalTariff") * market.getStats().getDynamic().getValue(BaseSubmarketPlugin.MARKET_TARIFF_MULT)
+						: market.getTariff().getModifiedValue();
+				return val * (1 + tariff);
 			}
 			@Override
 			public float getMaximumValue() {

@@ -19,6 +19,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.ShipRecoverySpecialData;
+import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
@@ -256,7 +257,10 @@ public class ProcureShip extends CovertActionIntel implements HasDestinationDial
 			cost.modifyMult("generalMult", getDef().baseCost, getString("costShipGeneralMult", true));
 		}
 		else {
-			cost.modifyMult("tariff", 1 + market.getTariff().getModifiedValue(), 
+			float tariff = Misc.isExtended() ? Global.getSettings().getFloat("ext_normalTariff") * market.getStats().getDynamic().getValue(BaseSubmarketPlugin.MARKET_TARIFF_MULT)
+					: market.getTariff().getModifiedValue();
+
+			cost.modifyMult("tariff", 1 + tariff,
 					getString("costShipGeneralMultLegal", true));
 			cost.modifyMult("serviceFee", 1 + getDef().baseCost * 0.1f, 
 					getString("costShipGeneralMultLegal2", true));

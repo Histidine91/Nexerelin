@@ -3407,7 +3407,7 @@
 		"tooltip_skipStoryDefault":"Default setting for the \"skip story\" toggle in new game setup dialog. If enabled, will skip the Galatia Academy quest chain (except Abyssal Space Oddity) and set Hyperspace Topography progress to 250.",
 		
 		"name_baseTariffMult":"Base tariff mult",
-		"tooltip_baseTariffMult":"Modifies the base tariff (which is usually 30%%). Changes only apply on game load.",
+		"tooltip_baseTariffMult":"Modifies the base tariff (which is usually 30%%). Changes only apply on game load. Note: Defaults are quite overpowered in Survival mode; consider raising these multipliers if you're playing that mode.",
 		"name_freeMarketTariffMult":"Free port tariff mult",
 		"tooltip_freeMarketTariffMult":"Multiplier for free ports, stacks with the base mult. Changes only apply on game load.",
 		
